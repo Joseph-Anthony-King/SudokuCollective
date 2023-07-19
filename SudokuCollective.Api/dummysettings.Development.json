@@ -1,0 +1,75 @@
+{
+  "ConnectionStrings": {
+    "DatabaseConnection": "[Your value here]",
+    "CacheConnection": "[Your value here]"
+  },
+  "Logging": {
+    "LogLevel": {
+      "Default": "[Your value here]",
+      "System": "[Your value here]",
+      "Microsoft": "[Your value here]",
+      "Hangfire": "[Your value here]"
+    }
+  },
+  "TokenManagement": {
+    "Secret": "[Your value here]",
+    "Issuer": "[Your value here]",
+    "Audience": "[Your value here]",
+    "AccessExpiration": 24,
+    "RefreshExpiration": 24
+  },
+  "EmailMetaData": {
+    "SmtpServer": "[Your value here]",
+    "Port": 465,
+    "Username": "[Your value here]",
+    "Password": "[Your value here]",
+    "Fromemail": "[Your value here]"
+  },
+  "EncryptionKey": "[Your value here]",
+  "DefaultUserAccounts": {
+    "SuperUser": {
+      "FirstName": "[Your value here]",
+      "LastName": "[Your value here]",
+      "NickName": "[Your value here]",
+      "UserName": "[Your value here]",
+      "Email": "[Your value here]",
+      "Password": "[Your value here]"
+    },
+    "AdminUser": {
+      "FirstName": "[Your value here]",
+      "LastName": "[Your value here]",
+      "NickName": "[Your value here]",
+      "UserName": "[Your value here]",
+      "Email": "[Your value here]",
+      "Password": "[Your value here]"
+    }
+  },
+  "DefaultAdminApp": {
+    "Name": "[Your value here]",
+    "License": "[Your value here]",
+    "LocalUrl": "[Your value here]",
+    "StagingUrl": "[Your value here]",
+    "QaUrl": "[Your value here]",
+    "ProdUrl": "[Your value here]",
+    "CustomEmailAction": "[Your value here]",
+    "CustomPasswordAction": "[Your value here]"
+  },
+  "DefaultClientApp": {
+    "Name": "[Your value here]",
+    "License": "[Your value here]",
+    "LocalUrl": "[Your value here]",
+    "StagingUrl": "[Your value here]",
+    "QaUrl": "[Your value here]",
+    "ProdUrl": "[Your value here]",
+    "CustomEmailAction": "[Your value here]",
+    "CustomPasswordAction": "[Your value here]"
+  },
+  "DefaultSandboxApp": {
+    "Name": "[Your value here]",
+    "License": "[Your value here]",
+    "LocalUrl": "[Your value here]",
+    "StagingUrl": "[Your value here]",
+    "QaUrl": "[Your value here]",
+    "ProdUrl": "[Your value here]"
+  }
+}

@@ -1,0 +1,47 @@
+@using SudokuCollective.Api.Models
+@model PasswordReset
+
+@{
+    if (Model.IsSuccess)
+    {
+        ViewData["Title"] = "Password Reset";
+    }
+    else
+    {
+        ViewData["Title"] = "Password Not Reset";
+    }
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@await Html.PartialAsync("~/Views/Shared/_Jumbotron.cshtml")
+<div class="row">
+    <div class="col-sm-2"></div>
+    <div class="col-sm-8">
+        @if (Model.IsSuccess)
+        {
+            <h2>Password Updated</h2>
+            <p>
+                @Model.UserName, your password has been updated.  Please feel free to return to <a href="@Model.AppUrl" target="_blank" title="@Model.AppTitle">@Model.AppTitle</a>, hope you are having fun!
+            </p>
+        }
+        else
+        {
+            <h2>Password Not Updated</h2>
+            <p>
+                Sorry @Model.UserName, but your request to update your password failed with the following error message:
+            </p>
+            <p>
+                @Model.ErrorMessage
+            </p>
+        }
+    </div>
+    <div class="col-sm-2"></div>
+</div>
+
+<style>
+    .center {
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+    }
+</style>

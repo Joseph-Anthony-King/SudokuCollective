@@ -1,0 +1,59 @@
+@using SudokuCollective.Api.Models
+@model PasswordReset
+
+@{
+    ViewData["Title"] = "Password Update";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@await Html.PartialAsync("~/Views/Shared/_Jumbotron.cshtml")
+<div class="row">
+    <div class="col-sm-2"></div>
+    <div class="col-sm-8">
+        @if (Model.IsSuccess)
+        {
+            <h2>Update Password</h2>
+            <p>
+                @Model.UserName, please create a new password:
+            </p>
+            @using (Html.BeginForm("result", "passwordReset", Model, FormMethod.Post))
+            {
+                <div>New Password</div>
+                @Html.TextBoxFor(m => m.NewPassword)
+                @Html.ValidationMessageFor(m => m.NewPassword, "", new { @class = "error" })
+                <div>Confirm New Password</div>
+                @Html.TextBoxFor(m => m.ConfirmNewPassword)
+                @Html.ValidationMessageFor(m => m.ConfirmNewPassword, "", new { @class = "error" })
+                <div />
+                <input class="btn btn-primary top-buffer"
+                       type="submit"
+                       value="Submit New Password" />
+            }
+        }
+        else
+        {
+            <h2>Password Token Already Processed</h2>
+            <p>
+                Sorry, but this password update token was already redeemed, refreshed, or cancelled.
+            </p>
+        }
+    </div>
+    <div class="col-sm-2"></div>
+</div>
+
+<style>
+    .center {
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .top-buffer {
+        margin-top: 20px;
+    }
+
+    .error {
+        color: red;
+        margin-left: 5px;
+    }
+</style>

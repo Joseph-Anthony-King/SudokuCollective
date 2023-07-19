@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "SudokuCollective.Dev": {
+      "commandName": "Project"
+    },
+    "Docker": {
+      "commandName": "Docker"
+    }
+  }
+}

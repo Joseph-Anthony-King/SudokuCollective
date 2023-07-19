@@ -1,0 +1,49 @@
+@using SudokuCollective.Api.Models
+@model ConfirmEmail
+
+@{
+    ViewData["Title"] = "Confirm Email";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@await Html.PartialAsync("~/Views/Shared/_Jumbotron.cshtml")
+<div class="row">
+    <div class="col-sm-2"></div>
+    <div class="col-sm-8">
+        @if (Model.IsUpdate && !Model.NewEmailAddressConfirmed)
+        {
+            @if (Model.IsSuccess)
+            {
+                <h2>Email Confirmed</h2>
+                <p>
+                    Thank you for confirming your old email address, please review and confirm your new email address.
+                </p>
+            }
+            else
+            {
+                <h2>Email Confirmation Token Already Redeemed</h2>
+                <p>
+                    Sorry, but this email confirmation token was already redeemed.
+                </p>
+            }
+        }
+        else
+        {
+            @if (Model.IsSuccess)
+            {
+                <h2>Email Confirmed</h2>
+                <p>
+                    Thank you for confirming your email address @Model.UserName.  Please feel free to return to <a href="@Model.Url" target="_blank" title="@Model.AppTitle">@Model.AppTitle</a>, hope you have fun!
+                </p>
+            }
+            else
+            {
+                <h2>Email Confirmation Token Already Processed</h2>
+                <p>
+                    Sorry, but this email confirmation token was already redeemed, refreshed, or cancelled.
+                </p>
+            }
+        }
+    </div>
+    <div class="col-sm-2"></div>
+</div>

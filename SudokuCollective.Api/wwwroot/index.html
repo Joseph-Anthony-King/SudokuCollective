@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="description" content="Sudoku Collective is an open source Web API that is used to learn frontend client side technologies such as React or Vue.js. With this API developers will create an app that allows players to play sudoku puzzles and compare their performance against other players. The benefit of using this tool is that once the developer creates their first app they will obtain an understanding of how the API works and will then be better able to compare and understand various frontend technologies like React or Vue.js. The API is fully documented so developers can integrate their client apps with the API. The goals are to learn, develop and have fun!">
+    <meta name="keywords" content="sudoku sudoku-collective open-source open-source-api sudoku-solver free-api">
+    <meta property="og:image" content="images/preview.png" />
+    <title>Sudoku Collective</title>
+    <script src="/lib/jquery/dist/jquery.min.js"></script>
+    <script src="/lib/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="js/index.js"></script>
+    <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/site.css" />
+    <link rel="shortcut icon" type="image/x-icon" href="images/favicon.ico" />
+</head>
+    <body>
+        <nav class="navbar navbar-default">
+            <div class="container">
+                <a class="navbar-brand" href="/">Sudoku Collective</a>
+            </div>
+        </nav>
+        <div id="spinner" class="d-flex justify-content-center">
+            <div class="spinner-border m-5 text-primary" style="width: 10rem; height: 10rem;" role="status">
+                <span class="sr-only">Loading...</span>
+            </div>
+        </div>
+        <div id="container" class="container hide">
+            <div class="jumbotron">
+                <img src="images/logo.png" class="center"/>
+                <h1 class="text-center text-white">Welcome to Sudoku Collective</h1>
+                <p id="apiMessage" class="text-center text-white"></p>
+                <div class="col-md-12 text-center">
+                    <a href="/swagger/index.html"
+                        target="_self"
+                        title="Sudoku Collective API Documentation"
+                        class="btn btn-primary"
+                        role="button">API Documentation</a>
+                    <a href="https://github.com/Joseph-Anthony-King/SudokuCollective"
+                        target="_self"
+                        title="Sudoku Collective on Github"
+                        class="btn btn-primary"
+                        role="button">View Code on Github</a>
+                    <a href="http://localhost:8080"
+                        target="_self"
+                        title="Sudoku Collective Admin Vue"
+                        class="btn btn-primary"
+                        role="button">Open Admin App</a>
+                </div>
+            </div>
+            <div id="missionRow" class="row hide">
+                <div class="col-sm-2"></div>
+                <div class="col-sm-8">
+                    <h1 class="text-center font-italic">
+                        Code... Create... Inspire...
+                    </h1>
+                    <p id="missionStatement">
+                    </p>
+                </div>
+                <div class="col-sm-2"></div>
+            </div>
+        </div>
+        <footer id="footer" class="hide">
+            <div class="container">
+                <div class="footer-copyright text-right py-3">
+                    © Copyright <span id="year"></span>:
+                    <a href="https://www.linkedin.com/in/joseph-king-23650256/"
+                       target="_blank"
+                       title="LinkedIn Profile: Joseph Anthony King"> Joseph-Anthony-King</a>
+                </div>
+            </div>
+        </footer>
+    </body>
+</html>
