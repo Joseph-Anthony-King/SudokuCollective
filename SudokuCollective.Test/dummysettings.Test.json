@@ -1,3 +1,9 @@
 {
-
+  "EmailMetaData": {
+    "SmtpServer": "[Your value here]",
+    "Port": 465,
+    "Username": "[Your value here]",
+    "Password": "[Your value here]",
+    "Fromemail": "[Your value here]"
+  }
 }
