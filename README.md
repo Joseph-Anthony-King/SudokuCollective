@@ -12,7 +12,7 @@ For the Redis Cache Server on Windows 10 it is recommended you use [Windows Subs
 
 ## Installation
 
-In the API project you will find a **dummysettings.json** file that is a stand in for the **appsettings.json** file that configures the project.  Additionally you will find dummy files for the **appsettings.Development.json**, **appsettings.Staging.json**, and **appsettings.Production.json** files.  Simply rename the **dummysettings.json** to **appsettings.json** and place your value where it states **[Your value here]**.  Following the same process for the respective appsetting environment files.
+In the API project you will find a **dummysettings.json** file that is a stand in for the **appsettings.json** file that configures the project.  Additionally you will find dummy files for the **appsettings.Development.json**, **appsettings.Staging.json**, and **appsettings.Production.json** files and **appsettings.Test.json** in the Test project.  Simply rename the **dummysettings.json** to **appsettings.json** and place your value where it states **[Your value here]**.  Following the same process for the respective appsetting environment files.
 
 For the **License** field in **DefaultAdminApp**, **DefaultClientApp**, and **DefaultSandboxApp** you can enter a hexadecimal value, random values can be generated [here](https://www.guidgenerator.com/online-guid-generator.aspx), braces shouldn't be included and you should use hyphens.
 
