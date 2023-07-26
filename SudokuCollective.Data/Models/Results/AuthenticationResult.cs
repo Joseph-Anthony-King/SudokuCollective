@@ -8,35 +8,35 @@ namespace SudokuCollective.Data.Models.Results
     public class AuthenticationResult : IAuthenticationResult
     {
         [JsonIgnore]
-        IAuthenticatedUser IAuthenticationResult.User 
+        ITranslatedUser IAuthenticationResult.User 
         {
-            get => (IAuthenticatedUser)User;
+            get => (ITranslatedUser)User;
             set 
             {
-                User = (AuthenticatedUser)value;
+                User = (TranslatedUser)value;
             }
         }
         [JsonPropertyName("user")]
-        public AuthenticatedUser User { get; set; }
+        public TranslatedUser User { get; set; }
         [JsonPropertyName("token")]
         public string Token { get; set; }
 
         public AuthenticationResult()
         {
-            User = new AuthenticatedUser();
+            User = new TranslatedUser();
             Token = string.Empty;
         }
 
         public AuthenticationResult(
-            IAuthenticatedUser user, 
+            ITranslatedUser user, 
             string token)
         {
-            User = (AuthenticatedUser)user;
+            User = (TranslatedUser)user;
             Token = token;
         }
 
         public AuthenticationResult(
-            AuthenticatedUser user, 
+            TranslatedUser user, 
             string token)
         {
             User = user;

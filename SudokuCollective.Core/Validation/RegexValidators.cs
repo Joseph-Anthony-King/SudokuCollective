@@ -11,7 +11,7 @@ namespace SudokuCollective.Core.Validation
         internal const string GuidRegexPattern = @"(^([0-9A-Fa-f]{8}[-][0-9A-Fa-f]{4}[-][0-9A-Fa-f]{4}[-][0-9A-Fa-f]{4}[-][0-9A-Fa-f]{12})$)";
         /* Password must be from 4 and up through 20 characters with at least 1 upper case letter, 1 lower case letter, 1 numeric character, 
          * and 1 special character of ! @ # $ % ^ & * + = ? - _ . , */
-        internal const string PasswordRegexPattern = @"^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*+=?\-_.,]).{3,21}$";
+        internal const string PasswordRegexPattern = @"^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*+=?\-_.,]).{3,20}$";
         /* User name must be at least 4 characters and can contain alphanumeric characters and special characters of
          * [! @ # $ % ^ & * + = ? - _ . ,] */
         internal const string UserNameRegexPattern = @"^[a-zA-Z0-9!@#$%^&*+=<>?-_.,].{3,}$";

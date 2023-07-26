@@ -487,7 +487,7 @@ namespace SudokuCollective.Test.TestCases.Services
             var superUser = context.Users.Where(user => user.Id == 1).FirstOrDefault();
 
             // Act
-            var superUserIsInApp = app.Users
+            var superUserIsInApp = app.UserApps
                 .Any(ua => ua.UserId == superUser.Id);
 
             var mockSuperUserHttpContextAccessor = new Mock<IHttpContextAccessor>();

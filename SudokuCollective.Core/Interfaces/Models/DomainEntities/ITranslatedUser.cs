@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace SudokuCollective.Core.Interfaces.Models.DomainEntities
 {
-    public interface IAuthenticatedUser : IDomainEntity
+    public interface ITranslatedUser : IDomainEntity
     {
         string UserName { get; set; }
         string FirstName { get; set; }
@@ -20,5 +20,6 @@ namespace SudokuCollective.Core.Interfaces.Models.DomainEntities
         DateTime DateCreated { get; set; }
         DateTime DateUpdated { get; set; }
         ICollection<IGame> Games { get; set; }
+        void NullifyEmail();
     }
 }

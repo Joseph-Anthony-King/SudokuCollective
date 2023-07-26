@@ -282,6 +282,7 @@ namespace SudokuCollective.Data.Models
                 .HasKey(app => app.Id);
 
             modelBuilder.Entity<App>()
+                .Ignore(app => app.Users)
                 .Ignore(app => app.UserCount)
                 .Ignore(app => app.UseCustomEmailConfirmationAction)
                 .Ignore(app => app.UseCustomPasswordResetAction);
@@ -305,7 +306,7 @@ namespace SudokuCollective.Data.Models
 
             modelBuilder.Entity<UserApp>()
                 .HasOne(userApp => userApp.App)
-                .WithMany(app => app.Users)
+                .WithMany(app => app.UserApps)
                 .HasForeignKey(userApp => userApp.AppId);
 
             modelBuilder.Entity<SMTPServerSettings>()

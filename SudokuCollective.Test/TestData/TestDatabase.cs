@@ -21,6 +21,8 @@ namespace SudokuCollective.Test.TestData
 
             Mock<IWebHostEnvironment> env = new Mock<IWebHostEnvironment>();
 
+            env.Setup(x => x.EnvironmentName).Returns("Development");
+
             Mock<IConfigurationSection> mockSection = new Mock<IConfigurationSection>();
             
             mockSection.Setup(x=>x.Value).Returns(TestObjects.GetEncryptionKey());

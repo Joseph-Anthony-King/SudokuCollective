@@ -23,7 +23,7 @@ namespace SudokuCollective.Test.TestCases.Results
             // Arrange and Act
 
             // Assert
-            Assert.That(sut.User, Is.InstanceOf<IAuthenticatedUser>());
+            Assert.That(sut.User, Is.InstanceOf<ITranslatedUser>());
             Assert.That(sut.Token, Is.InstanceOf<string>());
         }
 
@@ -41,11 +41,11 @@ namespace SudokuCollective.Test.TestCases.Results
         public void HaveAConstructorThatAcceptsParams()
         {
             // Arrange
-            var authenticatedUser = new AuthenticatedUser();
+            var translatedUser = new TranslatedUser();
             var token = TestObjects.GetLicense();
 
             // Act
-            sut = new AuthenticationResult(authenticatedUser, token);
+            sut = new AuthenticationResult(translatedUser, token);
 
             // Assert
             Assert.That(sut, Is.InstanceOf<AuthenticationResult>());

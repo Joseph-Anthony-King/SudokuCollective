@@ -10,7 +10,7 @@ using SudokuCollective.Core.Utilities;
 
 namespace SudokuCollective.Core.Models
 {
-    public class AuthenticatedUser : IAuthenticatedUser
+    public class TranslatedUser : ITranslatedUser
     {
         #region Properties
         [Required, JsonPropertyName("id")]
@@ -44,7 +44,7 @@ namespace SudokuCollective.Core.Models
         [Required, JsonPropertyName("dateUpdated")]
         public DateTime DateUpdated { get; set; }
         [JsonIgnore]
-        ICollection<IGame> IAuthenticatedUser.Games
+        ICollection<IGame> ITranslatedUser.Games
         {
             get => Games.ConvertAll(g => (IGame)g);
             set => Games = value.ToList().ConvertAll(g => (Game)g);
@@ -54,7 +54,7 @@ namespace SudokuCollective.Core.Models
         #endregion
 
         #region Constructors
-        public AuthenticatedUser()
+        public TranslatedUser()
         {
             var createdDate = DateTime.UtcNow;
 
@@ -78,6 +78,11 @@ namespace SudokuCollective.Core.Models
         #endregion
 
         #region Methods
+        public void NullifyEmail()
+        {
+            Email = null;
+        }
+        
         public override string ToString() => string.Format(base.ToString() + ".Id:{0}.UserName:{1}", Id, UserName);
 
         public string ToJson() => JsonSerializer.Serialize(
@@ -88,6 +93,6 @@ namespace SudokuCollective.Core.Models
             });
 
         public IDomainEntity Cast<T>() => throw new System.NotImplementedException();
-        #endregion
-    }
+    #endregion
+  }
 }

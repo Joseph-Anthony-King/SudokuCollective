@@ -760,7 +760,7 @@ namespace SudokuCollective.Data.Services
 
                         if (updateUserResponse.IsSuccess)
                         {
-                            userResult.User = (User)updateUserResponse.Object;
+                            userResult.User = (TranslatedUser)((User)updateUserResponse.Object).Cast<TranslatedUser>();
 
                             var getRequestorResponse = await _cacheService.GetWithCacheAsync<User>(
                                 _usersRepository,
@@ -775,8 +775,6 @@ namespace SudokuCollective.Data.Services
                             {
                                 userResult.User.NullifyEmail();
                             }
-                            
-                            userResult.User.NullifyPassword();
 
                             result.IsSuccess = userResponse.IsSuccess;
                             result.Message = UsersMessages.UserUpdatedMessage;
@@ -947,22 +945,37 @@ namespace SudokuCollective.Data.Services
                         // Filter out user emails from the frontend...
                         foreach (var user in result.Payload.ConvertAll(u => (IUser)u))
                         {
-                            var emailConfirmed = user.IsEmailConfirmed;
-                            user.NullifyEmail();
-                            user.IsEmailConfirmed = emailConfirmed;
+                            if (user.Id != requestorId)
+                            {
+                                var emailConfirmed = user.IsEmailConfirmed;
+                                user.NullifyEmail();
+                                user.IsEmailConfirmed = emailConfirmed;
+                            }
                         }
                     }
-                    
-                    // Nullify all passwords
-                    foreach (var user in result.Payload.ConvertAll(u => (IUser)u))
+
+                    // Transform the payload of users into a payload of translated users
+                    var transformedUsers = new List<ITranslatedUser>();
+
+                    foreach (var user in result.Payload.ConvertAll(u => (User)u))
                     {
-                        user.NullifyPassword();
+                        transformedUsers.Add((TranslatedUser)user.Cast<TranslatedUser>());
                     }
+
+                    result.Payload = transformedUsers.ConvertAll(u => (object)u);
+
+                    cacheServiceResponse = await _cacheService.GetWithCacheAsync<User>(
+                        _usersRepository,
+                        _distributedCache,
+                        string.Format(_cacheKeys.GetUserCacheKey, requestorId, license),
+                        _cachingStrategy.Medium,
+                        requestorId);
+
 
                     result.IsSuccess = response.IsSuccess;
                     result.Message = UsersMessages.UsersFoundMessage;
 
-                    return result;
+                    return result;  
                 }
                 else if (!response.IsSuccess && response.Exception != null)
                 {
@@ -1772,7 +1785,7 @@ namespace SudokuCollective.Data.Services
 
                                     if ((bool)userResult.ConfirmationEmailSuccessfullySent)
                                     {
-                                        userResult.User = user;
+                                        userResult.User = (TranslatedUser)user.Cast<TranslatedUser>();
                                         result.IsSuccess = true;
                                         result.Message = UsersMessages.EmailConfirmationEmailResentMessage;
                                         result.Payload.Add(userResult);
@@ -2228,14 +2241,12 @@ namespace SudokuCollective.Data.Services
                             user.ReceivedRequestToUpdateEmail = false;
                             user.IsEmailConfirmed = true;
 
-                            userResult.User = (User)(await _cacheService.UpdateWithCacheAsync<User>(
+                            userResult.User = (TranslatedUser)(await _cacheService.UpdateWithCacheAsync<User>(
                                 _usersRepository,
                                 _distributedCache,
                                 _cacheKeys,
                                 user,
-                                license)).Object;
-
-                            userResult.User.NullifyPassword();
+                                license)).Object.Cast<TranslatedUser>();
 
                             result.IsSuccess = response.IsSuccess;
                             result.Message = UsersMessages.EmailConfirmationRequestCancelledMessage;
@@ -2245,7 +2256,7 @@ namespace SudokuCollective.Data.Services
                         }
                         else if (response.IsSuccess == false && response.Exception != null)
                         {
-                            userResult.User = (User)(await _usersRepository.UpdateAsync(user)).Object;
+                            userResult.User = (TranslatedUser)(await _usersRepository.UpdateAsync(user)).Object;
                             result.IsSuccess = response.IsSuccess;
                             result.Message = response.Exception.Message;
                             result.Payload.Add(userResult);
@@ -2254,7 +2265,7 @@ namespace SudokuCollective.Data.Services
                         }
                         else
                         {
-                            userResult.User = (User)(await _usersRepository.UpdateAsync(user)).Object;
+                            userResult.User = (TranslatedUser)(await _usersRepository.UpdateAsync(user)).Object;
                             result.IsSuccess = false;
                             result.Message = UsersMessages.EmailConfirmationRequestNotCancelledMessage;
                             result.Payload.Add(userResult);
@@ -2264,7 +2275,7 @@ namespace SudokuCollective.Data.Services
                     }
                     else
                     {
-                        userResult.User = (User)(await _usersRepository.GetAsync(id)).Object;
+                        userResult.User = (TranslatedUser)(await _usersRepository.GetAsync(id)).Object;
                         result.IsSuccess = false;
                         result.Message = UsersMessages.EmailConfirmationRequestNotFoundMessage;
                         result.Payload.Add(userResult);
@@ -2417,7 +2428,7 @@ namespace SudokuCollective.Data.Services
                                 }
                             }
 
-                            userResult.User = user;
+                            userResult.User = (TranslatedUser)user.Cast<TranslatedUser>();
                             result.Payload.Add(userResult);
                             return result;
                         }
@@ -2505,7 +2516,7 @@ namespace SudokuCollective.Data.Services
                                 {
                                     result.IsSuccess = true;
                                     result.Message = UsersMessages.UserFoundMessage;
-                                    initiatePasswordResetResult.User = user;
+                                    initiatePasswordResetResult.User = (TranslatedUser)user.Cast<TranslatedUser>();
                                     initiatePasswordResetResult.App = app;
                                     result.Payload.Add(initiatePasswordResetResult);
 
@@ -3120,14 +3131,12 @@ namespace SudokuCollective.Data.Services
                             // Role back password reset
                             user.ReceivedRequestToUpdatePassword = false;
 
-                            userResult.User = (User)(await _cacheService.UpdateWithCacheAsync<User>(
+                            userResult.User = (TranslatedUser)(await _cacheService.UpdateWithCacheAsync<User>(
                                 _usersRepository,
                                 _distributedCache,
                                 _cacheKeys,
                                 user,
-                                license)).Object;
-                            
-                            userResult.User.NullifyPassword();
+                                license)).Object.Cast<TranslatedUser>();
 
                             result.IsSuccess = response.IsSuccess;
                             result.Message = UsersMessages.PasswordResetRequestCancelledMessage;
@@ -3137,7 +3146,7 @@ namespace SudokuCollective.Data.Services
                         }
                         else if (response.IsSuccess == false && response.Exception != null)
                         {
-                            userResult.User = (User)(await _usersRepository.UpdateAsync(user)).Object;
+                            userResult.User = (TranslatedUser)(await _usersRepository.UpdateAsync(user)).Object;
                             result.IsSuccess = response.IsSuccess;
                             result.Message = response.Exception.Message;
                             result.Payload.Add(userResult);
@@ -3146,7 +3155,7 @@ namespace SudokuCollective.Data.Services
                         }
                         else
                         {
-                            userResult.User = (User)(await _usersRepository.UpdateAsync(user)).Object;
+                            userResult.User = (TranslatedUser)(await _usersRepository.UpdateAsync(user)).Object;
                             result.IsSuccess = false;
                             result.Message = UsersMessages.PasswordResetRequestNotCancelledMessage;
                             result.Payload.Add(userResult);
@@ -3156,7 +3165,7 @@ namespace SudokuCollective.Data.Services
                     }
                     else
                     {
-                        userResult.User = (User)(await _usersRepository.GetAsync(id)).Object;
+                        userResult.User = (TranslatedUser)(await _usersRepository.GetAsync(id)).Object;
                         result.IsSuccess = false;
                         result.Message = UsersMessages.PasswordResetRequestNotFoundMessage;
                             result.Payload.Add(userResult);

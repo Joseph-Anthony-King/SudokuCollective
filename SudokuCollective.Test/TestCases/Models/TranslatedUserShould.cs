@@ -7,14 +7,14 @@ using SudokuCollective.Core.Models;
 
 namespace SudokuCollective.Test.TestCases.Models
 {
-    public class AuthenticatedUserShould
+    public class TranslatedUserShould
     {
-        private IAuthenticatedUser sut;
+        private ITranslatedUser sut;
 
         [SetUp]
         public void Setup()
         {
-            sut = new AuthenticatedUser();
+            sut = new TranslatedUser();
         }
 
         [Test, Category("Models")]
@@ -56,7 +56,7 @@ namespace SudokuCollective.Test.TestCases.Models
             Assert.That(sut.IsAdmin, Is.TypeOf<bool>());
             Assert.That(sut.DateCreated, Is.TypeOf<DateTime>());
             Assert.That(sut.DateUpdated, Is.TypeOf<DateTime>());
-            Assert.That(((AuthenticatedUser)sut).Games, Is.TypeOf<List<Game>>());
+            Assert.That(((TranslatedUser)sut).Games, Is.TypeOf<List<Game>>());
         }
     }
 }

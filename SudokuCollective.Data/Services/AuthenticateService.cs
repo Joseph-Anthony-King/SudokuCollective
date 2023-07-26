@@ -128,7 +128,7 @@ namespace SudokuCollective.Data.Services
                     return result;
                 }
 
-                if (!app.PermitCollectiveLogins && !app.Users.Any(ua => ua.UserId == user.Id))
+                if (!app.PermitCollectiveLogins && !app.UserApps.Any(ua => ua.UserId == user.Id))
                 {
                     result.IsSuccess = false;
                     result.Message = AppsMessages.UserIsNotARegisteredUserOfThisAppMessage;
@@ -178,11 +178,11 @@ namespace SudokuCollective.Data.Services
 
                 user.Games = user.Games.Where(g => g.Id == app.Id).ToList();
 
-                var authenticatedUser = (AuthenticatedUser)user.Cast<AuthenticatedUser>();
+                var translatedUser = (TranslatedUser)user.Cast<TranslatedUser>();
 
                 var authenticationResult = new AuthenticationResult
                 {
-                    User = authenticatedUser
+                    User = translatedUser
                 };
 
                 var claim = new List<Claim> {

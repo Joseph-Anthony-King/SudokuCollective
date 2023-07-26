@@ -34,4 +34,10 @@
     <ProjectReference Include="..\SudokuCollective.Api\SudokuCollective.Api.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="appSettings.Test.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

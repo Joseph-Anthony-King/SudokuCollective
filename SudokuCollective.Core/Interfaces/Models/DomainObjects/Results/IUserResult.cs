@@ -4,7 +4,7 @@ namespace SudokuCollective.Core.Interfaces.Models.DomainObjects.Results
 {
     public interface IUserResult
     {
-        IUser User { get; set; }
+        ITranslatedUser User { get; set; }
         bool? ConfirmationEmailSuccessfullySent { get; set; }
         string Token { get; set; }
     }

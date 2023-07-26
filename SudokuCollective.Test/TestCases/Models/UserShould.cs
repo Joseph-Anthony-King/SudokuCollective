@@ -290,7 +290,7 @@ namespace SudokuCollective.Test.TestCases.Models
         }
 
         [Test, Category("Models")]
-        public void CastToAuthenticatedUser()
+        public void CastToTranslatedUser()
         {
             // Arrange
             sut = new User(
@@ -309,11 +309,11 @@ namespace SudokuCollective.Test.TestCases.Models
                 DateTime.MinValue);
             
             // Act
-            var result = (AuthenticatedUser)sut.Cast<AuthenticatedUser>();
+            var result = (TranslatedUser)sut.Cast<TranslatedUser>();
 
 
             // Assert
-            Assert.That(result, Is.InstanceOf<AuthenticatedUser>());
+            Assert.That(result, Is.InstanceOf<TranslatedUser>());
         }
     }
 }

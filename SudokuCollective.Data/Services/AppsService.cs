@@ -24,7 +24,6 @@ using SudokuCollective.Data.Models.Results;
 using SudokuCollective.Data.Utilities;
 using SudokuCollective.Logs;
 using SudokuCollective.Logs.Utilities;
-using SudokuCollective.Core.Validation.Attributes;
 
 namespace SudokuCollective.Data.Services
 {
@@ -268,6 +267,17 @@ namespace SudokuCollective.Data.Services
                             app.SMTPServerSettings.Sanitize();
                         }
 
+                        if (!user.IsSuperUser)
+                        {
+                            foreach(var u in app.Users)
+                            {
+                                if (u.Id != user.Id)
+                                {
+                                    u.NullifyEmail();
+                                }
+                            }
+                        }
+
                         result.IsSuccess = appResponse.IsSuccess;
                         result.Message = AppsMessages.AppFoundMessage;
                         result.Payload.Add(app);
@@ -374,6 +384,17 @@ namespace SudokuCollective.Data.Services
                         else
                         {
                             app.SMTPServerSettings.Sanitize();
+                        }
+
+                        if (!user.IsSuperUser)
+                        {
+                            foreach (var u in app.Users)
+                            {
+                                if (u.Id != user.Id)
+                                {
+                                    u.NullifyEmail();
+                                }
+                            }
                         }
 
                         result.IsSuccess = appResponse.IsSuccess;
@@ -506,6 +527,17 @@ namespace SudokuCollective.Data.Services
                             {
                                 app.SMTPServerSettings.Sanitize();
                             }
+
+                            if (!user.IsSuperUser)
+                            {
+                                foreach (var u in app.Users)
+                                {
+                                    if (u.Id != user.Id)
+                                    {
+                                        u.NullifyEmail();
+                                    }
+                                }
+                            }
                         }
 
                         return result;
@@ -610,6 +642,17 @@ namespace SudokuCollective.Data.Services
                         {
                             app.SMTPServerSettings.Sanitize();
                         }
+
+                        if (ownerId != 1)
+                        {
+                            foreach (var u in app.Users)
+                            {
+                                if (u.Id != ownerId)
+                                {
+                                    u.NullifyEmail();
+                                }
+                            }
+                        }
                     }
 
                     return result;
@@ -693,6 +736,17 @@ namespace SudokuCollective.Data.Services
                     {
                         app.NullifyLicense();
                         app.NullifySMTPServerSettings();
+
+                        if (userId != 1)
+                        {
+                            foreach (var u in app.Users)
+                            {
+                                if (u.Id != userId)
+                                {
+                                    u.NullifyEmail();
+                                }
+                            }
+                        }
                     }
 
                     return result;
@@ -1072,6 +1126,8 @@ namespace SudokuCollective.Data.Services
 
                         var requestor = (User)(await _usersRepository.GetAsync(requestorId)).Object;
 
+                        var users = new List<TranslatedUser>();
+
                         if (requestor != null && !requestor.IsSuperUser)
                         {
                             // Filter out user emails from the frontend...
@@ -1080,8 +1136,12 @@ namespace SudokuCollective.Data.Services
                                 var emailConfirmed = ((IUser)user).IsEmailConfirmed;
                                 ((IUser)user).NullifyEmail();
                                 ((IUser)user).IsEmailConfirmed = emailConfirmed;
+                                var u = (TranslatedUser)((User)user).Cast<TranslatedUser>();
+                                users.Add(u);
                             }
                         }
+
+                        result.Payload = users.ConvertAll(u => (object)u);
 
                         result.IsSuccess = response.IsSuccess;
                         result.Message = UsersMessages.UsersFoundMessage;

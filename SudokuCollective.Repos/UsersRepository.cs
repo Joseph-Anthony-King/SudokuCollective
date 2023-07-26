@@ -370,7 +370,7 @@ namespace SudokuCollective.Repos
 				query = await _context
 						.Apps
 						.Where(a => a.OwnerId == id)
-						.Include(a => a.Users)
+						.Include(a => a.UserApps)
 								.ThenInclude(ua => ua.User)
 										.ThenInclude(u => u.Roles)
 												.ThenInclude(ur => ur.Role)
@@ -382,7 +382,7 @@ namespace SudokuCollective.Repos
 					// Filter games by app
 					foreach (var app in query)
 					{
-						foreach (var userApp in app.Users)
+						foreach (var userApp in app.UserApps)
 						{
 							userApp.User.Games = new List<Game>();
 
@@ -395,6 +395,8 @@ namespace SudokuCollective.Repos
 									.Include(g => g.SudokuSolution)
 									.Where(g => g.AppId == userApp.AppId && g.UserId == userApp.UserId)
 									.ToListAsync();
+
+							app.Users.Add((TranslatedUser)userApp.User.Cast<TranslatedUser>());
 						}
 					}
 

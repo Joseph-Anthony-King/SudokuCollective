@@ -152,13 +152,21 @@ namespace SudokuCollective.Core.Models
         [Required, JsonPropertyName("dateUpdated")]
         public DateTime DateUpdated { get; set; }
         [JsonIgnore]
-        ICollection<IUserApp> IApp.Users
+        ICollection<IUserApp> IApp.UserApps
         {
-            get => Users.ConvertAll(u => (IUserApp)u);
-            set => Users = value.ToList().ConvertAll(u => (UserApp)u);
+            get => UserApps.ConvertAll(u => (IUserApp)u);
+            set => UserApps = value.ToList().ConvertAll(u => (UserApp)u);
         }
-        [Required, JsonPropertyName("users"), JsonConverter(typeof(IDomainEntityListConverter<List<UserApp>>))]
-        public virtual List<UserApp> Users { get; set; }
+        [JsonIgnore]
+        public virtual List<UserApp> UserApps { get; set; }
+        [JsonIgnore]
+        ICollection<ITranslatedUser> IApp.Users
+        {
+            get => Users.ConvertAll(u => (ITranslatedUser)u);
+            set => Users = value.ToList().ConvertAll(u => (TranslatedUser)u);
+        }
+        [Required, JsonPropertyName("users"), JsonConverter(typeof(IDomainEntityListConverter<List<TranslatedUser>>))]
+        public virtual List<TranslatedUser> Users { get; set; }
         #endregion
 
         #region Constructors
@@ -178,7 +186,8 @@ namespace SudokuCollective.Core.Models
             CustomPasswordResetAction = string.Empty;
             UseCustomSMTPServer = false;
             SMTPServerSettings = new SMTPServerSettings();
-            Users = new List<UserApp>();
+            UserApps = new List<UserApp>();
+            Users = new List<TranslatedUser>();
             TimeFrame = TimeFrame.DAYS;
             AccessDuration = 1;
             DisplayInGallery = false;
@@ -248,7 +257,8 @@ namespace SudokuCollective.Core.Models
             DisplayInGallery = displayInGallery;
             DateCreated = dateCreated;
             DateUpdated = dateUpdated;
-            Users = new List<UserApp>();
+            UserApps = new List<UserApp>();
+            Users = new List<TranslatedUser>();
 
             if (smtpServerSettings != null)
             {

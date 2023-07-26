@@ -7,6 +7,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Text.Json;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Moq;
 using SudokuCollective.Core.Enums;
@@ -27,21 +28,21 @@ namespace SudokuCollective.Test.TestData
         public static string GetInvalidLicense() => "a0fa1a7c-af21-433e-8e7f-f94f0086f45e";
 
         public static string GetSecondLicense() => "03c0d43f-3ad8-490a-a131-f73c81fe02c0";
-        
+
         public static string GetThirdLicense() => "aaa6c3ec-ec85-46e7-9793-68a6e2bf4904";
 
         public static string GetToken() => "d17f0ed3-be9a-450a-a146-f6733db2bbdb";
-        
+
         public static string GetEncryptionKey() => "0b13b6b05d7c498ea8d222f28b921f5f";
 
         public static Paginator GetPaginator() => new Paginator()
-            {
-                Page = 1,
-                ItemsPerPage = 10,
-                SortBy = SortValue.NULL,
-                OrderByDescending = false,
-                IncludeCompletedGames = false
-            };
+        {
+            Page = 1,
+            ItemsPerPage = 10,
+            SortBy = SortValue.NULL,
+            OrderByDescending = false,
+            IncludeCompletedGames = false
+        };
 
         public static AnnonymousCheckRequest GetValidAnnonymousCheckPayload() =>
             new AnnonymousCheckRequest
@@ -472,15 +473,19 @@ namespace SudokuCollective.Test.TestData
             return cells;
         }
 
-        public static EmailMetaData GetEmailMetaData() =>
-            new EmailMetaData()
+        public static EmailMetaData GetEmailMetaData()
+        {
+            var config = InitConfiguration();
+            
+            return new EmailMetaData()
             {
-                SmtpServer = "email-smtp.us-east-1.amazonaws.com",
-                Port = 465,
-                UserName = "AKIAVPGOYLGBWICBZ4GW",
-                Password = "BMvhz4xMUuhlghfzkG1ooc66eqDqcB7aKCgiDvE1PogP",
-                FromEmail = "sudokucollective-testing@sudokucollective.com"
+                SmtpServer = config.GetSection("EmailMetaData:SmtpServer").Value,
+                Port = Int32.Parse(config.GetSection("EmailMetaData:port").Value),
+                UserName = config.GetSection("EmailMetaData:UserName").Value,
+                Password = config.GetSection("EmailMetaData:Password").Value,
+                FromEmail = config.GetSection("EmailMetaData:FromEmail").Value,
             };
+        }
 
         public static EmailMetaData GetIncorrectEmailMetaData() =>
             new EmailMetaData()
@@ -612,7 +617,7 @@ namespace SudokuCollective.Test.TestData
             new InitiatePasswordResetResult()
             {
                 App = new App(),
-                User = new User(),
+                User = new TranslatedUser(),
                 ConfirmationEmailSuccessfullySent = true,
                 Token = GetToken()
             };
@@ -620,7 +625,7 @@ namespace SudokuCollective.Test.TestData
         public static UserResult GetUserResult() =>
             new UserResult()
             {
-                User = new User(),
+                User = new TranslatedUser(),
                 ConfirmationEmailSuccessfullySent = true,
                 Token = GetToken()
             };
@@ -895,6 +900,15 @@ namespace SudokuCollective.Test.TestData
                             AppliesTo = authToken },
                     }
             };
+        }
+
+        private static IConfiguration InitConfiguration()
+        {
+            var config = new ConfigurationBuilder()
+                .AddJsonFile("appsettings.Test.json")
+                .AddEnvironmentVariables()
+                .Build();
+            return config;
         }
     }
 }

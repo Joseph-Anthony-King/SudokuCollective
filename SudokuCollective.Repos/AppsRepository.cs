@@ -62,7 +62,7 @@ namespace SudokuCollective.Repos
 					AppId = entity.Id
 				};
 
-				entity.Users.Add(userApp);
+				entity.UserApps.Add(userApp);
 
 				_context.Attach(userApp);
 
@@ -230,25 +230,23 @@ namespace SudokuCollective.Repos
 
 				if (query != null)
 				{
-					query.Users = await _context.UsersApps
-							.Include(ua => ua.User)
-									.ThenInclude(u => u.Roles)
-							.Where(ua => ua.AppId == query.Id)
-							.ToListAsync();
+					query.UserApps = await _context.UsersApps
+						.Where(ua => ua.AppId == query.Id)
+						.ToListAsync();
 
-					foreach (var userApp in query.Users)
+					foreach (var userApp in query.UserApps)
 					{
+						userApp.User = await _context.Users
+							.Where(u => u.Id == userApp.UserId)
+							.FirstOrDefaultAsync();
+
 						foreach (var userRole in userApp.User.Roles)
 						{
 							userRole.Role = await _context
-									.Roles
-									.FirstOrDefaultAsync(r => r.Id == userRole.RoleId);
+								.Roles
+								.FirstOrDefaultAsync(r => r.Id == userRole.RoleId);
 						}
-					}
 
-					// Filter games by app
-					foreach (var userApp in query.Users)
-					{
 						userApp.User.Games = new List<Game>();
 
 						userApp.User.Games = await _context
@@ -260,6 +258,8 @@ namespace SudokuCollective.Repos
 								.Include(g => g.SudokuSolution)
 								.Where(g => g.AppId == userApp.AppId && g.UserId == userApp.UserId)
 								.ToListAsync();
+
+						query.Users.Add((TranslatedUser)userApp.User.Cast<TranslatedUser>());
 					}
 
 					result.IsSuccess = true;
@@ -312,13 +312,13 @@ namespace SudokuCollective.Repos
 
 				if (query != null)
 				{
-					query.Users = await _context.UsersApps
+					query.UserApps = await _context.UsersApps
 							.Include(ua => ua.User)
 									.ThenInclude(u => u.Roles)
 							.Where(ua => ua.AppId == query.Id)
 							.ToListAsync();
 
-					foreach (var userApp in query.Users)
+					foreach (var userApp in query.UserApps)
 					{
 						foreach (var userRole in userApp.User.Roles)
 						{
@@ -326,11 +326,7 @@ namespace SudokuCollective.Repos
 									.Roles
 									.FirstOrDefaultAsync(r => r.Id == userRole.RoleId);
 						}
-					}
 
-					// Filter games by app
-					foreach (var userApp in query.Users)
-					{
 						userApp.User.Games = new List<Game>();
 
 						userApp.User.Games = await _context
@@ -342,6 +338,8 @@ namespace SudokuCollective.Repos
 								.Include(g => g.SudokuSolution)
 								.Where(g => g.AppId == userApp.AppId && g.UserId == userApp.UserId)
 								.ToListAsync();
+
+						query.Users.Add((TranslatedUser)userApp.User.Cast<TranslatedUser>());
 					}
 
 					result.IsSuccess = true;
@@ -374,7 +372,7 @@ namespace SudokuCollective.Repos
 
 				query = await _context
 						.Apps
-						.Include(a => a.Users)
+						.Include(a => a.UserApps)
 								.ThenInclude(ua => ua.User)
 										.ThenInclude(u => u.Roles)
 												.ThenInclude(ur => ur.Role)
@@ -390,7 +388,7 @@ namespace SudokuCollective.Repos
 								.SMTPServerSettings
 								.FirstOrDefaultAsync(s => s.AppId == app.Id);
 
-						foreach (var userApp in app.Users)
+						foreach (var userApp in app.UserApps)
 						{
 							userApp.User.Games = new List<Game>();
 
@@ -403,6 +401,8 @@ namespace SudokuCollective.Repos
 									.Include(g => g.SudokuSolution)
 									.Where(g => g.AppId == userApp.AppId && g.UserId == userApp.UserId)
 									.ToListAsync();
+
+							app.Users.Add((TranslatedUser)userApp.User.Cast<TranslatedUser>());
 						}
 					}
 
@@ -446,7 +446,7 @@ namespace SudokuCollective.Repos
 				query = await _context
 						.Apps
 						.Where(a => a.OwnerId == ownerId)
-						.Include(a => a.Users)
+						.Include(a => a.UserApps)
 								.ThenInclude(ua => ua.User)
 										.ThenInclude(u => u.Roles)
 												.ThenInclude(ur => ur.Role)
@@ -462,7 +462,7 @@ namespace SudokuCollective.Repos
 								.SMTPServerSettings
 								.FirstOrDefaultAsync(s => s.AppId == app.Id);
 
-						foreach (var userApp in app.Users)
+						foreach (var userApp in app.UserApps)
 						{
 							userApp.User.Games = new List<Game>();
 
@@ -475,6 +475,8 @@ namespace SudokuCollective.Repos
 									.Include(g => g.SudokuSolution)
 									.Where(g => g.AppId == userApp.AppId && g.UserId == userApp.UserId)
 									.ToListAsync();
+
+							app.Users.Add((TranslatedUser)userApp.User.Cast<TranslatedUser>());
 						}
 					}
 
@@ -530,7 +532,7 @@ namespace SudokuCollective.Repos
 								.SMTPServerSettings
 								.FirstOrDefaultAsync(s => s.AppId == app.Id);
 
-						foreach (var userApp in app.Users)
+						foreach (var userApp in app.UserApps)
 						{
 							userApp.User.Games = new List<Game>();
 
@@ -543,6 +545,8 @@ namespace SudokuCollective.Repos
 									.Include(g => g.SudokuSolution)
 									.Where(g => g.AppId == userApp.AppId && g.UserId == userApp.UserId)
 									.ToListAsync();
+
+							app.Users.Add((TranslatedUser)userApp.User.Cast<TranslatedUser>());
 						}
 					}
 
@@ -1436,7 +1440,7 @@ namespace SudokuCollective.Repos
 
 			return apps
 					.Any(
-							a => a.Users.Any(ua => ua.UserId == userId)
+							a => a.UserApps.Any(ua => ua.UserId == userId)
 							&& a.Id == id
 							&& a.License.ToLower().Equals(license.ToLower()));
 		}
@@ -1476,7 +1480,7 @@ namespace SudokuCollective.Repos
 				query = await _context
 						.Apps
 						.Where(app => app.IsActive && app.DisplayInGallery && app.Environment == ReleaseEnvironment.PROD)
-						.Include(app => app.Users)
+						.Include(app => app.UserApps)
 						.ToListAsync();
 
 				if (query.Count != 0)

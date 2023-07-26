@@ -211,7 +211,7 @@ namespace SudokuCollective.Test.TestCases.Services
 			// Assert
 			Assert.That(result.IsSuccess, Is.True);
 			Assert.That(result.Message, Is.EqualTo("Users found"));
-			Assert.That(result.Payload.ConvertAll(u => (IUser)u), Is.TypeOf<List<IUser>>());
+			Assert.That(result.Payload.ConvertAll(u => (ITranslatedUser)u), Is.TypeOf<List<ITranslatedUser>>());
 		}
 
 		[Test, Category("Services")]

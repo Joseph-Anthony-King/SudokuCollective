@@ -24,7 +24,7 @@ namespace SudokuCollective.Test.TestCases.Results
 
             // Assert
             Assert.That(sut.App, Is.InstanceOf<IApp>());
-            Assert.That(sut.User, Is.InstanceOf<IUser>());
+            Assert.That(sut.User, Is.InstanceOf<ITranslatedUser>());
             Assert.That(sut.ConfirmationEmailSuccessfullySent, Is.Null);
             Assert.That(sut.Token, Is.InstanceOf<string>());
         }
@@ -47,7 +47,7 @@ namespace SudokuCollective.Test.TestCases.Results
             // Act
             sut = new InitiatePasswordResetResult(
                 new App(),
-                new User(),
+                new TranslatedUser(),
                 false,
                 TestObjects.GetToken());
 
