@@ -56,11 +56,19 @@ namespace SudokuCollective.Repos
 
 				_context.Attach(entity);
 
-				foreach (var entry in _context.ChangeTracker.Entries())
+                var trackedEntities = new List<string>();
+
+                foreach (var entry in _context.ChangeTracker.Entries())
 				{
 					var dbEntry = (IDomainEntity)entry.Entity;
 
-					if (dbEntry is UserApp)
+                    // If the entity is already being tracked for the update... break
+                    if (trackedEntities.Contains(dbEntry.ToString()))
+                    {
+                        break;
+                    }
+
+                    if (dbEntry is UserApp)
 					{
 						entry.State = EntityState.Modified;
 					}
@@ -70,9 +78,12 @@ namespace SudokuCollective.Repos
 					}
 					else
 					{
-						// Otherwise do nothing...
-					}
-				}
+                        // Otherwise do nothing...
+                    }
+
+                    // Note that this entry is tracked for the update
+                    trackedEntities.Add(dbEntry.ToString());
+                }
 
 				await _context.SaveChangesAsync();
 
@@ -179,11 +190,19 @@ namespace SudokuCollective.Repos
 				{
 					_context.Attach(entity);
 
-					foreach (var entry in _context.ChangeTracker.Entries())
+                    var trackedEntities = new List<string>();
+
+                    foreach (var entry in _context.ChangeTracker.Entries())
 					{
 						var dbEntry = (IDomainEntity)entry.Entity;
 
-						if (dbEntry is UserApp)
+                        // If the entity is already being tracked for the update... break
+                        if (trackedEntities.Contains(dbEntry.ToString()))
+                        {
+                            break;
+                        }
+
+                        if (dbEntry is UserApp)
 						{
 							entry.State = EntityState.Modified;
 						}
@@ -193,9 +212,12 @@ namespace SudokuCollective.Repos
 						}
 						else
 						{
-							// Otherwise do nothing...
-						}
-					}
+                            // Otherwise do nothing...
+                        }
+
+                        // Note that this entry is tracked for the update
+                        trackedEntities.Add(dbEntry.ToString());
+                    }
 
 					await _context.SaveChangesAsync();
 
@@ -240,11 +262,19 @@ namespace SudokuCollective.Repos
 				{
 					_context.Remove(entity);
 
-					foreach (var entry in _context.ChangeTracker.Entries())
+                    var trackedEntities = new List<string>();
+
+                    foreach (var entry in _context.ChangeTracker.Entries())
 					{
 						var dbEntry = (IDomainEntity)entry.Entity;
 
-						if (dbEntry is UserApp)
+                        // If the entity is already being tracked for the update... break
+                        if (trackedEntities.Contains(dbEntry.ToString()))
+                        {
+                            break;
+                        }
+
+                        if (dbEntry is UserApp)
 						{
 							entry.State = EntityState.Modified;
 						}
@@ -254,9 +284,12 @@ namespace SudokuCollective.Repos
 						}
 						else
 						{
-							// Otherwise do nothing...
-						}
-					}
+                            // Otherwise do nothing...
+                        }
+
+                        // Note that this entry is tracked for the update
+                        trackedEntities.Add(dbEntry.ToString());
+                    }
 
 					await _context.SaveChangesAsync();
 
