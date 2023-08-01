@@ -470,6 +470,8 @@ namespace SudokuCollective.Data.Services
                         ((User)result.Payload[0]).NullifyEmail();
                     }
 
+                    result.Payload[0] = (TranslatedUser)((User)result.Payload[0]).Cast<TranslatedUser>();
+
 
                     return result;
                 }
