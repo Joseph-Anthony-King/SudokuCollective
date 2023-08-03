@@ -252,9 +252,9 @@ namespace SudokuCollective.Core.Models
         {
             var type = typeof(T);
 
-            if (type == typeof(TranslatedUser))
+            if (type == typeof(UserDTO))
             {
-                return new TranslatedUser
+                return new UserDTO
                 {
                     Id = Id,
                     UserName = UserName,

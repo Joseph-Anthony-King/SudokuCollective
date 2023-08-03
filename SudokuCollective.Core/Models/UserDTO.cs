@@ -10,7 +10,7 @@ using SudokuCollective.Core.Utilities;
 
 namespace SudokuCollective.Core.Models
 {
-    public class TranslatedUser : ITranslatedUser
+    public class UserDTO : IUserDTO
     {
         #region Properties
         [Required, JsonPropertyName("id")]
@@ -44,7 +44,7 @@ namespace SudokuCollective.Core.Models
         [Required, JsonPropertyName("dateUpdated")]
         public DateTime DateUpdated { get; set; }
         [JsonIgnore]
-        ICollection<IGame> ITranslatedUser.Games
+        ICollection<IGame> IUserDTO.Games
         {
             get => Games.ConvertAll(g => (IGame)g);
             set => Games = value.ToList().ConvertAll(g => (Game)g);
@@ -54,7 +54,7 @@ namespace SudokuCollective.Core.Models
         #endregion
 
         #region Constructors
-        public TranslatedUser()
+        public UserDTO()
         {
             var createdDate = DateTime.UtcNow;
 

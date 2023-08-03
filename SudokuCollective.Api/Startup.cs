@@ -154,7 +154,7 @@ namespace SudokuCollective.Api
 
 				// Add domain model documentation to Swashbuckler
 				swagger.DocumentFilter<CustomModelDocumentFilter<App>>();
-				swagger.DocumentFilter<CustomModelDocumentFilter<TranslatedUser>>();
+				swagger.DocumentFilter<CustomModelDocumentFilter<UserDTO>>();
 				swagger.DocumentFilter<CustomModelDocumentFilter<Difficulty>>();
 				swagger.DocumentFilter<CustomModelDocumentFilter<GalleryApp>>();
 				swagger.DocumentFilter<CustomModelDocumentFilter<Game>>();

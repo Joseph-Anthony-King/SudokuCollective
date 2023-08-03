@@ -83,7 +83,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             Assert.That(result, Is.InstanceOf<Result>());
             Assert.That(message, Is.EqualTo("Status Code 201: User created"));
             Assert.That(statusCode, Is.EqualTo(201));
-            Assert.That(user, Is.InstanceOf<TranslatedUser>());
+            Assert.That(user, Is.InstanceOf<UserDTO>());
         }
 
         [Test, Category("Controllers")]

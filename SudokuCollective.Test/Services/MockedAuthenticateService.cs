@@ -33,7 +33,7 @@ namespace SudokuCollective.Test.Services
                             new AuthenticationResult()
                             {
                                 Token = TestObjects.GetToken(),
-                                User = new TranslatedUser()
+                                User = new UserDTO()
                             }
                         }
                     } as IResult));

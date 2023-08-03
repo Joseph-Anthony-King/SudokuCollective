@@ -1126,7 +1126,7 @@ namespace SudokuCollective.Data.Services
 
                         var requestor = (User)(await _usersRepository.GetAsync(requestorId)).Object;
 
-                        var users = new List<TranslatedUser>();
+                        var users = new List<UserDTO>();
 
                         if (requestor != null && !requestor.IsSuperUser)
                         {
@@ -1136,7 +1136,7 @@ namespace SudokuCollective.Data.Services
                                 var emailConfirmed = ((IUser)user).IsEmailConfirmed;
                                 ((IUser)user).NullifyEmail();
                                 ((IUser)user).IsEmailConfirmed = emailConfirmed;
-                                var u = (TranslatedUser)((User)user).Cast<TranslatedUser>();
+                                var u = (UserDTO)((User)user).Cast<UserDTO>();
                                 users.Add(u);
                             }
                         }
