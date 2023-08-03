@@ -617,7 +617,7 @@ namespace SudokuCollective.Test.TestData
             new InitiatePasswordResetResult()
             {
                 App = new App(),
-                User = new TranslatedUser(),
+                User = new UserDTO(),
                 ConfirmationEmailSuccessfullySent = true,
                 Token = GetToken()
             };
@@ -625,7 +625,7 @@ namespace SudokuCollective.Test.TestData
         public static UserResult GetUserResult() =>
             new UserResult()
             {
-                User = new TranslatedUser(),
+                User = new UserDTO(),
                 ConfirmationEmailSuccessfullySent = true,
                 Token = GetToken()
             };

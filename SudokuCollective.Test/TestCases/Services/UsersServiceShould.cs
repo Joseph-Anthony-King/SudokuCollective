@@ -175,7 +175,7 @@ namespace SudokuCollective.Test.TestCases.Services
 			// Assert
 			Assert.That(result.IsSuccess, Is.True);
 			Assert.That(result.Message, Is.EqualTo("User found"));
-			Assert.That((TranslatedUser)result.Payload[0], Is.TypeOf<TranslatedUser>());
+			Assert.That((UserDTO)result.Payload[0], Is.TypeOf<UserDTO>());
 		}
 
 		[Test, Category("Services")]
@@ -211,7 +211,7 @@ namespace SudokuCollective.Test.TestCases.Services
 			// Assert
 			Assert.That(result.IsSuccess, Is.True);
 			Assert.That(result.Message, Is.EqualTo("Users found"));
-			Assert.That(result.Payload.ConvertAll(u => (ITranslatedUser)u), Is.TypeOf<List<ITranslatedUser>>());
+			Assert.That(result.Payload.ConvertAll(u => (IUserDTO)u), Is.TypeOf<List<IUserDTO>>());
 		}
 
 		[Test, Category("Services")]

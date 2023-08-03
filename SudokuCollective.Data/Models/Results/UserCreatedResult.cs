@@ -8,16 +8,16 @@ namespace SudokuCollective.Data.Models.Results
     public class UserCreatedResult : IUserCreatedResult
     {
         [JsonIgnore]
-        ITranslatedUser IUserCreatedResult.User 
+        IUserDTO IUserCreatedResult.User 
         {
-            get => (ITranslatedUser)User;
+            get => (IUserDTO)User;
             set 
             {
-                User = (TranslatedUser)value;
+                User = (UserDTO)value;
             }
         }
         [JsonPropertyName("user")]
-        public TranslatedUser User { get; set; }
+        public UserDTO User { get; set; }
         [JsonPropertyName("token")]
         public string Token { get; set; }
         [JsonPropertyName("emailConfirmationSent")]
@@ -25,23 +25,23 @@ namespace SudokuCollective.Data.Models.Results
 
         public UserCreatedResult()
         {
-            User = new TranslatedUser();
+            User = new UserDTO();
             Token = string.Empty;
             EmailConfirmationSent = false;
         }
 
         public UserCreatedResult(
-            ITranslatedUser user, 
+            IUserDTO user, 
             string token,
             bool emailConfirmationSent)
         {
-            User = (TranslatedUser)user;
+            User = (UserDTO)user;
             Token = token;
             EmailConfirmationSent = emailConfirmationSent;
         }
 
         public UserCreatedResult(
-            TranslatedUser user, 
+            UserDTO user, 
             string token,
             bool emailConfirmationSent)
         {

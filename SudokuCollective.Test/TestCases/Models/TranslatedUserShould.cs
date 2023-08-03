@@ -9,12 +9,12 @@ namespace SudokuCollective.Test.TestCases.Models
 {
     public class TranslatedUserShould
     {
-        private ITranslatedUser sut;
+        private IUserDTO sut;
 
         [SetUp]
         public void Setup()
         {
-            sut = new TranslatedUser();
+            sut = new UserDTO();
         }
 
         [Test, Category("Models")]
@@ -56,7 +56,7 @@ namespace SudokuCollective.Test.TestCases.Models
             Assert.That(sut.IsAdmin, Is.TypeOf<bool>());
             Assert.That(sut.DateCreated, Is.TypeOf<DateTime>());
             Assert.That(sut.DateUpdated, Is.TypeOf<DateTime>());
-            Assert.That(((TranslatedUser)sut).Games, Is.TypeOf<List<Game>>());
+            Assert.That(((UserDTO)sut).Games, Is.TypeOf<List<Game>>());
         }
     }
 }

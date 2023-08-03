@@ -160,13 +160,13 @@ namespace SudokuCollective.Core.Models
         [JsonIgnore]
         public virtual List<UserApp> UserApps { get; set; }
         [JsonIgnore]
-        ICollection<ITranslatedUser> IApp.Users
+        ICollection<IUserDTO> IApp.Users
         {
-            get => Users.ConvertAll(u => (ITranslatedUser)u);
-            set => Users = value.ToList().ConvertAll(u => (TranslatedUser)u);
+            get => Users.ConvertAll(u => (IUserDTO)u);
+            set => Users = value.ToList().ConvertAll(u => (UserDTO)u);
         }
-        [Required, JsonPropertyName("users"), JsonConverter(typeof(IDomainEntityListConverter<List<TranslatedUser>>))]
-        public virtual List<TranslatedUser> Users { get; set; }
+        [Required, JsonPropertyName("users"), JsonConverter(typeof(IDomainEntityListConverter<List<UserDTO>>))]
+        public virtual List<UserDTO> Users { get; set; }
         #endregion
 
         #region Constructors
@@ -187,7 +187,7 @@ namespace SudokuCollective.Core.Models
             UseCustomSMTPServer = false;
             SMTPServerSettings = new SMTPServerSettings();
             UserApps = new List<UserApp>();
-            Users = new List<TranslatedUser>();
+            Users = new List<UserDTO>();
             TimeFrame = TimeFrame.DAYS;
             AccessDuration = 1;
             DisplayInGallery = false;
@@ -258,7 +258,7 @@ namespace SudokuCollective.Core.Models
             DateCreated = dateCreated;
             DateUpdated = dateUpdated;
             UserApps = new List<UserApp>();
-            Users = new List<TranslatedUser>();
+            Users = new List<UserDTO>();
 
             if (smtpServerSettings != null)
             {

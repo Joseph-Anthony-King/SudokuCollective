@@ -33,7 +33,7 @@ namespace SudokuCollective.Core.Interfaces.Models.DomainEntities
         DateTime DateCreated { get; set; }
         DateTime DateUpdated { get; set; }
         ICollection<IUserApp> UserApps { get; set; }
-        ICollection<ITranslatedUser> Users { get; set; }
+        ICollection<IUserDTO> Users { get; set; }
         void ActivateApp();
         void DeactivateApp();
         string GetLicense(int id, int ownerId);
