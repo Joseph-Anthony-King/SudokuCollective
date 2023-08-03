@@ -21,7 +21,7 @@ namespace SudokuCollective.Data.Models.Results
         }
         public App App { get; set; }
         [JsonIgnore]
-        ITranslatedUser IUserResult.User
+        IUserDTO IUserResult.User
         {
             get
             {
@@ -29,11 +29,11 @@ namespace SudokuCollective.Data.Models.Results
             }
             set
             {
-                User = (TranslatedUser)value;
+                User = (UserDTO)value;
             }
         }
         [JsonPropertyName("user")]
-        public TranslatedUser User { get; set; }
+        public UserDTO User { get; set; }
         [JsonPropertyName("confirmationEmailSuccessfullySent")]
         public bool? ConfirmationEmailSuccessfullySent { get; set; }
         [JsonPropertyName("token")]
@@ -42,26 +42,26 @@ namespace SudokuCollective.Data.Models.Results
         public InitiatePasswordResetResult()
         {
             App = new App();
-            User = new TranslatedUser();
+            User = new UserDTO();
             ConfirmationEmailSuccessfullySent = null;
             Token = string.Empty;
         }
 
         public InitiatePasswordResetResult(
             IApp app, 
-            ITranslatedUser user, 
+            IUserDTO user, 
             bool? confirmationEmailSuccessfullySent, 
             string token)
         {
             App = (App)app;
-            User = (TranslatedUser)user;
+            User = (UserDTO)user;
             ConfirmationEmailSuccessfullySent = confirmationEmailSuccessfullySent;
             Token = token;
         }
 
         public InitiatePasswordResetResult(
             App app, 
-            TranslatedUser user, 
+            UserDTO user, 
             bool? confirmationEmailSuccessfullySent, 
             string token)
         {

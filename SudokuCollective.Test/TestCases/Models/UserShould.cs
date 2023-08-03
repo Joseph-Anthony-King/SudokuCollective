@@ -309,11 +309,11 @@ namespace SudokuCollective.Test.TestCases.Models
                 DateTime.MinValue);
             
             // Act
-            var result = (TranslatedUser)sut.Cast<TranslatedUser>();
+            var result = (UserDTO)sut.Cast<UserDTO>();
 
 
             // Assert
-            Assert.That(result, Is.InstanceOf<TranslatedUser>());
+            Assert.That(result, Is.InstanceOf<UserDTO>());
         }
     }
 }

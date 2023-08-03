@@ -188,7 +188,7 @@ namespace SudokuCollective.Test.TestCases.Models
 
             var user = new User();
             ((App)sut).UserApps.Add(new UserApp { App = (App)sut, User = user });
-            ((App)sut).Users.Add((TranslatedUser)user.Cast<TranslatedUser>());
+            ((App)sut).Users.Add((UserDTO)user.Cast<UserDTO>());
 
             var finalUserCount = ((App)sut).UserCount;
 

@@ -408,7 +408,7 @@ namespace SudokuCollective.Repos
 									.Where(g => g.AppId == userApp.AppId && g.UserId == userApp.UserId)
 									.ToListAsync();
 
-							app.Users.Add((TranslatedUser)userApp.User.Cast<TranslatedUser>());
+							app.Users.Add((UserDTO)userApp.User.Cast<UserDTO>());
 						}
 					}
 

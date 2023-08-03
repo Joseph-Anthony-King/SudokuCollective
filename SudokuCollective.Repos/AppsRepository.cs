@@ -270,7 +270,7 @@ namespace SudokuCollective.Repos
 								.Where(g => g.AppId == userApp.AppId && g.UserId == userApp.UserId)
 								.ToListAsync();
 
-						query.Users.Add((TranslatedUser)userApp.User.Cast<TranslatedUser>());
+						query.Users.Add((UserDTO)userApp.User.Cast<UserDTO>());
 					}
 
 					result.IsSuccess = true;
@@ -350,7 +350,7 @@ namespace SudokuCollective.Repos
 								.Where(g => g.AppId == userApp.AppId && g.UserId == userApp.UserId)
 								.ToListAsync();
 
-						query.Users.Add((TranslatedUser)userApp.User.Cast<TranslatedUser>());
+						query.Users.Add((UserDTO)userApp.User.Cast<UserDTO>());
 					}
 
 					result.IsSuccess = true;
@@ -413,7 +413,7 @@ namespace SudokuCollective.Repos
 									.Where(g => g.AppId == userApp.AppId && g.UserId == userApp.UserId)
 									.ToListAsync();
 
-							app.Users.Add((TranslatedUser)userApp.User.Cast<TranslatedUser>());
+							app.Users.Add((UserDTO)userApp.User.Cast<UserDTO>());
 						}
 					}
 
@@ -487,7 +487,7 @@ namespace SudokuCollective.Repos
 									.Where(g => g.AppId == userApp.AppId && g.UserId == userApp.UserId)
 									.ToListAsync();
 
-							app.Users.Add((TranslatedUser)userApp.User.Cast<TranslatedUser>());
+							app.Users.Add((UserDTO)userApp.User.Cast<UserDTO>());
 						}
 					}
 
@@ -557,7 +557,7 @@ namespace SudokuCollective.Repos
 									.Where(g => g.AppId == userApp.AppId && g.UserId == userApp.UserId)
 									.ToListAsync();
 
-							app.Users.Add((TranslatedUser)userApp.User.Cast<TranslatedUser>());
+							app.Users.Add((UserDTO)userApp.User.Cast<UserDTO>());
 						}
 					}
 

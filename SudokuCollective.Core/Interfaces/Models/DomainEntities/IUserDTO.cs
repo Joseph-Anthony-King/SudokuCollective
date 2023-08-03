@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace SudokuCollective.Core.Interfaces.Models.DomainEntities
 {
-    public interface ITranslatedUser : IDomainEntity
+    public interface IUserDTO : IDomainEntity
     {
         string UserName { get; set; }
         string FirstName { get; set; }

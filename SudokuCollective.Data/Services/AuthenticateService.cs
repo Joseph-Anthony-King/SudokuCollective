@@ -178,11 +178,11 @@ namespace SudokuCollective.Data.Services
 
                 user.Games = user.Games.Where(g => g.Id == app.Id).ToList();
 
-                var translatedUser = (TranslatedUser)user.Cast<TranslatedUser>();
+                var userDTO = (UserDTO)user.Cast<UserDTO>();
 
                 var authenticationResult = new AuthenticationResult
                 {
-                    User = translatedUser
+                    User = userDTO
                 };
 
                 var claim = new List<Claim> {

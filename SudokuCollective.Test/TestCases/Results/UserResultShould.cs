@@ -22,7 +22,7 @@ namespace SudokuCollective.Test.TestCases.Results
             // Arrange and Act
 
             // Assert
-            Assert.That(sut.User, Is.InstanceOf<TranslatedUser>());
+            Assert.That(sut.User, Is.InstanceOf<UserDTO>());
             Assert.That(sut.ConfirmationEmailSuccessfullySent, Is.Null);
             Assert.That(sut.Token, Is.InstanceOf<string>());
         }
@@ -44,7 +44,7 @@ namespace SudokuCollective.Test.TestCases.Results
 
             // Act
             sut = new UserResult(
-                new TranslatedUser(),
+                new UserDTO(),
                 false,
                 TestObjects.GetToken());
 
