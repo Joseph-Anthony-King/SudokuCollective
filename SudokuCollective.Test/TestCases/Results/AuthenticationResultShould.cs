@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using System;
+using NUnit.Framework;
 using SudokuCollective.Core.Interfaces.Models.DomainEntities;
 using SudokuCollective.Core.Interfaces.Models.DomainObjects.Results;
 using SudokuCollective.Core.Models;
@@ -25,6 +26,7 @@ namespace SudokuCollective.Test.TestCases.Results
             // Assert
             Assert.That(sut.User, Is.InstanceOf<IUserDTO>());
             Assert.That(sut.Token, Is.InstanceOf<string>());
+            Assert.That(sut.ExpirationDate, Is.InstanceOf<DateTime>());
         }
 
         [Test, Category("Results")]
@@ -43,9 +45,10 @@ namespace SudokuCollective.Test.TestCases.Results
             // Arrange
             var userDTO = new UserDTO();
             var token = TestObjects.GetLicense();
+            var expirationDate = new DateTime();
 
             // Act
-            sut = new AuthenticationResult(userDTO, token);
+            sut = new AuthenticationResult(userDTO, token, expirationDate);
 
             // Assert
             Assert.That(sut, Is.InstanceOf<AuthenticationResult>());
