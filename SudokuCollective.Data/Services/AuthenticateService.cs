@@ -203,31 +203,31 @@ namespace SudokuCollective.Data.Services
 
                 var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-                DateTime expirationLimit;
+                DateTime expirationDate;
 
                 if (app.TimeFrame == TimeFrame.SECONDS)
                 {
-                    expirationLimit = DateTime.UtcNow.AddSeconds(app.AccessDuration);
+                    expirationDate = DateTime.UtcNow.AddSeconds(app.AccessDuration);
                 }
                 else if (app.TimeFrame == TimeFrame.MINUTES)
                 {
-                    expirationLimit = DateTime.UtcNow.AddMinutes(app.AccessDuration);
+                    expirationDate = DateTime.UtcNow.AddMinutes(app.AccessDuration);
                 }
                 else if (app.TimeFrame == TimeFrame.HOURS)
                 {
-                    expirationLimit = DateTime.UtcNow.AddHours(app.AccessDuration);
+                    expirationDate = DateTime.UtcNow.AddHours(app.AccessDuration);
                 }
                 else if (app.TimeFrame == TimeFrame.DAYS)
                 {
-                    expirationLimit = DateTime.UtcNow.AddDays(app.AccessDuration);
+                    expirationDate = DateTime.UtcNow.AddDays(app.AccessDuration);
                 }
                 else if (app.TimeFrame == TimeFrame.MONTHS)
                 {
-                    expirationLimit = DateTime.UtcNow.AddMonths(app.AccessDuration);
+                    expirationDate = DateTime.UtcNow.AddMonths(app.AccessDuration);
                 }
                 else
                 {
-                    expirationLimit = DateTime.UtcNow.AddYears(app.AccessDuration);
+                    expirationDate = DateTime.UtcNow.AddYears(app.AccessDuration);
                 }
 
                 var jwtToken = new JwtSecurityToken(
@@ -235,11 +235,12 @@ namespace SudokuCollective.Data.Services
                         _tokenManagement.Audience,
                         claim.ToArray(),
                         notBefore: DateTime.UtcNow,
-                        expires: expirationLimit,
+                        expires: expirationDate,
                         signingCredentials: credentials
                     );
 
                 authenticationResult.Token = new JwtSecurityTokenHandler().WriteToken(jwtToken);
+                authenticationResult.ExpirationDate = expirationDate;
 
                 result.IsSuccess = true;
                 result.Message = UsersMessages.UserFoundMessage;
