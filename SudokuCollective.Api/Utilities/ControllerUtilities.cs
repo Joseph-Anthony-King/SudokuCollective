@@ -49,7 +49,7 @@ namespace SudokuCollective.Api.Utilities
             var result = new Result
             {
                 IsSuccess = false,
-                Message = ControllerMessages.InvalidTokenRequestMessage
+                Message = ControllerMessages.InvalidTokenMessage
             };
 
             return controller.StatusCode((int)HttpStatusCode.Forbidden, result);

@@ -465,27 +465,27 @@ namespace SudokuCollective.Test.TestCases.Controllers
             // Assert
             Assert.That(actionResultOne, Is.InstanceOf<ActionResult<Result>>());
             Assert.That(resultOne, Is.InstanceOf<Result>());
-            Assert.That(messageOne, Is.EqualTo("Status Code 403: Invalid request on this token"));
+            Assert.That(messageOne, Is.EqualTo("Status Code 403: Invalid request on this authorization token"));
             Assert.That(statusCodeOne, Is.EqualTo(403));
             Assert.That(actionResultTwo, Is.InstanceOf<ActionResult<Result>>());
             Assert.That(resultTwo, Is.InstanceOf<Result>());
-            Assert.That(messageTwo, Is.EqualTo("Status Code 403: Invalid request on this token"));
+            Assert.That(messageTwo, Is.EqualTo("Status Code 403: Invalid request on this authorization token"));
             Assert.That(statusCodeTwo, Is.EqualTo(403));
             Assert.That(actionResultThree, Is.InstanceOf<ActionResult<Result>>());
             Assert.That(resultThree, Is.InstanceOf<Result>());
-            Assert.That(messageThree, Is.EqualTo("Status Code 403: Invalid request on this token"));
+            Assert.That(messageThree, Is.EqualTo("Status Code 403: Invalid request on this authorization token"));
             Assert.That(statusCodeThree, Is.EqualTo(403));
             Assert.That(actionResultFour, Is.InstanceOf<ActionResult<Result>>());
             Assert.That(resultFour, Is.InstanceOf<Result>());
-            Assert.That(messageFour, Is.EqualTo("Status Code 403: Invalid request on this token"));
+            Assert.That(messageFour, Is.EqualTo("Status Code 403: Invalid request on this authorization token"));
             Assert.That(statusCodeFour, Is.EqualTo(403));
             Assert.That(actionResultFive, Is.InstanceOf<ActionResult<Result>>());
             Assert.That(resultFive, Is.InstanceOf<Result>());
-            Assert.That(messageFive, Is.EqualTo("Status Code 403: Invalid request on this token"));
+            Assert.That(messageFive, Is.EqualTo("Status Code 403: Invalid request on this authorization token"));
             Assert.That(statusCodeFive, Is.EqualTo(403));
             Assert.That(actionResultSix, Is.InstanceOf<ActionResult<Result>>());
             Assert.That(resultSix, Is.InstanceOf<Result>());
-            Assert.That(messageSix, Is.EqualTo("Status Code 403: Invalid request on this token"));
+            Assert.That(messageSix, Is.EqualTo("Status Code 403: Invalid request on this authorization token"));
             Assert.That(statusCodeSix, Is.EqualTo(403));
         }
 

@@ -23,6 +23,7 @@ using Hangfire;
 using StackExchange.Redis;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using Swashbuckle.AspNetCore.SwaggerUI;
+using SudokuCollective.Api.Middleware;
 using SudokuCollective.Api.Models;
 using SudokuCollective.Cache;
 using SudokuCollective.Core.Interfaces.Cache;
@@ -268,6 +269,19 @@ namespace SudokuCollective.Api
 					ValidateLifetime = true,
 					LifetimeValidator = LifetimeValidator,
 				};
+				x.Events = new JwtBearerEvents
+				{
+					OnAuthenticationFailed = context =>
+					{
+						_logger.LogInformation(context.Exception.GetType().ToString());
+						if (context.Exception.GetType() == typeof(SecurityTokenInvalidLifetimeException))
+						{
+							context.Response.Headers.Add("Token-Expired", "true");
+                        }
+
+						return Task.CompletedTask;
+					}
+				};
 			});
 
 			services.AddMvc(options => options.EnableEndpointRouting = false);
@@ -346,7 +360,7 @@ namespace SudokuCollective.Api
 
 			app.UseAuthentication();
 
-			app.UseAuthorization();
+			app.UseMiddleware<ExpiredTokenMiddleware>();
 
 			app.UseSwagger();
 
