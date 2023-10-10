@@ -58,7 +58,7 @@ namespace SudokuCollective.Api.Controllers.V1
         /// </summary>
         /// <param name="request"></param>
         /// <returns>A newly created user and a authorization token.</returns>
-        /// <response code="201">Returns a result object with the an authenticated user and authorization token included in the payload array.</response>
+        /// <response code="201">Returns a result object with the an authenticated user, an authorization token, and the token's expiration date included in the payload array.</response>
         /// <response code="400">Returns a result object with the message stating any validation issues for the username, email or password.</response>
         /// <response code="404">Returns a result object with the message stating either the username or email is not unique.</response>
         /// <response code="500">Returns a result object with the message stating any errors signing up the user.</response>
