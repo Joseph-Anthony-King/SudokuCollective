@@ -21,34 +21,34 @@ namespace SudokuCollective.Data.Models.Results
         public UserDTO User { get; set; }
         [JsonPropertyName("token")]
         public string Token { get; set; }
-        [JsonPropertyName("expirationDate")]
-        public DateTime ExpirationDate { get; set; }
+        [JsonPropertyName("tokenExpirationDate")]
+        public DateTime TokenExpirationDate { get; set; }
 
         public AuthenticationResult()
         {
             User = new UserDTO();
             Token = string.Empty;
-            ExpirationDate = DateTime.MinValue;
+            TokenExpirationDate = DateTime.MinValue;
         }
 
         public AuthenticationResult(
             IUserDTO user, 
             string token,
-            DateTime expirationDate)
+            DateTime tokenExpirationDate)
         {
             User = (UserDTO)user;
             Token = token;
-            ExpirationDate = expirationDate;
+            TokenExpirationDate = tokenExpirationDate;
         }
 
         public AuthenticationResult(
             UserDTO user, 
             string token,
-            DateTime expirationDate)
+            DateTime tokenExpirationDate)
         {
             User = user;
             Token = token;
-            ExpirationDate = expirationDate;
+            TokenExpirationDate = tokenExpirationDate;
         }
     }
 }

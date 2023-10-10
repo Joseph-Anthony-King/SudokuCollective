@@ -240,7 +240,7 @@ namespace SudokuCollective.Data.Services
                     );
 
                 authenticationResult.Token = new JwtSecurityTokenHandler().WriteToken(jwtToken);
-                authenticationResult.ExpirationDate = expirationDate;
+                authenticationResult.TokenExpirationDate = expirationDate;
 
                 result.IsSuccess = true;
                 result.Message = UsersMessages.UserFoundMessage;

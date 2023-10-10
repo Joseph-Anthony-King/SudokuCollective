@@ -7,6 +7,6 @@ namespace SudokuCollective.Core.Interfaces.Models.DomainObjects.Results
     {
         IUserDTO User { get; set; }
         string Token { get; set; }
-        DateTime ExpirationDate { get; set; }
+        DateTime TokenExpirationDate { get; set; }
     }
 }

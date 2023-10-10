@@ -26,7 +26,7 @@ namespace SudokuCollective.Test.TestCases.Results
             // Assert
             Assert.That(sut.User, Is.InstanceOf<IUserDTO>());
             Assert.That(sut.Token, Is.InstanceOf<string>());
-            Assert.That(sut.ExpirationDate, Is.InstanceOf<DateTime>());
+            Assert.That(sut.TokenExpirationDate, Is.InstanceOf<DateTime>());
         }
 
         [Test, Category("Results")]
