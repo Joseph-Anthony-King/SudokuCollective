@@ -185,7 +185,7 @@ namespace SudokuCollective.Api.Models
                             true,
                             true,
                             ReleaseEnvironment.LOCAL,
-                            true,
+                            false,
                             env.IsDevelopment() ? 
                                 config.GetValue<string>("DefaultAdminApp:CustomEmailAction") : 
                                 Environment.GetEnvironmentVariable("ADMIN_APP_CUSTOM_EMAIL_ACTION"),
@@ -193,7 +193,7 @@ namespace SudokuCollective.Api.Models
                                 config.GetValue<string>("DefaultAdminApp:CustomPasswordAction") : 
                                 Environment.GetEnvironmentVariable("ADMIN_APP_CUSTOM_PASSWORD_ACTION"),
                             false,
-                            TimeFrame.DAYS,
+                            TimeFrame.MONTHS,
                             1,
                             true,
                             createdDate,
@@ -239,7 +239,7 @@ namespace SudokuCollective.Api.Models
                                 config.GetValue<string>("DefaultClientApp:CustomPasswordAction") : 
                                 Environment.GetEnvironmentVariable("CLIENT_APP_CUSTOM_PASSWORD_ACTION"),
                             false,
-                            TimeFrame.DAYS,
+                            TimeFrame.MONTHS,
                             1,
                             false,
                             createdDate,
