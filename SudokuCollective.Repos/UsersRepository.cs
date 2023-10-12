@@ -638,6 +638,8 @@ namespace SudokuCollective.Repos
 			{
 				if (await _context.Users.AnyAsync(u => u.Id == entity.Id))
 				{
+					_context.Users.Remove(entity);
+
 					var games = await _context
 							.Games
 							.Where(g => g.UserId == entity.Id)
