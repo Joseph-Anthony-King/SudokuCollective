@@ -141,6 +141,7 @@ namespace SudokuCollective.Api.Controllers.V1
                             { 
                                 User = ((AuthenticationResult)authenticateResult.Payload[0]).User,
                                 Token = ((AuthenticationResult)authenticateResult.Payload[0]).Token,
+                                TokenExpirationDate = ((AuthenticationResult)authenticateResult.Payload[0]).TokenExpirationDate,
                                 EmailConfirmationSent = ((EmailConfirmationSentResult)result.Payload[0]).EmailConfirmationSent
                             }};
 

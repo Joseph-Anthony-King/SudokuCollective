@@ -1,3 +1,4 @@
+using System;
 using NUnit.Framework;
 using SudokuCollective.Core.Interfaces.Models.DomainEntities;
 using SudokuCollective.Core.Interfaces.Models.DomainObjects.Results;
@@ -25,6 +26,7 @@ namespace SudokuCollective.Test.TestCases.Results
             // Assert
             Assert.That(sut.User, Is.InstanceOf<IUserDTO>());
             Assert.That(sut.Token, Is.InstanceOf<string>());
+            Assert.That(sut.TokenExpirationDate, Is.InstanceOf<DateTime>());
             Assert.That(sut.EmailConfirmationSent, Is.InstanceOf<bool>());
         }
 
@@ -49,6 +51,7 @@ namespace SudokuCollective.Test.TestCases.Results
             sut = new UserCreatedResult(
                 userDTO, 
                 token, 
+                new DateTime(),
                 true);
 
             // Assert

@@ -1,4 +1,5 @@
 using SudokuCollective.Core.Interfaces.Models.DomainEntities;
+using System;
 
 namespace SudokuCollective.Core.Interfaces.Models.DomainObjects.Results
 {
@@ -6,6 +7,7 @@ namespace SudokuCollective.Core.Interfaces.Models.DomainObjects.Results
     {
         IUserDTO User { get; set; }
         string Token { get; set; }
+        DateTime TokenExpirationDate { get; set; }
         bool EmailConfirmationSent { get; set; }
     }
 }
