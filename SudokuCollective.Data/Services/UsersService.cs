@@ -1039,7 +1039,8 @@ namespace SudokuCollective.Data.Services
                         _usersRepository,
                         _distributedCache,
                         _cacheKeys,
-                        (User)userResponse.Object);
+                        (User)userResponse.Object,
+                        license);
 
                     if (deletionResponse.IsSuccess)
                     {
