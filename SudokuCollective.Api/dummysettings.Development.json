@@ -51,8 +51,12 @@
     "StagingUrl": "[Your value here]",
     "QaUrl": "[Your value here]",
     "ProdUrl": "[Your value here]",
+    "ReleaseEnvironment": "[Your value here]",
+    "DisableCustomUrls": "[Your value here]",
     "CustomEmailAction": "[Your value here]",
-    "CustomPasswordAction": "[Your value here]"
+    "CustomPasswordAction": "[Your value here]",
+    "TimeFrame": "[Your value here]",
+    "AccessDuration": "[Your value here]"
   },
   "DefaultClientApp": {
     "Name": "[Your value here]",
@@ -61,8 +65,12 @@
     "StagingUrl": "[Your value here]",
     "QaUrl": "[Your value here]",
     "ProdUrl": "[Your value here]",
+    "ReleaseEnvironment": "[Your value here]",
+    "DisableCustomUrls": "[Your value here]",
     "CustomEmailAction": "[Your value here]",
-    "CustomPasswordAction": "[Your value here]"
+    "CustomPasswordAction": "[Your value here]",
+    "TimeFrame": "[Your value here]",
+    "AccessDuration": "[Your value here]"
   },
   "DefaultSandboxApp": {
     "Name": "[Your value here]",
