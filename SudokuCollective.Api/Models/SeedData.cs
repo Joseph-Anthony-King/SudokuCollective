@@ -184,8 +184,12 @@ namespace SudokuCollective.Api.Models
                             true,
                             true,
                             true,
-                            ReleaseEnvironment.LOCAL,
-                            false,
+                            env.IsDevelopment() ?
+                                config.GetValue<ReleaseEnvironment>("DefaultAdminApp:ReleaseEnvironment") :
+                                Enum.Parse<ReleaseEnvironment>(Environment.GetEnvironmentVariable("ADMIN_APP_RELEASE_ENVIRONMENT")),
+                            env.IsDevelopment() ?
+                                config.GetValue<bool>("DefaultAdminApp:DisableCustomUrls") :
+                                bool.Parse(Environment.GetEnvironmentVariable("ADMIN_APP_DISABLE_CUSTOM_URLS")),
                             env.IsDevelopment() ? 
                                 config.GetValue<string>("DefaultAdminApp:CustomEmailAction") : 
                                 Environment.GetEnvironmentVariable("ADMIN_APP_CUSTOM_EMAIL_ACTION"),
@@ -193,8 +197,12 @@ namespace SudokuCollective.Api.Models
                                 config.GetValue<string>("DefaultAdminApp:CustomPasswordAction") : 
                                 Environment.GetEnvironmentVariable("ADMIN_APP_CUSTOM_PASSWORD_ACTION"),
                             false,
-                            TimeFrame.MONTHS,
-                            1,
+                            env.IsDevelopment() ?
+                                config.GetValue<TimeFrame>("DefaultAdminApp:TimeFrame") :
+                                Enum.Parse<TimeFrame>(Environment.GetEnvironmentVariable("ADMIN_APP_TIME_FRAME")),
+                            env.IsDevelopment() ?
+                                config.GetValue<int>("DefaultAdminApp:AccessDuration") :
+                                int.Parse(Environment.GetEnvironmentVariable("ADMIN_APP_ACCESS_DURATION")),
                             true,
                             createdDate,
                             DateTime.MinValue)
@@ -230,8 +238,12 @@ namespace SudokuCollective.Api.Models
                             false,
                             true,
                             true,
-                            ReleaseEnvironment.LOCAL,
-                            true,
+                            env.IsDevelopment() ?
+                                config.GetValue<ReleaseEnvironment>("DefaultClientApp:ReleaseEnvironment") :
+                                Enum.Parse<ReleaseEnvironment>(Environment.GetEnvironmentVariable("CLIENT_APP_RELEASE_ENVIRONMENT")),
+                            env.IsDevelopment() ?
+                                config.GetValue<bool>("DefaultClientApp:DisableCustomUrls") :
+                                bool.Parse(Environment.GetEnvironmentVariable("CLIENT_APP_DISABLE_CUSTOM_URLS")),
                             env.IsDevelopment() ? 
                                 config.GetValue<string>("DefaultClientApp:CustomEmailAction") : 
                                 Environment.GetEnvironmentVariable("CLIENT_APP_CUSTOM_EMAIL_ACTION"),
@@ -239,8 +251,12 @@ namespace SudokuCollective.Api.Models
                                 config.GetValue<string>("DefaultClientApp:CustomPasswordAction") : 
                                 Environment.GetEnvironmentVariable("CLIENT_APP_CUSTOM_PASSWORD_ACTION"),
                             false,
-                            TimeFrame.MONTHS,
-                            1,
+                            env.IsDevelopment() ?
+                                config.GetValue<TimeFrame>("DefaultClientApp:TimeFrame") : 
+                                Enum.Parse<TimeFrame>(Environment.GetEnvironmentVariable("CLIENT_APP_TIME_FRAME")),
+                            env.IsDevelopment() ?
+                                config.GetValue<int>("DefaultClientApp:AccessDuration") : 
+                                int.Parse(Environment.GetEnvironmentVariable("CLIENT_APP_ACCESS_DURATION")),
                             false,
                             createdDate,
                             DateTime.MinValue)
