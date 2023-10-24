@@ -452,7 +452,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
 			// Arrange
 
 			// Act
-			var actionResult = await sutSuccess.ResendRequestPasswordResetAsync(resendRequestPasswordRequest);
+			var actionResult = await sutSuccess.ResendPasswordResetAsync(resendRequestPasswordRequest);
 			var result = (Result)((ObjectResult)actionResult.Result).Value;
 			var message = result.Message;
 			var statusCode = ((ObjectResult)actionResult.Result).StatusCode;
@@ -470,7 +470,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
 			// Arrange
 
 			// Act
-			var actionResult = await sutFailure.ResendRequestPasswordResetAsync(resendRequestPasswordRequest);
+			var actionResult = await sutFailure.ResendPasswordResetAsync(resendRequestPasswordRequest);
 			var result = (Result)((NotFoundObjectResult)actionResult.Result).Value;
 			var message = result.Message;
 			var statusCode = ((NotFoundObjectResult)actionResult.Result).StatusCode;
