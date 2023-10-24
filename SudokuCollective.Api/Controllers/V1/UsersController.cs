@@ -971,7 +971,7 @@ namespace SudokuCollective.Api.Controllers.V1
         /// <response code="404">Returns a result object with the message stating the user or request password reset were not found. </response>
         /// <response code="500">Returns a result object with the message stating any errors processing the request.</response>
         /// <remarks>
-        /// The ResendRequestPasswordReset endpoint does not require a login. It resends password reset emails if the user has lost the original email. 
+        /// The ResendPasswordReset endpoint does not require a login. It resends password reset emails if the user has lost the original email. 
         /// The request body parameter uses the custom ResendRequestPasswordRequest model documented in the schema.
         /// 
         /// The request should be structured as follows:
@@ -983,8 +983,8 @@ namespace SudokuCollective.Api.Controllers.V1
         /// ```
         /// </remarks>
         [AllowAnonymous]
-        [HttpPut("ResendRequestPasswordReset")]
-        public async Task<ActionResult<Result>> ResendRequestPasswordResetAsync([FromBody] ResendRequestPasswordRequest request)
+        [HttpPut("ResendPasswordReset")]
+        public async Task<ActionResult<Result>> ResendPasswordResetAsync([FromBody] ResendRequestPasswordRequest request)
         {
             try
             {
@@ -1068,7 +1068,7 @@ namespace SudokuCollective.Api.Controllers.V1
         /// ```
         /// </remarks>
         [Authorize(Roles = "USER")]
-        [HttpPut, Route("cancelPasswordReset")]
+        [HttpPut("cancelPasswordReset")]
         public async Task<ActionResult<Result>> CancelPasswordResetAsync([FromBody] Request request)
         {
             try
@@ -1138,7 +1138,7 @@ namespace SudokuCollective.Api.Controllers.V1
         /// ```
         /// </remarks>
         [Authorize(Roles = "USER")]
-        [HttpPut, Route("cancelAllEmailRequests")]
+        [HttpPut("cancelAllEmailRequests")]
         public async Task<ActionResult<Result>> CancelAllEmailRequestsAsync([FromBody] Request request)
         {
             try
