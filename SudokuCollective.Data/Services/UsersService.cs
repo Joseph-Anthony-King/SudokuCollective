@@ -186,7 +186,7 @@ namespace SudokuCollective.Data.Services
                             request.NickName,
                             request.Email,
                             false,
-                            false,
+                            true,
                             BCrypt.Net.BCrypt.HashPassword(request.Password, salt),
                             false,
                             true,
