@@ -124,7 +124,7 @@ namespace SudokuCollective.Core.Models
             LastName = string.Empty;
             NickName = string.Empty;
             IsEmailConfirmed = false;
-            ReceivedRequestToUpdateEmail = true;
+            ReceivedRequestToUpdateEmail = false;
             ReceivedRequestToUpdatePassword = false;
             DateCreated = DateTime.MinValue;
             DateUpdated = DateTime.MinValue;
