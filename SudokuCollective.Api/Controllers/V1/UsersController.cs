@@ -933,7 +933,7 @@ namespace SudokuCollective.Api.Controllers.V1
                 }
                 else
                 {
-                    emailtTemplatePath = "../../Content/EmailTemplates/confirm-old-email-inlined.html";
+                    emailtTemplatePath = "../../Content/EmailTemplates/password-reset-requested-inlined.html";
                 }
 
                 var result = await _usersService.RequestPasswordResetAsync(request, baseUrl, emailtTemplatePath);
@@ -1011,7 +1011,7 @@ namespace SudokuCollective.Api.Controllers.V1
                 }
                 else
                 {
-                    emailtTemplatePath = "../../Content/EmailTemplates/confirm-old-email-inlined.html";
+                    emailtTemplatePath = "../../Content/EmailTemplates/password-reset-requested-inlined.html";
                 }
 
                 var result = await _usersService.ResendPasswordResetAsync(

@@ -124,10 +124,11 @@ namespace SudokuCollective.Core.Models
             LastName = string.Empty;
             NickName = string.Empty;
             IsEmailConfirmed = false;
-            ReceivedRequestToUpdateEmail = false;
+            ReceivedRequestToUpdateEmail = true;
             ReceivedRequestToUpdatePassword = false;
             DateCreated = DateTime.MinValue;
             DateUpdated = DateTime.MinValue;
+            _isActive = true;
         }
 
         public User(
@@ -135,15 +136,9 @@ namespace SudokuCollective.Core.Models
             string lastName,
             string password) : this()
         {
-            var dateUserCreated = DateTime.UtcNow;
-
             FirstName = firstName;
             LastName = lastName;
             Password = password;
-            ReceivedRequestToUpdatePassword = false;
-            DateCreated = dateUserCreated;
-            IsEmailConfirmed = false;
-            _isActive = true;
         }
 
         [JsonConstructor]
