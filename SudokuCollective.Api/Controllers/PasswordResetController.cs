@@ -137,7 +137,7 @@ namespace SudokuCollective.Api.Controllers
             {
                 var updatePasswordRequest = new UpdatePasswordRequest
                 {
-                    UserId = (((User)userResut.Payload[0]).Cast<UserDTO>()).Id,
+                    UserId = ((User)userResut.Payload[0]).Id,
                     NewPassword = passwordReset.NewPassword,
                     License = app.License
                 };
