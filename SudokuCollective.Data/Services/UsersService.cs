@@ -428,7 +428,6 @@ namespace SudokuCollective.Data.Services
 
                     result.IsSuccess = response.IsSuccess;
                     result.Message = UsersMessages.UserFoundMessage;
-                    result.Payload.Add(user);
 
                     cacheServiceResponse = await _cacheService.GetAppByLicenseWithCacheAsync(
                         _appsRepository,
@@ -444,24 +443,20 @@ namespace SudokuCollective.Data.Services
                         .ConvertAll(aa => (AppAdmin)aa)
                         .ToList();
 
-                    if (((User)(result
-                        .Payload[0]))
-                        .Roles
-                        .Any(ur => ur.Role.RoleLevel == RoleLevel.ADMIN))
+                    if (user.Roles.Any(ur => ur.Role.RoleLevel == RoleLevel.ADMIN))
                     {
                         if (!user.IsSuperUser)
                         {
                             if (!appAdmins.Any(aa =>
                                 aa.AppId == app.Id &&
-                                aa.UserId == ((User)(result.Payload[0])).Id &&
-                                aa.IsActive))
+                                aa.UserId == user.Id && aa.IsActive))
                             {
-                                var adminRole = ((User)(result.Payload[0]))
+                                var adminRole = user
                                     .Roles
                                     .FirstOrDefault(ur =>
                                         ur.Role.RoleLevel == RoleLevel.ADMIN);
 
-                                ((User)(result.Payload[0])).Roles.Remove(adminRole);
+                               user.Roles.Remove(adminRole);
                             }
                         }
                         else
@@ -500,17 +495,17 @@ namespace SudokuCollective.Data.Services
 
                         var requestorResponse = (RepositoryResponse)getRequestorResponse.Item1;
 
-                        if (!((User)requestorResponse.Object).IsSuperUser && request.RequestorId != id)
+                        if (!user.IsSuperUser && request.RequestorId != id)
                         {
-                            ((User)result.Payload[0]).NullifyEmail();
+                            user.NullifyEmail();
                         }
                     }
                     else
                     {
-                        ((User)result.Payload[0]).NullifyEmail();
+                        user.NullifyEmail();
                     }
 
-                    result.Payload[0] = (UserDTO)((User)result.Payload[0]).Cast<UserDTO>();
+                    result.Payload.Add(user.Cast<UserDTO>());
 
 
                     return result;
@@ -3086,7 +3081,7 @@ namespace SudokuCollective.Data.Services
 
                             result.IsSuccess = userResponse.IsSuccess;
                             result.Message = UsersMessages.PasswordResetMessage;
-                            result.Payload.Add(user);
+                            result.Payload.Add(user.Cast<UserDTO>());
 
                             return result;
                         }
