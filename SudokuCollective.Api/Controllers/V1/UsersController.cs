@@ -204,7 +204,7 @@ namespace SudokuCollective.Api.Controllers.V1
                     {
                         emailtTemplatePath = Path.Combine(_hostEnvironment.WebRootPath, "/Content/EmailTemplates/confirm-old-email-inlined.html");
 
-                        var currentDirectory = string.Format("{0}{1}", Assembly.GetExecutingAssembly().Location, "{0}");
+                        var currentDirectory = string.Format("{0}{1}", AppDomain.CurrentDomain.BaseDirectory, "{0}");
 
                         emailtTemplatePath = string.Format(currentDirectory, emailtTemplatePath);
                     }
