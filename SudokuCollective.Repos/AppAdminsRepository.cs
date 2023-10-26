@@ -60,17 +60,27 @@ namespace SudokuCollective.Repos
                         break;
                     }
 
-                    if (dbEntry is UserApp)
+                    if (dbEntry is AppAdmin admin)
                     {
-                        entry.State = EntityState.Modified;
-                    }
-                    else if (dbEntry is UserRole)
-                    {
-                        entry.State = EntityState.Modified;
+                        if (dbEntry.Id == entity.Id)
+                        {
+                            entry.State = EntityState.Added;
+                        }
+                        else
+                        {
+                            entry.State = EntityState.Unchanged;
+                        }
                     }
                     else
                     {
-                        // Otherwise do nothing...
+                        if (dbEntry.Id == 0)
+                        {
+                            entry.State = EntityState.Added;
+                        }
+                        else if (entry.State != EntityState.Deleted || entry.State != EntityState.Modified || entry.State != EntityState.Added)
+                        {
+                            entry.State = EntityState.Detached;
+                        }
                     }
 
                     // Note that this entry is tracked for the update
@@ -172,14 +182,7 @@ namespace SudokuCollective.Repos
             {
                 if (await _context.AppAdmins.AnyAsync(d => d.Id == entity.Id))
                 {
-                    try
-                    {
-                        _context.Update(entity);
-                    }
-                    catch
-                    {
-                        _context.Attach(entity);
-                    }
+                    _context.Update(entity);
 
                     var trackedEntities = new List<string>();
 
@@ -187,17 +190,27 @@ namespace SudokuCollective.Repos
                     {
                         var dbEntry = (IDomainEntity)entry.Entity;
 
-                        if (dbEntry is UserApp)
+                        if (dbEntry is AppAdmin admin)
                         {
-                            entry.State = EntityState.Modified;
-                        }
-                        else if (dbEntry is UserRole)
-                        {
-                            entry.State = EntityState.Modified;
+                            if (dbEntry.Id == entity.Id)
+                            {
+                                entry.State = EntityState.Modified;
+                            }
+                            else
+                            {
+                                entry.State = EntityState.Unchanged;
+                            }
                         }
                         else
                         {
-                            // Otherwise do nothing...
+                            if (dbEntry.Id == 0)
+                            {
+                                entry.State = EntityState.Added;
+                            }
+                            else if (entry.State != EntityState.Deleted || entry.State != EntityState.Modified || entry.State != EntityState.Added)
+                            {
+                                entry.State = EntityState.Detached;
+                            }
                         }
 
                         // Note that this entry is tracked for the update
@@ -255,35 +268,41 @@ namespace SudokuCollective.Repos
 
                         return result;
                     }
-                }
 
-                var trackedEntities = new List<string>();
+                    var trackedEntities = new List<string>();
 
-                foreach (var entry in _context.ChangeTracker.Entries())
-                {
-                    var dbEntry = (IDomainEntity)entry.Entity;
-
-                    // If the entity is already being tracked for the update... break
-                    if (trackedEntities.Contains(dbEntry.ToString()))
+                    foreach (var entry in _context.ChangeTracker.Entries())
                     {
-                        break;
-                    }
+                        var dbEntry = (IDomainEntity)entry.Entity;
 
-                    if (dbEntry is UserApp)
-                    {
-                        entry.State = EntityState.Modified;
-                    }
-                    else if (dbEntry is UserRole)
-                    {
-                        entry.State = EntityState.Modified;
-                    }
-                    else
-                    {
-                        // Otherwise do nothing...
-                    }
+                        // If the entity is already being tracked for the update... break
+                        if (trackedEntities.Contains(dbEntry.ToString()))
+                        {
+                            break;
+                        }
 
-                    // Note that this entry is tracked for the update
-                    trackedEntities.Add(dbEntry.ToString());
+                        if (dbEntry is AppAdmin admin)
+                        {
+                            if (dbEntry.Id == entity.Id)
+                            {
+                                entry.State = EntityState.Modified;
+                            }
+                        }
+                        else
+                        {
+                            if (dbEntry.Id == 0)
+                            {
+                                entry.State = EntityState.Added;
+                            }
+                            else if (entry.State != EntityState.Deleted || entry.State != EntityState.Modified || entry.State != EntityState.Added)
+                            {
+                                entry.State = EntityState.Detached;
+                            }
+                        }
+
+                        // Note that this entry is tracked for the update
+                        trackedEntities.Add(dbEntry.ToString());
+                    }
                 }
 
                 await _context.SaveChangesAsync();
@@ -326,17 +345,27 @@ namespace SudokuCollective.Repos
                             break;
                         }
 
-                        if (dbEntry is UserApp)
+                        if (dbEntry is AppAdmin admin)
                         {
-                            entry.State = EntityState.Modified;
-                        }
-                        else if (dbEntry is UserRole)
-                        {
-                            entry.State = EntityState.Modified;
+                            if (admin.Id == entity.Id)
+                            {
+                                entry.State = EntityState.Deleted;
+                            }
+                            else
+                            {
+                                entry.State |= EntityState.Unchanged;
+                            }
                         }
                         else
                         {
-                            // Otherwise do nothing...
+                            if (dbEntry.Id == 0)
+                            {
+                                entry.State = EntityState.Added;
+                            }
+                            else if (entry.State != EntityState.Deleted || entry.State != EntityState.Modified || entry.State != EntityState.Added)
+                            {
+                                entry.State = EntityState.Detached;
+                            }
                         }
 
                         // Note that this entry is tracked for the update
@@ -394,35 +423,41 @@ namespace SudokuCollective.Repos
 
                         return result;
                     }
-                }
 
-                var trackedEntities = new List<string>();
+                    var trackedEntities = new List<string>();
 
-                foreach (var entry in _context.ChangeTracker.Entries())
-                {
-                    var dbEntry = (IDomainEntity)entry.Entity;
-
-                    // If the entity is already being tracked for the update... break
-                    if (trackedEntities.Contains(dbEntry.ToString()))
+                    foreach (var entry in _context.ChangeTracker.Entries())
                     {
-                        break;
-                    }
+                        var dbEntry = (IDomainEntity)entry.Entity;
 
-                    if (dbEntry is UserApp)
-                    {
-                        entry.State = EntityState.Modified;
-                    }
-                    else if (dbEntry is UserRole)
-                    {
-                        entry.State = EntityState.Modified;
-                    }
-                    else
-                    {
-                        // Otherwise do nothing...
-                    }
+                        // If the entity is already being tracked for the update... break
+                        if (trackedEntities.Contains(dbEntry.ToString()))
+                        {
+                            break;
+                        }
 
-                    // Note that this entry is tracked for the update
-                    trackedEntities.Add(dbEntry.ToString());
+                        if (dbEntry is AppAdmin)
+                        {
+                            if (dbEntry.Id == entity.Id)
+                            {
+                                entry.State = EntityState.Deleted;
+                            }
+                        }
+                        else
+                        {
+                            if (dbEntry.Id == 0)
+                            {
+                                entry.State = EntityState.Added;
+                            }
+                            else if (entry.State != EntityState.Deleted || entry.State != EntityState.Modified || entry.State != EntityState.Added)
+                            {
+                                entry.State = EntityState.Detached;
+                            }
+                        }
+
+                        // Note that this entry is tracked for the update
+                        trackedEntities.Add(dbEntry.ToString());
+                    }
                 }
 
                 await _context.SaveChangesAsync();
