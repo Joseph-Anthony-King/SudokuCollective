@@ -75,8 +75,14 @@ namespace SudokuCollective.Core.Models
             ContinueGame = true;
             Score = 0;
             KeepScore = false;
-            SudokuMatrix = new SudokuMatrix();
-            SudokuSolution = new SudokuSolution();
+            SudokuMatrix = new SudokuMatrix
+            {
+                Game = this
+            };
+            SudokuSolution = new SudokuSolution
+            {
+                Game = this
+            };
             AppId = 0;
         }
 

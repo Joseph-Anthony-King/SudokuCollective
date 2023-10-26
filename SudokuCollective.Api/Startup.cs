@@ -86,11 +86,14 @@ namespace SudokuCollective.Api
 			_logger.LogInformation(message: string.Format("Initiating service configuration in {0} environment...", _environment.EnvironmentName));
 
 			services.AddDbContext<DatabaseContext>(options =>
+			{
 				options.UseNpgsql(
 					_environment.IsDevelopment() ?
 						Configuration.GetConnectionString("DatabaseConnection") :
 						GetHerokuPostgresConnectionString(),
-					b => b.MigrationsAssembly("SudokuCollective.Api")));
+					b => b.MigrationsAssembly("SudokuCollective.Api"));
+				options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
+			});
 
 			var swaggerDescription = _environment.IsDevelopment() ?
 				Configuration.GetSection("MissionStatement").Value :

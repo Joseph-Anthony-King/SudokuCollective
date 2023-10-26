@@ -54,7 +54,7 @@ namespace SudokuCollective.Repos
 					return result;
 				}
 
-				_context.Attach(entity);
+				_context.EmailConfirmations.Add(entity);
 
                 var trackedEntities = new List<string>();
 
@@ -67,18 +67,28 @@ namespace SudokuCollective.Repos
                     {
                         break;
                     }
-
-                    if (dbEntry is UserApp)
-					{
-						entry.State = EntityState.Modified;
-					}
-					else if (dbEntry is UserRole)
-					{
-						entry.State = EntityState.Modified;
-					}
+					
+					if (dbEntry is EmailConfirmation confirmation)
+                    {
+                        if (confirmation.Id == entity.Id)
+                        {
+                            entry.State = EntityState.Added;
+                        }
+                        else
+                        {
+                            entry.State = EntityState.Unchanged;
+                        }
+                    }
 					else
-					{
-                        // Otherwise do nothing...
+                    {
+                        if (dbEntry.Id == 0)
+                        {
+                            entry.State = EntityState.Added;
+                        }
+                        else if (entry.State != EntityState.Deleted || entry.State != EntityState.Modified || entry.State != EntityState.Added)
+                        {
+                            entry.State = EntityState.Detached;
+                        }
                     }
 
                     // Note that this entry is tracked for the update
@@ -116,8 +126,8 @@ namespace SudokuCollective.Repos
 			try
 			{
 				var query = await _context
-						.EmailConfirmations
-						.FirstOrDefaultAsync(ec => ec.Token.ToLower().Equals(token.ToLower()));
+					.EmailConfirmations
+					.FirstOrDefaultAsync(ec => ec.Token.ToLower().Equals(token.ToLower()));
 
 				if (query == null)
 				{
@@ -148,9 +158,9 @@ namespace SudokuCollective.Repos
 			try
 			{
 				List<EmailConfirmation> query = await _context
-						.EmailConfirmations
-						.OrderBy(ec => ec.Id)
-						.ToListAsync();
+					.EmailConfirmations
+					.OrderBy(ec => ec.Id)
+					.ToListAsync();
 
 				if (query.Count == 0)
 				{
@@ -160,8 +170,8 @@ namespace SudokuCollective.Repos
 				{
 					result.IsSuccess = true;
 					result.Objects = query
-							.ConvertAll(ec => (IDomainEntity)ec)
-							.ToList();
+						.ConvertAll(ec => (IDomainEntity)ec)
+						.ToList();
 				}
 
 				return result;
@@ -185,8 +195,8 @@ namespace SudokuCollective.Repos
 			try
 			{
 				List<EmailConfirmation> tokenNotUniqueList = await _context.EmailConfirmations
-						.Where(ec => ec.Token.ToLower().Equals(entity.Token.ToLower()) && ec.Id != entity.Id)
-						.ToListAsync();
+					.Where(ec => ec.Token.ToLower().Equals(entity.Token.ToLower()) && ec.Id != entity.Id)
+					.ToListAsync();
 
 				if (await _context.EmailConfirmations
 						.AnyAsync(ec => ec.Id == entity.Id) && tokenNotUniqueList.Count == 0)
@@ -205,17 +215,27 @@ namespace SudokuCollective.Repos
                             break;
                         }
 
-                        if (dbEntry is UserApp)
-						{
-							entry.State = EntityState.Modified;
-						}
-						else if (dbEntry is UserRole)
-						{
-							entry.State = EntityState.Modified;
-						}
-						else
-						{
-                            // Otherwise do nothing...
+                        if (dbEntry is EmailConfirmation confirmation)
+                        {
+                            if (confirmation.Id == entity.Id)
+                            {
+                                entry.State = EntityState.Modified;
+                            }
+                            else
+                            {
+                                entry.State = EntityState.Unchanged;
+                            }
+                        }
+                        else
+                        {
+                            if (dbEntry.Id == 0)
+                            {
+                                entry.State = EntityState.Added;
+                            }
+                            else if (entry.State != EntityState.Deleted || entry.State != EntityState.Modified || entry.State != EntityState.Added)
+                            {
+                                entry.State = EntityState.Detached;
+                            }
                         }
 
                         // Note that this entry is tracked for the update
@@ -270,17 +290,27 @@ namespace SudokuCollective.Repos
                             break;
                         }
 
-                        if (dbEntry is UserApp)
-						{
-							entry.State = EntityState.Modified;
-						}
-						else if (dbEntry is UserRole)
-						{
-							entry.State = EntityState.Modified;
-						}
-						else
-						{
-                            // Otherwise do nothing...
+                        if (dbEntry is EmailConfirmation confirmation)
+                        {
+                            if (confirmation.Id == entity.Id)
+                            {
+                                entry.State = EntityState.Deleted;
+                            }
+                            else
+                            {
+                                entry.State = EntityState.Unchanged;
+                            }
+                        }
+                        else
+                        {
+                            if (dbEntry.Id == 0)
+                            {
+                                entry.State = EntityState.Added;
+                            }
+                            else if (entry.State != EntityState.Deleted || entry.State != EntityState.Modified || entry.State != EntityState.Added)
+                            {
+                                entry.State = EntityState.Detached;
+                            }
                         }
 
                         // Note that this entry is tracked for the update
@@ -312,10 +342,10 @@ namespace SudokuCollective.Repos
 		}
 
 		public async Task<bool> HasEntityAsync(int id) =>
-				await _context.EmailConfirmations.AnyAsync(ec => ec.Id == id);
+			await _context.EmailConfirmations.AnyAsync(ec => ec.Id == id);
 
 		public async Task<bool> HasOutstandingEmailConfirmationAsync(int userId, int appid) =>
-				await _context.EmailConfirmations.AnyAsync(ec => ec.UserId == userId && ec.AppId == appid);
+			await _context.EmailConfirmations.AnyAsync(ec => ec.UserId == userId && ec.AppId == appid);
 
 		public async Task<IRepositoryResponse> RetrieveEmailConfirmationAsync(int userId, int appid)
 		{
@@ -331,10 +361,10 @@ namespace SudokuCollective.Repos
 			try
 			{
 				var query = await _context
-						.EmailConfirmations
-						.FirstOrDefaultAsync(ec =>
-								ec.UserId == userId &&
-								ec.AppId == appid);
+					.EmailConfirmations
+					.FirstOrDefaultAsync(ec =>
+							ec.UserId == userId &&
+							ec.AppId == appid);
 
 				if (query == null)
 				{

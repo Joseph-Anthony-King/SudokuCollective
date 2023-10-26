@@ -47,7 +47,7 @@ namespace SudokuCollective.Repos
 			try
 			{
 				if (await _context.PasswordResets
-								.AnyAsync(pu => pu.Token.ToLower().Equals(entity.Token.ToLower())))
+					.AnyAsync(pu => pu.Token.ToLower().Equals(entity.Token.ToLower())))
 				{
 					result.IsSuccess = false;
 
@@ -68,17 +68,27 @@ namespace SudokuCollective.Repos
                         break;
                     }
 
-                    if (dbEntry is UserApp)
+                    if (dbEntry is PasswordReset)
 					{
-						entry.State = EntityState.Modified;
-					}
-					else if (dbEntry is UserRole)
-					{
-						entry.State = EntityState.Modified;
+						if (dbEntry.Id == entity.Id)
+						{
+							entry.State = EntityState.Added;
+						}
+						else
+                        {
+                            entry.State = EntityState.Unchanged;
+                        }
 					}
 					else
-					{
-                        // Otherwise do nothing...
+                    {
+                        if (dbEntry.Id == 0)
+                        {
+                            entry.State = EntityState.Added;
+                        }
+                        else if (entry.State != EntityState.Deleted || entry.State != EntityState.Modified || entry.State != EntityState.Added)
+                        {
+                            entry.State = EntityState.Detached;
+                        }
                     }
 
                     // Note that this entry is tracked for the update
@@ -111,8 +121,8 @@ namespace SudokuCollective.Repos
 			try
 			{
 				var query = await _context
-						.PasswordResets
-						.FirstOrDefaultAsync(pu => pu.Token.ToLower().Equals(token.ToLower()));
+					.PasswordResets
+					.FirstOrDefaultAsync(pu => pu.Token.ToLower().Equals(token.ToLower()));
 
 				if (query == null)
 				{
@@ -143,9 +153,9 @@ namespace SudokuCollective.Repos
 			try
 			{
 				List<PasswordReset> query = await _context
-						.PasswordResets
-						.OrderBy(ec => ec.Id)
-						.ToListAsync();
+					.PasswordResets
+					.OrderBy(ec => ec.Id)
+					.ToListAsync();
 
 				if (query.Count == 0)
 				{
@@ -155,8 +165,8 @@ namespace SudokuCollective.Repos
 				{
 					result.IsSuccess = true;
 					result.Objects = query
-							.ConvertAll(pu => (IDomainEntity)pu)
-							.ToList();
+						.ConvertAll(pu => (IDomainEntity)pu)
+						.ToList();
 				}
 
 				return result;
@@ -202,17 +212,27 @@ namespace SudokuCollective.Repos
                             break;
                         }
 
-                        if (dbEntry is UserApp)
-						{
-							entry.State = EntityState.Modified;
-						}
-						else if (dbEntry is UserRole)
-						{
-							entry.State = EntityState.Modified;
-						}
-						else
-						{
-                            // Otherwise do nothing...
+                        if (dbEntry is PasswordReset)
+                        {
+                            if (dbEntry.Id == entity.Id)
+                            {
+                                entry.State = EntityState.Modified;
+                            }
+                            else
+                            {
+                                entry.State = EntityState.Unchanged;
+                            }
+                        }
+                        else
+                        {
+                            if (dbEntry.Id == 0)
+                            {
+                                entry.State = EntityState.Added;
+                            }
+                            else if (entry.State != EntityState.Deleted || entry.State != EntityState.Modified || entry.State != EntityState.Added)
+                            {
+                                entry.State = EntityState.Detached;
+                            }
                         }
 
                         // Note that this entry is tracked for the update
@@ -274,17 +294,27 @@ namespace SudokuCollective.Repos
                             break;
                         }
 
-                        if (dbEntry is UserApp)
-						{
-							entry.State = EntityState.Modified;
-						}
-						else if (dbEntry is UserRole)
-						{
-							entry.State = EntityState.Modified;
-						}
-						else
-						{
-                            // Otherwise do nothing...
+                        if (dbEntry is PasswordReset)
+                        {
+                            if (dbEntry.Id == entity.Id)
+                            {
+                                entry.State = EntityState.Deleted;
+                            }
+                            else
+                            {
+                                entry.State = EntityState.Unchanged;
+                            }
+                        }
+                        else
+                        {
+                            if (dbEntry.Id == 0)
+                            {
+                                entry.State = EntityState.Added;
+                            }
+                            else if (entry.State != EntityState.Deleted || entry.State != EntityState.Modified || entry.State != EntityState.Added)
+                            {
+                                entry.State = EntityState.Detached;
+                            }
                         }
 
                         // Note that this entry is tracked for the update
@@ -316,12 +346,12 @@ namespace SudokuCollective.Repos
 		}
 
 		public async Task<bool> HasEntityAsync(int id) =>
-				await _context.PasswordResets.AnyAsync(ec => ec.Id == id);
+			await _context.PasswordResets.AnyAsync(ec => ec.Id == id);
 
 		public async Task<bool> HasOutstandingPasswordResetAsync(int userId, int appid) =>
-				await _context
-						.PasswordResets
-						.AnyAsync(pw => pw.UserId == userId && pw.AppId == appid);
+			await _context
+				.PasswordResets
+				.AnyAsync(pw => pw.UserId == userId && pw.AppId == appid);
 
 		public async Task<IRepositoryResponse> RetrievePasswordResetAsync(int userId, int appid)
 		{
@@ -337,10 +367,10 @@ namespace SudokuCollective.Repos
 			try
 			{
 				var query = await _context
-						.PasswordResets
-						.FirstOrDefaultAsync(pw =>
-								pw.UserId == userId &&
-								pw.AppId == appid);
+					.PasswordResets
+					.FirstOrDefaultAsync(pw =>
+						pw.UserId == userId &&
+						pw.AppId == appid);
 
 				if (query == null)
 				{

@@ -185,7 +185,10 @@ namespace SudokuCollective.Core.Models
             CustomEmailConfirmationAction = string.Empty;
             CustomPasswordResetAction = string.Empty;
             UseCustomSMTPServer = false;
-            SMTPServerSettings = new SMTPServerSettings();
+            SMTPServerSettings = new SMTPServerSettings
+            {
+                App = this
+            };
             UserApps = new List<UserApp>();
             Users = new List<UserDTO>();
             TimeFrame = TimeFrame.DAYS;

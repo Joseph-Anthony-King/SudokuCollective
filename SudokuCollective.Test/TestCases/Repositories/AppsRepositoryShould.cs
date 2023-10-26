@@ -270,7 +270,7 @@ namespace SudokuCollective.Test.TestCases.Repositories
                 .Users
                 .Include(u => u.Roles)
                 .Include(u => u.Roles)
-                    .ThenInclude(ur => ur.Role)
+                .ThenInclude(ur => ur.Role)
                 .ToList()
                 .FirstOrDefault(u => u.Apps.Any(ua => ua.AppId == 1) && u.IsSuperUser == false);
 
@@ -613,17 +613,16 @@ namespace SudokuCollective.Test.TestCases.Repositories
             // Assert
             Assert.That(result.IsSuccess, Is.True);
             Assert.That(result.Objects.ConvertAll(a => (App)a), Is.InstanceOf<List<App>>());
-            Assert.That(result.Objects.Count, Is.EqualTo(2));
+            Assert.That(result.Objects.Count, Is.EqualTo(3));
         }
 
         [Test, Category("Repository")]
         public async Task ReturnFalseifGetMyRegisteredAppsFails()
         {
             // Arrange
-            var user = context.Users.FirstOrDefault(u => u.Id == 1);
 
             // Act
-            var result = await sut.GetMyRegisteredAppsAsync(user.Id);
+            var result = await sut.GetMyRegisteredAppsAsync(4);
 
             // Assert
             Assert.That(result.IsSuccess, Is.False);
