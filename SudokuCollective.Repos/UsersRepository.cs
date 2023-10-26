@@ -48,42 +48,17 @@ namespace SudokuCollective.Repos
 
 			try
 			{
-				var role = await _context
-					.Roles
-					.FirstOrDefaultAsync(r => r.RoleLevel == RoleLevel.USER);
+				_context.Users.Add(entity);
 
-				var userRoles = new List<UserRole>
+                foreach (var userApp in entity.Apps)
+                {
+                    _context.UsersApps.Add(userApp);
+                }
+
+                foreach (var userRole in entity.Roles)
 				{
-					new UserRole
-					{
-						UserId = entity.Id,
-						User = entity,
-						RoleId = role.Id,
-						Role = role
-					}
-				};
-
-				if (entity.Apps.FirstOrDefault().AppId == 1)
-				{
-					var adminRole = await _context
-					.Roles
-					.FirstOrDefaultAsync(r => r.RoleLevel == RoleLevel.ADMIN);
-
-					userRoles.Add(
-						new UserRole
-						{
-							UserId = entity.Id,
-							User = entity,
-							RoleId = adminRole.Id,
-							Role = adminRole
-						});
+					_context.UsersRoles.Add(userRole);
 				}
-
-				entity.Roles = userRoles
-					.OrderBy(ur => ur.RoleId)
-					.ToList();
-
-				_context.Add(entity);
 
                 var trackedEntities = new List<string>();
 
@@ -129,8 +104,19 @@ namespace SudokuCollective.Repos
 						{
 							entry.State = EntityState.Unchanged;
 						}
-					}
-					else if (dbEntry is UserRole userRole)
+                    }
+                    else if (dbEntry is Role role)
+                    {
+                        if (entity.Roles.Any(r => r.RoleId == role.Id))
+                        {
+                            entry.State = EntityState.Modified;
+                        }
+                        else
+                        {
+                            entry.State = EntityState.Unchanged;
+                        }
+                    }
+                    else if (dbEntry is UserRole userRole)
 					{
 						userRole.Role ??= await _context
 							.Roles
@@ -506,8 +492,19 @@ namespace SudokuCollective.Repos
 						{
 							entry.State = EntityState.Unchanged;
 						}
-					}
-					else if (dbEntry is UserRole userRole)
+                    }
+                    else if (dbEntry is Role role)
+                    {
+                        if (entity.Roles.Any(r => r.RoleId == role.Id))
+                        {
+                            entry.State = EntityState.Modified;
+                        }
+                        else
+                        {
+                            entry.State = EntityState.Unchanged;
+                        }
+                    }
+                    else if (dbEntry is UserRole userRole)
 					{
 						userRole.Role ??= await _context
 							.Roles
@@ -636,6 +633,17 @@ namespace SudokuCollective.Repos
                         else if (dbEntry is UserApp userApp)
                         {
                             if (userApp.UserId == entity.Id)
+                            {
+                                entry.State = EntityState.Modified;
+                            }
+                            else
+                            {
+                                entry.State = EntityState.Unchanged;
+                            }
+                        }
+                        else if (dbEntry is Role role)
+                        {
+                            if (entity.Roles.Any(r => r.RoleId == role.Id))
                             {
                                 entry.State = EntityState.Modified;
                             }
@@ -779,6 +787,17 @@ namespace SudokuCollective.Repos
                             if (userApp.UserId == entity.Id)
                             {
                                 entry.State = EntityState.Deleted;
+                            }
+                            else
+                            {
+                                entry.State = EntityState.Unchanged;
+                            }
+                        }
+                        else if (dbEntry is Role role)
+                        {
+                            if (entity.Roles.Any(r => r.RoleId == role.Id))
+                            {
+                                entry.State = EntityState.Modified;
                             }
                             else
                             {
@@ -975,6 +994,17 @@ namespace SudokuCollective.Repos
                                 entry.State = EntityState.Unchanged;
                             }
                         }
+                        else if (dbEntry is Role role)
+                        {
+                            if (entity.Roles.Any(r => r.RoleId == role.Id))
+                            {
+                                entry.State = EntityState.Modified;
+                            }
+                            else
+                            {
+                                entry.State = EntityState.Unchanged;
+                            }
+                        }
                         else if (dbEntry is UserRole userRole)
                         {
 							userRole.Role ??= await _context
@@ -1107,6 +1137,17 @@ namespace SudokuCollective.Repos
                                 entry.State = EntityState.Unchanged;
                             }
                         }
+                        else if (dbEntry is Role role)
+                        {
+                            if (user.Roles.Any(r => r.RoleId == role.Id))
+                            {
+                                entry.State = EntityState.Modified;
+                            }
+                            else
+                            {
+                                entry.State = EntityState.Unchanged;
+                            }
+                        }
                         else if (dbEntry is UserRole userRole)
                         {
 							userRole.Role ??= await _context
@@ -1219,6 +1260,17 @@ namespace SudokuCollective.Repos
                         else if (dbEntry is UserApp userApp)
                         {
                             if (userApp.UserId == id)
+                            {
+                                entry.State = EntityState.Modified;
+                            }
+                            else
+                            {
+                                entry.State = EntityState.Unchanged;
+                            }
+                        }
+                        else if (dbEntry is Role role)
+                        {
+                            if (user.Roles.Any(r => r.RoleId == role.Id))
                             {
                                 entry.State = EntityState.Modified;
                             }
