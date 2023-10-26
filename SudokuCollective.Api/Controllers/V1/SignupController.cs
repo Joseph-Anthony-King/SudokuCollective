@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
+using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
@@ -101,7 +102,7 @@ namespace SudokuCollective.Api.Controllers.V1
                 {
                     emailtTemplatePath = Path.Combine(_hostEnvironment.WebRootPath, "/Content/EmailTemplates/create-email-inlined.html");
 
-                    var currentDirectory = string.Format("{0}{1}", Directory.GetCurrentDirectory(), "{0}");
+                    var currentDirectory = string.Format("{0}{1}", Assembly.GetExecutingAssembly(), "{0}");
 
                     emailtTemplatePath = string.Format(currentDirectory, emailtTemplatePath);
                 }
@@ -215,7 +216,7 @@ namespace SudokuCollective.Api.Controllers.V1
                 {
                     emailtTemplatePath = Path.Combine(_hostEnvironment.WebRootPath, "/Content/EmailTemplates/create-email-inlined.html");
 
-                    var currentDirectory = string.Format("{0}{1}", Directory.GetCurrentDirectory(), "{0}");
+                    var currentDirectory = string.Format("{0}{1}", Assembly.GetExecutingAssembly(), "{0}");
 
                     emailtTemplatePath = string.Format(currentDirectory, emailtTemplatePath);
                 }
