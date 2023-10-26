@@ -1,5 +1,5 @@
+using System;
 using System.IO;
-using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
@@ -86,7 +86,7 @@ namespace SudokuCollective.Api.Controllers
             {
                 emailtTemplatePath = Path.Combine(_hostEnvironment.WebRootPath, "/Content/EmailTemplates/confirm-new-email-inlined.html");
 
-                var currentDirectory = string.Format("{0}{1}", AppDomain.CurrentDomain.BaseDirectory, "{0}");
+                var currentDirectory = string.Format("{0}{1}", AppContext.BaseDirectory, "{0}");
 
                 emailtTemplatePath = string.Format(currentDirectory, emailtTemplatePath);
             }
