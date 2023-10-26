@@ -110,12 +110,9 @@ namespace SudokuCollective.Repos
                         {
                             entry.State = EntityState.Added;
                         }
-                        else
+                        else if (entry.State != EntityState.Deleted || entry.State != EntityState.Modified || entry.State != EntityState.Added)
                         {
-                            if (entry.State != EntityState.Deleted)
-                            {
-                                entry.State = EntityState.Unchanged;
-                            }
+                            entry.State = EntityState.Detached;
                         }
                     }
 
@@ -158,20 +155,14 @@ namespace SudokuCollective.Repos
                 query = await _context
                     .Games
                     .Include(g => g.SudokuMatrix)
-                        .ThenInclude(g => g.Difficulty)
+                    .ThenInclude(g => g.Difficulty)
                     .Include(g => g.SudokuMatrix)
-                        .ThenInclude(g => g.SudokuCells)
+                    .ThenInclude(g => g.SudokuCells)
                     .Include(g => g.SudokuSolution)
                     .FirstOrDefaultAsync(g => g.Id == id);
 
                 if (query != null)
                 {
-                    query.SudokuMatrix.SudokuCells = query
-                        .SudokuMatrix
-                        .SudokuCells
-                        .OrderBy(c => c.Index)
-                        .ToList();
-
                     result.IsSuccess = true;
                     result.Object = query;
                 }
@@ -202,23 +193,14 @@ namespace SudokuCollective.Repos
                 query = await _context
                     .Games
                     .Include(g => g.SudokuMatrix)
-                        .ThenInclude(g => g.Difficulty)
+                    .ThenInclude(g => g.Difficulty)
                     .Include(g => g.SudokuMatrix)
-                        .ThenInclude(g => g.SudokuCells)
+                    .ThenInclude(g => g.SudokuCells)
                     .Include(g => g.SudokuSolution)
                     .ToListAsync();
 
                 if (query.Count > 0)
                 {
-                    foreach (var game in query)
-                    {
-                        game.SudokuMatrix.SudokuCells = game
-                            .SudokuMatrix
-                            .SudokuCells
-                            .OrderBy(c => c.Index)
-                            .ToList();
-                    }
-
                     result.IsSuccess = true;
                     result.Objects = query
                         .ConvertAll(g => (IDomainEntity)g)
@@ -259,21 +241,14 @@ namespace SudokuCollective.Repos
                 query = await _context
                     .Games
                     .Include(g => g.SudokuMatrix)
-                        .ThenInclude(g => g.Difficulty)
+                    .ThenInclude(g => g.Difficulty)
                     .Include(g => g.SudokuMatrix)
-                        .ThenInclude(g => g.SudokuCells)
+                    .ThenInclude(g => g.SudokuCells)
                     .Include(g => g.SudokuSolution)
                     .FirstOrDefaultAsync(g => g.Id == id && g.AppId == appid);
 
                 if (query != null)
                 {
-                    query.SudokuMatrix.SudokuCells = query
-                        .SudokuMatrix
-                        .SudokuCells
-                        .Where(c => c.Id != 0)
-                        .OrderBy(c => c.Index)
-                        .ToList();
-
                     result.IsSuccess = true;
                     result.Object = query;
                 }
@@ -312,25 +287,15 @@ namespace SudokuCollective.Repos
                 query = await _context
                     .Games
                     .Include(g => g.SudokuMatrix)
-                        .ThenInclude(g => g.Difficulty)
+                    .ThenInclude(g => g.Difficulty)
                     .Include(g => g.SudokuMatrix)
-                        .ThenInclude(g => g.SudokuCells)
+                    .ThenInclude(g => g.SudokuCells)
                     .Include(g => g.SudokuSolution)
                     .Where(g => g.AppId == appid)
                     .ToListAsync();
 
                 if (query.Count > 0)
                 {
-                    foreach (var game in query)
-                    {
-                        game.SudokuMatrix.SudokuCells = game
-                            .SudokuMatrix
-                            .SudokuCells
-                            .Where(c => c.Id != 0)
-                            .OrderBy(c => c.Index)
-                            .ToList();
-                    }
-
                     result.IsSuccess = true;
                     result.Objects = query.ConvertAll(g => (IDomainEntity)g);
                 }
@@ -367,27 +332,20 @@ namespace SudokuCollective.Repos
                 var query = new Game();
 
                 query = await _context
-                    .Games
-                    .Include(g => g.SudokuMatrix)
-                        .ThenInclude(g => g.Difficulty)
-                    .Include(g => g.SudokuMatrix)
-                        .ThenInclude(g => g.SudokuCells)
-                    .Include(g => g.SudokuSolution)
-                    .Where(g => g.AppId == appid)
-                    .FirstOrDefaultAsync(predicate:
-                        g => g.Id == gameid
-                        && g.AppId == appid
-                        && g.UserId == userid);
+                .Games
+                .Include(g => g.SudokuMatrix)
+                .ThenInclude(g => g.Difficulty)
+                .Include(g => g.SudokuMatrix)
+                .ThenInclude(g => g.SudokuCells)
+                .Include(g => g.SudokuSolution)
+                .Where(g => g.AppId == appid)
+                .FirstOrDefaultAsync(predicate:
+                    g => g.Id == gameid
+                    && g.AppId == appid
+                    && g.UserId == userid);
 
                 if (query != null)
                 {
-                    query.SudokuMatrix.SudokuCells = query
-                        .SudokuMatrix
-                        .SudokuCells
-                        .Where(c => c.Id != 0)
-                        .OrderBy(c => c.Index)
-                        .ToList();
-
                     result.IsSuccess = true;
                     result.Object = query;
                 }
@@ -428,25 +386,15 @@ namespace SudokuCollective.Repos
                     query = await _context
                         .Games
                         .Include(g => g.SudokuMatrix)
-                            .ThenInclude(g => g.Difficulty)
+                        .ThenInclude(g => g.Difficulty)
                         .Include(g => g.SudokuMatrix)
-                            .ThenInclude(g => g.SudokuCells)
+                        .ThenInclude(g => g.SudokuCells)
                         .Include(g => g.SudokuSolution)
                         .Where(g => g.AppId == appid && g.UserId == userid)
                         .ToListAsync();
 
                     if (query.Count > 0)
                     {
-                        foreach (var game in query)
-                        {
-                            game.SudokuMatrix.SudokuCells = game
-                                .SudokuMatrix
-                                .SudokuCells
-                                .Where(c => c.Id != 0)
-                                .OrderBy(c => c.Index)
-                                .ToList();
-                        }
-
                         result.IsSuccess = true;
                         result.Objects = query.ConvertAll(g => (IDomainEntity)g);
                     }
@@ -492,15 +440,8 @@ namespace SudokuCollective.Repos
                 if (await _context.Games.AnyAsync(g => g.Id == entity.Id))
                 {
                     entity.DateUpdated = DateTime.UtcNow;
-
-                    try
-                    {
-                        _context.Update(entity);
-                    }
-                    catch
-                    {
-                        _context.Attach(entity);
-                    }
+                    
+                    _context.Update(entity);
 
                     var trackedEntities = new List<string>();
 
@@ -564,12 +505,9 @@ namespace SudokuCollective.Repos
                             {
                                 entry.State = EntityState.Added;
                             }
-                            else
+                            else if (entry.State != EntityState.Deleted || entry.State != EntityState.Modified || entry.State != EntityState.Added)
                             {
-                                if (entry.State != EntityState.Deleted)
-                                {
-                                    entry.State = EntityState.Unchanged;
-                                }
+                                entry.State = EntityState.Detached;
                             }
                         }
 
@@ -677,12 +615,9 @@ namespace SudokuCollective.Repos
                             {
                                 entry.State = EntityState.Added;
                             }
-                            else
+                            else if (entry.State != EntityState.Deleted || entry.State != EntityState.Modified || entry.State != EntityState.Added)
                             {
-                                if (entry.State != EntityState.Deleted)
-                                {
-                                    entry.State = EntityState.Unchanged;
-                                }
+                                entry.State = EntityState.Detached;
                             }
                         }
 
@@ -788,12 +723,9 @@ namespace SudokuCollective.Repos
                             {
                                 entry.State = EntityState.Added;
                             }
-                            else
+                            else if (entry.State != EntityState.Deleted || entry.State != EntityState.Modified || entry.State != EntityState.Added)
                             {
-                                if (entry.State != EntityState.Deleted)
-                                {
-                                    entry.State = EntityState.Unchanged;
-                                }
+                                entry.State = EntityState.Detached;
                             }
                         }
 
@@ -898,12 +830,9 @@ namespace SudokuCollective.Repos
                             {
                                 entry.State = EntityState.Added;
                             }
-                            else
+                            else if (entry.State != EntityState.Deleted || entry.State != EntityState.Modified || entry.State != EntityState.Added)
                             {
-                                if (entry.State != EntityState.Deleted)
-                                {
-                                    entry.State = EntityState.Unchanged;
-                                }
+                                entry.State = EntityState.Detached;
                             }
                         }
 
@@ -948,13 +877,13 @@ namespace SudokuCollective.Repos
                     query = await _context
                         .Games
                         .Include(g => g.SudokuMatrix)
-                            .ThenInclude(g => g.Difficulty)
+                        .ThenInclude(g => g.Difficulty)
                         .Include(g => g.SudokuMatrix)
-                            .ThenInclude(g => g.SudokuCells)
+                        .ThenInclude(g => g.SudokuCells)
                         .FirstOrDefaultAsync(predicate:
-                            g => g.Id == gameid
-                            && g.AppId == appid
-                            && g.UserId == userid);
+                        g => g.Id == gameid
+                        && g.AppId == appid
+                        && g.UserId == userid);
 
                     _context.Remove(query);
 
@@ -1020,12 +949,9 @@ namespace SudokuCollective.Repos
                             {
                                 entry.State = EntityState.Added;
                             }
-                            else
+                            else if (entry.State != EntityState.Deleted || entry.State != EntityState.Modified || entry.State != EntityState.Added)
                             {
-                                if (entry.State != EntityState.Deleted)
-                                {
-                                    entry.State = EntityState.Unchanged;
-                                }
+                                entry.State = EntityState.Detached;
                             }
                         }
 

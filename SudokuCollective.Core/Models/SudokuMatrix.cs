@@ -553,14 +553,16 @@ namespace SudokuCollective.Core.Models
                 }
 
                 SudokuCells.Add(
-                    new SudokuCell(
-                        i,
-                        columnIndexer,
-                        regionIndexer,
-                        rowIndexer,
-                        Id
-                    )
-                );
+                    new SudokuCell
+                    {
+                        Index = i,
+                        Column = columnIndexer,
+                        Region = regionIndexer,
+                        Row = rowIndexer,
+                        SudokuMatrixId = Id,
+                        SudokuMatrix = this
+                    }
+                ); ;
 
                 SudokuCells.ToList()[i - 1].SudokuCellEvent += HandleSudokuCellEvent;
 

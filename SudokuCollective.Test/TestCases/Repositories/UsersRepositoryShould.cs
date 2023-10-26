@@ -481,8 +481,7 @@ namespace SudokuCollective.Test.TestCases.Repositories
             var ids = context
                 .Roles
                 .Where(r => r.Users
-                    .Any(ur => ur.UserId == userId
-                        && ur.Role.RoleLevel == RoleLevel.USER))
+                .Any(ur => ur.UserId == userId && ur.Role.RoleLevel == RoleLevel.USER))
                 .ToList()
                 .Select(r => r.Id)
                 .ToList();

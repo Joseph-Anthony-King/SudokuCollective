@@ -123,9 +123,9 @@ namespace SudokuCollective.Test.TestCases.Repositories
             // Arrange
             var game = context
                 .Games
-                    .Include(g => g.SudokuMatrix)
-                        .ThenInclude(m => m.SudokuCells)
-                    .Include(g => g.SudokuSolution)
+                .Include(g => g.SudokuMatrix)
+                .ThenInclude(m => m.SudokuCells)
+                .Include(g => g.SudokuSolution)
                 .FirstOrDefault(g => g.Id == 1);
 
             // Act
@@ -157,11 +157,11 @@ namespace SudokuCollective.Test.TestCases.Repositories
             // Arrange
             var game = context.Games
                 .Include(g => g.User)
-                    .ThenInclude(u => u.Apps)
+                .ThenInclude(u => u.Apps)
                 .Include(g => g.User)
-                    .ThenInclude(u => u.Roles)
+                .ThenInclude(u => u.Roles)
                 .Include(g => g.SudokuMatrix)
-                    .ThenInclude(m => m.SudokuCells)
+                .ThenInclude(m => m.SudokuCells)
                 .Include(g => g.SudokuSolution)
                 .FirstOrDefault(g => g.Id == 1);
 

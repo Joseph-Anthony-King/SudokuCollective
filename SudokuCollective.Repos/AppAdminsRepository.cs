@@ -77,12 +77,9 @@ namespace SudokuCollective.Repos
                         {
                             entry.State = EntityState.Added;
                         }
-                        else
+                        else if (entry.State != EntityState.Deleted || entry.State != EntityState.Modified || entry.State != EntityState.Added)
                         {
-                            if (entry.State != EntityState.Deleted)
-                            {
-                                entry.State = EntityState.Unchanged;
-                            }
+                            entry.State = EntityState.Detached;
                         }
                     }
 
@@ -185,14 +182,7 @@ namespace SudokuCollective.Repos
             {
                 if (await _context.AppAdmins.AnyAsync(d => d.Id == entity.Id))
                 {
-                    try
-                    {
-                        _context.Update(entity);
-                    }
-                    catch
-                    {
-                        _context.Attach(entity);
-                    }
+                    _context.Update(entity);
 
                     var trackedEntities = new List<string>();
 
@@ -217,12 +207,9 @@ namespace SudokuCollective.Repos
                             {
                                 entry.State = EntityState.Added;
                             }
-                            else
+                            else if (entry.State != EntityState.Deleted || entry.State != EntityState.Modified || entry.State != EntityState.Added)
                             {
-                                if (entry.State != EntityState.Deleted)
-                                {
-                                    entry.State = EntityState.Unchanged;
-                                }
+                                entry.State = EntityState.Detached;
                             }
                         }
 
@@ -307,12 +294,9 @@ namespace SudokuCollective.Repos
                             {
                                 entry.State = EntityState.Added;
                             }
-                            else
+                            else if (entry.State != EntityState.Deleted || entry.State != EntityState.Modified || entry.State != EntityState.Added)
                             {
-                                if (entry.State != EntityState.Deleted)
-                                {
-                                    entry.State = EntityState.Unchanged;
-                                }
+                                entry.State = EntityState.Detached;
                             }
                         }
 
@@ -378,12 +362,9 @@ namespace SudokuCollective.Repos
                             {
                                 entry.State = EntityState.Added;
                             }
-                            else
+                            else if (entry.State != EntityState.Deleted || entry.State != EntityState.Modified || entry.State != EntityState.Added)
                             {
-                                if (entry.State != EntityState.Deleted)
-                                {
-                                    entry.State = EntityState.Unchanged;
-                                }
+                                entry.State = EntityState.Detached;
                             }
                         }
 
@@ -468,12 +449,9 @@ namespace SudokuCollective.Repos
                             {
                                 entry.State = EntityState.Added;
                             }
-                            else
+                            else if (entry.State != EntityState.Deleted || entry.State != EntityState.Modified || entry.State != EntityState.Added)
                             {
-                                if (entry.State != EntityState.Deleted)
-                                {
-                                    entry.State = EntityState.Unchanged;
-                                }
+                                entry.State = EntityState.Detached;
                             }
                         }
 

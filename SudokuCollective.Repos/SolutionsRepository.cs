@@ -78,12 +78,9 @@ namespace SudokuCollective.Repos
                         {
                             entry.State = EntityState.Added;
                         }
-                        else
+                        else if (entry.State != EntityState.Deleted || entry.State != EntityState.Modified || entry.State != EntityState.Added)
                         {
-                            if (entry.State != EntityState.Deleted)
-                            {
-                                entry.State = EntityState.Unchanged;
-                            }
+                            entry.State = EntityState.Detached;
                         }
                     }
 
@@ -123,8 +120,8 @@ namespace SudokuCollective.Repos
 			try
 			{
 				var query = await _context
-						.SudokuSolutions
-						.FirstOrDefaultAsync(s => s.Id == id);
+					.SudokuSolutions
+					.FirstOrDefaultAsync(s => s.Id == id);
 
 				if (query == null)
 				{
@@ -155,8 +152,8 @@ namespace SudokuCollective.Repos
 			try
 			{
 				List<SudokuSolution> query = await _context
-						.SudokuSolutions
-						.ToListAsync();
+					.SudokuSolutions
+					.ToListAsync();
 
 				if (query.Count == 0)
 				{
@@ -166,8 +163,8 @@ namespace SudokuCollective.Repos
 				{
 					result.IsSuccess = true;
 					result.Objects = query
-							.ConvertAll(s => (IDomainEntity)s)
-							.ToList();
+						.ConvertAll(s => (IDomainEntity)s)
+						.ToList();
 				}
 
 				return result;
@@ -218,9 +215,9 @@ namespace SudokuCollective.Repos
                         {
                             entry.State = EntityState.Added;
                         }
-                        else
+                        else if (entry.State != EntityState.Deleted || entry.State != EntityState.Modified || entry.State != EntityState.Added)
                         {
-                            entry.State = EntityState.Modified;
+                            entry.State = EntityState.Detached;
                         }
                     }
 
@@ -251,14 +248,14 @@ namespace SudokuCollective.Repos
 			try
 			{
 				var query = await _context
-						.SudokuSolutions
-						.Where(s => s.DateSolved > DateTime.MinValue)
-						.ToListAsync();
+					.SudokuSolutions
+					.Where(s => s.DateSolved > DateTime.MinValue)
+					.ToListAsync();
 
 				result.IsSuccess = true;
 				result.Objects = query
-						.ConvertAll(s => (IDomainEntity)s)
-						.ToList();
+					.ConvertAll(s => (IDomainEntity)s)
+					.ToList();
 
 				return result;
 			}
@@ -289,14 +286,7 @@ namespace SudokuCollective.Repos
 			{
 				if (await _context.SudokuSolutions.AnyAsync(r => r.Id == entity.Id))
 				{
-					try
-					{
-						_context.Update(entity);
-					}
-					catch
-					{
-						_context.Attach(entity);
-                    }
+					_context.Update(entity);
 
                     var trackedEntities = new List<string>();
 
@@ -327,12 +317,9 @@ namespace SudokuCollective.Repos
                             {
                                 entry.State = EntityState.Added;
                             }
-                            else
+                            else if (entry.State != EntityState.Deleted || entry.State != EntityState.Modified || entry.State != EntityState.Added)
                             {
-                                if (entry.State != EntityState.Deleted)
-                                {
-                                    entry.State = EntityState.Unchanged;
-                                }
+                                entry.State = EntityState.Detached;
                             }
                         }
 
@@ -421,12 +408,9 @@ namespace SudokuCollective.Repos
                             {
                                 entry.State = EntityState.Added;
                             }
-                            else
+                            else if (entry.State != EntityState.Deleted || entry.State != EntityState.Modified || entry.State != EntityState.Added)
                             {
-                                if (entry.State != EntityState.Deleted)
-                                {
-                                    entry.State = EntityState.Unchanged;
-                                }
+                                entry.State = EntityState.Detached;
                             }
                         }
 
@@ -499,12 +483,9 @@ namespace SudokuCollective.Repos
                             {
                                 entry.State = EntityState.Added;
                             }
-                            else
+                            else if (entry.State != EntityState.Deleted || entry.State != EntityState.Modified || entry.State != EntityState.Added)
                             {
-                                if (entry.State != EntityState.Deleted)
-                                {
-                                    entry.State = EntityState.Unchanged;
-                                }
+                                entry.State = EntityState.Detached;
                             }
                         }
 
@@ -596,12 +577,9 @@ namespace SudokuCollective.Repos
                             {
                                 entry.State = EntityState.Added;
                             }
-                            else
+                            else if (entry.State != EntityState.Deleted || entry.State != EntityState.Modified || entry.State != EntityState.Added)
                             {
-                                if (entry.State != EntityState.Deleted)
-                                {
-                                    entry.State = EntityState.Unchanged;
-                                }
+                                entry.State = EntityState.Detached;
                             }
                         }
 
@@ -627,7 +605,7 @@ namespace SudokuCollective.Repos
 		}
 
 		public async Task<bool> HasEntityAsync(int id) =>
-				await _context.SudokuSolutions.AnyAsync(d => d.Id == id);
+			await _context.SudokuSolutions.AnyAsync(d => d.Id == id);
 		#endregion
 	}
 }
