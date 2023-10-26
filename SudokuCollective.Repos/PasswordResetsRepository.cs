@@ -68,17 +68,30 @@ namespace SudokuCollective.Repos
                         break;
                     }
 
-                    if (dbEntry is UserApp)
+                    if (dbEntry is PasswordReset)
 					{
-						entry.State = EntityState.Modified;
-					}
-					else if (dbEntry is UserRole)
-					{
-						entry.State = EntityState.Modified;
+						if (dbEntry.Id == entity.Id)
+						{
+							entry.State = EntityState.Added;
+						}
+						else
+                        {
+                            entry.State = EntityState.Unchanged;
+                        }
 					}
 					else
-					{
-                        // Otherwise do nothing...
+                    {
+                        if (dbEntry.Id == 0)
+                        {
+                            entry.State = EntityState.Added;
+                        }
+                        else
+                        {
+                            if (entry.State != EntityState.Deleted)
+                            {
+                                entry.State = EntityState.Unchanged;
+                            }
+                        }
                     }
 
                     // Note that this entry is tracked for the update
@@ -202,17 +215,30 @@ namespace SudokuCollective.Repos
                             break;
                         }
 
-                        if (dbEntry is UserApp)
-						{
-							entry.State = EntityState.Modified;
-						}
-						else if (dbEntry is UserRole)
-						{
-							entry.State = EntityState.Modified;
-						}
-						else
-						{
-                            // Otherwise do nothing...
+                        if (dbEntry is PasswordReset)
+                        {
+                            if (dbEntry.Id == entity.Id)
+                            {
+                                entry.State = EntityState.Modified;
+                            }
+                            else
+                            {
+                                entry.State = EntityState.Unchanged;
+                            }
+                        }
+                        else
+                        {
+                            if (dbEntry.Id == 0)
+                            {
+                                entry.State = EntityState.Added;
+                            }
+                            else
+                            {
+                                if (entry.State != EntityState.Deleted)
+                                {
+                                    entry.State = EntityState.Unchanged;
+                                }
+                            }
                         }
 
                         // Note that this entry is tracked for the update
@@ -274,17 +300,30 @@ namespace SudokuCollective.Repos
                             break;
                         }
 
-                        if (dbEntry is UserApp)
-						{
-							entry.State = EntityState.Modified;
-						}
-						else if (dbEntry is UserRole)
-						{
-							entry.State = EntityState.Modified;
-						}
-						else
-						{
-                            // Otherwise do nothing...
+                        if (dbEntry is PasswordReset)
+                        {
+                            if (dbEntry.Id == entity.Id)
+                            {
+                                entry.State = EntityState.Deleted;
+                            }
+                            else
+                            {
+                                entry.State = EntityState.Unchanged;
+                            }
+                        }
+                        else
+                        {
+                            if (dbEntry.Id == 0)
+                            {
+                                entry.State = EntityState.Added;
+                            }
+                            else
+                            {
+                                if (entry.State != EntityState.Deleted)
+                                {
+                                    entry.State = EntityState.Unchanged;
+                                }
+                            }
                         }
 
                         // Note that this entry is tracked for the update

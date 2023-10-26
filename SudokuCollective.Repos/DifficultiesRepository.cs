@@ -61,17 +61,30 @@ namespace SudokuCollective.Repos
                         break;
                     }
 
-                    if (dbEntry is UserApp)
+                    if (dbEntry is Difficulty)
                     {
-                        entry.State = EntityState.Modified;
-                    }
-                    else if (dbEntry is UserRole)
-                    {
-                        entry.State = EntityState.Modified;
+                        if (dbEntry.Id == entity.Id)
+                        {
+                            entry.State = EntityState.Added;
+                        }
+                        else
+                        {
+                            entry.State = EntityState.Unchanged;
+                        }
                     }
                     else
                     {
-                        // Otherwise do nothing...
+                        if (dbEntry.Id == 0)
+                        {
+                            entry.State = EntityState.Added;
+                        }
+                        else
+                        {
+                            if (entry.State != EntityState.Deleted)
+                            {
+                                entry.State = EntityState.Unchanged;
+                            }
+                        }
                     }
 
                     // Note that this entry is tracked for the update
@@ -207,17 +220,31 @@ namespace SudokuCollective.Repos
                             break;
                         }
 
-                        if (dbEntry is UserApp)
+
+                        if (dbEntry is Difficulty)
                         {
-                            entry.State = EntityState.Modified;
-                        }
-                        else if (dbEntry is UserRole)
-                        {
-                            entry.State = EntityState.Modified;
+                            if (dbEntry.Id == entity.Id)
+                            {
+                                entry.State = EntityState.Modified;
+                            }
+                            else
+                            {
+                                entry.State = EntityState.Unchanged;
+                            }
                         }
                         else
                         {
-                            // Otherwise do nothing...
+                            if (dbEntry.Id == 0)
+                            {
+                                entry.State = EntityState.Added;
+                            }
+                            else
+                            {
+                                if (entry.State != EntityState.Deleted)
+                                {
+                                    entry.State = EntityState.Unchanged;
+                                }
+                            }
                         }
 
                         // Note that this entry is tracked for the update
@@ -275,35 +302,52 @@ namespace SudokuCollective.Repos
 
                         return result;
                     }
-                }
 
-                var trackedEntities = new List<string>();
+                    var trackedEntities = new List<string>();
 
-                foreach (var entry in _context.ChangeTracker.Entries())
-                {
-                    var dbEntry = (IDomainEntity)entry.Entity;
-
-                    // If the entity is already being tracked for the update... break
-                    if (trackedEntities.Contains(dbEntry.ToString()))
+                    foreach (var entry in _context.ChangeTracker.Entries())
                     {
-                        break;
-                    }
+                        var dbEntry = (IDomainEntity)entry.Entity;
 
-                    if (dbEntry is UserApp)
-                    {
-                        entry.State = EntityState.Modified;
-                    }
-                    else if (dbEntry is UserRole)
-                    {
-                        entry.State = EntityState.Modified;
-                    }
-                    else
-                    {
-                        // Otherwise do nothing...
-                    }
+                        // If the entity is already being tracked for the update... break
+                        if (trackedEntities.Contains(dbEntry.ToString()))
+                        {
+                            break;
+                        }
 
-                    // Note that this entry is tracked for the update
-                    trackedEntities.Add(dbEntry.ToString());
+                        if (dbEntry is Difficulty)
+                        {
+                            if (dbEntry.Id == entity.Id)
+                            {
+                                entry.State = EntityState.Modified;
+                            }
+                            else
+                            {
+                                entry.State = EntityState.Unchanged;
+                            }
+                        }
+                        else if (dbEntry is SudokuSolution)
+                        {
+                            entry.State = EntityState.Modified;
+                        }
+                        else
+                        {
+                            if (dbEntry.Id == 0)
+                            {
+                                entry.State = EntityState.Added;
+                            }
+                            else
+                            {
+                                if (entry.State != EntityState.Deleted)
+                                {
+                                    entry.State = EntityState.Unchanged;
+                                }
+                            }
+                        }
+
+                        // Note that this entry is tracked for the update
+                        trackedEntities.Add(dbEntry.ToString());
+                    }
                 }
 
                 await _context.SaveChangesAsync();
@@ -363,13 +407,49 @@ namespace SudokuCollective.Repos
                             break;
                         }
 
-                        if (dbEntry is UserApp)
+                        if (dbEntry is Difficulty)
                         {
-                            entry.State = EntityState.Modified;
+                            if (dbEntry.Id == entity.Id)
+                            {
+                                entry.State = EntityState.Deleted;
+                            }
+                            else
+                            {
+                                entry.State = EntityState.Unchanged;
+                            }
                         }
-                        else if (dbEntry is UserRole)
+                        else if (dbEntry is Game game)
                         {
-                            entry.State = EntityState.Modified;
+                            if (game.SudokuMatrix.DifficultyId == entity.Id)
+                            {
+                                entry.State = EntityState.Deleted;
+                            }
+                            else
+                            {
+                                entry.State = EntityState.Unchanged;
+                            }
+                        }
+                        else if (dbEntry is SudokuMatrix matrix)
+                        {
+                            if (matrix.DifficultyId == entity.Id)
+                            {
+                                entry.State = EntityState.Deleted;
+                            }
+                            else
+                            {
+                                entry.State = EntityState.Unchanged;
+                            }
+                        }
+                        else if (dbEntry is SudokuCell cell)
+                        {
+                            if (cell.SudokuMatrix.DifficultyId == entity.Id)
+                            {
+                                entry.State = EntityState.Deleted;
+                            }
+                            else
+                            {
+                                entry.State = EntityState.Unchanged;
+                            }
                         }
                         else if (dbEntry is SudokuSolution)
                         {
@@ -377,7 +457,17 @@ namespace SudokuCollective.Repos
                         }
                         else
                         {
-                            // Otherwise do nothing...
+                            if (dbEntry.Id == 0)
+                            {
+                                entry.State = EntityState.Added;
+                            }
+                            else
+                            {
+                                if (entry.State != EntityState.Deleted)
+                                {
+                                    entry.State = EntityState.Unchanged;
+                                }
+                            }
                         }
 
                         // Note that this entry is tracked for the update
@@ -452,39 +542,69 @@ namespace SudokuCollective.Repos
 
                         return result;
                     }
-                }
 
-                var trackedEntities = new List<string>();
+                    var trackedEntities = new List<string>();
 
-                foreach (var entry in _context.ChangeTracker.Entries())
-                {
-                    var dbEntry = (IDomainEntity)entry.Entity;
+                    foreach (var entry in _context.ChangeTracker.Entries())
+                    {
+                        var dbEntry = (IDomainEntity)entry.Entity;
 
-                    // If the entity is already being tracked for the update... break
-                    if (trackedEntities.Contains(dbEntry.ToString()))
-                    {
-                        break;
-                    }
+                        // If the entity is already being tracked for the update... break
+                        if (trackedEntities.Contains(dbEntry.ToString()))
+                        {
+                            break;
+                        }
 
-                    if (dbEntry is UserApp)
-                    {
-                        entry.State = EntityState.Modified;
-                    }
-                    else if (dbEntry is UserRole)
-                    {
-                        entry.State = EntityState.Modified;
-                    }
-                    else if (dbEntry is SudokuSolution)
-                    {
-                        entry.State = EntityState.Modified;
-                    }
-                    else
-                    {
-                        // Otherwise do nothing...
-                    }
+                        if (dbEntry is Difficulty)
+                        {
+                            if (dbEntry.Id == entity.Id)
+                            {
+                                entry.State = EntityState.Deleted;
+                            }
+                        }
+                        else if (dbEntry is Game game)
+                        {
+                            if (game.SudokuMatrix.DifficultyId == entity.Id)
+                            {
+                                entry.State = EntityState.Deleted;
+                            }
+                        }
+                        else if (dbEntry is SudokuMatrix matrix)
+                        {
+                            if (matrix.DifficultyId == entity.Id)
+                            {
+                                entry.State = EntityState.Deleted;
+                            }
+                        }
+                        else if (dbEntry is SudokuCell cell)
+                        {
+                            if (cell.SudokuMatrix.DifficultyId == entity.Id)
+                            {
+                                entry.State = EntityState.Deleted;
+                            }
+                        }
+                        else if (dbEntry is SudokuSolution)
+                        {
+                            entry.State = EntityState.Modified;
+                        }
+                        else
+                        {
+                            if (dbEntry.Id == 0)
+                            {
+                                entry.State = EntityState.Added;
+                            }
+                            else
+                            {
+                                if (entry.State != EntityState.Deleted)
+                                {
+                                    entry.State = EntityState.Unchanged;
+                                }
+                            }
+                        }
 
-                    // Note that this entry is tracked for the update
-                    trackedEntities.Add(dbEntry.ToString());
+                        // Note that this entry is tracked for the update
+                        trackedEntities.Add(dbEntry.ToString());
+                    }
                 }
 
                 await _context.SaveChangesAsync();

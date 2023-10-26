@@ -1690,7 +1690,7 @@ namespace SudokuCollective.Data.Services
                 {
                     var user = (User)userResponse.Object;
 
-                    if (!user.IsEmailConfirmed)
+                    if (!user.IsEmailConfirmed || user.ReceivedRequestToUpdateEmail)
                     {
                         cacheServiceResponse = await _cacheService.GetWithCacheAsync<App>(
                             _appsRepository,
@@ -1966,6 +1966,10 @@ namespace SudokuCollective.Data.Services
                             
                             _ = await _emailConfirmationsRepository.DeleteAsync(emailConfirmation);
 
+                            user.ReceivedRequestToUpdateEmail = false;
+
+                            _ = await _usersRepository.UpdateAsync(user);
+
                             result.Message = UsersMessages.EmailConfirmedMessage;
                             result.Payload.Add(confirmEmailResult);
 
@@ -2151,6 +2155,10 @@ namespace SudokuCollective.Data.Services
                             }
 
                             _ = await _emailConfirmationsRepository.DeleteAsync(emailConfirmation);
+
+                            user.ReceivedRequestToUpdateEmail = false;
+
+                            _ = await _usersRepository.UpdateAsync(user);
 
                             result.Message = UsersMessages.EmailConfirmedMessage;
                             result.Payload.Add(confirmEmailResult);
@@ -3393,6 +3401,7 @@ namespace SudokuCollective.Data.Services
                     {
                         result.Message = UsersMessages.ResentPasswordResetRequestMessage;
                     }
+                    result.Payload.Add(user.Cast<UserDTO>());
 
                     return result;
                 }
