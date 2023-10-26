@@ -240,12 +240,15 @@ namespace SudokuCollective.Repos
 					.FirstOrDefaultAsync(a => a.Id == id);
 
 				if (query != null)
-				{
-					query.UserApps = await _context.UsersApps
-						.Where(ua => ua.AppId == query.Id)
-						.ToListAsync();
+                {
+                    query.UserApps = await _context.UsersApps
+                        .Where(ua => ua.AppId == query.Id)
+                        .Include(ua => ua.User)
+                        .ThenInclude(u => u.Roles)
+                        .ThenInclude(r => r.Role)
+                        .ToListAsync();
 
-					foreach (var userApp in query.UserApps)
+                    foreach (var userApp in query.UserApps)
 					{
 						userApp.User = await _context.Users
 							.Where(u => u.Id == userApp.UserId)
@@ -306,28 +309,26 @@ namespace SudokuCollective.Repos
 
 			try
             {
-                var query = await _context
-                    .Apps
-                    .Include(a => a.SMTPServerSettings)
-                    .FirstOrDefaultAsync(a => a.License.ToLower().Equals(license.ToLower()));
+				var apps = await _context
+					.Apps
+					.Include(a => a.SMTPServerSettings)
+					.ToListAsync();
+
+				var query = apps
+					.Where(a => a.License.ToLower() == license.ToLower())
+					.FirstOrDefault();
 
 				if (query != null)
-				{
-					query.UserApps = await _context.UsersApps
+                {
+                    query.UserApps = await _context.UsersApps
+                        .Where(ua => ua.AppId == query.Id)
 						.Include(ua => ua.User)
 						.ThenInclude(u => u.Roles)
-						.Where(ua => ua.AppId == query.Id)
-						.ToListAsync();
+						.ThenInclude(r => r.Role)
+                        .ToListAsync();
 
-					foreach (var userApp in query.UserApps)
+                    foreach (var userApp in query.UserApps)
 					{
-						foreach (var userRole in userApp.User.Roles)
-						{
-							userRole.Role = await _context
-								.Roles
-								.FirstOrDefaultAsync(r => r.Id == userRole.RoleId);
-						}
-
 						userApp.User.Games = new List<Game>();
 
 						userApp.User.Games = await _context
