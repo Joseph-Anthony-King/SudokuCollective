@@ -716,7 +716,9 @@ namespace SudokuCollective.Api.Controllers.V1
                 {
                     emailtTemplatePath = Path.Combine(_hostEnvironment.WebRootPath, "/Content/EmailTemplates/confirm-new-email-inlined.html");
 
-                    emailtTemplatePath = string.Format("../SudokuCollective.Api{0}", emailtTemplatePath);
+                    var currentDirectory = string.Format("{0}{1}", AppContext.BaseDirectory, "{0}");
+
+                    emailtTemplatePath = string.Format(currentDirectory, emailtTemplatePath);
                 }
                 else
                 {
@@ -929,7 +931,9 @@ namespace SudokuCollective.Api.Controllers.V1
                 {
                     emailtTemplatePath = Path.Combine(_hostEnvironment.WebRootPath, "/Content/EmailTemplates/password-reset-requested-inlined.html");
 
-                    emailtTemplatePath = string.Format("../SudokuCollective.Api{0}", emailtTemplatePath);
+                    var currentDirectory = string.Format("{0}{1}", AppContext.BaseDirectory, "{0}");
+
+                    emailtTemplatePath = string.Format(currentDirectory, emailtTemplatePath);
                 }
                 else
                 {
@@ -1007,7 +1011,9 @@ namespace SudokuCollective.Api.Controllers.V1
                 {
                     emailtTemplatePath = Path.Combine(_hostEnvironment.WebRootPath, "/Content/EmailTemplates/password-reset-requested-inlined.html");
 
-                    emailtTemplatePath = string.Format("../SudokuCollective.Api{0}", emailtTemplatePath);
+                    var currentDirectory = string.Format("{0}{1}", AppContext.BaseDirectory, "{0}");
+
+                    emailtTemplatePath = string.Format(currentDirectory, emailtTemplatePath);
                 }
                 else
                 {
