@@ -197,9 +197,49 @@ namespace SudokuCollective.Data.Services
                             new UserApp()
                             {
                                 User = user,
+                                UserId = user.Id,
                                 App = app,
                                 AppId = app.Id
                             });
+
+                        var rolesResponse = await _rolesRepository.GetAllAsync();
+
+                        user.Roles.Add(
+                            new UserRole()
+                            {
+                                User = user,
+                                UserId = user.Id,
+                                Role = rolesResponse
+                                    .Objects
+                                    .ConvertAll(o => (Role)o)
+                                    .Where(r => r.RoleLevel == RoleLevel.USER)
+                                    .FirstOrDefault(),
+                                RoleId = rolesResponse
+                                    .Objects
+                                    .ConvertAll(o => (Role)o)
+                                    .Where(r => r.RoleLevel == RoleLevel.USER)
+                                    .FirstOrDefault().Id,
+                            });
+
+                        if (app.Id == 1)
+                        {
+                            user.Roles.Add(
+                                new UserRole()
+                                {
+                                    User = user,
+                                    UserId = user.Id,
+                                    Role = rolesResponse
+                                        .Objects
+                                        .ConvertAll(o => (Role)o)
+                                        .Where(r => r.RoleLevel == RoleLevel.ADMIN)
+                                        .FirstOrDefault(),
+                                    RoleId = rolesResponse
+                                        .Objects
+                                        .ConvertAll(o => (Role)o)
+                                        .Where(r => r.RoleLevel == RoleLevel.ADMIN)
+                                        .FirstOrDefault().Id,
+                                });
+                        }
 
                         var userResponse = await _cacheService.AddWithCacheAsync<User>(
                             _usersRepository,
