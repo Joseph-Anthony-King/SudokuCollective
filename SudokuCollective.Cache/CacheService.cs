@@ -66,7 +66,6 @@ namespace SudokuCollective.Cache
                     }
                     else if (response.Object is App app)
                     {
-
                         await cache.SetAsync(
                             string.Format(cacheKey, response.Object.Id),
                             encodedItem,
@@ -80,7 +79,6 @@ namespace SudokuCollective.Cache
                     }
                     else if (response.Object is Difficulty)
                     {
-
                         await cache.SetAsync(
                             string.Format(cacheKey, response.Object.Id),
                             encodedItem,
@@ -93,7 +91,6 @@ namespace SudokuCollective.Cache
                     }
                     else
                     {
-
                         await cache.SetAsync(
                             string.Format(cacheKey, response.Object.Id),
                             encodedItem,
@@ -628,8 +625,9 @@ namespace SudokuCollective.Cache
                     response = new RepositoryResponse
                     {
                         IsSuccess = true,
-                        Objects = JsonSerializer.Deserialize<List<User>>(serializedItems)
-                        .ConvertAll(s => (IDomainEntity)s)
+                        Objects = JsonSerializer
+                            .Deserialize<List<User>>(serializedItems)
+                            .ConvertAll(s => (IDomainEntity)s)
                     };
 
                     if (result != null)
@@ -1027,7 +1025,6 @@ namespace SudokuCollective.Cache
                 IRepositoryResponse response;
 
                 var cachedItem = await cache.GetAsync(cacheKey);
-
 
                 if (cachedItem != null)
                 {

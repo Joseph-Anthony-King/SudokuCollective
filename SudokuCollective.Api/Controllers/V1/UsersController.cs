@@ -682,7 +682,7 @@ namespace SudokuCollective.Api.Controllers.V1
         /// An endpoint which confirms user emails, does not require a login.
         /// </summary>
         /// <param name="token"></param>
-        /// <returns>A boolean indicating if the email was confirmed.</returns>
+        /// <returns>A response in the payload of type ConfirmEmailResult documented in the schema below that provides the results of the email confirmation.</returns>
         /// <response code="200">Returns a result object with the message and isSuccess value indicating if the user's email was confirmed.</response>
         /// <response code="400">Returns a result object with the message stating any validation errors for the request.</response>
         /// <response code="404">Returns a result object with the message stating user was not found. </response>
@@ -690,6 +690,11 @@ namespace SudokuCollective.Api.Controllers.V1
         /// <remarks>
         /// The ConfirmEmail endpoint does not require a login. If you've implemented a custom confirm email action that action will link back to this endpoint once confirmed. 
         /// Your action will send the token to this endpoint to complete the process, the boolean will indicate if the email was confirmed.
+        /// 
+        /// This enpdoint applies to two work flows: new sign ups and email updates.  For new sign ups the user is sent an email to confirm ownership. The 'IsUpdate' property
+        /// of the ConfirmEmailResult type will indicate to you which type this is.  For updates the user will first receive an email at their old address to confirm they are
+        /// authorized to change the email and they will then receive a second email at the new address to confirm ownership.  The 'NewEmailAddressConfirmed' and 'IsUpdate' true
+        /// property of the ConfirmEmailResult type will indicte to you where the user is in the process in the responses sent to your custom email confirmation endpoint.
         /// </remarks>
         [AllowAnonymous]
         [HttpGet("ConfirmEmail/{token}")]
@@ -773,6 +778,8 @@ namespace SudokuCollective.Api.Controllers.V1
         ///       "payload": {},          // an object holding additional request parameters, not applicable here
         ///     }     
         /// ```
+        /// 
+        /// A copy of the updated user record will be included in the payload data.
         /// </remarks>
         [Authorize(Roles = "USER")]
         [HttpPut, Route("cancelEmailConfirmation")]
@@ -906,6 +913,8 @@ namespace SudokuCollective.Api.Controllers.V1
         ///     }     
         /// ```
         /// </remarks>
+        /// 
+        /// A copy of the updated user record will be included in the payload data.
         [AllowAnonymous]
         [HttpPost("RequestPasswordReset")]
         public async Task<ActionResult<Result>> RequestPasswordResetAsync([FromBody] RequestPasswordResetRequest request)
@@ -1073,6 +1082,8 @@ namespace SudokuCollective.Api.Controllers.V1
         ///     }     
         /// ```
         /// </remarks>
+        /// 
+        /// A copy of the updated user record will be included in the payload data.
         [Authorize(Roles = "USER")]
         [HttpPut("cancelPasswordReset")]
         public async Task<ActionResult<Result>> CancelPasswordResetAsync([FromBody] Request request)
@@ -1143,6 +1154,8 @@ namespace SudokuCollective.Api.Controllers.V1
         ///     }     
         /// ```
         /// </remarks>
+        /// 
+        /// A copy of the updated user record will be included in the payload data.
         [Authorize(Roles = "USER")]
         [HttpPut("cancelAllEmailRequests")]
         public async Task<ActionResult<Result>> CancelAllEmailRequestsAsync([FromBody] Request request)
