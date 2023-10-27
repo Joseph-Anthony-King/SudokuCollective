@@ -691,6 +691,8 @@ namespace SudokuCollective.Api.Controllers.V1
         /// The ConfirmEmail endpoint does not require a login. If you've implemented a custom confirm email action that action will link back to this endpoint once confirmed. 
         /// Your action will send the token to this endpoint to complete the process, the boolean will indicate if the email was confirmed.
         /// 
+        /// The payload will be of type ConfirmEmailResult as documented in the schema below documenting the results of the email confirmation.
+        /// 
         /// This enpdoint applies to two work flows: new sign ups and email updates.  For new sign ups the user is sent an email to confirm ownership. The 'IsUpdate' property
         /// of the ConfirmEmailResult type will indicate to you which type this is.  For updates the user will first receive an email at their old address to confirm they are
         /// authorized to change the email and they will then receive a second email at the new address to confirm ownership.  The 'NewEmailAddressConfirmed' and 'IsUpdate' true
