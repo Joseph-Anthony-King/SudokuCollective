@@ -101,11 +101,10 @@ namespace SudokuCollective.Api.Controllers
             {
                 var confirmEmailModel = new ConfirmEmail
                 {
+                    ConfirmationType =((ConfirmEmailResult)result.Payload[0]).ConfirmationType,
                     UserName = ((ConfirmEmailResult)result.Payload[0]).UserName,
                     AppTitle = ((ConfirmEmailResult)result.Payload[0]).AppTitle,
                     Url = ((ConfirmEmailResult)result.Payload[0]).AppUrl,
-                    IsUpdate = ((ConfirmEmailResult)result.Payload[0]).IsUpdate != null && 
-                        (bool)((ConfirmEmailResult)result.Payload[0]).IsUpdate,
                     NewEmailAddressConfirmed = ((ConfirmEmailResult)result.Payload[0]).NewEmailAddressConfirmed != null && 
                         (bool)((ConfirmEmailResult)result.Payload[0]).NewEmailAddressConfirmed,
                     IsSuccess = result.IsSuccess

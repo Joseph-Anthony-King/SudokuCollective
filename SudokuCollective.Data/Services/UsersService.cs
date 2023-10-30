@@ -262,7 +262,8 @@ namespace SudokuCollective.Data.Services
 
                             var emailConfirmation = new EmailConfirmation(
                                 user.Id,
-                                app.Id);
+                                app.Id,
+                                EmailConfirmationType.NEWPROFILECONFIRMED);
 
                             emailConfirmation = await EnsureEmailConfirmationTokenIsUnique(emailConfirmation);
 
@@ -698,7 +699,8 @@ namespace SudokuCollective.Data.Services
                                     user.Id,
                                     request.AppId,
                                     user.Email,
-                                    payload.Email);
+                                    payload.Email,
+                                    EmailConfirmationType.OLDEMAILCONFIRMED);
                             }
 
                             emailConfirmation = await EnsureEmailConfirmationTokenIsUnique(emailConfirmation);
@@ -1910,7 +1912,7 @@ namespace SudokuCollective.Data.Services
 
             var result = new Result();
 
-            var confirmEmailResult = new ConfirmEmailResult();
+            var emailConfirmResult = new ConfirmEmailResult();
 
             try
             {
@@ -1928,7 +1930,7 @@ namespace SudokuCollective.Data.Services
                         _cacheKeys,
                         emailConfirmation.AppId)).Item1;
 
-                    if (!emailConfirmation.IsUpdate)
+                    if (emailConfirmation.ConfirmationType == EmailConfirmationType.NEWPROFILECONFIRMED)
                     {
                         var response = await _cacheService.ConfirmEmailWithCacheAsync(
                             _usersRepository,
@@ -1942,13 +1944,14 @@ namespace SudokuCollective.Data.Services
                             var user = (User)response.Object;
 
                             result.IsSuccess = response.IsSuccess;
-                            confirmEmailResult.UserName = user.UserName;
-                            confirmEmailResult.Email = user.Email;
-                            confirmEmailResult.DateUpdated = user.DateUpdated;
-                            confirmEmailResult.NewEmailAddressConfirmed = true;
-                            confirmEmailResult.IsUpdate = emailConfirmation.IsUpdate;
 
-                            confirmEmailResult.AppTitle = user
+                            emailConfirmResult.ConfirmationType = EmailConfirmationType.NEWPROFILECONFIRMED;
+                            emailConfirmResult.UserName = user.UserName;
+                            emailConfirmResult.Email = user.Email;
+                            emailConfirmResult.NewEmailAddressConfirmed = true;
+                            emailConfirmResult.ConfirmationType = emailConfirmation.ConfirmationType;
+                            emailConfirmResult.DateUpdated = user.DateUpdated;
+                            emailConfirmResult.AppTitle = user
                                 .Apps
                                 .Where(ua => ua.AppId == emailConfirmation.AppId)
                                 .Select(ua => ua.App.Name)
@@ -1960,7 +1963,7 @@ namespace SudokuCollective.Data.Services
                                 .Select(ua => ua.App.Environment == ReleaseEnvironment.LOCAL)
                                 .FirstOrDefault())
                             {
-                                confirmEmailResult.AppUrl = user
+                                emailConfirmResult.AppUrl = user
                                     .Apps
                                     .Where(ua => ua.AppId == emailConfirmation.AppId)
                                     .Select(ua => ua.App.LocalUrl)
@@ -1972,7 +1975,7 @@ namespace SudokuCollective.Data.Services
                                 .Select(ua => ua.App.Environment == ReleaseEnvironment.STAGING)
                                 .FirstOrDefault())
                             {
-                                confirmEmailResult.AppUrl = user
+                                emailConfirmResult.AppUrl = user
                                     .Apps
                                     .Where(ua => ua.AppId == emailConfirmation.AppId)
                                     .Select(ua => ua.App.StagingUrl)
@@ -1984,7 +1987,7 @@ namespace SudokuCollective.Data.Services
                                 .Select(ua => ua.App.Environment == ReleaseEnvironment.QA)
                                 .FirstOrDefault())
                             {
-                                confirmEmailResult.AppUrl = user
+                                emailConfirmResult.AppUrl = user
                                     .Apps
                                     .Where(ua => ua.AppId == emailConfirmation.AppId)
                                     .Select(ua => ua.App.QaUrl)
@@ -1992,7 +1995,7 @@ namespace SudokuCollective.Data.Services
                             }
                             else
                             {
-                                confirmEmailResult.AppUrl = user
+                                emailConfirmResult.AppUrl = user
                                     .Apps
                                     .Where(ua => ua.AppId == emailConfirmation.AppId)
                                     .Select(ua => ua.App.ProdUrl)
@@ -2006,7 +2009,7 @@ namespace SudokuCollective.Data.Services
                             _ = await _usersRepository.UpdateAsync(user);
 
                             result.Message = UsersMessages.EmailConfirmedMessage;
-                            result.Payload.Add(confirmEmailResult);
+                            result.Payload.Add(emailConfirmResult);
 
                             return result;
                         }
@@ -2025,7 +2028,7 @@ namespace SudokuCollective.Data.Services
                             return result;
                         }
                     }
-                    else if (emailConfirmation.IsUpdate && !(bool)emailConfirmation.OldEmailAddressConfirmed)
+                    else if (emailConfirmation.ConfirmationType == EmailConfirmationType.OLDEMAILCONFIRMED && !(bool)emailConfirmation.OldEmailAddressConfirmed)
                     {
                         var response = await _cacheService.UpdateEmailWithCacheAsync(
                             _usersRepository,
@@ -2085,7 +2088,7 @@ namespace SudokuCollective.Data.Services
 
                             var emailSubject = string.Format("Greetings from {0}: Please Confirm New Email", appTitle);
 
-                            confirmEmailResult.ConfirmationEmailSuccessfullySent = await _emailService
+                            emailConfirmResult.ConfirmationEmailSuccessfullySent = await _emailService
                                 .SendAsync(user.Email, emailSubject, html, app.Id);
 
                             emailConfirmation.OldEmailAddressConfirmed = true;
@@ -2094,13 +2097,15 @@ namespace SudokuCollective.Data.Services
 
                             result.IsSuccess = response.IsSuccess;
                             result.Message = UsersMessages.OldEmailConfirmedMessage;
-                            confirmEmailResult.UserName = user.UserName;
-                            confirmEmailResult.Email = user.Email;
-                            confirmEmailResult.DateUpdated = user.DateUpdated;
-                            confirmEmailResult.IsUpdate = emailConfirmation.IsUpdate;
-                            confirmEmailResult.AppTitle = appTitle;
-                            confirmEmailResult.AppUrl = url;
-                            result.Payload.Add(confirmEmailResult);
+
+                            emailConfirmResult.ConfirmationType = EmailConfirmationType.OLDEMAILCONFIRMED;
+                            emailConfirmResult.UserName = user.UserName;
+                            emailConfirmResult.Email = user.Email;
+                            emailConfirmResult.AppTitle = appTitle;
+                            emailConfirmResult.AppUrl = url;
+                            emailConfirmResult.DateUpdated = user.DateUpdated;
+
+                            result.Payload.Add(emailConfirmResult);
 
                             return result;
                         }
@@ -2133,16 +2138,6 @@ namespace SudokuCollective.Data.Services
                             var user = (User)response.Object;
 
                             result.IsSuccess = response.IsSuccess;
-                            confirmEmailResult.Email = user.Email;
-                            confirmEmailResult.UserName = user.UserName;
-                            confirmEmailResult.DateUpdated = user.DateUpdated;
-                            confirmEmailResult.IsUpdate = emailConfirmation.IsUpdate;
-                            confirmEmailResult.NewEmailAddressConfirmed = true;
-                            confirmEmailResult.AppTitle = user
-                                .Apps
-                                .Where(ua => ua.AppId == emailConfirmation.AppId)
-                                .Select(ua => ua.App.Name)
-                                .FirstOrDefault();
 
                             if (user
                                 .Apps
@@ -2150,7 +2145,7 @@ namespace SudokuCollective.Data.Services
                                 .Select(ua => ua.App.Environment == ReleaseEnvironment.LOCAL)
                                 .FirstOrDefault())
                             {
-                                confirmEmailResult.AppUrl = user
+                                emailConfirmResult.AppUrl = user
                                     .Apps
                                     .Where(ua => ua.AppId == emailConfirmation.AppId)
                                     .Select(ua => ua.App.LocalUrl)
@@ -2162,7 +2157,7 @@ namespace SudokuCollective.Data.Services
                                 .Select(ua => ua.App.Environment == ReleaseEnvironment.STAGING)
                                 .FirstOrDefault())
                             {
-                                confirmEmailResult.AppUrl = user
+                                emailConfirmResult.AppUrl = user
                                     .Apps
                                     .Where(ua => ua.AppId == emailConfirmation.AppId)
                                     .Select(ua => ua.App.StagingUrl)
@@ -2174,7 +2169,7 @@ namespace SudokuCollective.Data.Services
                                 .Select(ua => ua.App.Environment == ReleaseEnvironment.QA)
                                 .FirstOrDefault())
                             {
-                                confirmEmailResult.AppUrl = user
+                                emailConfirmResult.AppUrl = user
                                     .Apps
                                     .Where(ua => ua.AppId == emailConfirmation.AppId)
                                     .Select(ua => ua.App.QaUrl)
@@ -2182,7 +2177,7 @@ namespace SudokuCollective.Data.Services
                             }
                             else
                             {
-                                confirmEmailResult.AppUrl = user
+                                emailConfirmResult.AppUrl = user
                                     .Apps
                                     .Where(ua => ua.AppId == emailConfirmation.AppId)
                                     .Select(ua => ua.App.ProdUrl)
@@ -2196,7 +2191,20 @@ namespace SudokuCollective.Data.Services
                             _ = await _usersRepository.UpdateAsync(user);
 
                             result.Message = UsersMessages.EmailConfirmedMessage;
-                            result.Payload.Add(confirmEmailResult);
+
+                            emailConfirmResult.ConfirmationType = EmailConfirmationType.NEWEMAILCONFIRMED;
+                            emailConfirmResult.Email = user.Email;
+                            emailConfirmResult.UserName = user.UserName;
+                            emailConfirmResult.ConfirmationType = EmailConfirmationType.NEWEMAILCONFIRMED;
+                            emailConfirmResult.NewEmailAddressConfirmed = true;
+                            emailConfirmResult.DateUpdated = user.DateUpdated;
+                            emailConfirmResult.AppTitle = user
+                                .Apps
+                                .Where(ua => ua.AppId == emailConfirmation.AppId)
+                                .Select(ua => ua.App.Name)
+                                .FirstOrDefault();
+
+                            result.Payload.Add(emailConfirmResult);
 
                             return result;
                         }

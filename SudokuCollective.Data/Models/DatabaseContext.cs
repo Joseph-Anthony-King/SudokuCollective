@@ -338,15 +338,20 @@ namespace SudokuCollective.Data.Models
                 .HasKey(emailConfirmation => emailConfirmation.Id);
 
             modelBuilder.Entity<EmailConfirmation>()
+                .Property(emailConfirmation => emailConfirmation.Token)
+                .IsRequired();
+
+            modelBuilder.Entity<EmailConfirmation>()
+                .HasIndex(emailConfirmation => emailConfirmation.Token)
+                .IsUnique();
+
+            modelBuilder.Entity<EmailConfirmation>()
                 .Property(emailConfirmation => emailConfirmation.OldEmailAddress)
                 .HasConversion(encryptionConverter);
 
             modelBuilder.Entity<EmailConfirmation>()
                 .Property(emailConfirmation => emailConfirmation.NewEmailAddress)
                 .HasConversion(encryptionConverter);
-
-            modelBuilder.Entity<EmailConfirmation>()
-                .Ignore(emailConfirmation => emailConfirmation.IsUpdate);
 
             modelBuilder.Entity<PasswordReset>()
                 .HasKey(passwordReset => passwordReset.Id);
