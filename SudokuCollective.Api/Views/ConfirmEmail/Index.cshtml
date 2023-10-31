@@ -1,4 +1,5 @@
 @using SudokuCollective.Api.Models
+@using SudokuCollective.Core.Enums;
 @model ConfirmEmail
 
 @{
@@ -10,26 +11,9 @@
 <div class="row">
     <div class="col-sm-2"></div>
     <div class="col-sm-8">
-        @if (Model.IsUpdate && !Model.NewEmailAddressConfirmed)
+        @if (Model.IsSuccess)
         {
-            @if (Model.IsSuccess)
-            {
-                <h2>Email Confirmed</h2>
-                <p>
-                    Thank you for confirming your old email address, please review and confirm your new email address.
-                </p>
-            }
-            else
-            {
-                <h2>Email Confirmation Token Already Redeemed</h2>
-                <p>
-                    Sorry, but this email confirmation token was already redeemed.
-                </p>
-            }
-        }
-        else
-        {
-            @if (Model.IsSuccess)
+            @if (Model.ConfirmationType == EmailConfirmationType.NEWPROFILECONFIRMED || Model.ConfirmationType == EmailConfirmationType.NEWEMAILCONFIRMED)
             {
                 <h2>Email Confirmed</h2>
                 <p>
@@ -38,11 +22,18 @@
             }
             else
             {
-                <h2>Email Confirmation Token Already Processed</h2>
+                <h2>Email Confirmed</h2>
                 <p>
-                    Sorry, but this email confirmation token was already redeemed, refreshed, or cancelled.
+                    Thank you for confirming your old email address @Model.UserName, please review and confirm your new email address by reviewing and replying at <a href="mailto:@Model.Email" target="_blank">@Model.Email</a>.
                 </p>
             }
+        }
+        else
+        {
+            <h2>Email Confirmation Token Already Processed</h2>
+            <p>
+                Sorry, but this email confirmation token was already redeemed, refreshed, or cancelled.
+            </p>
         }
     </div>
     <div class="col-sm-2"></div>

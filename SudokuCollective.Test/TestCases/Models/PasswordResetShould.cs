@@ -68,17 +68,17 @@ namespace SudokuCollective.Test.TestCases.Models
         {
             // Arrange
             var id = 1;
+            var token = TestData.TestObjects.GetToken();
             var userId = 1;
             var appId = 2;
-            var token = TestData.TestObjects.GetToken();
             var dateCreated = DateTime.UtcNow;
 
             // Act
             sut = new PasswordReset(
                 id,
+                token,
                 userId, 
                 appId,
-                token,
                 dateCreated);
 
             // Assert

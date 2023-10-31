@@ -688,15 +688,23 @@ namespace SudokuCollective.Api.Controllers.V1
         /// <response code="404">Returns a result object with the message stating user was not found. </response>
         /// <response code="500">Returns a result object with the message stating any errors processing the request.</response>
         /// <remarks>
-        /// The ConfirmEmail endpoint does not require a login. If you've implemented a custom confirm email action that action will link back to this endpoint once confirmed. 
-        /// Your action will send the token to this endpoint to complete the process, the boolean will indicate if the email was confirmed.
+        /// The ConfirmEmail endpoint does not require a login. If you've implemented a custom confirm email action that action will link back to this 
+        /// endpoint once confirmed.  Your action will send the token to this endpoint to complete the process, the boolean will indicate if the email 
+        /// was confirmed.
         /// 
-        /// The payload will be of type ConfirmEmailResult as documented in the schema below documenting the results of the email confirmation.
+        /// The payload will be of type ConfirmEmailResult documenting the results of the email confirmation as indicated in the schema below.
         /// 
-        /// This enpdoint applies to two work flows: new sign ups and email updates.  For new sign ups the user is sent an email to confirm ownership. The 'IsUpdate' property
-        /// of the ConfirmEmailResult type will indicate to you which type this is.  For updates the user will first receive an email at their old address to confirm they are
-        /// authorized to change the email and they will then receive a second email at the new address to confirm ownership.  The 'NewEmailAddressConfirmed' and 'IsUpdate' true
-        /// property of the ConfirmEmailResult type will indicte to you where the user is in the process in the responses sent to your custom email confirmation endpoint.
+        /// This enpdoint applies to two work flows: new sign ups and email updates.  The 'IsUpdate' property will indicate to you if this is a
+        /// new sign up or an update of a pre-existing user email.  Additionally, there is a property 'ConfirmationType' which indicates where
+        /// the user is in the email confirmation process.  For this property the enumeration indicates the following:
+        /// /// ```
+        /// {
+        ///     0, \\ is null
+        ///     1, \\ is a new profile sign up
+        ///     2, \\ is an old email confirmed
+        ///     3, \\ is a new email confirmed
+        /// }
+        /// ```
         /// </remarks>
         [AllowAnonymous]
         [HttpGet("ConfirmEmail/{token}")]
