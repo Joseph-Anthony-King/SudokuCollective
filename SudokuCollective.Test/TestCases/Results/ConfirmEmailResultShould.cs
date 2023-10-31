@@ -1,5 +1,6 @@
 ﻿using System;
 using NUnit.Framework;
+using SudokuCollective.Core.Enums;
 using SudokuCollective.Core.Interfaces.Models.DomainObjects.Results;
 using SudokuCollective.Data.Models.Results;
 
@@ -26,7 +27,7 @@ namespace SudokuCollective.Test.TestCases.Results
             Assert.That(sut.DateUpdated, Is.InstanceOf<DateTime>());
             Assert.That(sut.AppTitle, Is.InstanceOf<string>());
             Assert.That(sut.AppUrl, Is.InstanceOf<string>());
-            Assert.That(sut.IsUpdate, Is.Null);
+            Assert.That(sut.ConfirmationType, Is.InstanceOf<EmailConfirmationType>());
             Assert.That(sut.NewEmailAddressConfirmed, Is.Null);
             Assert.That(sut.ConfirmationEmailSuccessfullySent, Is.Null);
         }
@@ -48,14 +49,14 @@ namespace SudokuCollective.Test.TestCases.Results
 
             // Act
             sut = new ConfirmEmailResult(
+                EmailConfirmationType.NEWPROFILECONFIRMED,
                 "userName",
                 "email",
-                DateTime.Now,
                 "appTitle",
                 "url",
                 false,
                 false,
-                false);
+                DateTime.Now);
 
             // Assert
             Assert.That(sut, Is.InstanceOf<ConfirmEmailResult>());

@@ -105,6 +105,7 @@ namespace SudokuCollective.Api.Controllers
                     UserName = ((ConfirmEmailResult)result.Payload[0]).UserName,
                     AppTitle = ((ConfirmEmailResult)result.Payload[0]).AppTitle,
                     Url = ((ConfirmEmailResult)result.Payload[0]).AppUrl,
+                    Email = ((ConfirmEmailResult)result.Payload[0]).Email,
                     NewEmailAddressConfirmed = ((ConfirmEmailResult)result.Payload[0]).NewEmailAddressConfirmed != null && 
                         (bool)((ConfirmEmailResult)result.Payload[0]).NewEmailAddressConfirmed,
                     IsSuccess = result.IsSuccess

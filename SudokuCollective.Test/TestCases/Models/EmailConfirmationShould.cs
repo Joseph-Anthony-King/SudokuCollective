@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using NUnit.Framework;
+using SudokuCollective.Core.Enums;
 using SudokuCollective.Core.Interfaces.Models;
 using SudokuCollective.Core.Interfaces.Models.DomainEntities;
 using SudokuCollective.Core.Models;
@@ -49,8 +50,8 @@ namespace SudokuCollective.Test.TestCases.Models
             var sutUpdateEmailConfirmation = TestObjects.GetUpdateEmailConfirmation();
 
             // Assert
-            Assert.That(sutNewEmailConfirmation.IsUpdate, Is.False);
-            Assert.That(sutUpdateEmailConfirmation.IsUpdate, Is.True);
+            Assert.That(sutNewEmailConfirmation.ConfirmationType, Is.EqualTo(EmailConfirmationType.NEWEMAILCONFIRMED));
+            Assert.That(sutUpdateEmailConfirmation.ConfirmationType, Is.EqualTo(EmailConfirmationType.OLDEMAILCONFIRMED));
         }
 
         [Test, Category("Models")]
@@ -95,7 +96,7 @@ namespace SudokuCollective.Test.TestCases.Models
             // Arrange and Act
 
             // Assert
-            Assert.That(sut.NewEmailAddress, Is.InstanceOf<string>());
+            Assert.That(sut.NewEmailAddress, Is.Null);
         }
 
         [Test, Category("Models")]
@@ -125,7 +126,7 @@ namespace SudokuCollective.Test.TestCases.Models
             var appId = 1;
 
             // Act
-            sut = new EmailConfirmation(userId, appId);
+            sut = new EmailConfirmation(userId, appId, EmailConfirmationType.NEWPROFILECONFIRMED);
 
             // Assert
             Assert.That(sut, Is.InstanceOf<EmailConfirmation>());
@@ -142,6 +143,7 @@ namespace SudokuCollective.Test.TestCases.Models
 
             // Act
             sut = new EmailConfirmation(
+                EmailConfirmationType.OLDEMAILCONFIRMED,
                 userId,
                 appId,
                 oldEmailAddress,
@@ -167,9 +169,10 @@ namespace SudokuCollective.Test.TestCases.Models
             // Act
             sut = new EmailConfirmation(
                 id,
+                EmailConfirmationType.OLDEMAILCONFIRMED,
+                token,
                 userId,
                 appId,
-                token,
                 oldEmailAddress,
                 newEmailAddress,
                 oldEmailAddressConfirmed,

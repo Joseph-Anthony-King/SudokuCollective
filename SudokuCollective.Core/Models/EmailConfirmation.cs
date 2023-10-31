@@ -91,11 +91,11 @@ namespace SudokuCollective.Core.Models
         }
 
         public EmailConfirmation(
+            EmailConfirmationType confirmationType,
             int userId, 
             int appId, 
             string oldEmailAddress, 
-            string newEmailAddress, 
-            EmailConfirmationType confirmationType) : this()
+            string newEmailAddress) : this()
         {
             ConfirmationType = confirmationType;
             UserId = userId;
@@ -116,6 +116,7 @@ namespace SudokuCollective.Core.Models
         [JsonConstructor]
         public EmailConfirmation(
             int id,
+            EmailConfirmationType confirmationType,
             string token,
             int userId,
             int appId,
@@ -125,6 +126,7 @@ namespace SudokuCollective.Core.Models
             DateTime dateCreated)
         {
             Id = id;
+            ConfirmationType = confirmationType;
             if (!string.IsNullOrEmpty(token))
             {
                 Token = token;

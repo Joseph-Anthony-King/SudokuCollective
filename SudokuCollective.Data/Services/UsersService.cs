@@ -696,11 +696,11 @@ namespace SudokuCollective.Data.Services
                             else
                             {
                                 emailConfirmation = new EmailConfirmation(
+                                    EmailConfirmationType.OLDEMAILCONFIRMED,
                                     user.Id,
                                     request.AppId,
                                     user.Email,
-                                    payload.Email,
-                                    EmailConfirmationType.OLDEMAILCONFIRMED);
+                                    payload.Email);
                             }
 
                             emailConfirmation = await EnsureEmailConfirmationTokenIsUnique(emailConfirmation);
@@ -2100,7 +2100,7 @@ namespace SudokuCollective.Data.Services
 
                             emailConfirmResult.ConfirmationType = EmailConfirmationType.OLDEMAILCONFIRMED;
                             emailConfirmResult.UserName = user.UserName;
-                            emailConfirmResult.Email = user.Email;
+                            emailConfirmResult.Email = emailConfirmation.NewEmailAddress;
                             emailConfirmResult.AppTitle = appTitle;
                             emailConfirmResult.AppUrl = url;
                             emailConfirmResult.DateUpdated = user.DateUpdated;
