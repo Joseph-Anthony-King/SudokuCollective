@@ -17,6 +17,8 @@ namespace SudokuCollective.Data.Models.Results
         public string AppTitle { get; set; }
         [JsonPropertyName("appUrl")]
         public string AppUrl { get; set; }
+        [JsonPropertyName("isUpdate")]
+        public bool? IsUpdate { get; set; }
         [JsonPropertyName("newEmailAddressConfirmed")]
         public bool? NewEmailAddressConfirmed { get; set; }
         [JsonPropertyName("confirmationEmailSuccessfullySent")]
@@ -31,6 +33,7 @@ namespace SudokuCollective.Data.Models.Results
             Email = string.Empty;
             AppTitle = string.Empty;
             AppUrl = string.Empty;
+            IsUpdate = false;
             NewEmailAddressConfirmed = null;
             ConfirmationEmailSuccessfullySent = null;
             DateUpdated = DateTime.MinValue;
@@ -42,6 +45,7 @@ namespace SudokuCollective.Data.Models.Results
             string email,
             string appTitle, 
             string url, 
+            bool? isUpdate,
             bool? newEmailAddressConfirmed, 
             bool? confirmationEmailSuccessfullySent,
             DateTime dateUpdated)
@@ -51,6 +55,7 @@ namespace SudokuCollective.Data.Models.Results
             Email = email;
             AppTitle = appTitle;
             AppUrl = url;
+            IsUpdate = isUpdate;
             NewEmailAddressConfirmed = newEmailAddressConfirmed;
             ConfirmationEmailSuccessfullySent = confirmationEmailSuccessfullySent;
             DateUpdated = dateUpdated;

@@ -35,7 +35,7 @@ namespace SudokuCollective.Test.TestCases.Repositories
                 mockedRequestService.SuccessfulRequest.Object,
                 mockedLogger.Object);
 
-            newEmailConfirmation = new EmailConfirmation(2, 1, EmailConfirmationType.OLDEMAILCONFIRMED);
+            newEmailConfirmation = new EmailConfirmation(EmailConfirmationType.OLDEMAILCONFIRMED, 2, 1);
         }
 
         [Test, Category("Repository")]

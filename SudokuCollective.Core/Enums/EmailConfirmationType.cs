@@ -4,7 +4,6 @@ namespace SudokuCollective.Core.Enums {
     NULL,
     NEWPROFILECONFIRMED,
     OLDEMAILCONFIRMED,
-    NEWEMAILCONFIRMED,
-    FAILURE
+    NEWEMAILCONFIRMED
   }
 }

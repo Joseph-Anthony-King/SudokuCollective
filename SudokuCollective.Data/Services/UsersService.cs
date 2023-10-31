@@ -261,9 +261,11 @@ namespace SudokuCollective.Data.Services
                             }
 
                             var emailConfirmation = new EmailConfirmation(
+                                EmailConfirmationType.NEWPROFILECONFIRMED,
                                 user.Id,
                                 app.Id,
-                                EmailConfirmationType.NEWPROFILECONFIRMED);
+                                null,
+                                user.Email);
 
                             emailConfirmation = await EnsureEmailConfirmationTokenIsUnique(emailConfirmation);
 
@@ -1930,7 +1932,7 @@ namespace SudokuCollective.Data.Services
                         _cacheKeys,
                         emailConfirmation.AppId)).Item1;
 
-                    if (emailConfirmation.ConfirmationType == EmailConfirmationType.NEWPROFILECONFIRMED)
+                    if (!emailConfirmation.IsUpdate && emailConfirmation.ConfirmationType == EmailConfirmationType.NEWPROFILECONFIRMED)
                     {
                         var response = await _cacheService.ConfirmEmailWithCacheAsync(
                             _usersRepository,
@@ -1946,6 +1948,7 @@ namespace SudokuCollective.Data.Services
                             result.IsSuccess = response.IsSuccess;
 
                             emailConfirmResult.ConfirmationType = EmailConfirmationType.NEWPROFILECONFIRMED;
+                            emailConfirmResult.IsUpdate = emailConfirmation.IsUpdate;
                             emailConfirmResult.UserName = user.UserName;
                             emailConfirmResult.Email = user.Email;
                             emailConfirmResult.NewEmailAddressConfirmed = true;
@@ -2028,7 +2031,7 @@ namespace SudokuCollective.Data.Services
                             return result;
                         }
                     }
-                    else if (emailConfirmation.ConfirmationType == EmailConfirmationType.OLDEMAILCONFIRMED && !(bool)emailConfirmation.OldEmailAddressConfirmed)
+                    else if (emailConfirmation.IsUpdate && emailConfirmation.ConfirmationType == EmailConfirmationType.OLDEMAILCONFIRMED)
                     {
                         var response = await _cacheService.UpdateEmailWithCacheAsync(
                             _usersRepository,
@@ -2091,7 +2094,7 @@ namespace SudokuCollective.Data.Services
                             emailConfirmResult.ConfirmationEmailSuccessfullySent = await _emailService
                                 .SendAsync(user.Email, emailSubject, html, app.Id);
 
-                            emailConfirmation.OldEmailAddressConfirmed = true;
+                            emailConfirmation.OldEmailAddressConfirmed = emailConfirmResult.ConfirmationEmailSuccessfullySent;
 
                             emailConfirmation = (EmailConfirmation)(await _emailConfirmationsRepository.UpdateAsync(emailConfirmation)).Object;
 
@@ -2099,6 +2102,7 @@ namespace SudokuCollective.Data.Services
                             result.Message = UsersMessages.OldEmailConfirmedMessage;
 
                             emailConfirmResult.ConfirmationType = EmailConfirmationType.OLDEMAILCONFIRMED;
+                            emailConfirmResult.IsUpdate = emailConfirmation.IsUpdate;
                             emailConfirmResult.UserName = user.UserName;
                             emailConfirmResult.Email = emailConfirmation.NewEmailAddress;
                             emailConfirmResult.AppTitle = appTitle;
@@ -2184,8 +2188,6 @@ namespace SudokuCollective.Data.Services
                                     .FirstOrDefault();
                             }
 
-                            _ = await _emailConfirmationsRepository.DeleteAsync(emailConfirmation);
-
                             user.ReceivedRequestToUpdateEmail = false;
 
                             _ = await _usersRepository.UpdateAsync(user);
@@ -2193,9 +2195,9 @@ namespace SudokuCollective.Data.Services
                             result.Message = UsersMessages.EmailConfirmedMessage;
 
                             emailConfirmResult.ConfirmationType = EmailConfirmationType.NEWEMAILCONFIRMED;
+                            emailConfirmResult.IsUpdate = emailConfirmation.IsUpdate;
                             emailConfirmResult.Email = user.Email;
                             emailConfirmResult.UserName = user.UserName;
-                            emailConfirmResult.ConfirmationType = EmailConfirmationType.NEWEMAILCONFIRMED;
                             emailConfirmResult.NewEmailAddressConfirmed = true;
                             emailConfirmResult.DateUpdated = user.DateUpdated;
                             emailConfirmResult.AppTitle = user
@@ -2205,6 +2207,8 @@ namespace SudokuCollective.Data.Services
                                 .FirstOrDefault();
 
                             result.Payload.Add(emailConfirmResult);
+
+                            _ = await _emailConfirmationsRepository.DeleteAsync(emailConfirmation);
 
                             return result;
                         }

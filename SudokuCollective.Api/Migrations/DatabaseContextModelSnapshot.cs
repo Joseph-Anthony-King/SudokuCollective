@@ -320,6 +320,9 @@ namespace SudokuCollective.Api.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Token")
+                        .IsUnique();
+
                     b.ToTable("PasswordResets");
                 });
 

@@ -56,6 +56,7 @@ namespace SudokuCollective.Test.TestCases.Results
                 "url",
                 false,
                 false,
+                false,
                 DateTime.Now);
 
             // Assert

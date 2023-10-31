@@ -7,6 +7,7 @@ namespace SudokuCollective.Core.Interfaces.Models.DomainEntities
     {
         string Token { get; set; }
         EmailConfirmationType ConfirmationType { get; set; }
+        bool IsUpdate { get; }
         int UserId { get; set; }
         int AppId { get; set; }
         string OldEmailAddress { get; set; }

@@ -35,6 +35,11 @@ namespace SudokuCollective.Core.Models
         }
         [Required, JsonPropertyName("confirmationType")]
         public EmailConfirmationType ConfirmationType { get; set; }
+        [Required, JsonPropertyName("isUpdate")]
+        public bool IsUpdate 
+        { 
+            get => !string.IsNullOrEmpty(OldEmailAddress) && !string.IsNullOrEmpty(NewEmailAddress);
+        }
         [Required, JsonPropertyName("userId")]
         public int UserId { get; set; }
         [Required, JsonPropertyName("appId")]
@@ -43,7 +48,7 @@ namespace SudokuCollective.Core.Models
         public string OldEmailAddress
         {
             get => _oldEmailAddress;
-            set => _oldEmailAddress = setOldEmailAddressField(
+            set => _oldEmailAddress = SetOldEmailAddressField(
                 value,
                 _emailValidatedAttribute,
                 AttributeMessages.InvalidOldEmail);
@@ -79,14 +84,14 @@ namespace SudokuCollective.Core.Models
         }
 
         public EmailConfirmation(
+            EmailConfirmationType confirmationType,
             int userId, 
-            int appId, 
-            EmailConfirmationType confirmationType) : this()
+            int appId) : this()
         {
+            Token = Guid.NewGuid().ToString();
             ConfirmationType = confirmationType;
             UserId = userId;
             AppId = appId;
-            Token = Guid.NewGuid().ToString();
             DateCreated = DateTime.UtcNow;
         }
 
@@ -97,10 +102,10 @@ namespace SudokuCollective.Core.Models
             string oldEmailAddress, 
             string newEmailAddress) : this()
         {
+            Token = Guid.NewGuid().ToString();
             ConfirmationType = confirmationType;
             UserId = userId;
             AppId = appId;
-            Token = Guid.NewGuid().ToString();
             if (!string.IsNullOrEmpty(oldEmailAddress))
             {
                 OldEmailAddress = oldEmailAddress;
@@ -158,7 +163,7 @@ namespace SudokuCollective.Core.Models
 
         public IDomainEntity Cast<T>() => throw new System.NotImplementedException();
 
-        private string setOldEmailAddressField(
+        private string SetOldEmailAddressField(
             string value, 
             RegularExpressionAttribute validator, 
             string errorMessage)

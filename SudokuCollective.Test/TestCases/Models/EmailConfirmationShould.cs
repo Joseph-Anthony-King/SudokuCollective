@@ -126,7 +126,7 @@ namespace SudokuCollective.Test.TestCases.Models
             var appId = 1;
 
             // Act
-            sut = new EmailConfirmation(userId, appId, EmailConfirmationType.NEWPROFILECONFIRMED);
+            sut = new EmailConfirmation(EmailConfirmationType.NEWPROFILECONFIRMED, userId, appId);
 
             // Assert
             Assert.That(sut, Is.InstanceOf<EmailConfirmation>());
