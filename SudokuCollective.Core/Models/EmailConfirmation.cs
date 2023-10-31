@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using SudokuCollective.Core.Enums;
 using SudokuCollective.Core.Interfaces.Models;
 using SudokuCollective.Core.Interfaces.Models.DomainEntities;
 using SudokuCollective.Core.Messages;
@@ -23,10 +24,6 @@ namespace SudokuCollective.Core.Models
         #region Properties
         [Required, JsonPropertyName("id")]
         public int Id { get; set; }
-        [Required, JsonPropertyName("userId")]
-        public int UserId { get; set; }
-        [Required, JsonPropertyName("appId")]
-        public int AppId { get; set; }
         [Required, JsonPropertyName("token"), GuidValidated(ErrorMessage = AttributeMessages.InvalidToken)]
         public string Token
         {
@@ -36,11 +33,22 @@ namespace SudokuCollective.Core.Models
                 _guidValidator, 
                 AttributeMessages.InvalidToken);
         }
+        [Required, JsonPropertyName("confirmationType")]
+        public EmailConfirmationType ConfirmationType { get; set; }
+        [Required, JsonPropertyName("isUpdate")]
+        public bool IsUpdate 
+        { 
+            get => !string.IsNullOrEmpty(OldEmailAddress) && !string.IsNullOrEmpty(NewEmailAddress);
+        }
+        [Required, JsonPropertyName("userId")]
+        public int UserId { get; set; }
+        [Required, JsonPropertyName("appId")]
+        public int AppId { get; set; }
         [JsonPropertyName("oldEmailAddress"), EmailValidated(ErrorMessage = AttributeMessages.InvalidOldEmail)]
         public string OldEmailAddress
         {
             get => _oldEmailAddress;
-            set => _oldEmailAddress = setOldEmailAddressField(
+            set => _oldEmailAddress = SetOldEmailAddressField(
                 value,
                 _emailValidatedAttribute,
                 AttributeMessages.InvalidOldEmail);
@@ -56,11 +64,6 @@ namespace SudokuCollective.Core.Models
         }
         [JsonPropertyName("oldEmailAddress")]
         public bool? OldEmailAddressConfirmed { get; set; }
-        [Required, JsonPropertyName("isUpdate")]
-        public bool IsUpdate
-        {
-            get => getIsUpdate();
-        }
         [Required, JsonPropertyName("dateCreated")]
         public DateTime DateCreated { get; set; }
         #endregion
@@ -69,25 +72,40 @@ namespace SudokuCollective.Core.Models
         public EmailConfirmation()
         {
             Id = 0;
+            ConfirmationType = EmailConfirmationType.NULL;
             UserId = 0;
             AppId = 0;
             OldEmailAddressConfirmed = null;
             DateCreated = DateTime.MinValue;
+
+            _token = null;
+            _oldEmailAddress = null;
+            _newEmailAddress = null;
         }
 
-        public EmailConfirmation(int userId, int appId) : this()
+        public EmailConfirmation(
+            EmailConfirmationType confirmationType,
+            int userId, 
+            int appId) : this()
         {
+            Token = Guid.NewGuid().ToString();
+            ConfirmationType = confirmationType;
             UserId = userId;
             AppId = appId;
-            Token = Guid.NewGuid().ToString();
             DateCreated = DateTime.UtcNow;
         }
 
-        public EmailConfirmation(int userId, int appId, string oldEmailAddress, string newEmailAddress) : this()
+        public EmailConfirmation(
+            EmailConfirmationType confirmationType,
+            int userId, 
+            int appId, 
+            string oldEmailAddress, 
+            string newEmailAddress) : this()
         {
+            Token = Guid.NewGuid().ToString();
+            ConfirmationType = confirmationType;
             UserId = userId;
             AppId = appId;
-            Token = Guid.NewGuid().ToString();
             if (!string.IsNullOrEmpty(oldEmailAddress))
             {
                 OldEmailAddress = oldEmailAddress;
@@ -103,21 +121,23 @@ namespace SudokuCollective.Core.Models
         [JsonConstructor]
         public EmailConfirmation(
             int id,
+            EmailConfirmationType confirmationType,
+            string token,
             int userId,
             int appId,
-            string token,
             string oldEmailAddress,
             string newEmailAddress,
             bool oldEmailAddressConfirmed,
             DateTime dateCreated)
         {
             Id = id;
-            UserId = userId;
-            AppId = appId;
-            if (!string.IsNullOrEmpty(oldEmailAddress))
+            ConfirmationType = confirmationType;
+            if (!string.IsNullOrEmpty(token))
             {
                 Token = token;
             }
+            UserId = userId;
+            AppId = appId;
             if (!string.IsNullOrEmpty(oldEmailAddress))
             {
                 OldEmailAddress = oldEmailAddress;
@@ -143,7 +163,7 @@ namespace SudokuCollective.Core.Models
 
         public IDomainEntity Cast<T>() => throw new System.NotImplementedException();
 
-        private string setOldEmailAddressField(
+        private string SetOldEmailAddressField(
             string value, 
             RegularExpressionAttribute validator, 
             string errorMessage)
@@ -156,18 +176,6 @@ namespace SudokuCollective.Core.Models
             else
             {
                 throw new ArgumentException(errorMessage);
-            }
-        }
-
-        private bool getIsUpdate()
-        {
-            if (string.IsNullOrEmpty(OldEmailAddress) && string.IsNullOrEmpty(NewEmailAddress))
-            {
-                return false;
-            }
-            else
-            {
-                return true;
             }
         }
         #endregion

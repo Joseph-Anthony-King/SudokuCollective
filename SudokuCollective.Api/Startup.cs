@@ -185,9 +185,9 @@ namespace SudokuCollective.Api
 				swagger.DocumentFilter<CustomModelDocumentFilter<UpdateUserRolePayload>>();
 				swagger.DocumentFilter<CustomModelDocumentFilter<AnnonymousGameRequest>>();
 				swagger.DocumentFilter<CustomModelDocumentFilter<UpdatePasswordRequest>>();
-                swagger.DocumentFilter<CustomModelDocumentFilter<ConfirmEmailResult>>();
+				swagger.DocumentFilter<CustomModelDocumentFilter<ConfirmEmailResult>>();
 
-                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+				var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
 				var filePath = Path.Combine(AppContext.BaseDirectory, xmlFile);
 				swagger.IncludeXmlComments(filePath);
 			});

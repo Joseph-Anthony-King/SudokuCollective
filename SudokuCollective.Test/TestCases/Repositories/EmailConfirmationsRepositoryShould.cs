@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
+using SudokuCollective.Core.Enums;
 using SudokuCollective.Core.Interfaces.Repositories;
 using SudokuCollective.Core.Models;
 using SudokuCollective.Data.Models;
@@ -34,7 +35,7 @@ namespace SudokuCollective.Test.TestCases.Repositories
                 mockedRequestService.SuccessfulRequest.Object,
                 mockedLogger.Object);
 
-            newEmailConfirmation = new EmailConfirmation(2, 1);
+            newEmailConfirmation = new EmailConfirmation(EmailConfirmationType.OLDEMAILCONFIRMED, 2, 1);
         }
 
         [Test, Category("Repository")]

@@ -1,3 +1,5 @@
+using SudokuCollective.Core.Enums;
+
 namespace SudokuCollective.Api.Models
 {
     /// <summary>
@@ -5,6 +7,16 @@ namespace SudokuCollective.Api.Models
     /// </summary>
     public class ConfirmEmail
     {
+        /// <summary>
+        /// Captures the result from the user service
+        /// indicating if the email was confirmed.
+        /// </summary>
+        public bool IsSuccess { get; set; }
+        /// <summary>
+        /// The type of email confirmation response 
+        /// that is being handled.
+        /// </summary>
+        public EmailConfirmationType ConfirmationType { get; set; }
         /// <summary>
         /// The user name for the relevant user.
         /// </summary>
@@ -18,20 +30,13 @@ namespace SudokuCollective.Api.Models
         /// </summary>
         public string Url { get; set; }
         /// <summary>
-        /// Indicates is this request is for a new
-        /// user or if it is an update for an existing
-        /// user.
+        /// The email for the relevant request.
         /// </summary>
-        public bool IsUpdate { get; set; }
+        public string Email { get; set; }
         /// <summary>
         /// Indicates if the new email address is
         /// confirmed.
         /// </summary>
         public bool NewEmailAddressConfirmed { get; set; }
-        /// <summary>
-        /// Captures the result from the user service
-        /// indicating if the email was confirmed.
-        /// </summary>
-        public bool IsSuccess { get; set; }
     }
 }

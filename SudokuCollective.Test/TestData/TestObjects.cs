@@ -511,17 +511,19 @@ namespace SudokuCollective.Test.TestData
         public static EmailConfirmation GetNewEmailConfirmation() =>
             new EmailConfirmation
             {
+                ConfirmationType = EmailConfirmationType.NEWEMAILCONFIRMED,
+                Token = "cc924471-aab6-4809-8e6d-723ae422cb33",
                 UserId = 1,
                 AppId = 1,
-                Token = "cc924471-aab6-4809-8e6d-723ae422cb33"
             };
 
         public static EmailConfirmation GetUpdateEmailConfirmation() =>
             new EmailConfirmation
             {
+                ConfirmationType = EmailConfirmationType.OLDEMAILCONFIRMED,
+                Token = "cc924471-aab6-4809-8e6d-723ae422cb33",
                 UserId = 1,
                 AppId = 1,
-                Token = "cc924471-aab6-4809-8e6d-723ae422cb33",
                 OldEmailAddress = "TestSuperUser@example.com",
                 NewEmailAddress = "UPDATEDTestSuperUser@example.com"
             };
@@ -601,14 +603,14 @@ namespace SudokuCollective.Test.TestData
             };
 
         public static ConfirmEmailResult GetConfirmEmailResult() =>
-            new ConfirmEmailResult()
+            new()
             {
+                ConfirmationType = EmailConfirmationType.OLDEMAILCONFIRMED,
                 UserName = "TestSuperUser",
                 Email = "TestSuperUser@example.com",
                 DateUpdated = DateTime.Now,
                 AppTitle = "Test App 1",
                 AppUrl = "https://localhost:4200",
-                IsUpdate = true,
                 NewEmailAddressConfirmed = false,
                 ConfirmationEmailSuccessfullySent = true
             };

@@ -6,9 +6,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 using SudokuCollective.Core.Models;
 using SudokuCollective.Encrypt;
-using Microsoft.Extensions.Hosting;
 
 namespace SudokuCollective.Data.Models
 {
@@ -338,6 +338,15 @@ namespace SudokuCollective.Data.Models
                 .HasKey(emailConfirmation => emailConfirmation.Id);
 
             modelBuilder.Entity<EmailConfirmation>()
+                .Property(emailConfirmation => emailConfirmation.Token)
+                .HasConversion(encryptionConverter)
+                .IsRequired();
+
+            modelBuilder.Entity<EmailConfirmation>()
+                .HasIndex(emailConfirmation => emailConfirmation.Token)
+                .IsUnique();
+
+            modelBuilder.Entity<EmailConfirmation>()
                 .Property(emailConfirmation => emailConfirmation.OldEmailAddress)
                 .HasConversion(encryptionConverter);
 
@@ -350,6 +359,15 @@ namespace SudokuCollective.Data.Models
 
             modelBuilder.Entity<PasswordReset>()
                 .HasKey(passwordReset => passwordReset.Id);
+
+            modelBuilder.Entity<PasswordReset>()
+                .Property(passwordReset => passwordReset.Token)
+                .HasConversion(encryptionConverter)
+                .IsRequired();
+
+            modelBuilder.Entity<PasswordReset>()
+                .HasIndex(passwordReset => passwordReset.Token)
+                .IsUnique();
         }
     }
 }

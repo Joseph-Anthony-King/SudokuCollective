@@ -17,7 +17,7 @@ namespace SudokuCollective.Api.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.4")
+                .HasAnnotation("ProductVersion", "7.0.13")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -192,6 +192,10 @@ namespace SudokuCollective.Api.Migrations
                         .HasColumnType("integer")
                         .HasAnnotation("Relational:JsonPropertyName", "appId");
 
+                    b.Property<int>("ConfirmationType")
+                        .HasColumnType("integer")
+                        .HasAnnotation("Relational:JsonPropertyName", "confirmationType");
+
                     b.Property<DateTime>("DateCreated")
                         .HasColumnType("timestamp with time zone")
                         .HasAnnotation("Relational:JsonPropertyName", "dateCreated");
@@ -218,6 +222,9 @@ namespace SudokuCollective.Api.Migrations
                         .HasAnnotation("Relational:JsonPropertyName", "userId");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Token")
+                        .IsUnique();
 
                     b.ToTable("EmailConfirmations");
                 });
@@ -312,6 +319,9 @@ namespace SudokuCollective.Api.Migrations
                         .HasAnnotation("Relational:JsonPropertyName", "userId");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Token")
+                        .IsUnique();
 
                     b.ToTable("PasswordResets");
                 });
