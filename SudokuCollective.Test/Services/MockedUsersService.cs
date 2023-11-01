@@ -574,7 +574,7 @@ namespace SudokuCollective.Test.Services
                             .ConfirmEmailAsync(It.IsAny<IEmailConfirmation>())
                             .Result
                             .IsSuccess,
-                        Message = UsersMessages.EmailNotConfirmedMessage
+                        Message = UsersMessages.EmailConfirmationTokenNotFound
                     } as IResult));
 
             FailedRequest.Setup(service =>

@@ -624,7 +624,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
 			// Assert
 			Assert.That(actionResult, Is.InstanceOf<ActionResult<Result>>());
 			Assert.That(result, Is.InstanceOf<Result>());
-			Assert.That(message, Is.EqualTo("Status Code 404: Email not confirmed"));
+			Assert.That(message, Is.EqualTo("Status Code 404: Email confirmation token not found"));
 			Assert.That(statusCode, Is.EqualTo(404));
 		}
 
@@ -633,14 +633,12 @@ namespace SudokuCollective.Test.TestCases.Controllers
 		{
 			// Arrange
 			var request = new ResetPasswordRequest
-			{
-				Token = Guid.NewGuid().ToString(),
+            {
 				NewPassword = "P@ssword2"
 			};
 
-
 			// Act
-			var actionResult = await sutSuccess.ResetPasswordAsync(request);
+			var actionResult = await sutSuccess.ResetPasswordAsync(request, Guid.NewGuid().ToString());
 			var result = (Result)((OkObjectResult)actionResult.Result).Value;
 			var message = result.Message;
 			var statusCode = ((OkObjectResult)actionResult.Result).StatusCode;
@@ -658,12 +656,11 @@ namespace SudokuCollective.Test.TestCases.Controllers
 			// Arrange
 			var request = new ResetPasswordRequest
 			{
-				Token = Guid.NewGuid().ToString(),
 				NewPassword = "P@ssword2"
 			};
 
 			// Act
-			var actionResult = await sutFailureResetPassword.ResetPasswordAsync(request);
+			var actionResult = await sutFailureResetPassword.ResetPasswordAsync(request, Guid.NewGuid().ToString());
 			var result = (Result)((ObjectResult)actionResult.Result).Value;
 			var message = result.Message;
 			var statusCode = ((ObjectResult)actionResult.Result).StatusCode;
