@@ -1177,7 +1177,7 @@ namespace SudokuCollective.Data.Services
                 else
                 {
                     result.IsSuccess = response.IsSuccess;
-                    result.Message = UsersMessages.UserNotFoundMessage;
+                    result.Message = UsersMessages.PasswordResetTokenNotFound;
 
                     return result;
                 }
@@ -2026,7 +2026,7 @@ namespace SudokuCollective.Data.Services
                         else
                         {
                             result.IsSuccess = false;
-                            result.Message = UsersMessages.EmailNotConfirmedMessage;
+                            result.Message = UsersMessages.EmailConfirmationTokenNotFound;
 
                             return result;
                         }
@@ -2222,7 +2222,7 @@ namespace SudokuCollective.Data.Services
                         else
                         {
                             result.IsSuccess = false;
-                            result.Message = UsersMessages.EmailNotConfirmedMessage;
+                            result.Message = UsersMessages.EmailConfirmationTokenNotFound;
 
                             return result;
                         }
@@ -2238,7 +2238,7 @@ namespace SudokuCollective.Data.Services
                 else
                 {
                     result.IsSuccess = false;
-                    result.Message = UsersMessages.EmailNotConfirmedMessage;
+                    result.Message = UsersMessages.EmailConfirmationTokenNotFound;
 
                     return result;
                 }

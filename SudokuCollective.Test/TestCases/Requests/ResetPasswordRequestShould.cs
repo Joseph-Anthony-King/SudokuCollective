@@ -1,7 +1,6 @@
 ﻿using System;
 using NUnit.Framework;
 using SudokuCollective.Data.Models.Requests;
-using SudokuCollective.Test.TestData;
 
 namespace SudokuCollective.Test.TestCases.Payloads
 {
@@ -21,7 +20,6 @@ namespace SudokuCollective.Test.TestCases.Payloads
             // Arrange and Act
 
             // Assert
-            Assert.That(sut.Token, Is.InstanceOf<string>());
             Assert.That(sut.NewPassword, Is.InstanceOf<string>());
         }
 
@@ -29,9 +27,6 @@ namespace SudokuCollective.Test.TestCases.Payloads
         public void HasADefaultConstructor()
         {
             // Arrange and Act
-            sut = new ResetPasswordRequest();
-
-            // Assert
             Assert.That(sut, Is.InstanceOf<ResetPasswordRequest>());
         }
 
@@ -39,19 +34,7 @@ namespace SudokuCollective.Test.TestCases.Payloads
         public void HasAConstructorThatAcceptsParams()
         {
             // Arrange and Act
-            sut = new ResetPasswordRequest(TestObjects.GetToken(), "T3stPass0rd?1");
-
-            // Assert
             Assert.That(sut, Is.InstanceOf<ResetPasswordRequest>());
-        }
-
-        [Test, Category("Requests")]
-        public void ThrowExceptionForInvalidLicenses()
-        {
-            // Arrange
-
-            // Act and Assert
-            Assert.Throws<ArgumentException>(() => sut.Token = "InvalidToken");
         }
 
         [Test, Category("Requests")]

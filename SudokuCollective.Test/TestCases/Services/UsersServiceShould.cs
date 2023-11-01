@@ -274,7 +274,7 @@ namespace SudokuCollective.Test.TestCases.Services
 
 			// Assert
 			Assert.That(result.IsSuccess, Is.False);
-			Assert.That(result.Message, Is.EqualTo("Email not confirmed"));
+			Assert.That(result.Message, Is.EqualTo("Email confirmation token not found"));
 		}
 
 		[Test, Category("Services")]
@@ -936,7 +936,7 @@ namespace SudokuCollective.Test.TestCases.Services
 
 			// Assert
 			Assert.That(result.IsSuccess, Is.False);
-			Assert.That(result.Message, Is.EqualTo("User not found"));
+			Assert.That(result.Message, Is.EqualTo("Password reset token not found"));
 		}
 
 		[Test, Category("Services")]
