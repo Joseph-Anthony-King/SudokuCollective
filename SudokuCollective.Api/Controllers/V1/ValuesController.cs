@@ -131,14 +131,14 @@ namespace SudokuCollective.Api.Controllers.V1
         ///     ]
         ///   },
         ///   {
-        ///     "label": "Staging",
+        ///     "label": "Quality Assurance",
         ///     "value": 2,
         ///     "appliesTo": [ 
         ///       "releaseEnvironment"
         ///     ]
         ///   },
         ///   {
-        ///     "label": "Quality Assurance",
+        ///     "label": "Staging",
         ///     "value": 3,
         ///     "appliesTo": [ 
         ///       "releaseEnvironment"

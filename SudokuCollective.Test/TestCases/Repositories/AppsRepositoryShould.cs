@@ -41,6 +41,8 @@ namespace SudokuCollective.Test.TestCases.Repositories
                 1,
                 "TestSuperUser",
                 "https://localhost:8080",
+                "",
+                "",
                 "https://testapp3.com",
                 string.Empty);
         }
