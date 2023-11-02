@@ -11,8 +11,8 @@ namespace SudokuCollective.Data.Models.Payloads
     public class LicensePayload : ILicensePayload
     {
         private string _localUrl = string.Empty;
-        private string _stagingUrl = string.Empty;
         private string _qaUrl = string.Empty;
+        private string _stagingUrl = string.Empty;
         private string _prodUrl = string.Empty;
         private string _sourceCodeUrl = string.Empty;
         private readonly UrlValidatedAttribute _urlValidator = new();
@@ -44,29 +44,6 @@ namespace SudokuCollective.Data.Models.Payloads
                 }
             }
         }
-        [JsonPropertyName("stagingUrl")]
-        public string StagingUrl
-        {
-            get
-            {
-                return _stagingUrl;
-            }
-            set
-            {
-                if (!string.IsNullOrEmpty(value) && _urlValidator.IsValid(value))
-                {
-                    _stagingUrl = value;
-                }
-                else if (string.IsNullOrEmpty(value))
-                {
-                    // do nothing...
-                }
-                else
-                {
-                    throw new ArgumentException(AttributeMessages.InvalidUrl);
-                }
-            }
-        }
         [JsonPropertyName("qaUrl")]
         public string QaUrl
         {
@@ -79,6 +56,29 @@ namespace SudokuCollective.Data.Models.Payloads
                 if (!string.IsNullOrEmpty(value) && _urlValidator.IsValid(value))
                 {
                     _qaUrl = value;
+                }
+                else if (string.IsNullOrEmpty(value))
+                {
+                    // do nothing...
+                }
+                else
+                {
+                    throw new ArgumentException(AttributeMessages.InvalidUrl);
+                }
+            }
+        }
+        [JsonPropertyName("stagingUrl")]
+        public string StagingUrl
+        {
+            get
+            {
+                return _stagingUrl;
+            }
+            set
+            {
+                if (!string.IsNullOrEmpty(value) && _urlValidator.IsValid(value))
+                {
+                    _stagingUrl = value;
                 }
                 else if (string.IsNullOrEmpty(value))
                 {

@@ -58,20 +58,20 @@ namespace SudokuCollective.Core.Models
                 _urlValidator,
                 AttributeMessages.InvalidUrl);
         }
-        [JsonPropertyName("stagingUrl"), UrlValidated(ErrorMessage = AttributeMessages.InvalidUrl)]
-        public string StagingUrl
-        {
-            get => _stagingUrl;
-            set => _stagingUrl = CoreUtilities.SetNullableField(
-                value, 
-                _urlValidator,
-                AttributeMessages.InvalidUrl);
-        }
         [JsonPropertyName("qaUrl"), UrlValidated(ErrorMessage = AttributeMessages.InvalidUrl)]
         public string QaUrl
         {
             get => _qaUrl;
             set => _qaUrl = CoreUtilities.SetNullableField(
+                value,
+                _urlValidator,
+                AttributeMessages.InvalidUrl);
+        }
+        [JsonPropertyName("stagingUrl"), UrlValidated(ErrorMessage = AttributeMessages.InvalidUrl)]
+        public string StagingUrl
+        {
+            get => _stagingUrl;
+            set => _stagingUrl = CoreUtilities.SetNullableField(
                 value, 
                 _urlValidator,
                 AttributeMessages.InvalidUrl);
@@ -196,13 +196,24 @@ namespace SudokuCollective.Core.Models
             DisplayInGallery = false;
         }
 
-        public App(string name, string license, int ownerId, string ownerUserName, string stagingUrl, string prodUrl, string sourceCodeUrl) : this()
+        public App(
+                string name, 
+                string license, 
+                int ownerId, 
+                string ownerUserName, 
+                string localUrl, 
+                string qaUrl, 
+                string stagingUrl, 
+                string prodUrl, 
+                string sourceCodeUrl) : this()
         {
             Name = name;
             License = license;
             OwnerId = ownerId;
             CreatedBy = ownerUserName;
             DateCreated = DateTime.UtcNow;
+            LocalUrl = localUrl;
+            QaUrl = qaUrl;
             StagingUrl = stagingUrl;
             ProdUrl = prodUrl;
             SourceCodeUrl = sourceCodeUrl;
@@ -217,8 +228,8 @@ namespace SudokuCollective.Core.Models
             int ownerId,
             string createdBy,
             string localUrl,
-            string stagingUrl,
             string qaUrl,
+            string stagingUrl,
             string prodUrl,
             string sourceCodeUrl,
             bool isActive,
@@ -243,8 +254,8 @@ namespace SudokuCollective.Core.Models
             OwnerId = ownerId;
             CreatedBy = createdBy;
             LocalUrl = localUrl;
-            StagingUrl = stagingUrl;
             QaUrl = qaUrl;
+            StagingUrl = stagingUrl;
             ProdUrl = prodUrl;
             SourceCodeUrl = sourceCodeUrl;
             IsActive = isActive;

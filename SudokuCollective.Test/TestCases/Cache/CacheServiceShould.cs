@@ -54,7 +54,9 @@ namespace SudokuCollective.Test.TestCases.Cache
                 "New Test App", 
                 Guid.NewGuid().ToString(), 
                 2, 
-                "TestUser", 
+                "TestUser",
+                "http://localhost:8080",
+                "",
                 "http://example-dev.com", 
                 "http://example.com",
                 string.Empty);
@@ -82,6 +84,8 @@ namespace SudokuCollective.Test.TestCases.Cache
                 Guid.NewGuid().ToString(), 
                 2,
                 "TestUser",
+                "http://localhost:8080",
+                "",
                 "http://example-dev.com", 
                 "http://example.com",
                 string.Empty);
