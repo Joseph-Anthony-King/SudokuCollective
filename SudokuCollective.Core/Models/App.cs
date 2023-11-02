@@ -105,12 +105,12 @@ namespace SudokuCollective.Core.Models
         [JsonIgnore]
         public bool UseCustomEmailConfirmationAction
         {
-            get => getUseCustomEmailConfirmationAction();
+            get => GetUseCustomEmailConfirmationAction();
         }
         [JsonIgnore]
         public bool UseCustomPasswordResetAction
         {
-            get => getUseCustomPasswordResetAction();
+            get => GetUseCustomPasswordResetAction();
         }
         [JsonPropertyName("disableCustomUrls")]
         public bool DisableCustomUrls { get; set; }
@@ -131,19 +131,19 @@ namespace SudokuCollective.Core.Models
         [Required, JsonPropertyName("userCount")]
         public int UserCount
         {
-            get => getUserCount();
+            get => GetUserCount();
         }
         [JsonPropertyName("timeFrame")]
         public TimeFrame TimeFrame
         {
             get => _timeFrame;
-            set => setTimeFrame(value);
+            set => SetTimeFrame(value);
         }
         [JsonPropertyName("accessDuration")]
         public int AccessDuration
         {
             get => _accessDuration;
-            set => setAccessDuration(value);
+            set => SetAccessDuration(value);
         }
         [Required, JsonPropertyName("displayInGallery")]
         public bool DisplayInGallery { get; set; }
@@ -343,7 +343,7 @@ namespace SudokuCollective.Core.Models
             }
         }
 
-        private bool getUseCustomEmailConfirmationAction()
+        private bool GetUseCustomEmailConfirmationAction()
         {
             if (
                 Environment == ReleaseEnvironment.LOCAL
@@ -387,7 +387,7 @@ namespace SudokuCollective.Core.Models
             }
         }
 
-        private bool getUseCustomPasswordResetAction()
+        private bool GetUseCustomPasswordResetAction()
         {
             if (
                 Environment == ReleaseEnvironment.LOCAL
@@ -431,7 +431,7 @@ namespace SudokuCollective.Core.Models
             }
         }
 
-        private int getUserCount()
+        private int GetUserCount()
         {  
             if (Users != null)
             {
@@ -443,7 +443,7 @@ namespace SudokuCollective.Core.Models
             }
         }
 
-        private void setTimeFrame(TimeFrame value)
+        private void SetTimeFrame(TimeFrame value)
         {
             _timeFrame = value;
 
@@ -474,7 +474,7 @@ namespace SudokuCollective.Core.Models
             }
         }
 
-        private void setAccessDuration(int value)
+        private void SetAccessDuration(int value)
         {
             if (TimeFrame == TimeFrame.SECONDS)
             {

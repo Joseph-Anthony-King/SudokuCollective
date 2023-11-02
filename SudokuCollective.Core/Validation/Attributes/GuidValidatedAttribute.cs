@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.CompilerServices;
 
+[assembly:InternalsVisibleTo("SudokuCollective.Api")]
 [assembly:InternalsVisibleTo("SudokuCollective.Data")]
 [assembly:InternalsVisibleTo("SudokuCollective.Test")]
 namespace SudokuCollective.Core.Validation.Attributes

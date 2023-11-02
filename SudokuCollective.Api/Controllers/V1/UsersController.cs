@@ -8,7 +8,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SudokuCollective.Api.Utilities;
 using SudokuCollective.Core.Interfaces.Services;
+using SudokuCollective.Core.Messages;
 using SudokuCollective.Core.Models;
+using SudokuCollective.Core.Validation.Attributes;
 using SudokuCollective.Data.Messages;
 using SudokuCollective.Data.Models.Params;
 using SudokuCollective.Data.Models.Requests;
@@ -714,6 +716,10 @@ namespace SudokuCollective.Api.Controllers.V1
             {
                 if (string.IsNullOrEmpty(token)) throw new ArgumentNullException(nameof(token));
 
+                var guidValidator = new GuidValidatedAttribute();
+
+                if (!guidValidator.IsValid(token)) throw new ArgumentException(AttributeMessages.InvalidToken);
+
                 string baseUrl;
 
                 if (Request != null)
@@ -841,6 +847,7 @@ namespace SudokuCollective.Api.Controllers.V1
         /// An endpoint to reset user password, your custom password action will plug into this endpoint; does not require a login.
         /// </summary>
         /// <param name="request"></param>
+        /// <param name="token"></param>
         /// <returns>An updated copy of the user.</returns>
         /// <response code="200">Returns a result object with the updated user included as the first element in the payload array.</response>
         /// <response code="400">Returns a result object with the message stating any validation errors for the request.</response>
@@ -853,22 +860,43 @@ namespace SudokuCollective.Api.Controllers.V1
         /// 
         /// The request should be structured as follows:
         /// ```
-        ///     {                                 
-        ///       "token": string,       // this will be provided by the api, the applicable regex pattern is documented in the ResetPasswordRequest model
+        ///     {
         ///       "newPassword": string, // the new password, the applicable regex pattern is documented in the ResetPasswordRequest model
         ///     }     
         /// ```
         /// </remarks>
         [AllowAnonymous]
-        [HttpPut("ResetPassword")]
-        public async Task<ActionResult<Result>> ResetPasswordAsync([FromBody] ResetPasswordRequest request)
+        [HttpPut("ResetPassword/{token}")]
+        public async Task<ActionResult<Result>> ResetPasswordAsync([FromBody] ResetPasswordRequest request, string token)
         {
             try
             {
                 if (request == null) throw new ArgumentNullException(nameof(request));
 
-                var user = (User)(await _usersService.GetUserByPasswordTokenAsync(request.Token)).Payload[0];
-                var license = (await _usersService.GetAppLicenseByPasswordTokenAsync(request.Token)).License;
+                var guidValidator = new GuidValidatedAttribute();
+
+                if (!guidValidator.IsValid(token)) throw new ArgumentException(AttributeMessages.InvalidToken);
+
+                User user = null;
+                Core.Interfaces.Models.DomainObjects.Params.IResult result = null;
+
+                var userResult = await _usersService.GetUserByPasswordTokenAsync(token);
+
+                if (userResult.IsSuccess)
+                {
+                    user = (User)userResult.Payload[0];
+                }
+                else
+                {
+                    result = new Result
+                    {
+                        Message = ControllerMessages.StatusCode404(userResult.Message)
+                    };
+
+                    return NotFound(result);
+                }
+
+                var license = (await _usersService.GetAppLicenseByPasswordTokenAsync(token)).License;
 
                 var updatePasswordRequest = new UpdatePasswordRequest
                 {
@@ -877,7 +905,7 @@ namespace SudokuCollective.Api.Controllers.V1
                     License = license
                 };
 
-                var result = await _usersService.UpdatePasswordAsync(updatePasswordRequest);
+                result = await _usersService.UpdatePasswordAsync(updatePasswordRequest);
 
                 if (result.IsSuccess)
                 {
