@@ -1950,7 +1950,12 @@ namespace SudokuCollective.Data.Services
                                 user.Email = emailConfirmation.OldEmailAddress;
                                 user.ReceivedRequestToUpdateEmail = false;
 
-                                _ = await _usersRepository.UpdateAsync(user);
+                                _ = await _cacheService.UpdateWithCacheAsync(
+                                    _usersRepository,
+                                    _distributedCache,
+                                    _cacheKeys,
+                                    user,
+                                    license);
 
                                 _ = await _emailConfirmationsRepository.DeleteAsync(emailConfirmation);
 
@@ -2023,7 +2028,12 @@ namespace SudokuCollective.Data.Services
 
                             user.ReceivedRequestToUpdateEmail = false;
 
-                            _ = await _usersRepository.UpdateAsync(user);
+                            _ = await _cacheService.UpdateWithCacheAsync(
+                                _usersRepository,
+                                _distributedCache,
+                                _cacheKeys,
+                                user,
+                                license);
 
                             result.Message = UsersMessages.EmailConfirmedMessage;
                             result.Payload.Add(emailConfirmResult);
@@ -2055,6 +2065,27 @@ namespace SudokuCollective.Data.Services
                             license);
 
                         var user = (User)response.Object;
+
+                        if (DateTime.UtcNow > emailConfirmation.ExpirationDate && emailConfirmation.IsUpdate)
+                        {
+                            user.Email = emailConfirmation.OldEmailAddress;
+                            user.ReceivedRequestToUpdateEmail = false;
+
+                            _ = await _cacheService.UpdateWithCacheAsync(
+                                _usersRepository,
+                                _distributedCache,
+                                _cacheKeys,
+                                user,
+                                license);
+
+                            _ = await _emailConfirmationsRepository.DeleteAsync(emailConfirmation);
+
+                            result.IsSuccess = false;
+                            result.Message = UsersMessages.EmailConfirmationTokenExpired;
+
+                            return result;
+                        }
+
                         var app = (App)(await _appsRepository.GetAsync(emailConfirmation.AppId)).Object;
 
                         if (response.IsSuccess)
@@ -2109,6 +2140,7 @@ namespace SudokuCollective.Data.Services
                                 .SendAsync(user.Email, emailSubject, html, app.Id);
 
                             emailConfirmation.OldEmailAddressConfirmed = emailConfirmResult.ConfirmationEmailSuccessfullySent;
+                            emailConfirmation.ConfirmationType = EmailConfirmationType.NEWPROFILECONFIRMED;
 
                             emailConfirmation = (EmailConfirmation)(await _emailConfirmationsRepository.UpdateAsync(emailConfirmation)).Object;
 
@@ -2153,6 +2185,26 @@ namespace SudokuCollective.Data.Services
                         if (response.IsSuccess)
                         {
                             var user = (User)response.Object;
+
+                            if (DateTime.UtcNow > emailConfirmation.ExpirationDate && emailConfirmation.IsUpdate)
+                            {
+                                user.Email = emailConfirmation.OldEmailAddress;
+                                user.ReceivedRequestToUpdateEmail = false;
+
+                                _ = await _cacheService.UpdateWithCacheAsync(
+                                    _usersRepository,
+                                    _distributedCache,
+                                    _cacheKeys,
+                                    user,
+                                    license);
+
+                                _ = await _emailConfirmationsRepository.DeleteAsync(emailConfirmation);
+
+                                result.IsSuccess = false;
+                                result.Message = UsersMessages.EmailConfirmationTokenExpired;
+
+                                return result;
+                            }
 
                             result.IsSuccess = response.IsSuccess;
 
@@ -2203,7 +2255,12 @@ namespace SudokuCollective.Data.Services
 
                             user.ReceivedRequestToUpdateEmail = false;
 
-                            _ = await _usersRepository.UpdateAsync(user);
+                            _ = await _cacheService.UpdateWithCacheAsync(
+                                _usersRepository,
+                                _distributedCache,
+                                _cacheKeys,
+                                user,
+                                license);
 
                             result.Message = UsersMessages.EmailConfirmedMessage;
 
