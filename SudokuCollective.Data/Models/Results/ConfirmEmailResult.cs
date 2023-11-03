@@ -6,7 +6,7 @@ namespace SudokuCollective.Data.Models.Results
 {
     public class ConfirmEmailResult : IConfirmEmailResult
     {
-        [JsonPropertyName("ConfirmationType")]
+        [JsonPropertyName("confirmationType")]
         public EmailConfirmationType ConfirmationType { get; set; }
         [JsonPropertyName("userName")]
         public string UserName { get; set; }

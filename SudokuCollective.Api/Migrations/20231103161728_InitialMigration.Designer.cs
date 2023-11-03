@@ -12,8 +12,8 @@ using SudokuCollective.Data.Models;
 namespace SudokuCollective.Api.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20231102210731_InitializeDatabase")]
-    partial class InitializeDatabase
+    [Migration("20231103161728_InitialMigration")]
+    partial class InitialMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -199,9 +199,9 @@ namespace SudokuCollective.Api.Migrations
                         .HasColumnType("integer")
                         .HasAnnotation("Relational:JsonPropertyName", "confirmationType");
 
-                    b.Property<DateTime>("DateCreated")
+                    b.Property<DateTime>("ExpirationDate")
                         .HasColumnType("timestamp with time zone")
-                        .HasAnnotation("Relational:JsonPropertyName", "dateCreated");
+                        .HasAnnotation("Relational:JsonPropertyName", "expirationDate");
 
                     b.Property<string>("NewEmailAddress")
                         .HasColumnType("text")
@@ -308,9 +308,9 @@ namespace SudokuCollective.Api.Migrations
                         .HasColumnType("integer")
                         .HasAnnotation("Relational:JsonPropertyName", "appId");
 
-                    b.Property<DateTime>("DateCreated")
+                    b.Property<DateTime>("ExpirationDate")
                         .HasColumnType("timestamp with time zone")
-                        .HasAnnotation("Relational:JsonPropertyName", "dateCreated");
+                        .HasAnnotation("Relational:JsonPropertyName", "expirationDate");
 
                     b.Property<string>("Token")
                         .IsRequired()
