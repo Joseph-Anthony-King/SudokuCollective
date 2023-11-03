@@ -145,6 +145,8 @@ namespace SudokuCollective.Data.Services
                         license.ToString(),
                         payload.OwnerId,
                         user.UserName,
+                        payload.LocalUrl,
+                        payload.QaUrl,
                         payload.StagingUrl,
                         payload.ProdUrl,
                         payload.SourceCodeUrl);

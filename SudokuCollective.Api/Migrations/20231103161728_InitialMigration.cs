@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace SudokuCollective.Api.Migrations
 {
     /// <inheritdoc />
-    public partial class InitializeDatabase : Migration
+    public partial class InitialMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -38,8 +38,8 @@ namespace SudokuCollective.Api.Migrations
                     OwnerId = table.Column<int>(type: "integer", nullable: false),
                     CreatedBy = table.Column<string>(type: "text", nullable: true),
                     LocalUrl = table.Column<string>(type: "text", nullable: true),
-                    StagingUrl = table.Column<string>(type: "text", nullable: true),
                     QaUrl = table.Column<string>(type: "text", nullable: true),
+                    StagingUrl = table.Column<string>(type: "text", nullable: true),
                     ProdUrl = table.Column<string>(type: "text", nullable: true),
                     SourceCodeUrl = table.Column<string>(type: "text", nullable: true),
                     IsActive = table.Column<bool>(type: "boolean", nullable: false),
@@ -89,7 +89,7 @@ namespace SudokuCollective.Api.Migrations
                     OldEmailAddress = table.Column<string>(type: "text", nullable: true),
                     NewEmailAddress = table.Column<string>(type: "text", nullable: true),
                     OldEmailAddressConfirmed = table.Column<bool>(type: "boolean", nullable: true),
-                    DateCreated = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                    ExpirationDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -105,7 +105,7 @@ namespace SudokuCollective.Api.Migrations
                     Token = table.Column<string>(type: "text", nullable: false),
                     UserId = table.Column<int>(type: "integer", nullable: false),
                     AppId = table.Column<int>(type: "integer", nullable: false),
-                    DateCreated = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                    ExpirationDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {

@@ -196,9 +196,9 @@ namespace SudokuCollective.Api.Migrations
                         .HasColumnType("integer")
                         .HasAnnotation("Relational:JsonPropertyName", "confirmationType");
 
-                    b.Property<DateTime>("DateCreated")
+                    b.Property<DateTime>("ExpirationDate")
                         .HasColumnType("timestamp with time zone")
-                        .HasAnnotation("Relational:JsonPropertyName", "dateCreated");
+                        .HasAnnotation("Relational:JsonPropertyName", "expirationDate");
 
                     b.Property<string>("NewEmailAddress")
                         .HasColumnType("text")
@@ -305,9 +305,9 @@ namespace SudokuCollective.Api.Migrations
                         .HasColumnType("integer")
                         .HasAnnotation("Relational:JsonPropertyName", "appId");
 
-                    b.Property<DateTime>("DateCreated")
+                    b.Property<DateTime>("ExpirationDate")
                         .HasColumnType("timestamp with time zone")
-                        .HasAnnotation("Relational:JsonPropertyName", "dateCreated");
+                        .HasAnnotation("Relational:JsonPropertyName", "expirationDate");
 
                     b.Property<string>("Token")
                         .IsRequired()

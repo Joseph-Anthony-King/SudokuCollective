@@ -5,8 +5,8 @@
         string Name { get; set; }
         int OwnerId { get; set; }
         string LocalUrl { get; set; }
-        string StagingUrl { get; set; }
         string QaUrl { get; set; }
+        string StagingUrl { get; set; }
         string ProdUrl { get; set; }
         string SourceCodeUrl { get; set; }
     }

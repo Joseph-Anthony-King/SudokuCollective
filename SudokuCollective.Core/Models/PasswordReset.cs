@@ -33,8 +33,8 @@ namespace SudokuCollective.Core.Models
         public int UserId { get; set; }
         [Required, JsonPropertyName("appId")]
         public int AppId { get; set; }
-        [Required, JsonPropertyName("dateCreated")]
-        public DateTime DateCreated { get; set; }
+        [Required, JsonPropertyName("expirationDate")]
+        public DateTime ExpirationDate { get; set; }
         #endregion
 
         #region Constructors
@@ -43,7 +43,7 @@ namespace SudokuCollective.Core.Models
             Id = 0;
             UserId = 0;
             AppId = 0;
-            DateCreated = DateTime.MinValue;
+            ExpirationDate = DateTime.UtcNow.AddHours(24);
         }
 
         public PasswordReset(int userId, int appId) : this()
@@ -51,17 +51,16 @@ namespace SudokuCollective.Core.Models
             Token = Guid.NewGuid().ToString();
             UserId = userId;
             AppId = appId;
-            DateCreated = DateTime.UtcNow;
         }
 
         [JsonConstructor]
-        public PasswordReset(int id, string token, int userId, int appId, DateTime dateCreated)
+        public PasswordReset(int id, string token, int userId, int appId, DateTime expirationDate)
         {
             Id = id;
             Token = token;
             UserId = userId;
             AppId = appId;
-            DateCreated = dateCreated;
+            ExpirationDate = expirationDate;
         }
         #endregion
 

@@ -13,6 +13,6 @@ namespace SudokuCollective.Core.Interfaces.Models.DomainEntities
         string OldEmailAddress { get; set; }
         string NewEmailAddress { get; set; }
         bool? OldEmailAddressConfirmed { get; set; }
-        DateTime DateCreated { get; set; }
+        DateTime ExpirationDate { get; set; }
     }
 }
