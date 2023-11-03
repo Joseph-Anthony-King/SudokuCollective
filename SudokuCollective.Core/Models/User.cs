@@ -56,7 +56,7 @@ namespace SudokuCollective.Core.Models
         public string Email
         {
             get => _email;
-            set => _email = setEmail(value);
+            set => _email = SetEmail(value);
         }
         [Required, JsonPropertyName("isEmailConfirmed")]
         public bool IsEmailConfirmed { get; set; }
@@ -75,12 +75,12 @@ namespace SudokuCollective.Core.Models
         [JsonIgnore]
         public bool IsSuperUser
         {
-            get => getIsSuperUser();
+            get => GetIsSuperUser();
         }
         [JsonIgnore]
         public bool IsAdmin
         {
-            get => getIsAdminUser();
+            get => GetIsAdminUser();
         }
         [Required, JsonPropertyName("dateCreated")]
         public DateTime DateCreated { get; set; }
@@ -275,7 +275,7 @@ namespace SudokuCollective.Core.Models
             }
         }
 
-        private string setEmail(string value)
+        private string SetEmail(string value)
         {
             if (!string.IsNullOrEmpty(value) && _emailValidator.IsValid(value))
             {
@@ -288,7 +288,7 @@ namespace SudokuCollective.Core.Models
             }
         }
 
-        private bool getIsSuperUser()
+        private bool GetIsSuperUser()
         {
             _isSuperUser = false;
 
@@ -306,7 +306,7 @@ namespace SudokuCollective.Core.Models
             return _isSuperUser;
         }
 
-        private bool getIsAdminUser()
+        private bool GetIsAdminUser()
         {
             _isAdmin = false;
 

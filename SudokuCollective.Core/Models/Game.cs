@@ -37,7 +37,7 @@ namespace SudokuCollective.Core.Models
         [JsonIgnore]
         public TimeSpan TimeToSolve
         {
-            get => getTimeSpan();
+            get => GetTimeSpan();
         }
         [JsonIgnore]
         IUser IGame.User
@@ -241,7 +241,7 @@ namespace SudokuCollective.Core.Models
 
         public IDomainEntity Cast<T>() => throw new System.NotImplementedException();
 
-        private TimeSpan getTimeSpan()
+        private TimeSpan GetTimeSpan()
         {
             if (DateCompleted == DateTime.MinValue)
             {
