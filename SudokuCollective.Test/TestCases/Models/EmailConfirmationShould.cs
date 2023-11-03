@@ -105,7 +105,7 @@ namespace SudokuCollective.Test.TestCases.Models
             // Arrange and Act
 
             // Assert
-            Assert.That(sut.DateCreated, Is.InstanceOf<DateTime>());
+            Assert.That(sut.ExpirationDate, Is.InstanceOf<DateTime>());
         }
 
         [Test, Category("Models")]

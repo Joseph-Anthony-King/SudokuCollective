@@ -24,4 +24,4 @@ Once the above is done run the following command to instantiate the database:
 
 Once done the project will be ready to run.
 
-There is also a related [Vue.js](https://vuejs.org/) administrative app which allows you to manage app licenses, [Sudoku Collective Admin Vue](https://github.com/Joseph-Anthony-King/SudokuCollective.Admin).  The installation instructions for that project can be reviewed in its [README](https://github.com/Joseph-Anthony-King/SudokuCollective.Admin/blob/master/README.md) file.
+There is also a related [Vue.js](https://vuejs.org/) administrative app which allows you to manage app licenses, [Sudoku Collective Admin Console](https://github.com/Joseph-Anthony-King/SudokuCollective.Admin).  The installation instructions for that project can be reviewed in its [README](https://github.com/Joseph-Anthony-King/SudokuCollective.Admin/blob/master/README.md) file.

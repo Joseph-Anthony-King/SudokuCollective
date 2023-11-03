@@ -64,8 +64,8 @@ namespace SudokuCollective.Core.Models
         }
         [JsonPropertyName("oldEmailAddress")]
         public bool? OldEmailAddressConfirmed { get; set; }
-        [Required, JsonPropertyName("dateCreated")]
-        public DateTime DateCreated { get; set; }
+        [Required, JsonPropertyName("expirationDate")]
+        public DateTime ExpirationDate { get; set; }
         #endregion
 
         #region Constructors
@@ -76,7 +76,7 @@ namespace SudokuCollective.Core.Models
             UserId = 0;
             AppId = 0;
             OldEmailAddressConfirmed = null;
-            DateCreated = DateTime.MinValue;
+            ExpirationDate = DateTime.UtcNow.AddHours(24);
 
             _token = null;
             _oldEmailAddress = null;
@@ -92,7 +92,6 @@ namespace SudokuCollective.Core.Models
             ConfirmationType = confirmationType;
             UserId = userId;
             AppId = appId;
-            DateCreated = DateTime.UtcNow;
         }
 
         public EmailConfirmation(
@@ -115,7 +114,6 @@ namespace SudokuCollective.Core.Models
                 NewEmailAddress = newEmailAddress;
             }
             OldEmailAddressConfirmed = false;
-            DateCreated = DateTime.UtcNow;
         }
 
         [JsonConstructor]
@@ -128,7 +126,7 @@ namespace SudokuCollective.Core.Models
             string oldEmailAddress,
             string newEmailAddress,
             bool oldEmailAddressConfirmed,
-            DateTime dateCreated)
+            DateTime expirationDate)
         {
             Id = id;
             ConfirmationType = confirmationType;
@@ -147,7 +145,7 @@ namespace SudokuCollective.Core.Models
                 NewEmailAddress = newEmailAddress;
             }
             OldEmailAddressConfirmed = oldEmailAddressConfirmed;
-            DateCreated = dateCreated;
+            ExpirationDate = expirationDate;
         }
         #endregion
 

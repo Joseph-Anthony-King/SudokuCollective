@@ -37,6 +37,7 @@ namespace SudokuCollective.Data.Messages
         internal const string PasswordNotResetMessage = "Password not reset";
         internal const string EmailConfirmedMessage = "Email confirmed";
         internal const string EmailConfirmationTokenNotFound = "Email confirmation token not found";
+        internal const string EmailConfirmationTokenExpired = "Email confirmation token expired";
         internal const string OldEmailConfirmedMessage = "Old email confirmed";
         internal const string OldEmailNotConfirmedMessage = "Old email not confirmed";
         internal const string ProcessedPasswordResetRequestMessage = "Processed password reset request, please check your email";
@@ -44,6 +45,7 @@ namespace SudokuCollective.Data.Messages
         internal const string UnableToProcessPasswordResetRequesMessage = "Unable to process password reset request";
         internal const string UserEmailNotConfirmedMessage = "User email not confirmed";
         internal const string PasswordResetTokenNotFound = "Password reset token not found";
+        internal const string PasswordResetTokenExpired = "Password reset token expired";
         internal const string PasswordResetRequestNotFoundMessage = "Password reset request not found";
         internal const string NoOutstandingRequestToResetPassworMessage = "No outstanding request to reset password";
         internal const string EmailConfirmationEmailResentMessage = "Email confirmation email resent";

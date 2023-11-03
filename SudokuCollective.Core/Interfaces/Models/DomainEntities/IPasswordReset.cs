@@ -7,6 +7,6 @@ namespace SudokuCollective.Core.Interfaces.Models.DomainEntities
         string Token { get; set; }
         int UserId { get; set; }
         int AppId { get; set; }
-        DateTime DateCreated { get; set; }
+        DateTime ExpirationDate { get; set; }
     }
 }

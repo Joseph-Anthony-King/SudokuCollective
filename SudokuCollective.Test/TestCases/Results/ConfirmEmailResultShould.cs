@@ -24,7 +24,6 @@ namespace SudokuCollective.Test.TestCases.Results
             // Assert
             Assert.That(sut.UserName, Is.InstanceOf<string>());
             Assert.That(sut.Email, Is.InstanceOf<string>());
-            Assert.That(sut.DateUpdated, Is.InstanceOf<DateTime>());
             Assert.That(sut.AppTitle, Is.InstanceOf<string>());
             Assert.That(sut.AppUrl, Is.InstanceOf<string>());
             Assert.That(sut.ConfirmationType, Is.InstanceOf<EmailConfirmationType>());
@@ -56,8 +55,7 @@ namespace SudokuCollective.Test.TestCases.Results
                 "url",
                 false,
                 false,
-                false,
-                DateTime.Now);
+                false);
 
             // Assert
             Assert.That(sut, Is.InstanceOf<ConfirmEmailResult>());
