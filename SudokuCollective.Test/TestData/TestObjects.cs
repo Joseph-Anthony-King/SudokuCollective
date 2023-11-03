@@ -608,7 +608,6 @@ namespace SudokuCollective.Test.TestData
                 ConfirmationType = EmailConfirmationType.OLDEMAILCONFIRMED,
                 UserName = "TestSuperUser",
                 Email = "TestSuperUser@example.com",
-                DateUpdated = DateTime.Now,
                 AppTitle = "Test App 1",
                 AppUrl = "https://localhost:4200",
                 NewEmailAddressConfirmed = false,

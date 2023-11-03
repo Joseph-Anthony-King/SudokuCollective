@@ -44,7 +44,7 @@ namespace SudokuCollective.Test.TestCases.Models
             Assert.That(sut.UserId, Is.TypeOf<int>());
             Assert.That(sut.AppId, Is.TypeOf<int>());
             Assert.That(sut.Token, Is.TypeOf<string>());
-            Assert.That(sut.DateCreated, Is.TypeOf<DateTime>());
+            Assert.That(sut.ExpirationDate, Is.TypeOf<DateTime>());
         }
 
         [Test, Category("Models")]

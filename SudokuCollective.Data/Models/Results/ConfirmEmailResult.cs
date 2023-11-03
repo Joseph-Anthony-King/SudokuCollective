@@ -1,4 +1,3 @@
-using System;
 using System.Text.Json.Serialization;
 using SudokuCollective.Core.Enums;
 using SudokuCollective.Core.Interfaces.Models.DomainObjects.Results;
@@ -23,8 +22,6 @@ namespace SudokuCollective.Data.Models.Results
         public bool? NewEmailAddressConfirmed { get; set; }
         [JsonPropertyName("confirmationEmailSuccessfullySent")]
         public bool? ConfirmationEmailSuccessfullySent { get; set; }
-        [JsonPropertyName("dateUpdated")]
-        public DateTime DateUpdated { get; set; }
 
         public ConfirmEmailResult()
         {
@@ -36,7 +33,6 @@ namespace SudokuCollective.Data.Models.Results
             IsUpdate = false;
             NewEmailAddressConfirmed = null;
             ConfirmationEmailSuccessfullySent = null;
-            DateUpdated = DateTime.MinValue;
         }
 
         public ConfirmEmailResult(
@@ -47,8 +43,7 @@ namespace SudokuCollective.Data.Models.Results
             string url, 
             bool? isUpdate,
             bool? newEmailAddressConfirmed, 
-            bool? confirmationEmailSuccessfullySent,
-            DateTime dateUpdated)
+            bool? confirmationEmailSuccessfullySent) : this()
         {
             ConfirmationType = emailConfirmationType;
             UserName = userName;
@@ -58,7 +53,6 @@ namespace SudokuCollective.Data.Models.Results
             IsUpdate = isUpdate;
             NewEmailAddressConfirmed = newEmailAddressConfirmed;
             ConfirmationEmailSuccessfullySent = confirmationEmailSuccessfullySent;
-            DateUpdated = dateUpdated;
         }
     }
 }

@@ -1918,12 +1918,12 @@ namespace SudokuCollective.Data.Services
 
             try
             {
-                var emailConfirmationResponse = await _emailConfirmationsRepository.GetAsync(token);
+                var emailConfirmations = (await _emailConfirmationsRepository.GetAllAsync()).Objects.ConvertAll(x => (EmailConfirmation)x);
 
-                if (emailConfirmationResponse.IsSuccess)
+                var emailConfirmation = emailConfirmations.FirstOrDefault(ec => ec.Token.ToLower().Equals(token.ToLower()));
+
+                if (emailConfirmation != null)
                 {
-                    var emailConfirmation = (EmailConfirmation)emailConfirmationResponse.Object;
-
                     var license = (await _cacheService.GetLicenseWithCacheAsync(
                         _appsRepository,
                         _distributedCache,
@@ -1945,6 +1945,21 @@ namespace SudokuCollective.Data.Services
                         {
                             var user = (User)response.Object;
 
+                            if (DateTime.UtcNow > emailConfirmation.ExpirationDate && emailConfirmation.IsUpdate)
+                            {
+                                user.Email = emailConfirmation.OldEmailAddress;
+                                user.ReceivedRequestToUpdateEmail = false;
+
+                                _ = await _usersRepository.UpdateAsync(user);
+
+                                _ = await _emailConfirmationsRepository.DeleteAsync(emailConfirmation);
+
+                                result.IsSuccess = false;
+                                result.Message = UsersMessages.EmailConfirmationTokenExpired;
+
+                                return result;
+                            }
+
                             result.IsSuccess = response.IsSuccess;
 
                             emailConfirmResult.ConfirmationType = EmailConfirmationType.NEWPROFILECONFIRMED;
@@ -1953,7 +1968,6 @@ namespace SudokuCollective.Data.Services
                             emailConfirmResult.Email = user.Email;
                             emailConfirmResult.NewEmailAddressConfirmed = true;
                             emailConfirmResult.ConfirmationType = emailConfirmation.ConfirmationType;
-                            emailConfirmResult.DateUpdated = user.DateUpdated;
                             emailConfirmResult.AppTitle = user
                                 .Apps
                                 .Where(ua => ua.AppId == emailConfirmation.AppId)
@@ -2107,7 +2121,6 @@ namespace SudokuCollective.Data.Services
                             emailConfirmResult.Email = emailConfirmation.NewEmailAddress;
                             emailConfirmResult.AppTitle = appTitle;
                             emailConfirmResult.AppUrl = url;
-                            emailConfirmResult.DateUpdated = user.DateUpdated;
 
                             result.Payload.Add(emailConfirmResult);
 
@@ -2199,7 +2212,6 @@ namespace SudokuCollective.Data.Services
                             emailConfirmResult.Email = user.Email;
                             emailConfirmResult.UserName = user.UserName;
                             emailConfirmResult.NewEmailAddressConfirmed = true;
-                            emailConfirmResult.DateUpdated = user.DateUpdated;
                             emailConfirmResult.AppTitle = user
                                 .Apps
                                 .Where(ua => ua.AppId == emailConfirmation.AppId)
@@ -2227,13 +2239,6 @@ namespace SudokuCollective.Data.Services
                             return result;
                         }
                     }
-                }
-                else if (!emailConfirmationResponse.IsSuccess && emailConfirmationResponse.Exception != null)
-                {
-                    result.IsSuccess = emailConfirmationResponse.IsSuccess;
-                    result.Message = emailConfirmationResponse.Exception.Message;
-
-                    return result;
                 }
                 else
                 {
@@ -3063,41 +3068,72 @@ namespace SudokuCollective.Data.Services
                 {
                     if (user.ReceivedRequestToUpdatePassword)
                     {
-                        user.Password = BCrypt.Net.BCrypt
-                                .HashPassword(request.NewPassword, salt);
+                        var passwordResetReponse = await _passwordResetsRepository
+                            .RetrievePasswordResetAsync(
+                                user.Id,
+                                app.Id);
 
-                        user.DateUpdated = DateTime.UtcNow;
-
-                        user.ReceivedRequestToUpdatePassword = false;
-
-                        var updateUserResponse = await _cacheService.UpdateWithCacheAsync<User>(
-                            _usersRepository,
-                            _distributedCache,
-                            _cacheKeys,
-                            user,
-                            app.License);
-
-                        if (updateUserResponse.IsSuccess)
+                        if (passwordResetReponse.IsSuccess)
                         {
-                            var passwordResetReponse = await _passwordResetsRepository
-                                .RetrievePasswordResetAsync(
-                                    user.Id, 
-                                    app.Id);
+                            var passwordReset = (PasswordReset)passwordResetReponse.Object;
 
-                            _ = await _passwordResetsRepository
-                                .DeleteAsync((PasswordReset)passwordResetReponse.Object);
+                            if (DateTime.UtcNow > passwordReset.ExpirationDate)
+                            {
+                                user.ReceivedRequestToUpdatePassword = false;
 
-                            user = (User)updateUserResponse.Object;
+                                _ = await _usersRepository.UpdateAsync(user);
+                                _ = await _passwordResetsRepository.DeleteAsync(passwordReset);
 
-                            user.NullifyPassword();
+                                result.IsSuccess = false;
+                                result.Message = UsersMessages.PasswordResetTokenExpired;
 
-                            result.IsSuccess = userResponse.IsSuccess;
-                            result.Message = UsersMessages.PasswordResetMessage;
-                            result.Payload.Add(user.Cast<UserDTO>());
+                                return result;
+                            }
 
-                            return result;
+                            user.Password = BCrypt.Net.BCrypt
+                                    .HashPassword(request.NewPassword, salt);
+
+                            user.DateUpdated = DateTime.UtcNow;
+
+                            user.ReceivedRequestToUpdatePassword = false;
+
+                            var updateUserResponse = await _cacheService.UpdateWithCacheAsync<User>(
+                                _usersRepository,
+                                _distributedCache,
+                                _cacheKeys,
+                                user,
+                                app.License);
+
+                            if (updateUserResponse.IsSuccess)
+                            {
+                                _ = await _passwordResetsRepository.DeleteAsync(passwordReset);
+
+                                user = (User)updateUserResponse.Object;
+
+                                user.NullifyPassword();
+
+                                result.IsSuccess = userResponse.IsSuccess;
+                                result.Message = UsersMessages.PasswordResetMessage;
+                                result.Payload.Add(user.Cast<UserDTO>());
+
+                                return result;
+                            }
+                            else if (!updateUserResponse.IsSuccess && updateUserResponse.Exception != null)
+                            {
+                                result.IsSuccess = userResponse.IsSuccess;
+                                result.Message = userResponse.Exception.Message;
+
+                                return result;
+                            }
+                            else
+                            {
+                                result.IsSuccess = false;
+                                result.Message = UsersMessages.PasswordNotResetMessage;
+
+                                return result;
+                            }
                         }
-                        else if (!updateUserResponse.IsSuccess && updateUserResponse.Exception != null)
+                        else if (!passwordResetReponse.IsSuccess && passwordResetReponse.Exception != null)
                         {
                             result.IsSuccess = userResponse.IsSuccess;
                             result.Message = userResponse.Exception.Message;
@@ -3107,7 +3143,7 @@ namespace SudokuCollective.Data.Services
                         else
                         {
                             result.IsSuccess = false;
-                            result.Message = UsersMessages.PasswordNotResetMessage;
+                            result.Message = UsersMessages.PasswordResetRequestNotFoundMessage;
 
                             return result;
                         }
