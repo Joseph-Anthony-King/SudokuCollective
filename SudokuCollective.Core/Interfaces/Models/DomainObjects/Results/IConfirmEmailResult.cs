@@ -12,6 +12,5 @@ namespace SudokuCollective.Core.Interfaces.Models.DomainObjects.Results
         string AppUrl { get; set; }
         bool? NewEmailAddressConfirmed { get; set; }
         bool? ConfirmationEmailSuccessfullySent { get; set; }
-        DateTime DateUpdated { get; set; }
     }
 }

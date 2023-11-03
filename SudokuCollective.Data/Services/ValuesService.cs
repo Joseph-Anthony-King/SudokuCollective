@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Caching.Distributed;
 using SudokuCollective.Core.Enums;
@@ -119,12 +120,12 @@ namespace SudokuCollective.Data.Services
                         Value = (int)ReleaseEnvironment.LOCAL,
                         AppliesTo = releaseEnvironment },
                     new EnumListItem { 
-                        Label = "Staging", 
-                        Value = (int)ReleaseEnvironment.STAGING,
-                        AppliesTo = releaseEnvironment },
-                    new EnumListItem { 
                         Label = "Quality Assurance", 
                         Value = (int)ReleaseEnvironment.QA,
+                        AppliesTo = releaseEnvironment },
+                    new EnumListItem {
+                        Label = "Staging",
+                        Value = (int)ReleaseEnvironment.STAGING,
                         AppliesTo = releaseEnvironment },
                     new EnumListItem { 
                         Label = "Production", 
@@ -136,7 +137,10 @@ namespace SudokuCollective.Data.Services
 
                 result.Message = ValuesMessages.ReleaseEnvironmentsRetrieved;
 
-                result.Payload = items.ConvertAll(x => (object)x);
+                result.Payload = items
+                    .ConvertAll(x => (object)x)
+                    .OrderBy(x => ((EnumListItem)x).Value)
+                    .ToList();
 
                 return result;
             }
@@ -230,7 +234,9 @@ namespace SudokuCollective.Data.Services
 
                 result.Message = ValuesMessages.SortValuesRetrieved;
 
-                result.Payload = items.ConvertAll(x => (object)x);
+                result.Payload = items.ConvertAll(x => (object)x)
+                    .OrderBy(x => ((EnumListItem)x).Value)
+                    .ToList(); ;
 
                 return result;
             }
@@ -282,7 +288,9 @@ namespace SudokuCollective.Data.Services
 
                 result.Message = ValuesMessages.TimeFramesRetrieved;
 
-                result.Payload = items.ConvertAll(x => (object)x);
+                result.Payload = items.ConvertAll(x => (object)x)
+                    .OrderBy(x => ((EnumListItem)x).Value)
+                    .ToList(); ;
 
                 return result;
             }

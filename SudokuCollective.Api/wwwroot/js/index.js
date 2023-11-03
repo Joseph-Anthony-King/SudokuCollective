@@ -56,7 +56,7 @@ async function checkAPI(htmlElement) {
 
     try {
         
-        const response = await fetch("api/helloworld");
+        const response = await fetch("api/v1/values");
 
         const data = await response.json();
 
