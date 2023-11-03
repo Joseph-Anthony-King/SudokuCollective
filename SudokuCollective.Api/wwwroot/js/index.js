@@ -56,7 +56,17 @@ async function checkAPI(htmlElement) {
 
     try {
         
-        const response = await fetch("api/v1/values");
+        const response = await fetch("api/v1/values", {
+            method: "POST",
+            headers: { 'content-type': 'application/json' },
+            body: JSON.stringify({
+                page: 0,
+                itemsPerPage: 0,
+                sortBy: 0,
+                orderByDescending: false,
+                includeCompletedGames: false
+            })
+        });
 
         const data = await response.json();
 
