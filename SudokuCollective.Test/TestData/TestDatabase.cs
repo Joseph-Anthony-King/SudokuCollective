@@ -471,8 +471,8 @@ namespace SudokuCollective.Test.TestData
             if (!await databaseContext.EmailConfirmations.AnyAsync())
             {
                 databaseContext.EmailConfirmations.AddRange(
-                    new EmailConfirmation(1, EmailConfirmationType.OLDEMAILCONFIRMED, "f5d6377e-b170-4335-a425-25066a112987", 1, 1, "oldEmail@example.com", "newEmail@example.com", false, DateTime.UtcNow),
-                    new EmailConfirmation(2, EmailConfirmationType.OLDEMAILCONFIRMED, "4667a7d3-70c7-4da1-b472-8c34c8280723", 3, 1, "oldEmail@example.com", "newEmail@example.com", false, DateTime.UtcNow)
+                    new EmailConfirmation(1, EmailConfirmationType.OLDEMAILCONFIRMED, "f5d6377e-b170-4335-a425-25066a112987", 1, 1, "oldEmail@example.com", "newEmail@example.com", false, DateTime.UtcNow.AddHours(24)),
+                    new EmailConfirmation(2, EmailConfirmationType.OLDEMAILCONFIRMED, "4667a7d3-70c7-4da1-b472-8c34c8280723", 3, 1, "oldEmail@example.com", "newEmail@example.com", false, DateTime.UtcNow.AddHours(24))
                 );
 
                 await databaseContext.SaveChangesAsync();
