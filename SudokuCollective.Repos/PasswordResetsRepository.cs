@@ -122,16 +122,18 @@ namespace SudokuCollective.Repos
 			{
 				var query = await _context
 					.PasswordResets
-					.FirstOrDefaultAsync(pu => pu.Token.ToLower().Equals(token.ToLower()));
+					.ToListAsync();
 
-				if (query == null)
+				var passwordReset = query.FirstOrDefault(pr => pr.Token.ToLower().Equals(token.ToLower()));
+
+				if (passwordReset == null)
 				{
 					result.IsSuccess = false;
 				}
 				else
 				{
 					result.IsSuccess = true;
-					result.Object = query;
+					result.Object = passwordReset;
 				}
 
 				return result;
