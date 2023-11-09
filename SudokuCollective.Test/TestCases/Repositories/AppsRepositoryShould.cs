@@ -615,7 +615,7 @@ namespace SudokuCollective.Test.TestCases.Repositories
             // Assert
             Assert.That(result.IsSuccess, Is.True);
             Assert.That(result.Objects.ConvertAll(a => (App)a), Is.InstanceOf<List<App>>());
-            Assert.That(result.Objects.Count, Is.EqualTo(3));
+            Assert.That(result.Objects.Count, Is.EqualTo(2));
         }
 
         [Test, Category("Repository")]
