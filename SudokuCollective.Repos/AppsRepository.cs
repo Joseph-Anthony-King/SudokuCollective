@@ -509,7 +509,7 @@ namespace SudokuCollective.Repos
 			{
 				var query = await _context
 					.Apps
-                    .Where(a => a.UserApps.Any(ua => ua.UserId == userId))
+                    .Where(a => a.UserApps.Any(ua => ua.UserId == userId) && a.OwnerId != userId)
                     .Include(a => a.UserApps)
                     .ThenInclude(ua => ua.User)
                     .ThenInclude(u => u.Roles)
