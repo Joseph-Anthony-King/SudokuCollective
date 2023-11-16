@@ -13,7 +13,7 @@
   <PropertyGroup Condition=" '$(RunConfiguration)' == 'Kestrel' " />
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DocumentationFile>bin\Release\net7.0\SudokuCollective.Api.xml</DocumentationFile>
+    <DocumentationFile>bin\Release\net8.0\SudokuCollective.Api.xml</DocumentationFile>
   </PropertyGroup>
   
   <ItemGroup>
