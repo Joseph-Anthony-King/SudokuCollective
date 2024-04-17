@@ -54,7 +54,7 @@ namespace SudokuCollective.Test.TestCases.Payloads
             // Arrange and Act
             sut = new AppPayload(
                 "name",
-                "http://localhost:8080",
+                "http://localhost:5173",
                 "https://example-dev.com",
                 "https://example-qa.com",
                 "https://www.example.com",
@@ -81,7 +81,7 @@ namespace SudokuCollective.Test.TestCases.Payloads
             // Arrange and Act
             sut = new AppPayload(
                 "name",
-                "http://localhost:8080",
+                "http://localhost:5173",
                 "https://example-dev.com",
                 "https://example-qa.com",
                 "https://www.example.com",

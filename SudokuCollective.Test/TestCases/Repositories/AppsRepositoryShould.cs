@@ -40,7 +40,7 @@ namespace SudokuCollective.Test.TestCases.Repositories
                 "6e32e987-13b9-43ab-aee5-9df659eeb6bd",
                 1,
                 "TestSuperUser",
-                "https://localhost:8080",
+                "https://localhost:5173",
                 "",
                 "",
                 "https://testapp3.com",
