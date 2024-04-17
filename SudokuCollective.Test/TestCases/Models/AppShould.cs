@@ -215,7 +215,7 @@ namespace SudokuCollective.Test.TestCases.Models
             string license = TestObjects.GetLicense();
             int ownerId = 0;
             string ownerUserName = "CreatedBy";
-            string localUrl = "http://localhost:8080";
+            string localUrl = "http://localhost:5173";
             string qaUrl = "";
             string stagingUrl = "https://example-dev.com";
             string liveUrl = "https://www.example.com";
@@ -248,7 +248,7 @@ namespace SudokuCollective.Test.TestCases.Models
                 TestObjects.GetLicense(),
                 0,
                 string.Empty,
-                "http://localhost:8080",
+                "http://localhost:5173",
                 "https://example-dev.com",
                 "https://example-qa.com",
                 "https://www.example.com",
