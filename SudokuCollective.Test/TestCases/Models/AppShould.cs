@@ -260,12 +260,12 @@ namespace SudokuCollective.Test.TestCases.Models
                 true,
                 null,
                 null,
-                false,
                 TimeFrame.DAYS,
                 1,
                 false,
                 DateTime.Now,
-                DateTime.MinValue);
+                DateTime.MinValue,
+                false);
 
             // Assert
             Assert.That(sut, Is.InstanceOf<App>());

@@ -281,7 +281,7 @@ namespace SudokuCollective.Api
 						_logger.LogInformation(context.Exception.GetType().ToString());
 						if (context.Exception.GetType() == typeof(SecurityTokenInvalidLifetimeException))
 						{
-							context.Response.Headers.Add("Token-Expired", "true");
+							context.Response.Headers.Append("Token-Expired", "true");
                         }
 
 						return Task.CompletedTask;

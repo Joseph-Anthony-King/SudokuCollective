@@ -5,10 +5,13 @@
     <TargetFramework>net8.0</TargetFramework>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     <DockerfileTag>josephkingca/sudokucollective.dev:1.0</DockerfileTag>
+    <AssemblyName>SudokuCollective.Dev</AssemblyName>
+    <Authors>Joseph-Anthony-King</Authors>
+    <VersionPrefix>1.0.0-alpha1</VersionPrefix>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.19.5" />
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.20.1" />
   </ItemGroup>
 
   <ItemGroup>
