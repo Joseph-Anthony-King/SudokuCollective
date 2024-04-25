@@ -337,11 +337,10 @@ namespace SudokuCollective.Data.Models
             modelBuilder.Entity<EmailConfirmation>()
                 .HasKey(emailConfirmation => emailConfirmation.Id);
 
-            /* In the dev environment the token is not encrypted */
-            //modelBuilder.Entity<EmailConfirmation>()
-            //    .Property(emailConfirmation => emailConfirmation.Token)
-            //    .HasConversion(encryptionConverter)
-            //    .IsRequired();
+            modelBuilder.Entity<EmailConfirmation>()
+                .Property(emailConfirmation => emailConfirmation.Token)
+                .HasConversion(encryptionConverter)
+                .IsRequired();
 
             modelBuilder.Entity<EmailConfirmation>()
                 .HasIndex(emailConfirmation => emailConfirmation.Token)
@@ -361,11 +360,10 @@ namespace SudokuCollective.Data.Models
             modelBuilder.Entity<PasswordReset>()
                 .HasKey(passwordReset => passwordReset.Id);
 
-            /* In the dev environment the token is not encrypted */
-            //modelBuilder.Entity<PasswordReset>()
-            //    .Property(passwordReset => passwordReset.Token)
-            //    .HasConversion(encryptionConverter)
-            //    .IsRequired();
+            modelBuilder.Entity<PasswordReset>()
+                .Property(passwordReset => passwordReset.Token)
+                .HasConversion(encryptionConverter)
+                .IsRequired();
 
             modelBuilder.Entity<PasswordReset>()
                 .HasIndex(passwordReset => passwordReset.Token)
