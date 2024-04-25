@@ -337,7 +337,6 @@ namespace SudokuCollective.Data.Models
             modelBuilder.Entity<EmailConfirmation>()
                 .HasKey(emailConfirmation => emailConfirmation.Id);
 
-            /* In the dev environment the token is not encrypted */
             modelBuilder.Entity<EmailConfirmation>()
                 .Property(emailConfirmation => emailConfirmation.Token)
                 .HasConversion(encryptionConverter)
@@ -361,7 +360,6 @@ namespace SudokuCollective.Data.Models
             modelBuilder.Entity<PasswordReset>()
                 .HasKey(passwordReset => passwordReset.Id);
 
-            /* In the dev environment the token is not encrypted */
             modelBuilder.Entity<PasswordReset>()
                 .Property(passwordReset => passwordReset.Token)
                 .HasConversion(encryptionConverter)
