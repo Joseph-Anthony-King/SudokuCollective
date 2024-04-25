@@ -45,7 +45,7 @@ namespace SudokuCollective.Test.TestCases.Models
             // Arrange and Act
 
             // Assert
-            Assert.IsNotNull(sut);
+            Assert.That(sut, Is.Not.Null);
         }
 
         [Test, Category("Models")]
@@ -69,7 +69,7 @@ namespace SudokuCollective.Test.TestCases.Models
             sut = new Game(difficulty, intList);
 
             // Assert
-            Assert.IsNotNull(sut);
+            Assert.That(sut, Is.Not.Null);
             Assert.That(sut, Is.InstanceOf<Game>());
         }
 

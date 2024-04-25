@@ -198,7 +198,6 @@ namespace SudokuCollective.Api.Models
                             env.IsDevelopment() ? 
                                 config.GetValue<string>("DefaultAdminApp:CustomPasswordAction") : 
                                 Environment.GetEnvironmentVariable("ADMIN_APP_CUSTOM_PASSWORD_ACTION"),
-                            false,
                             env.IsDevelopment() ?
                                 config.GetValue<TimeFrame>("DefaultAdminApp:TimeFrame") :
                                 Enum.Parse<TimeFrame>(Environment.GetEnvironmentVariable("ADMIN_APP_TIME_FRAME")),
@@ -207,7 +206,11 @@ namespace SudokuCollective.Api.Models
                                 int.Parse(Environment.GetEnvironmentVariable("ADMIN_APP_ACCESS_DURATION")),
                             true,
                             createdDate,
-                            DateTime.MinValue)
+                            DateTime.MinValue,
+                            env.IsDevelopment() ?
+                                config.GetValue<bool>("DefaultAdminApp:UseCustomSMTPServer") :
+                                bool.Parse(Environment.GetEnvironmentVariable("ADMIN_APP_USE_CUSTOM_STMP_SERVER"))
+                            )
                     );
                     context.SaveChanges();
 
@@ -254,7 +257,6 @@ namespace SudokuCollective.Api.Models
                             env.IsDevelopment() ? 
                                 config.GetValue<string>("DefaultClientApp:CustomPasswordAction") : 
                                 Environment.GetEnvironmentVariable("CLIENT_APP_CUSTOM_PASSWORD_ACTION"),
-                            false,
                             env.IsDevelopment() ?
                                 config.GetValue<TimeFrame>("DefaultClientApp:TimeFrame") : 
                                 Enum.Parse<TimeFrame>(Environment.GetEnvironmentVariable("CLIENT_APP_TIME_FRAME")),
@@ -263,7 +265,8 @@ namespace SudokuCollective.Api.Models
                                 int.Parse(Environment.GetEnvironmentVariable("CLIENT_APP_ACCESS_DURATION")),
                             false,
                             createdDate,
-                            DateTime.MinValue)
+                            DateTime.MinValue,
+                            false)
                     );
                     context.SaveChanges();
 
@@ -300,12 +303,12 @@ namespace SudokuCollective.Api.Models
                             true,
                             string.Empty,
                             string.Empty,
-                            false,
                             TimeFrame.DAYS,
                             1,
                             false,
                             createdDate,
-                            DateTime.MinValue)
+                            DateTime.MinValue,
+                            false)
                     );
                     context.SaveChanges();
                 }
@@ -314,12 +317,22 @@ namespace SudokuCollective.Api.Models
                 {
                     context.SMTPServerSettings.Add(
                         new SMTPServerSettings(
-                            0, 
-                            string.Empty, 
-                            0, 
-                            string.Empty, 
-                            string.Empty, 
-                            string.Empty, 
+                            0,
+                            env.IsDevelopment() ?
+                                config.GetValue<string>("EmailMetaData:SmtpServer") :
+                                Environment.GetEnvironmentVariable("SMTP_SMTP_SERVER"),
+                            env.IsDevelopment() ?
+                                config.GetValue<int>("EmailMetaData:Port") :
+                                int.Parse(Environment.GetEnvironmentVariable("SMTP_PORT")),
+                            env.IsDevelopment() ?
+                                config.GetValue<string>("EmailMetaData:Username") :
+                                Environment.GetEnvironmentVariable("SMTP_USERNAME"),
+                            env.IsDevelopment() ?
+                                config.GetValue<string>("EmailMetaData:Password") :
+                                Environment.GetEnvironmentVariable("SMTP_PASSWORD"),
+                            env.IsDevelopment() ?
+                                config.GetValue<string>("EmailMetaData:FromEmail") :
+                                Environment.GetEnvironmentVariable("SMTP_FROM_EMAIL"),
                             1)
                     );
                     context.SaveChanges();

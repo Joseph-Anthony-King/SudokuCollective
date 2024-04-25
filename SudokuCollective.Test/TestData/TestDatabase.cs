@@ -155,12 +155,12 @@ namespace SudokuCollective.Test.TestData
                         true,
                         string.Empty,
                         string.Empty,
-                        false,
                         TimeFrame.DAYS,
                         1,
                         true,
                         dateCreated,
-                        DateTime.MinValue),
+                        DateTime.MinValue,
+                        false),
                     new App(
                         2,
                         "Test App 2",
@@ -179,12 +179,12 @@ namespace SudokuCollective.Test.TestData
                         true,
                         string.Empty,
                         string.Empty,
-                        false,
                         TimeFrame.DAYS,
                         1,
                         false,
                         dateCreated,
-                        DateTime.MinValue),
+                        DateTime.MinValue,
+                        false),
                     new App(
                         3,
                         "Test App 3",
@@ -203,12 +203,12 @@ namespace SudokuCollective.Test.TestData
                         true,
                         string.Empty,
                         string.Empty,
-                        false,
                         TimeFrame.DAYS,
                         1,
                         false,
                         dateCreated,
-                        DateTime.MinValue)
+                        DateTime.MinValue,
+                        false)
                 );
 
                 await databaseContext.SaveChangesAsync();

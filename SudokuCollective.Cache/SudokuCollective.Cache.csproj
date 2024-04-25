@@ -3,6 +3,9 @@
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
+    <AssemblyName>SudokuCollective.Cache</AssemblyName>
+    <Authors>Joseph-Anthony-King</Authors>
+    <VersionPrefix>1.0.0-alpha1</VersionPrefix>
   </PropertyGroup>
 
   <ItemGroup>
