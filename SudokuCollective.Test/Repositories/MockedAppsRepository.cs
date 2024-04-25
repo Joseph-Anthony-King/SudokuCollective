@@ -55,12 +55,12 @@ namespace SudokuCollective.Test.Repositories
                             true,
                             string.Empty,
                             string.Empty,
-                            false,
                             TimeFrame.DAYS,
                             1,
                             false,
                             todaysDate,
-                            DateTime.MinValue)
+                            DateTime.MinValue,
+                            false)
                     } as IRepositoryResponse));
 
             SuccessfulRequest.Setup(repo =>
@@ -416,12 +416,12 @@ namespace SudokuCollective.Test.Repositories
                             true,
                             string.Empty,
                             string.Empty,
-                            false,
                             TimeFrame.DAYS,
                             1,
                             false,
                             todaysDate,
-                            DateTime.MinValue)
+                            DateTime.MinValue,
+                            false)
                     } as IRepositoryResponse));
 
             InitiatePasswordSuccessfulRequest.Setup(repo =>
@@ -612,12 +612,12 @@ namespace SudokuCollective.Test.Repositories
                             true,
                             string.Empty,
                             string.Empty,
-                            false,
                             TimeFrame.DAYS,
                             1,
                             false,
                             todaysDate,
-                            DateTime.MinValue)
+                            DateTime.MinValue,
+                            false)
                     } as IRepositoryResponse));
 
             PermitSuperUserRequest.Setup(repo =>

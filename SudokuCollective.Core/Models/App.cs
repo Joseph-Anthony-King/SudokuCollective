@@ -205,7 +205,13 @@ namespace SudokuCollective.Core.Models
                 string qaUrl, 
                 string stagingUrl, 
                 string prodUrl, 
-                string sourceCodeUrl) : this()
+                string sourceCodeUrl,
+                bool useCustomSMTPServer = false,
+                string smtpServer = null,
+                int? port = null,
+                string smtpUserName = null,
+                string smtpPassword = null,
+                string smtpFromEmail = null) : this()
         {
             Name = name;
             License = license;
@@ -218,6 +224,25 @@ namespace SudokuCollective.Core.Models
             ProdUrl = prodUrl;
             SourceCodeUrl = sourceCodeUrl;
             IsActive = true;
+            UseCustomSMTPServer = useCustomSMTPServer;
+            if (useCustomSMTPServer == true &&
+                smtpServer != null &&
+                port != null &&
+                smtpUserName != null &&
+                smtpPassword != null &&
+                smtpFromEmail != null)
+            {
+                SMTPServerSettings = new SMTPServerSettings()
+                {
+                    SmtpServer = smtpServer,
+                    Port = (int)port,
+                    UserName = smtpUserName,
+                    Password = smtpPassword,
+                    FromEmail = smtpFromEmail,
+                    AppId = Id,
+                    App = this,
+                };
+            }
         }
 
         [JsonConstructor]
@@ -239,13 +264,12 @@ namespace SudokuCollective.Core.Models
             bool disableCustomUrls,
             string customEmailConfirmationAction,
             string customPasswordResetAction,
-            bool useCustomSMTPServer,
             TimeFrame timeFrame,
             int accessDuration,
             bool displayInGallery,
             DateTime dateCreated,
             DateTime dateUpdated,
-            SMTPServerSettings smtpServerSettings = null
+            bool useCustomSMTPServer = false
         )
         {
             Id = id;
@@ -265,19 +289,14 @@ namespace SudokuCollective.Core.Models
             DisableCustomUrls = disableCustomUrls;
             CustomEmailConfirmationAction = customEmailConfirmationAction;
             CustomPasswordResetAction = customPasswordResetAction;
-            UseCustomSMTPServer = useCustomSMTPServer;
             TimeFrame = timeFrame;
             AccessDuration = accessDuration;
             DisplayInGallery = displayInGallery;
             DateCreated = dateCreated;
             DateUpdated = dateUpdated;
-            UserApps = new List<UserApp>();
-            Users = new List<UserDTO>();
-
-            if (smtpServerSettings != null)
-            {
-                SMTPServerSettings = smtpServerSettings;
-            }
+            UserApps = [];
+            Users = [];
+            UseCustomSMTPServer = useCustomSMTPServer;
         }
         #endregion
 
