@@ -214,20 +214,20 @@ namespace SudokuCollective.Data.Models
                 .HasIndex(user => user.UserName)
                 .IsUnique();
 
-            modelBuilder.Entity<User>()
-                .Property(user => user.FirstName)
-                .HasConversion(encryptionConverter)
-                .IsRequired();
-
-            modelBuilder.Entity<User>()
-                .Property(user => user.LastName)
-                .HasConversion(encryptionConverter)
-                .IsRequired();
-
-            modelBuilder.Entity<User>()
-                .Property(user => user.Email)
-                .HasConversion(encryptionConverter)
-                .IsRequired();
+            //modelBuilder.Entity<User>()
+            //    .Property(user => user.FirstName)
+            //    .HasConversion(encryptionConverter)
+            //    .IsRequired();
+            //
+            //modelBuilder.Entity<User>()
+            //    .Property(user => user.LastName)
+            //    .HasConversion(encryptionConverter)
+            //    .IsRequired();
+            //
+            //modelBuilder.Entity<User>()
+            //    .Property(user => user.Email)
+            //    .HasConversion(encryptionConverter)
+            //    .IsRequired();
 
             modelBuilder.Entity<User>()
                 .HasIndex(user => user.Email)
@@ -287,9 +287,9 @@ namespace SudokuCollective.Data.Models
                 .Ignore(app => app.UseCustomEmailConfirmationAction)
                 .Ignore(app => app.UseCustomPasswordResetAction);
 
-            modelBuilder.Entity<App>()
-                .Property(app => app.License)
-                .HasConversion(encryptionConverter);
+            //modelBuilder.Entity<App>()
+            //    .Property(app => app.License)
+            //    .HasConversion(encryptionConverter);
 
             modelBuilder.Entity<App>()
                 .HasOne(app => app.SMTPServerSettings)
@@ -312,21 +312,21 @@ namespace SudokuCollective.Data.Models
             modelBuilder.Entity<SMTPServerSettings>()
                 .HasKey(settings => settings.Id);
 
-            modelBuilder.Entity<SMTPServerSettings>()
-                .Property(settings => settings.SmtpServer)
-                .HasConversion(encryptionConverter);
-
-            modelBuilder.Entity<SMTPServerSettings>()
-                .Property(settings => settings.UserName)
-                .HasConversion(encryptionConverter);
-
-            modelBuilder.Entity<SMTPServerSettings>()
-                .Property(settings => settings.Password)
-                .HasConversion(encryptionConverter);
-
-            modelBuilder.Entity<SMTPServerSettings>()
-                .Property(settings => settings.FromEmail)
-                .HasConversion(encryptionConverter);
+            //modelBuilder.Entity<SMTPServerSettings>()
+            //    .Property(settings => settings.SmtpServer)
+            //    .HasConversion(encryptionConverter);
+            //
+            //modelBuilder.Entity<SMTPServerSettings>()
+            //    .Property(settings => settings.UserName)
+            //    .HasConversion(encryptionConverter);
+            //
+            //modelBuilder.Entity<SMTPServerSettings>()
+            //    .Property(settings => settings.Password)
+            //    .HasConversion(encryptionConverter);
+            //
+            //modelBuilder.Entity<SMTPServerSettings>()
+            //    .Property(settings => settings.FromEmail)
+            //    .HasConversion(encryptionConverter);
 
             modelBuilder.Entity<SMTPServerSettings>()
                 .Ignore(settings => settings.App);
@@ -337,22 +337,22 @@ namespace SudokuCollective.Data.Models
             modelBuilder.Entity<EmailConfirmation>()
                 .HasKey(emailConfirmation => emailConfirmation.Id);
 
-            modelBuilder.Entity<EmailConfirmation>()
-                .Property(emailConfirmation => emailConfirmation.Token)
-                .HasConversion(encryptionConverter)
-                .IsRequired();
+            //modelBuilder.Entity<EmailConfirmation>()
+            //    .Property(emailConfirmation => emailConfirmation.Token)
+            //    .HasConversion(encryptionConverter)
+            //    .IsRequired();
 
             modelBuilder.Entity<EmailConfirmation>()
                 .HasIndex(emailConfirmation => emailConfirmation.Token)
                 .IsUnique();
 
-            modelBuilder.Entity<EmailConfirmation>()
-                .Property(emailConfirmation => emailConfirmation.OldEmailAddress)
-                .HasConversion(encryptionConverter);
-
-            modelBuilder.Entity<EmailConfirmation>()
-                .Property(emailConfirmation => emailConfirmation.NewEmailAddress)
-                .HasConversion(encryptionConverter);
+            //modelBuilder.Entity<EmailConfirmation>()
+            //    .Property(emailConfirmation => emailConfirmation.OldEmailAddress)
+            //    .HasConversion(encryptionConverter);
+            //
+            //modelBuilder.Entity<EmailConfirmation>()
+            //    .Property(emailConfirmation => emailConfirmation.NewEmailAddress)
+            //    .HasConversion(encryptionConverter);
 
             modelBuilder.Entity<EmailConfirmation>()
                 .Ignore(emailConfirmation => emailConfirmation.IsUpdate);
@@ -360,10 +360,10 @@ namespace SudokuCollective.Data.Models
             modelBuilder.Entity<PasswordReset>()
                 .HasKey(passwordReset => passwordReset.Id);
 
-            modelBuilder.Entity<PasswordReset>()
-                .Property(passwordReset => passwordReset.Token)
-                .HasConversion(encryptionConverter)
-                .IsRequired();
+            //modelBuilder.Entity<PasswordReset>()
+            //    .Property(passwordReset => passwordReset.Token)
+            //    .HasConversion(encryptionConverter)
+            //    .IsRequired();
 
             modelBuilder.Entity<PasswordReset>()
                 .HasIndex(passwordReset => passwordReset.Token)
