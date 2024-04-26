@@ -301,7 +301,7 @@ namespace SudokuCollective.Data.Services
             }
         }
 
-        public IResult Generate()
+        public async Task<IResult> GenerateAsync()
         {
             var result = new Result();
             var gameResult = new AnnonymousGameResult();
@@ -310,7 +310,7 @@ namespace SudokuCollective.Data.Services
             {
                 var game = new Game();
 
-                game.SudokuMatrix.GenerateSolution();
+                await game.SudokuMatrix.GenerateSolutionAsync();
 
                 for (var i = 0; i < 73; i += 9)
                 {

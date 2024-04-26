@@ -72,7 +72,7 @@ namespace SudokuCollective.Core.Interfaces.Models.DomainEntities
         bool IsValid();
         bool IsSolved();
         void SetDifficulty(IDifficulty difficulty = null);
-        void GenerateSolution();
+        Task GenerateSolutionAsync();
         Task Solve();
         List<int> ToIntList();
         List<int> ToDisplayedIntList();

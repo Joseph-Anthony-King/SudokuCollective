@@ -16,9 +16,20 @@ namespace SudokuCollective.Test.TestCases.Models
         private ISudokuMatrix sut;
 
         [SetUp]
-        public void Setup()
+        public async Task Setup()
         {
-            InitializeSetup(out stringList, out populatedTestMatrix, out sut);
+            populatedTestMatrix = new SudokuMatrix();
+            await populatedTestMatrix.GenerateSolutionAsync();
+
+            var sb = new StringBuilder();
+
+            foreach (var i in populatedTestMatrix.ToIntList())
+            {
+                sb.Append(i);
+            }
+
+            stringList = sb.ToString();
+            sut = new SudokuMatrix(stringList);
         }
 
         [Test, Category("Models")]
@@ -280,13 +291,13 @@ namespace SudokuCollective.Test.TestCases.Models
         }
 
         [Test, Category("Models")]
-        public void GenerateValidSolutions()
+        public async Task GenerateValidSolutions()
         {
             // Arrange
             sut = new SudokuMatrix();
 
             // Act
-            sut.GenerateSolution();
+            await sut.GenerateSolutionAsync();
 
             // Assert
             Assert.That(sut.IsValid(), Is.True);
@@ -322,25 +333,6 @@ namespace SudokuCollective.Test.TestCases.Models
 
             // Assert
             Assert.That(sut.IsValid(), Is.EqualTo(true));
-        }
-
-        private static void InitializeSetup(
-            out string stringList,
-            out ISudokuMatrix populatedTestMatrix, 
-            out ISudokuMatrix sut)
-        {
-            populatedTestMatrix = new SudokuMatrix();
-            populatedTestMatrix.GenerateSolution();
-
-            var sb = new StringBuilder();
-
-            foreach (var i in populatedTestMatrix.ToIntList())
-            {
-                sb.Append(i);
-            }
-
-            stringList = sb.ToString();
-            sut = new SudokuMatrix(stringList);
         }
     }
 }

@@ -90,8 +90,8 @@ namespace SudokuCollective.Test.Services
                     } as IResult));
 
             SuccessfulRequest.Setup(service =>
-                service.Generate())
-                .Returns(new Result()
+                service.GenerateAsync())
+                .Returns(Task.FromResult(new Result()
                     {
                         IsSuccess = MockedSolutionsRepository
                             .SuccessfulRequest
@@ -109,7 +109,7 @@ namespace SudokuCollective.Test.Services
                                         .Result
                                         .Object
                                 }
-                } as IResult);
+                } as IResult));
 
             SuccessfulRequest.Setup(service =>
                 service.GenerateSolutions(It.IsAny<IRequest>()))
@@ -161,8 +161,8 @@ namespace SudokuCollective.Test.Services
                     } as IResult));
 
             FailedRequest.Setup(service =>
-                service.Generate())
-                .Returns(new Result()
+                service.GenerateAsync())
+                .Returns(Task.FromResult(new Result()
                     {
                         IsSuccess = MockedSolutionsRepository
                         .FailedRequest
@@ -171,7 +171,7 @@ namespace SudokuCollective.Test.Services
                         .Result
                         .IsSuccess,
                         Message = SolutionsMessages.SolutionNotGeneratedMessage
-                    } as IResult);
+                    } as IResult));
 
             FailedRequest.Setup(service =>
                 service.GenerateSolutions(It.IsAny<IRequest>()))

@@ -871,7 +871,7 @@ namespace SudokuCollective.Core.Models
             }
         }
 
-        public async void GenerateSolution()
+        public async Task GenerateSolutionAsync()
         {
             var continueGeneratingSolutions = true;
 

@@ -97,7 +97,7 @@ namespace SudokuCollective.Data.Services
                             difficulty,
                             request.AppId);
 
-                        game.SudokuMatrix.GenerateSolution();
+                        await game.SudokuMatrix.GenerateSolutionAsync();
 
                         var gameResponse = await _gamesRepository.AddAsync(game);
 
@@ -926,7 +926,7 @@ namespace SudokuCollective.Data.Services
                 {
                     var game = new Game(new Difficulty { DifficultyLevel = difficultyLevel });
 
-                    game.SudokuMatrix.GenerateSolution();
+                    await game.SudokuMatrix.GenerateSolutionAsync();
 
                     for (var i = 0; i < 73; i += 9)
                     {
