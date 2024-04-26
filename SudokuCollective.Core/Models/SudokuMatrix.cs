@@ -871,42 +871,84 @@ namespace SudokuCollective.Core.Models
             }
         }
 
-        public void GenerateSolution()
+        public async void GenerateSolution()
         {
+            var continueGeneratingSolutions = true;
+
             do
             {
-                ZeroOutSudokuCells();
-
-                foreach (var sudokuCell in SudokuCells)
+                do
                 {
-                    if (sudokuCell.Value == 0 &&
-                        sudokuCell
-                            .AvailableValues
-                            .Where(a => a.Available == true)
-                            .ToList()
-                            .Count > 0)
+                    ZeroOutSudokuCells();
+
+                    foreach (var sudokuCell in SudokuCells)
                     {
-                        var availableValues = sudokuCell
-                            .AvailableValues
-                            .Where(a => a.Available == true)
-                            .ToList();
-
-                        var indexList = new List<int>();
-
-                        for (var i = 0; i < availableValues.Count; i++)
+                        if (sudokuCell.Value == 0 &&
+                            sudokuCell
+                                .AvailableValues
+                                .Where(a => a.Available == true)
+                                .ToList()
+                                .Count > 0)
                         {
-                            indexList.Add(i);
+                            var availableValues = sudokuCell
+                                .AvailableValues
+                                .Where(a => a.Available == true)
+                                .ToList();
+
+                            var indexList = new List<int>();
+
+                            for (var i = 0; i < availableValues.Count; i++)
+                            {
+                                indexList.Add(i);
+                            }
+
+                            Random random = new();
+
+                            CoreExtensions.Shuffle(indexList, random);
+
+                            sudokuCell.Value = availableValues[indexList.FirstOrDefault()].Value;
                         }
+                    }
 
-                        Random random = new Random();
+                } while (!IsValid());
 
-                        CoreExtensions.Shuffle(indexList, random);
+                /* Test for the following:
+                 * 
+                 * - Test and Null difficulty levels have no limitations on the number of valid solutions.
+                 * - Easy difficulty levels can have up to three valid solutions. 
+                 * - Medium difficulty levels can have up to two valid solutions.
+                 * - Hard and evil difficulty levels can have only one valid solution. */
+                if (Difficulty.DifficultyLevel != DifficultyLevel.TEST && Difficulty.DifficultyLevel != DifficultyLevel.NULL)
+                {
+                    var testMatrix = new SudokuMatrix(ToDisplayedIntList().ToString());
 
-                        sudokuCell.Value = availableValues[indexList.FirstOrDefault()].Value;
+                    var testSolutions = new List<string>();
+
+                    for (var i = 0; i < 6; i++)
+                    {
+                        await testMatrix.Solve();
+                        testSolutions.Add(testMatrix.ToString());
+                    }
+
+                    if (Difficulty.DifficultyLevel == DifficultyLevel.EASY && testSolutions.Distinct().Count() == 3)
+                    {
+                        continueGeneratingSolutions = false;
+                    }
+                    else if (Difficulty.DifficultyLevel == DifficultyLevel.MEDIUM && testSolutions.Distinct().Count() == 2)
+                    {
+                        continueGeneratingSolutions = false;
+                    }
+                    else if ((Difficulty.DifficultyLevel == DifficultyLevel.HARD || Difficulty.DifficultyLevel == DifficultyLevel.EVIL) && testSolutions.Distinct().Count() == 1)
+                    {
+                        continueGeneratingSolutions = false;
                     }
                 }
+                else
+                {
+                    continueGeneratingSolutions = false;
+                }
 
-            } while (!IsValid());
+            } while (continueGeneratingSolutions);
         }
 
         public async Task Solve()
