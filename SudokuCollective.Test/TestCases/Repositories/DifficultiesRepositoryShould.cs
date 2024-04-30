@@ -91,6 +91,17 @@ namespace SudokuCollective.Test.TestCases.Repositories
         }
 
         [Test, Category("Repository")]
+        public async Task GetDifficultiesByDifficultyLevel()
+        {
+            // Arrange and Act
+            var result = await sut.GetByDifficultyLevelAsync(DifficultyLevel.HARD);
+
+            // Assert
+            Assert.That(result.IsSuccess, Is.True);
+            Assert.That((Difficulty)result.Object, Is.InstanceOf<Difficulty>());
+        }
+
+        [Test, Category("Repository")]
         public async Task GetAllDifficulties()
         {
             // Arrange and Act

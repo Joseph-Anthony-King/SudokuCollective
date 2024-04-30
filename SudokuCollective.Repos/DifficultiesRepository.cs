@@ -147,6 +147,41 @@ namespace SudokuCollective.Repos
             }
         }
 
+        public async Task<IRepositoryResponse> GetByDifficultyLevelAsync(DifficultyLevel difficultyLevel)
+        {
+            var result = new RepositoryResponse();
+
+            try
+            {
+                var query = new Difficulty();
+
+                query = await _context
+                    .Difficulties
+                    .FirstOrDefaultAsync(d => d.DifficultyLevel == difficultyLevel);
+
+                if (query == null)
+                {
+                    result.IsSuccess = false;
+                }
+                else
+                {
+                    result.IsSuccess = true;
+                    result.Object = query;
+                }
+
+
+                return result;
+            }
+            catch (Exception e)
+            {
+                return ReposUtilities.ProcessException<DifficultiesRepository<Difficulty>>(
+                    _requestService,
+                    _logger,
+                    result,
+                    e);
+            }
+        }
+
         public async Task<IRepositoryResponse> GetAllAsync()
         {
             var result = new RepositoryResponse();

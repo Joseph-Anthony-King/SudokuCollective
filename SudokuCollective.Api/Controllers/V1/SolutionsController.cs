@@ -275,11 +275,11 @@ namespace SudokuCollective.Api.V1.Controllers
         /// </remarks>
         [AllowAnonymous]
         [HttpGet, Route("Generate")]
-        public ActionResult<Result> Generate()
+        public async Task<ActionResult<Result>> GenerateAsync()
         {
             try
             {
-                var result = _solutionsService.Generate();
+                var result = await _solutionsService.GenerateAsync();
 
                 if (result.IsSuccess)
                 {

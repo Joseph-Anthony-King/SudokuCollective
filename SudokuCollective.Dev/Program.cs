@@ -1,11 +1,12 @@
-﻿using SudokuCollective.Dev.Classes;
-using System;
+﻿using System;
+using System.Threading.Tasks;
+using SudokuCollective.Dev.Classes;
 
 namespace SudokuCollective.Dev
 {
     public class Program
     {
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
 
             Console.WriteLine("\nWelcome to the Sudoku Collecive Dev App!");
@@ -27,7 +28,7 @@ namespace SudokuCollective.Dev
                         if (number == 1)
                         {
 
-                            Routines.GenerateSolutions.Run();
+                            await Routines.GenerateSolutions.Run();
                             DisplayScreens.ProgramPrompt();
 
                             goto begin;
@@ -45,7 +46,7 @@ namespace SudokuCollective.Dev
                         else if (number == 3)
                         {
 
-                            Routines.PlayGames.Run();
+                            await Routines.PlayGames.Run();
                             DisplayScreens.ProgramPrompt();
 
                             goto begin;

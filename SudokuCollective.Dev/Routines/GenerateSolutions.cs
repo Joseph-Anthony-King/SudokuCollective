@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using SudokuCollective.Core.Enums;
 using SudokuCollective.Core.Models;
 using SudokuCollective.Dev.Classes;
@@ -7,7 +8,7 @@ namespace SudokuCollective.Dev.Routines
 {
     internal static class GenerateSolutions
     {
-        internal static void Run()
+        internal static async Task Run()
         {
             string result;
             var continueLoop = true;
@@ -22,7 +23,7 @@ namespace SudokuCollective.Dev.Routines
                     DifficultyLevel = DifficultyLevel.TEST
                 });
 
-                matrix.GenerateSolution();
+                await matrix.GenerateSolutionAsync();
 
                 DisplayScreens.DisplayMatix(matrix);
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
 using SudokuCollective.Core.Enums;
 using SudokuCollective.Core.Interfaces.Models.DomainEntities;
 using SudokuCollective.Core.Models;
@@ -9,7 +10,7 @@ namespace SudokuCollective.Dev.Routines
 {
     internal static class PlayGames
     {
-        internal static void Run()
+        internal static async Task Run()
         {
             User user;
             begin:
@@ -80,18 +81,19 @@ namespace SudokuCollective.Dev.Routines
                 }
             }
 
-            ISudokuMatrix matrix = new SudokuMatrix();
+            SudokuMatrix matrix = new();
 
-            matrix.GenerateSolution();
+            await matrix.GenerateSolutionAsync();
 
             matrix.SetDifficulty(difficulty);
 
-            IGame game = new Game(
+            Game game = new(
                 user,
                 (SudokuMatrix)matrix,
-                (Difficulty)difficulty);
-
-            game.KeepScore = true;
+                (Difficulty)difficulty)
+            {
+              KeepScore = true
+            };
 
             game.SudokuMatrix.Stopwatch.Start();
 
