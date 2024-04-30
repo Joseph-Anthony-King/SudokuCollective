@@ -152,5 +152,19 @@ namespace SudokuCollective.Test.TestCases.Models
             Assert.That(sut.ToString(), Is.TypeOf<string>());
             Assert.That(sut.ToString(), Is.EqualTo(setValue.ToString()));
         }
+
+        [Test, Category("Models")]
+        public void HaveToStringOutputDisplayValueAsString()
+        {
+            // Arrange and Act
+            var setValue = 9;
+            sut.Value = setValue;
+            sut.Hidden = true;
+
+            // Assert
+            Assert.That(sut.ToString(), Is.EqualTo("0"));
+            Assert.That(sut.ToValuesString(), Is.TypeOf<string>());
+            Assert.That(sut.ToValuesString(), Is.EqualTo(setValue.ToString()));
+        }
     }
 }

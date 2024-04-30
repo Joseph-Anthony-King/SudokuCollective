@@ -109,7 +109,7 @@ namespace SudokuCollective.Dev.Routines
 
                 var matrix = new SudokuMatrix(intList);
 
-                Task solver = matrix.Solve();
+                Task solver = matrix.SolveAsync();
 
                 ConsoleSpiner spin = new ConsoleSpiner();
 

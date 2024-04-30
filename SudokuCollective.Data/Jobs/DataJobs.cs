@@ -90,7 +90,7 @@ namespace SudokuCollective.Data.Jobs
 
                     do
                     {
-                        matrix.GenerateSolution();
+                        await matrix.GenerateSolutionAsync();
 
                         if (!solutionsInDB.Contains(matrix.ToIntList()))
                         {
