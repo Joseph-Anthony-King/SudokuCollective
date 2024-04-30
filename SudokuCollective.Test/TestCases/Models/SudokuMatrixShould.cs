@@ -16,9 +16,20 @@ namespace SudokuCollective.Test.TestCases.Models
         private ISudokuMatrix sut;
 
         [SetUp]
-        public void Setup()
+        public async Task Setup()
         {
-            InitializeSetup(out stringList, out populatedTestMatrix, out sut);
+            populatedTestMatrix = new SudokuMatrix();
+            await populatedTestMatrix.GenerateSolutionAsync();
+
+            var sb = new StringBuilder();
+
+            foreach (var i in populatedTestMatrix.ToIntList())
+            {
+                sb.Append(i);
+            }
+
+            stringList = sb.ToString();
+            sut = new SudokuMatrix(stringList);
         }
 
         [Test, Category("Models")]
@@ -156,6 +167,22 @@ namespace SudokuCollective.Test.TestCases.Models
         }
 
         [Test, Category("Models")]
+        public void OutputDisplayedValuesAsStringWithToString()
+        {
+            // Arrange
+            sut = populatedTestMatrix;
+            sut.Difficulty = new Difficulty() { DifficultyLevel = DifficultyLevel.MEDIUM };
+
+            // Act
+            var result = sut.ToValuesString();
+
+            // Assert
+            Assert.That(result, Is.TypeOf<string>());
+            Assert.That(result.Length, Is.EqualTo(81));
+            Assert.That(!result.Contains('0'));
+        }
+
+        [Test, Category("Models")]
         public void HaveNoObscuredCellsOnTestDifficulty()
         {
             // Arrange
@@ -280,13 +307,14 @@ namespace SudokuCollective.Test.TestCases.Models
         }
 
         [Test, Category("Models")]
-        public void GenerateValidSolutions()
+        public async Task GenerateValidSolutions()
         {
             // Arrange
             sut = new SudokuMatrix();
+            sut.SetDifficulty(new Difficulty() { DifficultyLevel = DifficultyLevel.HARD });
 
             // Act
-            sut.GenerateSolution();
+            await sut.GenerateSolutionAsync();
 
             // Assert
             Assert.That(sut.IsValid(), Is.True);
@@ -318,29 +346,10 @@ namespace SudokuCollective.Test.TestCases.Models
             );
 
             // Act
-            await sut.Solve();
+            await sut.SolveAsync();
 
             // Assert
             Assert.That(sut.IsValid(), Is.EqualTo(true));
-        }
-
-        private static void InitializeSetup(
-            out string stringList,
-            out ISudokuMatrix populatedTestMatrix, 
-            out ISudokuMatrix sut)
-        {
-            populatedTestMatrix = new SudokuMatrix();
-            populatedTestMatrix.GenerateSolution();
-
-            var sb = new StringBuilder();
-
-            foreach (var i in populatedTestMatrix.ToIntList())
-            {
-                sb.Append(i);
-            }
-
-            stringList = sb.ToString();
-            sut = new SudokuMatrix(stringList);
         }
     }
 }

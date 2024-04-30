@@ -29,37 +29,37 @@ namespace SudokuCollective.Core.Models
         public int Index
         {
             get => _index;
-            set => _index = setField(value, 1, 81, AttributeMessages.InvalidIndex);
+            set => _index = SetField(value, 1, 81, AttributeMessages.InvalidIndex);
         }
         [Required, JsonPropertyName("column"), Range(1, 9, ErrorMessage = AttributeMessages.InvalidColumn)]
         public int Column
         {
             get => _column;
-            set => _column = setField(value, 1, 9, AttributeMessages.InvalidColumn);
+            set => _column = SetField(value, 1, 9, AttributeMessages.InvalidColumn);
         }
         [Required, JsonPropertyName("region"), Range(1, 9, ErrorMessage = AttributeMessages.InvalidRegion)]
         public int Region
         {
             get => _region;
-            set => _region = setField(value, 1, 9, AttributeMessages.InvalidRegion);
+            set => _region = SetField(value, 1, 9, AttributeMessages.InvalidRegion);
         }
         [Required, JsonPropertyName("row"), Range(1, 9, ErrorMessage = AttributeMessages.InvalidRow)]
         public int Row
         {
             get => _row;
-            set => _row = setField(value, 1, 9, AttributeMessages.InvalidRow);
+            set => _row = SetField(value, 1, 9, AttributeMessages.InvalidRow);
         }
         [Required, JsonPropertyName("value"), Range(1, 9, ErrorMessage = AttributeMessages.InvalidValue)]
         public int Value
         {
             get => _value;
-            set => _value = setValue(value);
+            set => _value = SetValue(value);
         }
         [Required, JsonPropertyName("displayedValue"), Range(0, 9, ErrorMessage = AttributeMessages.InvalidDisplayedValue)]
         public int DisplayedValue
         {
-            get => getDisplayedValue();
-            set => _displayValue = setField(value, 0, 9, AttributeMessages.InvalidDisplayedValue);
+            get => GetDisplayedValue();
+            set => _displayValue = SetField(value, 0, 9, AttributeMessages.InvalidDisplayedValue);
         }
         [Required, JsonPropertyName("hidden")]
         public bool Hidden { get; set; }
@@ -89,7 +89,7 @@ namespace SudokuCollective.Core.Models
             Id = 0;
             SudokuMatrixId = 0;
             Hidden = true;
-            AvailableValues = new List<AvailableValue>();
+            AvailableValues = [];
 
             for (var i = 1; i <= 9; i++)
             {
@@ -97,7 +97,8 @@ namespace SudokuCollective.Core.Models
                         new AvailableValue
                         {
                             Value = i,
-                            Available = true
+                            Available = true,
+                            NumberOfSelections = 0,
                         }
                     );
             }
@@ -174,12 +175,10 @@ namespace SudokuCollective.Core.Models
             for (var i = 1; i <= 9; i++)
             {
                 AvailableValues.Add(
-                        new AvailableValue
-                        {
-                            Value = i,
-                            Available = availability
-                        }
-                    );
+                    new AvailableValue {
+                        Value = i,
+                        Available = availability
+                    });
             }
         }
         #endregion
@@ -197,7 +196,7 @@ namespace SudokuCollective.Core.Models
                 var valuesStillAvailable = AvailableValues
                     .Where(a => a.Available).ToList();
 
-                if (valuesStillAvailable.Count() == 1)
+                if (valuesStillAvailable.Count == 1)
                 {
                     Value = valuesStillAvailable[0].Value;
 
@@ -209,6 +208,8 @@ namespace SudokuCollective.Core.Models
         public int ToInt32() => DisplayedValue;
 
         public override string ToString() => DisplayedValue.ToString();
+
+        public string ToValuesString() => Value.ToString();
 
         public string ToJson() => JsonSerializer.Serialize(
             this,
@@ -228,7 +229,7 @@ namespace SudokuCollective.Core.Models
             SudokuCellEvent.Invoke(this, e);
         }
 
-        private int setField(
+        private static int SetField(
             int value, 
             int minValue, 
             int maxValue, 
@@ -244,7 +245,7 @@ namespace SudokuCollective.Core.Models
             }
         }
 
-        private int setValue(int value)
+        private int SetValue(int value)
         {
             if (value == 0)
             {
@@ -284,7 +285,7 @@ namespace SudokuCollective.Core.Models
             return value;
         }
 
-        private int getDisplayedValue()
+        private int GetDisplayedValue()
         {
             if (!Hidden)
             {

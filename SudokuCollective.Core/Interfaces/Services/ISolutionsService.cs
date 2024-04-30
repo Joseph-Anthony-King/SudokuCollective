@@ -9,7 +9,7 @@ namespace SudokuCollective.Core.Interfaces.Services
         Task<IResult> GetAsync(int id);
         Task<IResult> GetSolutionsAsync(IRequest request);
         Task<IResult> SolveAsync(IAnnonymousCheckRequest request);
-        IResult Generate();
+        Task<IResult> GenerateAsync();
         IResult GenerateSolutions(IRequest request);
     }
 }

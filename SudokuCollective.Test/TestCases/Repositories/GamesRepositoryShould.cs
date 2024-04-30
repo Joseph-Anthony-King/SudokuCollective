@@ -56,7 +56,7 @@ namespace SudokuCollective.Test.TestCases.Repositories
         public async Task CreateGames()
         {
             // Arrange
-            newGame.SudokuMatrix.GenerateSolution();
+            await newGame.SudokuMatrix.GenerateSolutionAsync();
 
             // Act
             var result = await sut.AddAsync(newGame);
