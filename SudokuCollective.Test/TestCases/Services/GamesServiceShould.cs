@@ -418,7 +418,7 @@ namespace SudokuCollective.Test.TestCases.Services
             // Arrange
 
             // Act
-            var result = await sut.CreateAnnonymousAsync(DifficultyLevel.TEST);
+            var result = await sut.CreateAnnonymousAsync(DifficultyLevel.EASY);
 
             // Assert
             Assert.That(result.IsSuccess, Is.True);

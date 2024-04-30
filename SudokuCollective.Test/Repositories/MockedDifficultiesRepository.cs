@@ -44,6 +44,14 @@ namespace SudokuCollective.Test.Repositories
                     } as IRepositoryResponse));
 
             SuccessfulRequest.Setup(repo =>
+                repo.GetByDifficultyLevelAsync(It.IsAny<DifficultyLevel>()))
+                    .Returns(Task.FromResult(new RepositoryResponse()
+                    {
+                        IsSuccess = true,
+                        Object = context.Difficulties.FirstOrDefault(d => d.Id == 3)
+                    } as IRepositoryResponse));
+
+            SuccessfulRequest.Setup(repo =>
                 repo.GetAllAsync())
                     .Returns(Task.FromResult(new RepositoryResponse() 
                     {

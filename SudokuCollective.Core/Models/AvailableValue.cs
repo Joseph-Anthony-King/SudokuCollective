@@ -10,5 +10,7 @@ namespace SudokuCollective.Core.Models
         public int Value { get; set; }
         [Required, JsonPropertyName("available")]
         public bool Available { get; set; }
+        [JsonIgnore]
+        public int NumberOfSelections { get; set; }
     }
 }

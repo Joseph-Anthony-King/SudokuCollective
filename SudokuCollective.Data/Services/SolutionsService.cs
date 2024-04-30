@@ -217,7 +217,7 @@ namespace SudokuCollective.Data.Services
 
                 var sudokuSolver = new SudokuMatrix(intList);
 
-                await sudokuSolver.Solve();
+                await sudokuSolver.SolveAsync();
 
                 if (sudokuSolver.IsValid())
                 {

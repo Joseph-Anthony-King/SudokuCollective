@@ -167,6 +167,22 @@ namespace SudokuCollective.Test.TestCases.Models
         }
 
         [Test, Category("Models")]
+        public void OutputDisplayedValuesAsStringWithToString()
+        {
+            // Arrange
+            sut = populatedTestMatrix;
+            sut.Difficulty = new Difficulty() { DifficultyLevel = DifficultyLevel.MEDIUM };
+
+            // Act
+            var result = sut.ToValuesString();
+
+            // Assert
+            Assert.That(result, Is.TypeOf<string>());
+            Assert.That(result.Length, Is.EqualTo(81));
+            Assert.That(!result.Contains('0'));
+        }
+
+        [Test, Category("Models")]
         public void HaveNoObscuredCellsOnTestDifficulty()
         {
             // Arrange
@@ -295,6 +311,7 @@ namespace SudokuCollective.Test.TestCases.Models
         {
             // Arrange
             sut = new SudokuMatrix();
+            sut.SetDifficulty(new Difficulty() { DifficultyLevel = DifficultyLevel.HARD });
 
             // Act
             await sut.GenerateSolutionAsync();
@@ -329,7 +346,7 @@ namespace SudokuCollective.Test.TestCases.Models
             );
 
             // Act
-            await sut.Solve();
+            await sut.SolveAsync();
 
             // Assert
             Assert.That(sut.IsValid(), Is.EqualTo(true));

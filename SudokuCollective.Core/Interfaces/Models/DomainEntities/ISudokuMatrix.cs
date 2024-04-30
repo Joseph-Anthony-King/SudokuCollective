@@ -73,9 +73,10 @@ namespace SudokuCollective.Core.Interfaces.Models.DomainEntities
         bool IsSolved();
         void SetDifficulty(IDifficulty difficulty = null);
         Task GenerateSolutionAsync();
-        Task Solve();
+        Task SolveAsync();
         List<int> ToIntList();
         List<int> ToDisplayedIntList();
+        string ToValuesString();
         void HandleSudokuCellEvent(object sender, SudokuCellEventArgs e);
     }
 }
