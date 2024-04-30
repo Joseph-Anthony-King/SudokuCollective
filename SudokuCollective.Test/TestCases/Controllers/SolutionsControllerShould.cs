@@ -209,12 +209,12 @@ namespace SudokuCollective.Test.TestCases.Controllers
 
         [Test]
         [Category("Controllers")]
-        public void SuccessfullyGenerateSolution()
+        public async Task SuccessfullyGenerateSolution()
         {
             // Arrange
 
             // Act
-            var actionResult = sutSuccess.Generate();
+            var actionResult = await sutSuccess.GenerateAsync();
             var result = (Result)((OkObjectResult)actionResult.Result).Value;
             var message = result.Message;
             var statusCode = ((OkObjectResult)actionResult.Result).StatusCode;
@@ -228,12 +228,12 @@ namespace SudokuCollective.Test.TestCases.Controllers
 
         [Test]
         [Category("Controllers")]
-        public void IssueErrorAndMessageShouldGenerateSolutionFail()
+        public async Task IssueErrorAndMessageShouldGenerateSolutionFail()
         {
             // Arrange
 
             // Act
-            var actionResult = sutFailure.Generate();
+            var actionResult = await sutFailure.GenerateAsync();
             var result = (Result)((NotFoundObjectResult)actionResult.Result).Value;
             var message = result.Message;
             var statusCode = ((NotFoundObjectResult)actionResult.Result).StatusCode;

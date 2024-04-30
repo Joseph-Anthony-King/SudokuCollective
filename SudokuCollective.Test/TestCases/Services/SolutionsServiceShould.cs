@@ -167,12 +167,12 @@ namespace SudokuCollective.Test.TestCases.Services
         }
 
         [Test, Category("Services")]
-        public void GenerateASolution()
+        public async Task GenerateASolution()
         {
             // Arrange
 
             // Act
-            var result = sut.Generate();
+            var result = await sut.GenerateAsync();
 
             // Assert
             Assert.That(result.IsSuccess, Is.True);

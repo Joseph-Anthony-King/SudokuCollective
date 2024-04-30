@@ -22,7 +22,7 @@ namespace SudokuCollective.Test.TestCases.Jobs
             context = await TestDatabase.GetDatabaseContext();
             mockedLogger = new Mock<ILogger<DataJobs>>();
             game = new Game();
-            game.SudokuMatrix.GenerateSolution();
+            await game.SudokuMatrix.GenerateSolutionAsync();
 
             sut = new DataJobs(context, mockedLogger.Object);
         }
