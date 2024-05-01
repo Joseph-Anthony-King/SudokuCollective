@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using SudokuCollective.Core.Interfaces.Models.DomainObjects.Payloads;
@@ -13,7 +12,7 @@ namespace SudokuCollective.Data.Models.Payloads
 {
     public class GamePayload : IGamePayload
     {
-        private List<SudokuCell> _sudokuCells = new();
+        private List<SudokuCell> _sudokuCells = [];
         private readonly SudokuCellsValidatedAttribute _sudokuCellsValidator = new();
 
         [Required, SudokuCellsValidated(ErrorMessage = AttributeMessages.InvalidSudokuCells), JsonPropertyName("sudokuCells")]
@@ -38,12 +37,12 @@ namespace SudokuCollective.Data.Models.Payloads
         
         public GamePayload()
         {
-            SudokuCells = new List<SudokuCell>(); ;
+            SudokuCells = []; ;
         }
 
         public GamePayload(SudokuCell[] sudokuCells)
         {
-            SudokuCells = sudokuCells.ToList(); ;
+            SudokuCells = [.. sudokuCells]; ;
         }
 
         public GamePayload(List<SudokuCell> sudokuCells)

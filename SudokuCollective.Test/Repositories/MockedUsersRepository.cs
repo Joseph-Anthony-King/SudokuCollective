@@ -55,13 +55,13 @@ namespace SudokuCollective.Test.Repositories
                             todaysDate,
                             DateTime.MinValue)
                         {
-                            Apps = new List<UserApp>()
-                            {
+                            Apps =
+                            [
                                 new UserApp()
                                 {
                                     App = new App()
                                 }
-                            }
+                            ]
                         }
                     } as IRepositoryResponse));
 
@@ -548,13 +548,13 @@ namespace SudokuCollective.Test.Repositories
                             todaysDate,
                             DateTime.MinValue)
                         {
-                            Apps = new List<UserApp>()
-                            {
+                            Apps =
+                            [
                                 new UserApp()
                                 {
                                     App = new App()
                                 }
-                            }
+                            ]
                         }
                     } as IRepositoryResponse));
 
@@ -732,13 +732,13 @@ namespace SudokuCollective.Test.Repositories
                             todaysDate,
                             DateTime.MinValue)
                         {
-                            Apps = new List<UserApp>()
-                            {
+                            Apps =
+                            [
                                 new UserApp()
                                 {
                                     App = new App()
                                 }
-                            }
+                            ]
                         }
                     } as IRepositoryResponse));
 
@@ -916,13 +916,13 @@ namespace SudokuCollective.Test.Repositories
                             todaysDate,
                             DateTime.MinValue)
                         {
-                            Apps = new List<UserApp>()
-                            {
+                            Apps =
+                            [
                                 new UserApp()
                                 {
                                     App = new App()
                                 }
-                            }
+                            ]
                         }
                     } as IRepositoryResponse));
 

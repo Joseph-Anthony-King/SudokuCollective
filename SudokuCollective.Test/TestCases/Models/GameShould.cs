@@ -143,8 +143,8 @@ namespace SudokuCollective.Test.TestCases.Models
             var user = new Mock<User>();
             var matrix = new Mock<SudokuMatrix>();
 
-            user.Setup(u => u.Games).Returns(new List<Game>());
-            matrix.Setup(m => m.SudokuCells).Returns(new List<SudokuCell>());
+            user.Setup(u => u.Games).Returns([]);
+            matrix.Setup(m => m.SudokuCells).Returns([]);
             matrix.Setup(m => m.IsSolved()).Returns(true);
 
             sut = new Game(

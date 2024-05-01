@@ -8,11 +8,10 @@ using SudokuCollective.Core.Interfaces.Services;
 using SudokuCollective.Core.Models;
 using SudokuCollective.Data.Models;
 using SudokuCollective.Repos.Utilities;
-using Pipelines.Sockets.Unofficial.Buffers;
 
 namespace SudokuCollective.Repos
 {
-	public class AppsRepository<TEntity> : IAppsRepository<TEntity> where TEntity : App
+    public class AppsRepository<TEntity> : IAppsRepository<TEntity> where TEntity : App
 	{
 		#region Fields
 		private readonly DatabaseContext _context;
@@ -261,7 +260,7 @@ namespace SudokuCollective.Repos
 								.FirstOrDefaultAsync(r => r.Id == userRole.RoleId);
 						}
 
-						userApp.User.Games = new List<Game>();
+						userApp.User.Games = [];
 
 						userApp.User.Games = await _context
 							.Games
@@ -329,7 +328,7 @@ namespace SudokuCollective.Repos
 
                     foreach (var userApp in query.UserApps)
 					{
-						userApp.User.Games = new List<Game>();
+						userApp.User.Games = [];
 
 						userApp.User.Games = await _context
 							.Games
@@ -387,7 +386,7 @@ namespace SudokuCollective.Repos
 					{
 						foreach (var userApp in app.UserApps)
 						{
-							userApp.User.Games = new List<Game>();
+							userApp.User.Games = [];
 
 							userApp.User.Games = await _context
 								.Games
@@ -404,9 +403,7 @@ namespace SudokuCollective.Repos
 					}
 
 					result.IsSuccess = true;
-					result.Objects = query
-						.ConvertAll(a => (IDomainEntity)a)
-						.ToList();
+					result.Objects = [.. query.ConvertAll(a => (IDomainEntity)a)];
 				}
 				else
 				{
@@ -456,7 +453,7 @@ namespace SudokuCollective.Repos
 					{
 						foreach (var userApp in app.UserApps)
 						{
-							userApp.User.Games = new List<Game>();
+							userApp.User.Games = [];
 
 							userApp.User.Games = await _context
 								.Games
@@ -473,9 +470,7 @@ namespace SudokuCollective.Repos
 					}
 
 					result.IsSuccess = true;
-					result.Objects = query
-						.ConvertAll(a => (IDomainEntity)a)
-						.ToList();
+					result.Objects = [.. query.ConvertAll(a => (IDomainEntity)a)];
 				}
 				else
 				{
@@ -525,7 +520,7 @@ namespace SudokuCollective.Repos
 					{
 						foreach (var userApp in app.UserApps)
 						{
-							userApp.User.Games = new List<Game>();
+							userApp.User.Games = [];
 
 							userApp.User.Games = await _context
 								.Games
@@ -542,9 +537,7 @@ namespace SudokuCollective.Repos
 					}
 
 					result.IsSuccess = true;
-					result.Objects = query
-						.ConvertAll(a => (IDomainEntity)a)
-						.ToList();
+					result.Objects = [.. query.ConvertAll(a => (IDomainEntity)a)];
 				}
 				else
 				{
@@ -598,7 +591,7 @@ namespace SudokuCollective.Repos
 					foreach (var user in query)
 					{
 						// Filter games by app
-						user.Games = new List<Game>();
+						user.Games = [];
 
 						user.Games = await _context
 							.Games
@@ -632,9 +625,7 @@ namespace SudokuCollective.Repos
 					}
 
 					result.IsSuccess = true;
-					result.Objects = query
-						.ConvertAll(u => (IDomainEntity)u)
-						.ToList();
+					result.Objects = [.. query.ConvertAll(u => (IDomainEntity)u)];
 				}
 				else
 				{
@@ -688,7 +679,7 @@ namespace SudokuCollective.Repos
 					foreach (var user in query)
 					{
 						// Filter games by app
-						user.Games = new List<Game>();
+						user.Games = [];
 
 						user.Games = await _context
 							.Games
@@ -697,9 +688,7 @@ namespace SudokuCollective.Repos
 					}
 
 					result.IsSuccess = true;
-					result.Objects = query
-						.ConvertAll(u => (IDomainEntity)u)
-						.ToList();
+					result.Objects = [.. query.ConvertAll(u => (IDomainEntity)u)];
 				}
 				else
 				{
@@ -1449,7 +1438,7 @@ namespace SudokuCollective.Repos
 					return result;
 				}
 
-				user.Games = new List<Game>();
+				user.Games = [];
 
 				user.Games = await _context
 					.Games
@@ -1779,9 +1768,7 @@ namespace SudokuCollective.Repos
 				if (query.Count != 0)
 				{
 					result.IsSuccess = true;
-					result.Objects = query
-						.ConvertAll(a => (IDomainEntity)a)
-						.ToList();
+					result.Objects = [.. query.ConvertAll(a => (IDomainEntity)a)];
 				}
 				else
 				{

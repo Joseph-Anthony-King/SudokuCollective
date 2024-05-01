@@ -342,9 +342,7 @@ namespace SudokuCollective.Repos
 				else
 				{
 					result.IsSuccess = true;
-					result.Objects = query
-						.ConvertAll(u => (IDomainEntity)u)
-						.ToList();
+					result.Objects = [.. query.ConvertAll(u => (IDomainEntity)u)];
 				}
 
 				return result;
@@ -391,7 +389,7 @@ namespace SudokuCollective.Repos
 					{
 						foreach (var userApp in app.UserApps)
 						{
-							userApp.User.Games = new List<Game>();
+							userApp.User.Games = [];
 
 							userApp.User.Games = await _context
 								.Games
@@ -408,9 +406,7 @@ namespace SudokuCollective.Repos
 					}
 
 					result.IsSuccess = true;
-					result.Objects = query
-						.ConvertAll(a => (IDomainEntity)a)
-						.ToList();
+					result.Objects = [.. query.ConvertAll(a => (IDomainEntity)a)];
 				}
 				else
 				{

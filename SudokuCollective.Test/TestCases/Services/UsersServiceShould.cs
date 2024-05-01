@@ -642,7 +642,7 @@ namespace SudokuCollective.Test.TestCases.Services
 			var request = TestObjects.GetRequest();
 			request.Payload = new UpdateUserRolePayload()
 			{
-				RoleIds = new List<int> { 3 }
+				RoleIds = [3]
 			};
 			var license = TestObjects.GetLicense();
 
@@ -669,7 +669,7 @@ namespace SudokuCollective.Test.TestCases.Services
 			var request = TestObjects.GetRequest();
 			request.Payload = new UpdateUserRolePayload()
 			{
-				RoleIds = new List<int> { 3 }
+				RoleIds = [3]
 			};
 			var license = TestObjects.GetLicense();
 

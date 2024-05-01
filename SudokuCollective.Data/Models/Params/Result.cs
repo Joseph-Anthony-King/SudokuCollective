@@ -20,7 +20,7 @@ namespace SudokuCollective.Data.Models.Params
             IsSuccess = false;
             IsFromCache = false;
             Message = string.Empty;
-            Payload = new List<object>();
+            Payload = [];
         }
     }
 }
