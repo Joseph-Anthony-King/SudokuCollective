@@ -885,6 +885,17 @@ namespace SudokuCollective.Core.Models
             {
                 do
                 {
+                    if (Difficulty != null)
+                    {
+                        SetDifficulty(Difficulty);
+                    }
+                    else
+                    {
+                        SetDifficulty(new Difficulty() { 
+                            DifficultyLevel = DifficultyLevel.HARD
+                        });
+                    }
+
                     ZeroOutSudokuCells();
 
                     foreach (var sudokuCell in SudokuCells)
