@@ -124,14 +124,14 @@ namespace SudokuCollective.Dev.Routines
 
                 if (matrix.IsValid())
                 {
-                    var displayMatrix = new SudokuMatrix(matrix.ToIntList());
-
-                    displayMatrix.SetDifficulty(
-                        new Difficulty
+                    var displayMatrix = new SudokuMatrix(matrix.ToIntList())
+                    {
+                        Difficulty = new Difficulty
                         {
                             Name = "Test",
                             DifficultyLevel = DifficultyLevel.TEST
-                        });
+                        }
+                    };
 
                     DisplayScreens.DisplayMatix(displayMatrix);
 

@@ -73,8 +73,10 @@ namespace SudokuCollective.Test.TestCases.Utilities
             // Arrange
             var requestService = new RequestService();
             var mockedLogger = new Mock<ILogger<AppsService>>();
-            IResult result = new Result();
-            result.IsSuccess = false;
+            IResult result = new Result
+            {
+                IsSuccess = false
+            };
             var exception = new Exception();
 
             try

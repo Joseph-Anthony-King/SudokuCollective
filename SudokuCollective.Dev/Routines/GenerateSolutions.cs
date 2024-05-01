@@ -15,13 +15,14 @@ namespace SudokuCollective.Dev.Routines
 
             do
             {
-                var matrix = new SudokuMatrix();
-
-                matrix.SetDifficulty(new Difficulty()
+                var matrix = new SudokuMatrix
                 {
-                    Name = "Test",
-                    DifficultyLevel = DifficultyLevel.TEST
-                });
+                    Difficulty = new Difficulty()
+                    {
+                        Name = "Test",
+                        DifficultyLevel = DifficultyLevel.TEST
+                    }
+                };
 
                 await matrix.GenerateSolutionAsync();
 
