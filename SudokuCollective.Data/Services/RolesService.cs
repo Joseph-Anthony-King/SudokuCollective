@@ -15,8 +15,6 @@ using SudokuCollective.Data.Models;
 using SudokuCollective.Data.Models.Params;
 using SudokuCollective.Data.Models.Payloads;
 using SudokuCollective.Data.Utilities;
-using SudokuCollective.Logs;
-using SudokuCollective.Logs.Utilities;
 
 namespace SudokuCollective.Data.Services
 {

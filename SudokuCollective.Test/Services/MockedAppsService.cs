@@ -49,15 +49,15 @@ namespace SudokuCollective.Test.Services
                         .Result
                         .IsSuccess,
                     Message = AppsMessages.AppFoundMessage,
-                    Payload = new List<object>
-                        {
+                    Payload =
+                        [
                             MockedAppsRepository
                                 .SuccessfulRequest
                                 .Object
                                 .GetAsync(It.IsAny<int>())
                                 .Result
                                 .Object
-                        }
+                        ]
                 } as Core.Interfaces.Models.DomainObjects.Params.IResult));
 
             SuccessfulRequest.Setup(service =>
@@ -73,15 +73,15 @@ namespace SudokuCollective.Test.Services
                         .Result
                         .IsSuccess,
                     Message = AppsMessages.AppFoundMessage,
-                    Payload = new List<object>
-                        {
+                    Payload =
+                        [
                             MockedAppsRepository
                                 .SuccessfulRequest
                                 .Object
                                 .GetAsync(It.IsAny<int>())
                                 .Result
                                 .Object
-                        }
+                        ]
                 } as Core.Interfaces.Models.DomainObjects.Params.IResult));
 
             SuccessfulRequest.Setup(service =>
@@ -159,15 +159,15 @@ namespace SudokuCollective.Test.Services
                         .Result
                         .IsSuccess,
                     Message = AppsMessages.AppCreatedMessage,
-                    Payload = new List<object>
-                        {
+                    Payload =
+                        [
                             MockedAppsRepository
                                 .SuccessfulRequest
                                 .Object
                                 .GetAsync(It.IsAny<int>())
                                 .Result
                                 .Object
-                        }
+                        ]
                 } as Core.Interfaces.Models.DomainObjects.Params.IResult));
 
             SuccessfulRequest.Setup(service =>
@@ -199,15 +199,15 @@ namespace SudokuCollective.Test.Services
                         .Result
                         .IsSuccess,
                     Message = AppsMessages.AppUpdatedMessage,
-                    Payload = new List<object>
-                        {
+                    Payload =
+                        [
                             MockedAppsRepository
                                 .SuccessfulRequest
                                 .Object
                                 .GetAsync(It.IsAny<int>())
                                 .Result
                                 .Object
-                        }
+                        ]
                 } as Core.Interfaces.Models.DomainObjects.Params.IResult));
 
             SuccessfulRequest.Setup(service =>
@@ -260,15 +260,15 @@ namespace SudokuCollective.Test.Services
                         .Result
                         .IsSuccess,
                     Message = AppsMessages.UserAddedToAppMessage,
-                    Payload = new List<object>
-                        {
+                    Payload =
+                        [
                             MockedUsersRepository
                                 .SuccessfulRequest
                                 .Object
                                 .GetAsync(It.IsAny<int>())
                                 .Result
                                 .Object
-                        }
+                        ]
                 } as Core.Interfaces.Models.DomainObjects.Params.IResult));
 
             SuccessfulRequest.Setup(service =>
@@ -282,15 +282,15 @@ namespace SudokuCollective.Test.Services
                         .Result
                         .IsSuccess,
                     Message = AppsMessages.UserRemovedFromAppMessage,
-                    Payload = new List<object>
-                        {
+                    Payload =
+                        [
                             MockedUsersRepository
                                 .SuccessfulRequest
                                 .Object
                                 .GetAsync(It.IsAny<int>())
                                 .Result
                                 .Object
-                        }
+                        ]
                 } as Core.Interfaces.Models.DomainObjects.Params.IResult));
 
             SuccessfulRequest.Setup(service =>
@@ -304,15 +304,15 @@ namespace SudokuCollective.Test.Services
                         .Result
                         .IsSuccess,
                     Message = AppsMessages.AppActivatedMessage,
-                    Payload = new List<object>()
-                        {
+                    Payload =
+                        [
                             MockedAppsRepository
                                 .SuccessfulRequest
                                 .Object
                                 .GetAsync(It.IsAny<int>())
                                 .Result
                                 .Object
-                        }
+                        ]
                 } as Core.Interfaces.Models.DomainObjects.Params.IResult));
 
             SuccessfulRequest.Setup(service =>
@@ -326,15 +326,15 @@ namespace SudokuCollective.Test.Services
                         .Result
                         .IsSuccess,
                     Message = AppsMessages.AppDeactivatedMessage,
-                    Payload = new List<object>()
-                        {
+                    Payload =
+                        [
                             MockedAppsRepository
                                 .SuccessfulRequest
                                 .Object
                                 .GetAsync(It.IsAny<int>())
                                 .Result
                                 .Object
-                        }
+                        ]
                 } as Core.Interfaces.Models.DomainObjects.Params.IResult));
 
             SuccessfulRequest.Setup(service =>
@@ -361,15 +361,15 @@ namespace SudokuCollective.Test.Services
                         .Result
                         .IsSuccess,
                     Message = UsersMessages.UserHasBeenPromotedToAdminMessage,
-                    Payload = new List<object>()
-                        {
+                    Payload =
+                        [
                              MockedUsersRepository
                             .SuccessfulRequest
                             .Object
                             .AddAsync(It.IsAny<User>())
                             .Result
                             .Object
-                        }
+                        ]
                 } as Core.Interfaces.Models.DomainObjects.Params.IResult));
 
             SuccessfulRequest.Setup(appsService =>
@@ -383,15 +383,15 @@ namespace SudokuCollective.Test.Services
                         .Result
                         .IsSuccess,
                     Message = AppsMessages.AdminPrivilegesDeactivatedMessage,
-                    Payload = new List<object>()
-                        {
+                    Payload =
+                        [
                             MockedUsersRepository
                                 .SuccessfulRequest
                                 .Object
                                 .AddAsync(It.IsAny<User>())
                                 .Result
                                 .Object
-                        }
+                        ]
                 } as Core.Interfaces.Models.DomainObjects.Params.IResult));
 
             SuccessfulRequest.Setup(appsService =>
@@ -663,15 +663,15 @@ namespace SudokuCollective.Test.Services
                             .Result
                             .IsSuccess,
                         Message = AppsMessages.AppFoundMessage,
-                        Payload = new List<object>()
-                            {
+                        Payload =
+                            [
                                 MockedAppsRepository
                                     .SuccessfulRequest
                                     .Object
                                     .GetAsync(It.IsAny<int>())
                                     .Result
                                     .Object
-                            }
+                            ]
                     } as Core.Interfaces.Models.DomainObjects.Params.IResult));
 
             InvalidRequest.Setup(service =>
@@ -687,15 +687,15 @@ namespace SudokuCollective.Test.Services
                         .Result
                         .IsSuccess,
                     Message = AppsMessages.AppFoundMessage,
-                    Payload = new List<object>()
-                            {
+                    Payload =
+                            [
                                 MockedAppsRepository
                                     .SuccessfulRequest
                                     .Object
                                     .GetAsync(It.IsAny<int>())
                                     .Result
                                     .Object
-                            }
+                            ]
                 } as Core.Interfaces.Models.DomainObjects.Params.IResult));
 
             InvalidRequest.Setup(service =>
@@ -773,15 +773,15 @@ namespace SudokuCollective.Test.Services
                         .Result
                         .IsSuccess,
                     Message = AppsMessages.AppCreatedMessage,
-                    Payload = new List<object>()
-                        {
+                    Payload =
+                        [
                             MockedAppsRepository
                                 .SuccessfulRequest
                                 .Object
                                 .AddAsync(It.IsAny<App>())
                                 .Result
                                 .Object
-                        }
+                        ]
                 } as Core.Interfaces.Models.DomainObjects.Params.IResult));
 
             InvalidRequest.Setup(service =>
@@ -813,15 +813,15 @@ namespace SudokuCollective.Test.Services
                         .Result
                         .IsSuccess,
                     Message = AppsMessages.AppUpdatedMessage,
-                    Payload = new List<object>()
-                        {
+                    Payload =
+                        [
                             MockedAppsRepository
                                 .SuccessfulRequest
                                 .Object
                                 .UpdateAsync(It.IsAny<App>())
                                 .Result
                                 .Object
-                        }
+                        ]
                 } as Core.Interfaces.Models.DomainObjects.Params.IResult));
 
             InvalidRequest.Setup(service =>
@@ -874,15 +874,15 @@ namespace SudokuCollective.Test.Services
                             .Result
                             .IsSuccess,
                         Message = AppsMessages.UserAddedToAppMessage,
-                        Payload = new List<object>
-                            {
+                        Payload =
+                            [
                                 MockedUsersRepository
                                     .SuccessfulRequest
                                     .Object
                                     .GetAsync(It.IsAny<int>())
                                     .Result
                                     .Object
-                            }
+                            ]
                 } as Core.Interfaces.Models.DomainObjects.Params.IResult));
 
             InvalidRequest.Setup(service =>
@@ -896,15 +896,15 @@ namespace SudokuCollective.Test.Services
                             .Result
                             .IsSuccess,
                         Message = AppsMessages.UserRemovedFromAppMessage,
-                        Payload = new List<object>
-                            {
+                        Payload =
+                            [
                                 MockedUsersRepository
                                     .SuccessfulRequest
                                     .Object
                                     .GetAsync(It.IsAny<int>())
                                     .Result
                                     .Object
-                            }
+                            ]
                 } as Core.Interfaces.Models.DomainObjects.Params.IResult));
 
             InvalidRequest.Setup(service =>
@@ -918,15 +918,15 @@ namespace SudokuCollective.Test.Services
                             .Result
                             .IsSuccess,
                         Message = AppsMessages.AppActivatedMessage,
-                        Payload = new List<object>()
-                            {
+                        Payload =
+                            [
                                 MockedAppsRepository
                                     .SuccessfulRequest
                                     .Object
                                     .GetAsync(It.IsAny<int>())
                                     .Result
                                     .Object
-                            }
+                            ]
                 } as Core.Interfaces.Models.DomainObjects.Params.IResult));
 
             InvalidRequest.Setup(service =>
@@ -979,15 +979,15 @@ namespace SudokuCollective.Test.Services
                             .Result
                             .IsSuccess,
                         Message = AppsMessages.AdminPrivilegesDeactivatedMessage,
-                        Payload = new List<object>()
-                            {
+                        Payload =
+                            [
                                 MockedUsersRepository
                                     .SuccessfulRequest
                                     .Object
                                     .UpdateAsync(It.IsAny<User>())
                                     .Result
                                     .Object
-                            }
+                            ]
                     } as Core.Interfaces.Models.DomainObjects.Params.IResult));
 
             SuccessfulRequest.Setup(appsService =>
@@ -1014,15 +1014,15 @@ namespace SudokuCollective.Test.Services
                             .Result
                             .IsSuccess,
                         Message = AppsMessages.AppFoundMessage,
-                        Payload = new List<object>()
-                            {
+                        Payload =
+                            [
                                 MockedAppsRepository
                                     .SuccessfulRequest
                                     .Object
                                     .GetAsync(It.IsAny<int>())
                                     .Result
                                     .Object
-                            }
+                            ]
                     } as Core.Interfaces.Models.DomainObjects.Params.IResult));
 
             PromoteUserFailsRequest.Setup(service =>
@@ -1038,15 +1038,15 @@ namespace SudokuCollective.Test.Services
                             .Result
                             .IsSuccess,
                         Message = AppsMessages.AppFoundMessage,
-                        Payload = new List<object>()
-                            {
+                        Payload =
+                            [
                                 MockedAppsRepository
                                     .SuccessfulRequest
                                     .Object
                                     .GetAsync(It.IsAny<int>())
                                     .Result
                                     .Object
-                            }
+                            ]
                     } as Core.Interfaces.Models.DomainObjects.Params.IResult));
 
             PromoteUserFailsRequest.Setup(service =>
@@ -1124,15 +1124,15 @@ namespace SudokuCollective.Test.Services
                             .Result
                             .IsSuccess,
                         Message = AppsMessages.AppCreatedMessage,
-                        Payload = new List<object>()
-                            {
+                        Payload =
+                            [
                                 MockedAppsRepository
                                     .SuccessfulRequest
                                     .Object
                                     .GetAsync(It.IsAny<int>())
                                     .Result
                                     .Object
-                            }
+                            ]
                     } as Core.Interfaces.Models.DomainObjects.Params.IResult));
 
             PromoteUserFailsRequest.Setup(service =>
@@ -1164,15 +1164,15 @@ namespace SudokuCollective.Test.Services
                             .Result
                             .IsSuccess,
                         Message = AppsMessages.AppUpdatedMessage,
-                        Payload = new List<object>()
-                            {
+                        Payload =
+                            [
                                 MockedAppsRepository
                                     .SuccessfulRequest
                                     .Object
                                     .GetAsync(It.IsAny<int>())
                                     .Result
                                     .Object
-                            }
+                            ]
                     } as Core.Interfaces.Models.DomainObjects.Params.IResult));
 
             PromoteUserFailsRequest.Setup(service =>
@@ -1225,15 +1225,15 @@ namespace SudokuCollective.Test.Services
                             .Result
                             .IsSuccess,
                         Message = AppsMessages.UserAddedToAppMessage,
-                        Payload = new List<object>
-                            {
+                        Payload =
+                            [
                                 MockedUsersRepository
                                     .SuccessfulRequest
                                     .Object
                                     .GetAsync(It.IsAny<int>())
                                     .Result
                                     .Object
-                            }
+                            ]
                 } as Core.Interfaces.Models.DomainObjects.Params.IResult));
 
             PromoteUserFailsRequest.Setup(service =>
@@ -1247,15 +1247,15 @@ namespace SudokuCollective.Test.Services
                             .Result
                             .IsSuccess,
                         Message = AppsMessages.UserRemovedFromAppMessage,
-                        Payload = new List<object>
-                            {
+                        Payload =
+                            [
                                 MockedUsersRepository
                                     .SuccessfulRequest
                                     .Object
                                     .GetAsync(It.IsAny<int>())
                                     .Result
                                     .Object
-                            }
+                            ]
                 } as Core.Interfaces.Models.DomainObjects.Params.IResult));
 
             PromoteUserFailsRequest.Setup(service =>
@@ -1269,15 +1269,15 @@ namespace SudokuCollective.Test.Services
                             .Result
                             .IsSuccess,
                         Message = AppsMessages.AppActivatedMessage,
-                        Payload = new List<object>()
-                            {
+                        Payload =
+                            [
                                 MockedAppsRepository
                                     .SuccessfulRequest
                                     .Object
                                     .GetAsync(It.IsAny<int>())
                                     .Result
                                     .Object
-                            }
+                            ]
                 } as Core.Interfaces.Models.DomainObjects.Params.IResult));
 
             PromoteUserFailsRequest.Setup(service =>

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Data;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
@@ -21,7 +22,9 @@ namespace SudokuCollective.Core.Models
     public class SudokuMatrix : ISudokuMatrix
     {
         #region Fields
-        private List<SudokuCell> _sudokuCells = new();
+        private List<SudokuCell> _sudokuCells = [];
+        private readonly Queue<SudokuCellEventArgs> _sudokuCellEventsQueue = [];
+        private bool _sudokuCellEventsQueueRunning = false;
         private readonly SudokuCellsValidatedAttribute _sudokuCellsValidator = new();
         private readonly Stopwatch _stopwatch = new();
         #endregion
@@ -154,8 +157,8 @@ namespace SudokuCollective.Core.Models
         [JsonIgnore]
         public List<List<ISudokuCell>> Columns
         {
-            get => new()
-            {
+            get =>
+            [
                 FirstColumn,
                 SecondColumn,
                 ThirdColumn,
@@ -165,7 +168,7 @@ namespace SudokuCollective.Core.Models
                 SeventhColumn,
                 EighthColumn,
                 NinthColumn 
-            };
+            ];
         }
 
         [JsonIgnore]
@@ -253,8 +256,8 @@ namespace SudokuCollective.Core.Models
         [JsonIgnore]
         public List<List<ISudokuCell>> Regions
         {
-            get => new()
-            {
+            get =>
+            [
                 FirstRegion,
                 SecondRegion,
                 ThirdRegion,
@@ -264,7 +267,7 @@ namespace SudokuCollective.Core.Models
                 SeventhRegion,
                 EighthRegion,
                 NinthRegion
-            };
+            ];
         }
         [JsonIgnore]
         public List<ISudokuCell> FirstRow
@@ -350,8 +353,8 @@ namespace SudokuCollective.Core.Models
         [JsonIgnore]
         public List<List<ISudokuCell>> Rows
         {
-            get => new()
-            {
+            get =>
+            [
                 FirstRow,
                 SecondRow,
                 ThirdRow,
@@ -361,7 +364,7 @@ namespace SudokuCollective.Core.Models
                 SeventhRow,
                 EighthRow,
                 NinthRow
-            };
+            ];
         }
         #endregion
 
@@ -713,7 +716,7 @@ namespace SudokuCollective.Core.Models
                 patterns.Add([1, 5, 6, 8, 11, 13, 17, 20, 21, 22, 24, 25, 27, 31, 32, 33, 36, 46, 49, 50, 51, 55, 57, 58, 60, 61, 62, 65, 69, 71, 74, 76, 77, 81]);
                 patterns.Add([1, 10, 11, 12, 14, 16, 17, 19, 22, 24, 25, 26, 30, 33, 35, 40, 41, 42, 47, 49, 52, 56, 57, 58, 60, 63, 65, 66, 55, 70, 71, 72, 81]);
                 patterns.Add([2, 3, 5, 6, 7, 10, 15, 16, 18, 19, 22, 23, 25, 34, 37, 38, 39, 40, 42, 43, 44, 45, 48, 57, 59, 60, 63, 64, 66, 67, 72, 75, 76, 77, 79, 80]);
-                patterns.Add([2, 3, 9, 11, 13, 14, 16, 17, 18, 21, 26, 32, 33, 35, 36, 37, 40, 42, 45, 46, 47, 49, 50, 56, 61, 64, 65, 66, 68, 69, 71, 73, 79, 80 ]);
+                patterns.Add([2, 3, 9, 11, 13, 14, 16, 17, 18, 21, 26, 32, 33, 35, 36, 37, 40, 42, 45, 46, 47, 49, 50, 56, 61, 64, 65, 66, 68, 69, 71, 73, 79, 80]);
                 patterns.Add([2, 3, 10, 11, 15, 16, 17, 19, 21, 23, 24, 26, 30, 31, 32, 38, 39, 40, 42, 43, 44, 50, 51, 52, 56, 58, 59, 61, 63, 65, 66, 67, 71, 72, 79, 80]);
                 patterns.Add([2, 4, 6, 14, 16, 17, 19, 22, 23, 25, 26, 29, 30, 31, 36, 37, 38, 40, 42, 44, 45, 46, 51, 52, 53, 56, 57, 59, 60, 63, 65, 66, 68, 76, 78, 80]);
                 patterns.Add([2, 6, 7, 8, 9, 10, 12, 13, 14, 17, 19, 23, 28, 31, 32, 34, 37, 45, 48, 50, 51, 54, 59, 63, 65, 68, 69, 70, 72, 73, 74, 75, 76, 80]);
@@ -775,26 +778,26 @@ namespace SudokuCollective.Core.Models
             }
             else if (Difficulty.DifficultyLevel == DifficultyLevel.HARD)
             {
-                patterns.Add([1, 2, 3, 4, 8, 13, 16, 19, 22, 24, 26, 29, 34, 36, 39, 43, 46, 48, 53, 56, 58, 60, 63, 66, 69, 74, 78, 79, 80, 81]);
-                patterns.Add([1, 2, 4, 5, 6, 10, 11, 18, 21, 22, 27, 28, 33, 37, 38, 41, 44, 45, 49, 54, 55, 60, 61, 64, 71, 72, 76, 77, 78, 80, 81]);
-                patterns.Add([1, 3, 4, 8, 12, 13, 16, 17, 20, 23, 25, 27, 34, 36, 38, 44, 46, 48, 55, 57, 59, 62, 65, 66, 69, 70, 74, 78, 79, 81]);
-                patterns.Add([1, 2, 4, 11, 14, 17, 18, 19, 24, 26, 29, 32, 33, 36, 39, 43, 46, 49, 50, 53, 56, 58, 63, 64, 65, 68, 71, 78, 80, 81]);
-                patterns.Add([1, 3, 6, 7, 11, 12, 13, 17, 19, 23, 25, 29, 32, 35, 40, 41, 42, 47, 50, 53, 57, 59, 63, 65, 69, 70, 71, 75, 76, 79, 81]);
-                patterns.Add([1, 4, 11, 12, 14, 19, 21, 22, 24, 28, 31, 35, 39, 40, 41, 42, 43, 47, 51, 54, 58, 60, 61, 63, 68, 70, 71, 78, 81]);
-                patterns.Add([1, 5, 7, 12, 19, 20, 22, 24, 26, 28, 31, 35, 38, 39, 43, 44, 47, 51, 54, 56, 58, 60, 62, 63, 70, 75, 77, 81]);
-                patterns.Add([1, 8, 9, 10, 12, 13, 15, 21, 22, 24, 34, 36, 39, 40, 41, 42, 43, 46, 48, 58, 60, 61, 67, 69, 70, 72, 73, 74, 81]);
-                patterns.Add([2, 3, 5, 11, 15, 18, 24, 26, 28, 30, 31, 33, 36, 37, 38, 41, 44, 45, 46, 49, 51, 52, 54, 56, 58, 64, 67, 71, 77, 79, 80]);
-                patterns.Add([2, 3, 6, 8, 10, 11, 13, 18, 21, 23, 26, 28, 32, 36, 40, 41, 42, 46, 50, 54, 56, 59, 61, 64, 69, 71, 72, 74, 76, 79, 80]);
-                patterns.Add([2, 6, 9, 11, 13, 14, 16, 22, 24, 25, 28, 30, 31, 38, 40, 41, 42, 44, 51, 52, 54, 57, 58, 60, 66, 68, 69, 71, 73, 76, 80]);
-                patterns.Add([2, 8, 11, 12, 13, 14, 15, 16, 20, 24, 25, 31, 32, 35, 36, 40, 42, 46, 47, 50, 51, 57, 58, 62, 66, 67, 68, 69, 70, 71, 74, 80]);
-                patterns.Add([3, 4, 7, 9, 12, 15, 17, 23, 24, 25, 28, 29, 31, 33, 34, 41, 48, 49, 51, 53, 54, 57, 58, 59, 65, 67, 70, 73, 75, 78, 79]);
-                patterns.Add([4, 8, 9, 10, 11, 15, 21, 24, 25, 27, 31, 34, 35, 37, 41, 45, 47, 48, 51, 55, 57, 58, 61, 67, 71, 72, 73, 74, 78]);
-                patterns.Add([3, 5, 6, 9, 12, 13, 16, 20, 26, 29, 30, 31, 36, 37, 41, 45, 46, 51, 52, 53, 56, 62, 66, 69, 70, 73, 76, 77, 79]);
-                patterns.Add([5, 7, 8, 18, 19, 21, 23, 24, 25, 26, 29, 31, 35, 36, 38, 41, 44, 46, 47, 51, 53, 56, 57, 58, 59, 61, 63, 64, 74, 75, 77]);
-                patterns.Add([5, 8, 11, 15, 16, 19, 21, 25, 26, 31, 32, 33, 34, 37, 41, 45, 48, 49, 50, 51, 56, 57, 61, 63, 66, 67, 71, 74, 77]);
-                patterns.Add([5, 8, 9, 15, 16, 17, 19, 23, 26, 29, 30, 31, 34, 36, 40, 42, 46, 48, 51, 52, 53, 56, 59, 63, 65, 66, 67, 73, 74, 77]);
-                patterns.Add([5, 8, 9, 10, 11, 15, 16, 18, 21, 24, 25, 34, 35, 36, 37, 40, 42, 45, 46, 47, 48, 57, 58, 61, 64, 66, 67, 71, 72, 73, 74, 77]);
-                patterns.Add([6, 7, 9, 10, 13, 18, 21, 25, 26, 31, 33, 34, 36, 38, 41, 44, 46, 48, 49, 51, 56, 57, 61, 64, 69, 72, 73, 75, 76]);
+                patterns.Add([1, 2, 4, 5, 14, 15, 17, 20, 21, 26, 27, 28, 29, 30, 31, 32, 33, 40, 49, 52, 54, 56, 62, 64, 66, 67, 69, 71, 73, 74, 75, 77, 81]);
+                patterns.Add([1, 2, 4, 7, 8, 11, 12, 15, 18, 21, 22, 31, 34, 36, 37, 39, 40, 42, 47, 48, 53, 54, 55, 56, 57, 61, 62, 63, 71, 77, 78, 80]);
+                patterns.Add([1, 2, 6, 11, 12, 16, 18, 23, 24, 25, 26, 29, 32, 34, 36, 37, 39, 42, 44, 45, 51, 52, 57, 64, 65, 66, 70, 71, 72, 75, 76, 77]);
+                patterns.Add([1, 5, 6, 9, 10, 21, 23, 35, 38, 39, 51, 52, 44, 47, 48, 52, 53, 54, 58, 59, 60, 63, 64, 687, 70, 75, 76, 77, 79, 81]);
+                patterns.Add([1, 5, 8, 10, 11, 13, 14, 16, 18, 22, 25, 27, 30, 32, 33, 36, 38, 39, 40, 43, 47, 50, 56, 65, 70, 72, 75, 77, 78, 80]);
+                patterns.Add([1, 6, 9, 11, 12, 14, 15, 16, 17, 19, 24, 28, 29, 31, 34, 39, 40, 42, 43, 44, 50, 52, 55, 56, 60, 66, 69, 76, 79, 81]);
+                patterns.Add([2, 3, 4, 5, 10, 11, 16, 23, 24, 25, 27, 30, 37, 38, 39, 40, 41, 42, 48, 53, 54, 56, 58, 59, 63, 68, 70, 73, 75, 76, 78, 79]);
+                patterns.Add([2, 3, 4, 6, 10, 11, 16, 17, 22, 23, 26, 33, 37, 38, 39, 40, 41, 42, 51, 52, 54, 56, 57, 58, 61, 65, 71, 73, 75, 77, 78, 80]);
+                patterns.Add([2, 3, 4, 6, 12, 16, 18, 23, 24, 26, 27, 28, 29, 35, 44, 49, 50, 51, 52, 53, 54, 56, 59, 60, 63, 66, 67, 68, 70, 71, 75, 78]);
+                patterns.Add([2, 3, 5, 6, 10, 11, 16, 18, 22, 24, 25, 32, 41, 44, 45, 46, 47, 48, 49, 50, 51, 56, 57, 60, 63, 64, 66, 67, 68, 70, 74, 79]);
+                patterns.Add([2, 4, 6, 10, 11, 17, 18, 23, 24, 25, 26, 32, 37, 39, 41, 49, 50, 51, 52, 53, 54, 56, 58, 59, 61, 63, 64, 69, 70, 71, 75, 80]);
+                patterns.Add([3, 4, 6, 7, 11, 12, 16, 17, 22, 23, 26, 27, 29, 34, 36, 44, 47, 50, 52, 57, 58, 59, 60, 64, 67, 70, 73, 74, 78, 81]);
+                patterns.Add([4, 5, 6, 7, 8, 9, 10, 12, 13, 22, 29, 30, 34, 35, 40, 42, 43, 45, 47, 50, 51, 56, 61, 65, 67, 68, 71, 72, 75, 78, 79, 81]);
+                patterns.Add([4, 6, 7, 11, 12, 14, 15, 19, 21, 25, 26, 28, 29, 30, 31, 32, 33, 41, 44, 45, 50, 56, 57, 60, 62, 66, 70, 73, 74, 76, 77, 79]);
+                patterns.Add([4, 7, 9, 10, 11, 13, 15, 20, 21, 25, 26, 28, 30, 31, 35, 36, 38, 39, 42, 43, 47, 49, 59, 60, 62, 71, 73, 74, 75, 79, 80, 81]);
+                patterns.Add([5, 6, 8, 9, 10, 12, 16, 17, 19, 22, 23, 29, 30, 33, 40, 41, 42, 43, 44, 45, 51, 57, 59, 62, 63, 64, 67, 69, 70, 72, 73, 80]);
+                patterns.Add([5, 6, 8, 9, 10, 12, 15, 20, 21, 25, 26, 29, 37, 38, 39, 43, 44, 45, 47, 49, 50, 57, 59, 61, 62, 64, 65, 69, 70, 72, 78, 80]);
+                patterns.Add([5, 7, 9, 11, 12, 14, 15, 19, 21, 25, 26, 35, 40, 42, 44, 46, 47, 78, 52, 53, 54, 55, 57, 60, 61, 64, 65, 68, 71, 72, 75, 77]);
+                patterns.Add([7, 13, 14, 15, 16, 17, 18, 19, 20, 25, 29, 31, 32, 35, 39, 40, 48, 40, 41, 52, 54, 57, 62, 63, 67, 68, 70, 71, 74, 75, 76, 78]);
+                patterns.Add([8, 10, 11, 12, 16, 17, 18, 23, 24, 26, 28, 29, 35, 36, 38, 39, 40, 42, 49, 52, 54, 55, 57, 58, 61, 62, 65, 67, 73, 74, 78, 81]);
 
                 var indexes = new List<int>();
 
@@ -925,11 +928,24 @@ namespace SudokuCollective.Core.Models
                 {
                     var testSolutions = new List<string>();
 
-                    for (var i = 0; i < 12; i++)
+                    for (var i = 0; i < 15; i++)
                     {
                         var testMatrix = new SudokuMatrix(this.Difficulty, this.ToDisplayedIntList());
                         await testMatrix.SolveAsync();
                         testSolutions.Add(testMatrix.ToValuesString());
+
+                        if (Difficulty.DifficultyLevel == DifficultyLevel.EASY && testSolutions.Distinct().Count() > 3)
+                        {
+                            i = 14;
+                        }
+                        else if (Difficulty.DifficultyLevel == DifficultyLevel.MEDIUM && testSolutions.Distinct().Count() > 2)
+                        {
+                            i = 14;
+                        }
+                        else if ((Difficulty.DifficultyLevel == DifficultyLevel.HARD || Difficulty.DifficultyLevel == DifficultyLevel.EVIL) && testSolutions.Distinct().Count() > 1)
+                        {
+                            i = 14;
+                        }
                     }
 
                     var distinct = testSolutions.Distinct().Count();
@@ -1103,24 +1119,41 @@ namespace SudokuCollective.Core.Models
             object sender,
             SudokuCellEventArgs e)
         {
-            foreach (var sudokuCell in SudokuCells)
+            _sudokuCellEventsQueue.Enqueue(e);
+
+            if (_sudokuCellEventsQueueRunning == false)
             {
-                if (sudokuCell.Column == e.Column)
+                do
                 {
-                    sudokuCell.UpdateAvailableValues(e.Value);
-                }
-                else if (sudokuCell.Region == e.Region)
-                {
-                    sudokuCell.UpdateAvailableValues(e.Value);
-                }
-                else if (sudokuCell.Row == e.Row)
-                {
-                    sudokuCell.UpdateAvailableValues(e.Value);
-                }
-                else
-                {
-                    // do nothing...
-                }
+                    _sudokuCellEventsQueueRunning = true;
+
+                    var sudokuCellEvent = _sudokuCellEventsQueue.Dequeue();
+
+                    foreach (var sudokuCell in SudokuCells)
+                    {
+                        if (sudokuCell.Value == 0 && sudokuCell.AvailableValues.Count > 0)
+                        {
+                            if (sudokuCell.Column == sudokuCellEvent.Column)
+                            {
+                                sudokuCell.UpdateAvailableValues(sudokuCellEvent.Value);
+                            }
+                            else if (sudokuCell.Region == sudokuCellEvent.Region)
+                            {
+                                sudokuCell.UpdateAvailableValues(sudokuCellEvent.Value);
+                            }
+                            else if (sudokuCell.Row == sudokuCellEvent.Row)
+                            {
+                                sudokuCell.UpdateAvailableValues(sudokuCellEvent.Value);
+                            }
+                            else
+                            {
+                                // do nothing...
+                            }
+                        }
+                    }
+                    _sudokuCellEventsQueueRunning = false;
+
+                } while (_sudokuCellEventsQueue.Count > 0);
             }
         }
         #endregion

@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Moq;
 using SudokuCollective.Core.Interfaces.Models.DomainObjects.Params;
 using SudokuCollective.Core.Interfaces.Services;
@@ -28,14 +27,14 @@ namespace SudokuCollective.Test.Services
                     {
                         IsSuccess = true,
                         Message = UsersMessages.UserFoundMessage,
-                        Payload = new List<object>()
-                        {
+                        Payload =
+                        [
                             new AuthenticationResult()
                             {
                                 Token = TestObjects.GetToken(),
                                 User = new UserDTO()
                             }
-                        }
+                        ]
                     } as IResult));
 
             FailedRequest.Setup(authenticateService =>

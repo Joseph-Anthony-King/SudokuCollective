@@ -66,7 +66,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
 
 			updateUserRolePayload = new UpdateUserRolePayload()
 			{
-				RoleIds = new List<int>() { 3 }
+				RoleIds = [3]
 			};
 
 			resendRequestPasswordRequest = new ResendRequestPasswordRequest()

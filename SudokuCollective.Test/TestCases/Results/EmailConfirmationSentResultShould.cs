@@ -1,9 +1,6 @@
 using NUnit.Framework;
-using SudokuCollective.Core.Interfaces.Models.DomainEntities;
 using SudokuCollective.Core.Interfaces.Models.DomainObjects.Results;
-using SudokuCollective.Core.Models;
 using SudokuCollective.Data.Models.Results;
-using SudokuCollective.Test.TestData;
 
 namespace SudokuCollective.Test.TestCases.Results
 {

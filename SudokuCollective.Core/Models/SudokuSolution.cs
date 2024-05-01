@@ -57,7 +57,7 @@ namespace SudokuCollective.Core.Models
             Id = 0;
             DateCreated = createdDate;
             DateSolved = DateTime.MinValue;
-            SolutionList = new List<int>();
+            SolutionList = [];
 
             for (var i = 0; i < 81; i++)
             {
@@ -70,7 +70,7 @@ namespace SudokuCollective.Core.Models
             var solvedDate = DateTime.UtcNow;
             DateSolved = solvedDate;
 
-            SolutionList = new List<int>();
+            SolutionList = [];
             SolutionList = intList;
         }
 

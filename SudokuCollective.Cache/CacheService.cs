@@ -32,10 +32,10 @@ namespace SudokuCollective.Cache
 
                 if (response.IsSuccess && response.Object.Id > 0)
                 {
-                    var serializedItem = JsonSerializer.Serialize<T>(
-                        (T)response.Object, 
-                        new JsonSerializerOptions 
-                        { 
+                    var serializedItem = JsonSerializer.Serialize(
+                        (T)response.Object,
+                        new JsonSerializerOptions
+                        {
                             ReferenceHandler = ReferenceHandler.IgnoreCycles 
                         });
                     var encodedItem = Encoding.UTF8.GetBytes(serializedItem);
@@ -54,15 +54,14 @@ namespace SudokuCollective.Cache
                             encodedItem,
                             options);
 
-                        cacheKeys = new List<string> {
+                        cacheKeys = [
                             string.Format(keys.GetAppCacheKey, user.Apps.ToList()[0].AppId),
                             string.Format(keys.GetAppUsersCacheKey, user.Apps.ToList()[0].AppId),
                             string.Format(keys.GetNonAppUsersCacheKey, user.Apps.ToList()[0].AppId),
                             string.Format(keys.GetAppByLicenseCacheKey, appLicense),
                             string.Format(keys.GetAppUsersCacheKey, 1),
                             string.Format(keys.GetNonAppUsersCacheKey, 1),
-                            keys.GetUsersCacheKey
-                        };
+                            keys.GetUsersCacheKey, ];
                     }
                     else if (response.Object is App app)
                     {
@@ -72,10 +71,9 @@ namespace SudokuCollective.Cache
                             options);
 
                         // Remove any app list cache items which may exist
-                        cacheKeys = new List<string> {
+                        cacheKeys = [
                                 string.Format(keys.GetMyAppsCacheKey, app.OwnerId),
-                                keys.GetAppsCacheKey
-                            };
+                                keys.GetAppsCacheKey, ];
                     }
                     else if (response.Object is Difficulty)
                     {
@@ -85,9 +83,7 @@ namespace SudokuCollective.Cache
                             options);
 
                         // Remove any difficutly list cache items which may exist
-                        cacheKeys = new List<string> {
-                                keys.GetDifficultiesCacheKey
-                            };
+                        cacheKeys = [ keys.GetDifficultiesCacheKey, ];
                     }
                     else
                     {
@@ -97,9 +93,7 @@ namespace SudokuCollective.Cache
                             options);
 
                         // Remove any role list cache items which may exist
-                        cacheKeys = new List<string> {
-                                keys.GetRolesCacheKey
-                            };
+                        cacheKeys = [ keys.GetRolesCacheKey, ];
                     }
 
                     if (cacheKeys != null)
@@ -254,42 +248,38 @@ namespace SudokuCollective.Cache
                     if (response.Object is User user)
                     {
                         // Remove any user cache items which may exist
-                        cacheKeys = new List<string> {
+                        cacheKeys = [
                                 string.Format(keys.GetUserCacheKey, user.Id, license),
                                 string.Format(keys.GetUserByUsernameCacheKey, user.UserName, license),
                                 string.Format(keys.GetUserByEmailCacheKey, user.Email, license),
-                                string.Format(keys.GetUsersCacheKey),
-                            };
+                                string.Format(keys.GetUsersCacheKey), ];
                     }
                     else if (response.Object is App app)
                     {
                         // Remove any app cache items which may exist
-                        cacheKeys = new List<string> {
+                        cacheKeys = [
                                 string.Format(keys.GetAppCacheKey, app.Id),
                                 string.Format(keys.GetAppByLicenseCacheKey, app.License),
                                 string.Format(keys.GetMyAppsCacheKey, app.OwnerId),
                                 string.Format(keys.GetAppsCacheKey),
                                 string.Format(keys.GetValuesKey),
-                                string.Format(keys.GetGalleryAppsKey)
-                            };
+                                string.Format(keys.GetGalleryAppsKey), ];
                     }
                     else if (response.Object is Difficulty difficulty)
                     {
                         // Remove any difficutly cache items which may exist
-                        cacheKeys = new List<string> {
+                        cacheKeys = [
                                 string.Format(keys.GetDifficultyCacheKey, difficulty.Id),
-                                keys.GetDifficultiesCacheKey
-                            };
+                                keys.GetDifficultiesCacheKey, ];
                     }
                     else
                     {
                         var role = response.Object as Role;
 
                         // Remove any role cache items which may exist
-                        cacheKeys = new List<string> {
+                        cacheKeys = [
                                 string.Format(keys.GetRoleCacheKey, role.Id),
-                                keys.GetRolesCacheKey
-                            };
+                                keys.GetRolesCacheKey, ];
                     }
 
                     await RemoveKeysAsync(cache, cacheKeys);
@@ -320,17 +310,16 @@ namespace SudokuCollective.Cache
                 {
                     /* Since we're deleting a user we get the associated apps
                      * to clear the cache */
-                    apps = new List<App>();
+                    apps = [];
 
                     var userRepo = (IUsersRepository<User>)repo;
                     var appsResponse = await userRepo.GetMyAppsAsync(entity.Id);
 
                     if (appsResponse.IsSuccess && appsResponse.Objects.Count > 0)
                     {
-                        apps = appsResponse
+                        apps = [.. appsResponse
                             .Objects
-                            .ConvertAll(a => (App)a)
-                            .ToList();
+                            .ConvertAll(a => (App)a)];
                     }
 
                     // Finally, attach the license to each app...
@@ -349,13 +338,12 @@ namespace SudokuCollective.Cache
                     if (entity is User user)
                     {
                         // Remove any user cache items which may exist
-                        cacheKeys = new List<string> {
+                        cacheKeys = [
                             string.Format(keys.GetUserCacheKey, user.Id, license),
                             string.Format(keys.GetUserByUsernameCacheKey, user.UserName, license),
                             string.Format(keys.GetUserByEmailCacheKey, user.Email, license),
                             string.Format(keys.GetMyAppsCacheKey, user.Id),
-                            string.Format(keys.GetMyRegisteredCacheKey, user.Id)
-                        };
+                            string.Format(keys.GetMyRegisteredCacheKey, user.Id), ];
 
                         if (user.Apps.Count > 0 && apps != null)
                         {
@@ -380,34 +368,31 @@ namespace SudokuCollective.Cache
                     else if (entity is App app)
                     {
                         // Remove any user cache items which may exist
-                        cacheKeys = new List<string> {
-                        string.Format(keys.GetAppCacheKey, app.Id),
-                        string.Format(keys.HasAppCacheKey, app.Id),
-                        string.Format(keys.GetAppLicenseCacheKey, app.Id),
-                        string.Format(keys.GetAppByLicenseCacheKey, app.License),
-                        string.Format(keys.IsAppLicenseValidCacheKey, app.License),
-                        string.Format(keys.GetMyAppsCacheKey, app.OwnerId),
-                        string.Format(keys.HasAppCacheKey, app.Id),
-                        keys.GetAppsCacheKey
-                    };
+                        cacheKeys = [
+                            string.Format(keys.GetAppCacheKey, app.Id),
+                            string.Format(keys.HasAppCacheKey, app.Id),
+                            string.Format(keys.GetAppLicenseCacheKey, app.Id),
+                            string.Format(keys.GetAppByLicenseCacheKey, app.License),
+                            string.Format(keys.IsAppLicenseValidCacheKey, app.License),
+                            string.Format(keys.GetMyAppsCacheKey, app.OwnerId),
+                            string.Format(keys.HasAppCacheKey, app.Id),
+                            keys.GetAppsCacheKey, ];
                     }
                     else if (entity is Difficulty difficulty)
                     {
                         // Remove any difficulty cache items which may exist
-                        cacheKeys = new List<string> {
+                        cacheKeys = [
                             string.Format(keys.GetDifficultyCacheKey, difficulty.Id),
-                            keys.GetDifficultiesCacheKey
-                        };
+                            keys.GetDifficultiesCacheKey, ];
                     }
                     else
                     {
                         var role = entity as Role;
 
                         // Remove any role cache items which may exist
-                        cacheKeys = new List<string> {
+                        cacheKeys = [
                             string.Format(keys.GetRoleCacheKey, role.Id),
-                            keys.GetRolesCacheKey
-                        };
+                            keys.GetRolesCacheKey, ];
                     }
 
                     await RemoveKeysAsync(cache, cacheKeys);
@@ -860,10 +845,9 @@ namespace SudokuCollective.Cache
                     List<string> cacheKeys;
 
                     // Remove any user cache items which may exist
-                    cacheKeys = new List<string> {
-                            string.Format(keys.GetAppCacheKey, app.Id),
-                            string.Format(keys.GetAppByLicenseCacheKey, app.License)
-                        };
+                    cacheKeys = [
+                        string.Format(keys.GetAppCacheKey, app.Id),
+                        string.Format(keys.GetAppByLicenseCacheKey, app.License), ];
 
                     await RemoveKeysAsync(cache, cacheKeys);
                 }
@@ -902,10 +886,9 @@ namespace SudokuCollective.Cache
                     List<string> cacheKeys;
 
                     // Remove any user cache items which may exist
-                    cacheKeys = new List<string> {
-                            string.Format(keys.GetAppCacheKey, app.Id),
-                            string.Format(keys.GetAppByLicenseCacheKey, app.License)
-                        };
+                    cacheKeys = [
+                        string.Format(keys.GetAppCacheKey, app.Id),
+                        string.Format(keys.GetAppByLicenseCacheKey, app.License), ];
 
                     await RemoveKeysAsync(cache, cacheKeys);
                 }
@@ -944,10 +927,9 @@ namespace SudokuCollective.Cache
                     List<string> cacheKeys;
 
                     // Remove any user cache items which may exist
-                    cacheKeys = new List<string> {
-                            string.Format(keys.GetAppCacheKey, app.Id),
-                            string.Format(keys.GetAppByLicenseCacheKey, app.License)
-                        };
+                    cacheKeys = [
+                        string.Format(keys.GetAppCacheKey, app.Id),
+                        string.Format(keys.GetAppByLicenseCacheKey, app.License), ];
 
                     await RemoveKeysAsync(cache, cacheKeys);
                 }
@@ -1156,11 +1138,10 @@ namespace SudokuCollective.Cache
                     List<string> cacheKeys;
 
                     // Remove any user cache items which may exist
-                    cacheKeys = new List<string> {
+                    cacheKeys = [
                         string.Format(keys.GetUserCacheKey, user.Id, license),
                         string.Format(keys.GetUserByUsernameCacheKey, user.UserName, license),
-                        string.Format(keys.GetUserByEmailCacheKey, user.Email, license)
-                    };
+                        string.Format(keys.GetUserByEmailCacheKey, user.Email, license), ];
 
                     await RemoveKeysAsync(cache, cacheKeys);
                 }
@@ -1190,11 +1171,10 @@ namespace SudokuCollective.Cache
                     List<string> cacheKeys;
 
                     // Remove any user cache items which may exist
-                    cacheKeys = new List<string> {
+                    cacheKeys = [
                         string.Format(keys.GetUserCacheKey, user.Id, license),
                         string.Format(keys.GetUserByUsernameCacheKey, user.UserName, license),
-                        string.Format(keys.GetUserByEmailCacheKey, user.Email, license)
-                    };
+                        string.Format(keys.GetUserByEmailCacheKey, user.Email, license), ];
 
                     await RemoveKeysAsync(cache, cacheKeys);
                 }
@@ -1503,7 +1483,7 @@ namespace SudokuCollective.Cache
                         else
                         {
                             response.IsSuccess = false;
-                            response.Objects = new List<IDomainEntity>();
+                            response.Objects = [];
                         }
                     }
                 }

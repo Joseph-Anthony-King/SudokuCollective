@@ -105,8 +105,10 @@ namespace SudokuCollective.Test.TestCases.Repositories
         public async Task AddSolutions()
         {
             // Arrange
-            var solutions = new List<SudokuSolution>();
-            solutions.Add(newSolution);
+            var solutions = new List<SudokuSolution>
+            {
+                newSolution
+            };
 
             // Act
             var result = await sut.AddSolutionsAsync(solutions.ConvertAll(s => (ISudokuSolution)s));

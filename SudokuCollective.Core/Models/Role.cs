@@ -34,7 +34,7 @@ namespace SudokuCollective.Core.Models
             Id = 0;
             Name = string.Empty;
             RoleLevel = RoleLevel.NULL;
-            Users = new List<UserRole>();
+            Users = [];
         }
 
         [JsonConstructor]
@@ -43,7 +43,7 @@ namespace SudokuCollective.Core.Models
             Id = id;
             Name = name;
             RoleLevel = roleLevel;
-            Users = new List<UserRole>();
+            Users = [];
         }
         #endregion
 

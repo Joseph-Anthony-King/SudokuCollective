@@ -1,6 +1,4 @@
-﻿using SudokuCollective.Core.Enums;
-
-namespace SudokuCollective.Core.Interfaces.Models.DomainObjects.Payloads
+﻿namespace SudokuCollective.Core.Interfaces.Models.DomainObjects.Payloads
 {
     public interface IUpdateRolePayload : IPayload
     {

@@ -80,7 +80,7 @@ namespace SudokuCollective.Data.Services
                     if (result.Message.Equals(
                         ServicesMesages.SortValueNotImplementedMessage))
                     {
-                        ((Values)result.Payload[0]).Gallery = new List<GalleryApp>();
+                        ((Values)result.Payload[0]).Gallery = [];
                         return result;
                     }
                 }
@@ -88,7 +88,7 @@ namespace SudokuCollective.Data.Services
                 {
                     result.IsSuccess = false;
                     result.Message = ServicesMesages.PageNotFoundMessage;
-                    ((Values)result.Payload[0]).Gallery = new List<GalleryApp>();
+                    ((Values)result.Payload[0]).Gallery = [];
 
                     return result;
                 }
@@ -137,10 +137,9 @@ namespace SudokuCollective.Data.Services
 
                 result.Message = ValuesMessages.ReleaseEnvironmentsRetrieved;
 
-                result.Payload = items
+                result.Payload = [.. items
                     .ConvertAll(x => (object)x)
-                    .OrderBy(x => ((EnumListItem)x).Value)
-                    .ToList();
+                    .OrderBy(x => ((EnumListItem)x).Value)];
 
                 return result;
             }
@@ -234,9 +233,7 @@ namespace SudokuCollective.Data.Services
 
                 result.Message = ValuesMessages.SortValuesRetrieved;
 
-                result.Payload = items.ConvertAll(x => (object)x)
-                    .OrderBy(x => ((EnumListItem)x).Value)
-                    .ToList(); ;
+                result.Payload = [.. items.ConvertAll(x => (object)x).OrderBy(x => ((EnumListItem)x).Value)]; ;
 
                 return result;
             }
@@ -288,9 +285,7 @@ namespace SudokuCollective.Data.Services
 
                 result.Message = ValuesMessages.TimeFramesRetrieved;
 
-                result.Payload = items.ConvertAll(x => (object)x)
-                    .OrderBy(x => ((EnumListItem)x).Value)
-                    .ToList(); ;
+                result.Payload = [.. items.ConvertAll(x => (object)x).OrderBy(x => ((EnumListItem)x).Value)]; ;
 
                 return result;
             }

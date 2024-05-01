@@ -166,9 +166,7 @@ namespace SudokuCollective.Repos
 				else
 				{
 					result.IsSuccess = true;
-					result.Objects = query
-						.ConvertAll(pu => (IDomainEntity)pu)
-						.ToList();
+					result.Objects = [.. query.ConvertAll(pu => (IDomainEntity)pu)];
 				}
 
 				return result;
