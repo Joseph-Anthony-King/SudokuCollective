@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.IO;
-using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Text.Json;
@@ -47,33 +46,33 @@ namespace SudokuCollective.Test.TestData
         public static AnnonymousCheckRequest GetValidAnnonymousCheckPayload() =>
             new()
             {
-                FirstRow = new List<int> { 7, 8, 5, 4, 1, 3, 2, 9, 6 },
-                SecondRow = new List<int> { 1, 4, 2, 8, 6, 9, 5, 7, 3 },
-                ThirdRow = new List<int> { 6, 9, 3, 2, 7, 5, 4, 1, 8 },
-                FourthRow = new List<int> { 5, 1, 4, 3, 8, 2, 7, 6, 9 },
-                FifthRow = new List<int> { 2, 6, 7, 9, 4, 1, 3, 8, 5 },
-                SixthRow = new List<int> { 8, 3, 9, 7, 5, 6, 1, 2, 4 },
-                SeventhRow = new List<int> { 4, 2, 1, 6, 3, 8, 9, 5, 7 },
-                EighthRow = new List<int> { 3, 5, 8, 1, 9, 7, 6, 4, 2 },
-                NinthRow = new List<int> { 9, 7, 6, 5, 2, 4, 8, 3, 1 }
+                FirstRow = [7, 8, 5, 4, 1, 3, 2, 9, 6],
+                SecondRow = [1, 4, 2, 8, 6, 9, 5, 7, 3],
+                ThirdRow = [6, 9, 3, 2, 7, 5, 4, 1, 8],
+                FourthRow = [5, 1, 4, 3, 8, 2, 7, 6, 9],
+                FifthRow = [2, 6, 7, 9, 4, 1, 3, 8, 5],
+                SixthRow = [8, 3, 9, 7, 5, 6, 1, 2, 4],
+                SeventhRow = [4, 2, 1, 6, 3, 8, 9, 5, 7],
+                EighthRow = [3, 5, 8, 1, 9, 7, 6, 4, 2],
+                NinthRow = [9, 7, 6, 5, 2, 4, 8, 3, 1]
             };
 
         public static AnnonymousCheckRequest GetInvalidAnnonymousCheckPayload() =>
             new()
             {
-                FirstRow = new List<int> { 7, 8, 5, 4, 1, 3, 2, 9, 6, 0 },
-                SecondRow = new List<int> { 1, 4, 2, 8, 6, 9, 5, 7, 3 },
-                ThirdRow = new List<int> { 6, 9, 3, 2, 7, 5, 4, 1, 8 },
-                FourthRow = new List<int> { 5, 1, 4, 3, 8, 2, 7, 6, 9 },
-                FifthRow = new List<int> { 2, 6, 7, 9, 4, 1, 3, 8, 5 },
-                SixthRow = new List<int> { 8, 3, 9, 7, 5, 6, 1, 2, 4 },
-                SeventhRow = new List<int> { 4, 2, 1, 6, 3, 8, 9, 5, 7 },
-                EighthRow = new List<int> { 3, 5, 8, 1, 9, 7, 6, 4, 2 },
-                NinthRow = new List<int> { 9, 7, 6, 5, 2, 4, 8, 3, 1 }
+                FirstRow = [7, 8, 5, 4, 1, 3, 2, 9, 6, 0],
+                SecondRow = [1, 4, 2, 8, 6, 9, 5, 7, 3],
+                ThirdRow = [6, 9, 3, 2, 7, 5, 4, 1, 8],
+                FourthRow = [5, 1, 4, 3, 8, 2, 7, 6, 9],
+                FifthRow = [2, 6, 7, 9, 4, 1, 3, 8, 5],
+                SixthRow = [8, 3, 9, 7, 5, 6, 1, 2, 4],
+                SeventhRow = [4, 2, 1, 6, 3, 8, 9, 5, 7],
+                EighthRow = [3, 5, 8, 1, 9, 7, 6, 4, 2],
+                NinthRow = [9, 7, 6, 5, 2, 4, 8, 3, 1]
             };
 
-        public static List<List<int>> GetAnnonymousGame() => new()
-            {
+        public static List<List<int>> GetAnnonymousGame() =>
+            [
                 new List<int> { 7, 8, 5, 4, 1, 3, 2, 9, 6 },
                 new List<int> { 1, 4, 2, 8, 6, 9, 5, 7, 3 },
                 new List<int> { 6, 9, 3, 2, 7, 5, 4, 1, 8 },
@@ -83,34 +82,34 @@ namespace SudokuCollective.Test.TestData
                 new List<int> { 4, 2, 1, 6, 3, 8, 9, 5, 7 },
                 new List<int> { 3, 5, 8, 1, 9, 7, 6, 4, 2 },
                 new List<int> { 9, 7, 6, 5, 2, 4, 8, 3, 1 }
-            };
+            ];
 
         public static SolutionPayload GetValidSolutionPayload() =>
             new()
             {
-                FirstRow = new List<int> { 7, 8, 5, 4, 1, 3, 2, 9, 6 },
-                SecondRow = new List<int> { 1, 4, 2, 8, 6, 9, 5, 7, 3 },
-                ThirdRow = new List<int> { 6, 9, 3, 2, 7, 5, 4, 1, 8 },
-                FourthRow = new List<int> { 5, 1, 4, 3, 8, 2, 7, 6, 9 },
-                FifthRow = new List<int> { 2, 6, 7, 9, 4, 1, 3, 8, 5 },
-                SixthRow = new List<int> { 8, 3, 9, 7, 5, 6, 1, 2, 4 },
-                SeventhRow = new List<int> { 4, 2, 1, 6, 3, 8, 9, 5, 7 },
-                EighthRow = new List<int> { 3, 5, 8, 1, 9, 7, 6, 4, 2 },
-                NinthRow = new List<int> { 9, 7, 6, 5, 2, 4, 8, 3, 1 }
+                FirstRow = [7, 8, 5, 4, 1, 3, 2, 9, 6],
+                SecondRow = [1, 4, 2, 8, 6, 9, 5, 7, 3],
+                ThirdRow = [6, 9, 3, 2, 7, 5, 4, 1, 8],
+                FourthRow = [5, 1, 4, 3, 8, 2, 7, 6, 9],
+                FifthRow = [2, 6, 7, 9, 4, 1, 3, 8, 5],
+                SixthRow = [8, 3, 9, 7, 5, 6, 1, 2, 4],
+                SeventhRow = [4, 2, 1, 6, 3, 8, 9, 5, 7],
+                EighthRow = [3, 5, 8, 1, 9, 7, 6, 4, 2],
+                NinthRow = [9, 7, 6, 5, 2, 4, 8, 3, 1]
             };
 
         public static SolutionPayload GetInvalidSolutionPayload() =>
             new()
             {
-                FirstRow = new List<int> { 7, 8, 5, 4, 1, 3, 2, 9, 6, 0 },
-                SecondRow = new List<int> { 1, 4, 2, 8, 6, 9, 5, 7, 3 },
-                ThirdRow = new List<int> { 6, 9, 3, 2, 7, 5, 4, 1, 8 },
-                FourthRow = new List<int> { 5, 1, 4, 3, 8, 2, 7, 6, 9 },
-                FifthRow = new List<int> { 2, 6, 7, 9, 4, 1, 3, 8, 5 },
-                SixthRow = new List<int> { 8, 3, 9, 7, 5, 6, 1, 2, 4 },
-                SeventhRow = new List<int> { 4, 2, 1, 6, 3, 8, 9, 5, 7 },
-                EighthRow = new List<int> { 3, 5, 8, 1, 9, 7, 6, 4, 2 },
-                NinthRow = new List<int> { 9, 7, 6, 5, 2, 4, 8, 3, 1 }
+                FirstRow = [7, 8, 5, 4, 1, 3, 2, 9, 6, 0],
+                SecondRow = [1, 4, 2, 8, 6, 9, 5, 7, 3],
+                ThirdRow = [6, 9, 3, 2, 7, 5, 4, 1, 8],
+                FourthRow = [5, 1, 4, 3, 8, 2, 7, 6, 9],
+                FifthRow = [2, 6, 7, 9, 4, 1, 3, 8, 5],
+                SixthRow = [8, 3, 9, 7, 5, 6, 1, 2, 4],
+                SeventhRow = [4, 2, 1, 6, 3, 8, 9, 5, 7],
+                EighthRow = [3, 5, 8, 1, 9, 7, 6, 4, 2],
+                NinthRow = [9, 7, 6, 5, 2, 4, 8, 3, 1]
             };
 
         public static List<SudokuCell> GetUpdateSudokuCells(int updatedValue)
@@ -796,9 +795,9 @@ namespace SudokuCollective.Test.TestData
             
             return new Values
             {
-                Difficulties = context.Difficulties.ToList(),
-                ReleaseEnvironments = new List<EnumListItem>
-                    {
+                Difficulties = [.. context.Difficulties],
+                ReleaseEnvironments =
+                    [
                         new EnumListItem { 
                             Label = "Local", 
                             Value = (int)ReleaseEnvironment.LOCAL,
@@ -815,9 +814,9 @@ namespace SudokuCollective.Test.TestData
                             Label = "Production", 
                             Value = (int)ReleaseEnvironment.PROD,
                             AppliesTo = releaseEnvironment },
-                    },
-                SortValues = new List<EnumListItem>
-                    {
+                    ],
+                SortValues =
+                    [
                         new EnumListItem { 
                             Label = "Id", 
                             Value = (int)SortValue.ID,
@@ -874,9 +873,9 @@ namespace SudokuCollective.Test.TestData
                             Label = "Score", 
                             Value = (int)SortValue.SCORE,
                             AppliesTo = games }
-                    },
-                TimeFrames = new List<EnumListItem>
-                    {
+                    ],
+                TimeFrames =
+                    [
                         new EnumListItem { 
                             Label = "Seconds", 
                             Value = (int)TimeFrame.SECONDS,
@@ -901,7 +900,7 @@ namespace SudokuCollective.Test.TestData
                             Label = "Years",
                             Value = (int)TimeFrame.YEARS,
                             AppliesTo = authToken },
-                    }
+                    ]
             };
         }
 

@@ -1,5 +1,4 @@
-﻿using System;
-using SudokuCollective.Core.Enums;
+﻿using SudokuCollective.Core.Enums;
 
 namespace SudokuCollective.Core.Interfaces.Models.DomainObjects.Results
 {

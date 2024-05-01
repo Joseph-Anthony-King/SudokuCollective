@@ -163,7 +163,7 @@ namespace SudokuCollective.Core.Models
             DisplayedValue = displayedValue;
             Hidden = hidden;
             SudokuMatrixId = sudokuMatrixId;
-            AvailableValues = new List<AvailableValue>();
+            AvailableValues = [];
 
             var availability = true;
 

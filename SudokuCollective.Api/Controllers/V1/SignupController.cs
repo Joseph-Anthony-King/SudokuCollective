@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Threading.Tasks;
@@ -136,14 +135,14 @@ namespace SudokuCollective.Api.Controllers.V1
                     {
                         result.Message = ControllerMessages.StatusCode201(result.Message);
                             
-                        result.Payload = new List<object> {
+                        result.Payload = [
                             new UserCreatedResult
                             { 
                                 User = ((AuthenticationResult)authenticateResult.Payload[0]).User,
                                 Token = ((AuthenticationResult)authenticateResult.Payload[0]).Token,
                                 TokenExpirationDate = ((AuthenticationResult)authenticateResult.Payload[0]).TokenExpirationDate,
                                 EmailConfirmationSent = ((EmailConfirmationSentResult)result.Payload[0]).EmailConfirmationSent
-                            }};
+                            }];
 
                         return StatusCode((int)HttpStatusCode.Created, result);
                     }

@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -524,15 +523,15 @@ namespace SudokuCollective.Test.TestCases.Controllers
             var actionResult = sutSuccess.CheckAnnonymous(
                 new AnnonymousCheckRequest
                 {
-                    FirstRow = new List<int> { 2, 9, 8, 1, 3, 4, 6, 7, 5 },
-                    SecondRow = new List<int> { 3, 1, 6, 5, 8, 7, 2, 9, 4 },
-                    ThirdRow = new List<int> { 4, 5, 7, 6, 9, 2, 1, 8, 3  },
-                    FourthRow = new List<int> { 9, 7, 1, 2, 4, 3, 5, 6, 8 },
-                    FifthRow = new List<int> { 5, 8, 3, 7, 6, 1, 4, 2, 9 },
-                    SixthRow = new List<int> { 6, 2, 4, 9, 5, 8, 3, 1, 7 },
-                    SeventhRow = new List<int> { 7, 3, 5, 8, 2, 6, 9, 4, 1 },
-                    EighthRow = new List<int> { 8, 4, 2, 3, 1, 9, 7, 5, 6 },
-                    NinthRow = new List<int> { 1, 6, 9, 4, 7, 5, 8, 3, 2 }
+                    FirstRow = [2, 9, 8, 1, 3, 4, 6, 7, 5],
+                    SecondRow = [3, 1, 6, 5, 8, 7, 2, 9, 4],
+                    ThirdRow = [4, 5, 7, 6, 9, 2, 1, 8, 3],
+                    FourthRow = [9, 7, 1, 2, 4, 3, 5, 6, 8],
+                    FifthRow = [5, 8, 3, 7, 6, 1, 4, 2, 9],
+                    SixthRow = [6, 2, 4, 9, 5, 8, 3, 1, 7],
+                    SeventhRow = [7, 3, 5, 8, 2, 6, 9, 4, 1],
+                    EighthRow = [8, 4, 2, 3, 1, 9, 7, 5, 6],
+                    NinthRow = [1, 6, 9, 4, 7, 5, 8, 3, 2]
                 });
             var result = (Result)((ObjectResult)actionResult.Result).Value;
             var success = result.IsSuccess;
@@ -557,15 +556,15 @@ namespace SudokuCollective.Test.TestCases.Controllers
             var actionResult = sutFailure.CheckAnnonymous(
                 new AnnonymousCheckRequest
                 {
-                    FirstRow = new List<int> { 5, 9, 8, 1, 3, 4, 6, 7, 2 },
-                    SecondRow = new List<int> { 3, 1, 6, 5, 8, 7, 2, 9, 4 },
-                    ThirdRow = new List<int> { 4, 5, 7, 6, 9, 2, 1, 8, 3 },
-                    FourthRow = new List<int> { 9, 7, 1, 2, 4, 3, 5, 6, 8 },
-                    FifthRow = new List<int> { 5, 8, 3, 7, 6, 1, 4, 2, 9 },
-                    SixthRow = new List<int> { 6, 2, 4, 9, 5, 8, 3, 1, 7 },
-                    SeventhRow = new List<int> { 7, 3, 5, 8, 2, 6, 9, 4, 1 },
-                    EighthRow = new List<int> { 8, 4, 2, 3, 1, 9, 7, 5, 6 },
-                    NinthRow = new List<int> { 1, 6, 9, 4, 7, 5, 8, 3, 2 }
+                    FirstRow = [5, 9, 8, 1, 3, 4, 6, 7, 2],
+                    SecondRow = [3, 1, 6, 5, 8, 7, 2, 9, 4],
+                    ThirdRow = [4, 5, 7, 6, 9, 2, 1, 8, 3],
+                    FourthRow = [9, 7, 1, 2, 4, 3, 5, 6, 8],
+                    FifthRow = [5, 8, 3, 7, 6, 1, 4, 2, 9],
+                    SixthRow = [6, 2, 4, 9, 5, 8, 3, 1, 7],
+                    SeventhRow = [7, 3, 5, 8, 2, 6, 9, 4, 1],
+                    EighthRow = [8, 4, 2, 3, 1, 9, 7, 5, 6],
+                    NinthRow = [1, 6, 9, 4, 7, 5, 8, 3, 2]
                 });
             var result = (Result)((BadRequestObjectResult)actionResult.Result).Value;
             var success = result.IsSuccess;

@@ -145,8 +145,10 @@ namespace SudokuCollective.Api
 					Example = new OpenApiString("{}")
 				});
 
-				var swashbucklePayloadArray = new OpenApiArray();
-				swashbucklePayloadArray.Add(new OpenApiObject());
+				var swashbucklePayloadArray = new OpenApiArray
+                {
+                    new OpenApiObject()
+                };
 
 				swagger.MapType(typeof(List<object>), () => new OpenApiSchema
 				{

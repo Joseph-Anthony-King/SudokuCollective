@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -450,9 +449,9 @@ namespace SudokuCollective.Test.TestData
             if (!await databaseContext.SudokuSolutions.AnyAsync())
             {
                 databaseContext.SudokuSolutions.AddRange(
-                    new SudokuSolution(1, new List<int>(), dateCreated, DateTime.MinValue),
-                    new SudokuSolution(2, new List<int>(), dateCreated, DateTime.MinValue),
-                    new SudokuSolution(3, new List<int>() { 1, 2, 9, 5, 6, 7, 8, 3, 4, 8, 3, 4, 9, 2, 1, 7, 6, 5, 5, 7, 6, 8, 4, 3, 2, 9, 1, 4, 1, 8, 2, 5, 6, 3, 7, 9, 9, 6, 7, 3, 1, 4, 5, 8, 2, 3, 5, 2, 7, 8, 9, 1, 4, 6, 2, 9, 1, 4, 3, 8, 6, 5, 7, 6, 4, 3, 1, 7, 5, 9, 2, 8, 7, 8, 5, 6, 9, 2, 4, 1, 3 }, dateCreated, DateTime.MinValue)
+                    new SudokuSolution(1, [], dateCreated, DateTime.MinValue),
+                    new SudokuSolution(2, [], dateCreated, DateTime.MinValue),
+                    new SudokuSolution(3, [1, 2, 9, 5, 6, 7, 8, 3, 4, 8, 3, 4, 9, 2, 1, 7, 6, 5, 5, 7, 6, 8, 4, 3, 2, 9, 1, 4, 1, 8, 2, 5, 6, 3, 7, 9, 9, 6, 7, 3, 1, 4, 5, 8, 2, 3, 5, 2, 7, 8, 9, 1, 4, 6, 2, 9, 1, 4, 3, 8, 6, 5, 7, 6, 4, 3, 1, 7, 5, 9, 2, 8, 7, 8, 5, 6, 9, 2, 4, 1, 3], dateCreated, DateTime.MinValue)
                 );
 
                 await databaseContext.SaveChangesAsync();
