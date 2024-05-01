@@ -41,15 +41,15 @@ namespace SudokuCollective.Test.Services
                             .Result
                             .IsSuccess,
                         Message = SolutionsMessages.SolutionFoundMessage,
-                        Payload = new List<object>()
-                        {
+                        Payload =
+                        [
                             MockedSolutionsRepository
                                 .SuccessfulRequest
                                 .Object
                                 .GetAsync(It.IsAny<int>())
                                 .Result
                                 .Object
-                        }
+                        ]
                     } as IResult));
 
             SuccessfulRequest.Setup(service =>
@@ -78,15 +78,15 @@ namespace SudokuCollective.Test.Services
                     {
                         IsSuccess = true,
                         Message = SolutionsMessages.SudokuSolutionFoundMessage,
-                        Payload = new List<object>()
-                            {
+                        Payload =
+                            [
                                 MockedSolutionsRepository
                                     .SuccessfulRequest
                                     .Object
                                     .GetAsync(It.IsAny<int>())
                                     .Result
                                     .Object
-                            }
+                            ]
                     } as IResult));
 
             SuccessfulRequest.Setup(service =>
@@ -100,15 +100,15 @@ namespace SudokuCollective.Test.Services
                             .Result
                             .IsSuccess,
                         Message = SolutionsMessages.SolutionGeneratedMessage,
-                        Payload = new List<object>()
-                                {
+                        Payload =
+                                [
                                     MockedSolutionsRepository
                                         .SuccessfulRequest
                                         .Object
                                         .GetAsync(It.IsAny<int>())
                                         .Result
                                         .Object
-                                }
+                                ]
                 } as IResult));
 
             SuccessfulRequest.Setup(service =>

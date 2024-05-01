@@ -13,7 +13,7 @@ namespace SudokuCollective.Data.Models.Values
         {
             Label = string.Empty;
             Value = 0;
-            AppliesTo = new List<string>();
+            AppliesTo = [];
         }
     }
 }

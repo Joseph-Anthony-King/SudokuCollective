@@ -81,8 +81,8 @@ namespace SudokuCollective.Data.Jobs
 
             try
             {
-                List<List<int>> solutionsList = new();
-                List<SudokuSolution> newSolutions = new();
+                List<List<int>> solutionsList = [];
+                List<SudokuSolution> newSolutions = [];
 
                 for (var i = 0; i < limit; i++)
                 {

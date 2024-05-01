@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Moq;
 using SudokuCollective.Data.Models;
 using SudokuCollective.Core.Models;
@@ -37,15 +36,15 @@ namespace SudokuCollective.Test.Services
                             .Result
                             .IsSuccess,
                         Message = RolesMessages.RoleFoundMessage,
-                        Payload = new List<object>()
-                        {
+                        Payload =
+                        [
                             MockedRolesRepository
                                 .SuccessfulRequest
                                 .Object
                                 .GetAsync(It.IsAny<int>())
                                 .Result
                                 .Object
-                        }
+                        ]
                     } as IResult));
 
             SuccessfulRequest.Setup(rolesService =>
@@ -79,15 +78,15 @@ namespace SudokuCollective.Test.Services
                             .Result
                             .IsSuccess,
                         Message = RolesMessages.RoleCreatedMessage,
-                        Payload = new List<object>()
-                        {
+                        Payload =
+                        [
                             MockedRolesRepository
                                 .SuccessfulRequest
                                 .Object
                                 .GetAsync(It.IsAny<int>())
                                 .Result
                                 .Object
-                        }
+                        ]
                     } as IResult));
 
             SuccessfulRequest.Setup(rolesService =>

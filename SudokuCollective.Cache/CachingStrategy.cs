@@ -1,4 +1,3 @@
-using System;
 using SudokuCollective.Core.Interfaces.Cache;
 
 namespace SudokuCollective.Cache

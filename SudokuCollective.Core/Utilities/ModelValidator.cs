@@ -9,7 +9,7 @@ namespace SudokuCollective.Core.Utilities
     {
         internal static bool Validate<T>(T obj, out ICollection<ValidationResult> results)
         {
-            results = new List<ValidationResult>();
+            results = [];
 
             return Validator.TryValidateObject(obj, new ValidationContext(obj), results, true);
         }

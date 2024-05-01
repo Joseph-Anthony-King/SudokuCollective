@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 using System.Text.Json.Serialization;
 using SudokuCollective.Core.Interfaces.Models.DomainObjects.Requests;
 using SudokuCollective.Core.Messages;
@@ -12,15 +11,15 @@ namespace SudokuCollective.Data.Models.Requests
     public class AnnonymousCheckRequest : IAnnonymousCheckRequest
     {
         #region Fields
-        private List<int> _firstRow = new();
-        private List<int> _secondRow = new();
-        private List<int> _thirdRow = new();
-        private List<int> _fourthRow = new();
-        private List<int> _fifthRow = new();
-        private List<int> _sixthRow = new();
-        private List<int> _seventhRow = new();
-        private List<int> _eighthRow = new();
-        private List<int> _ninthRow = new();
+        private List<int> _firstRow = [];
+        private List<int> _secondRow = [];
+        private List<int> _thirdRow = [];
+        private List<int> _fourthRow = [];
+        private List<int> _fifthRow = [];
+        private List<int> _sixthRow = [];
+        private List<int> _seventhRow = [];
+        private List<int> _eighthRow = [];
+        private List<int> _ninthRow = [];
         private readonly RowValidatedAttribute _rowValidator = new();
         #endregion
 
@@ -211,15 +210,15 @@ namespace SudokuCollective.Data.Models.Requests
             int[] eighthRow, 
             int[] ninthRow)
         {
-            FirstRow = firstRow.ToList();
-            SecondRow = secondRow.ToList();
-            ThirdRow = thirdRow.ToList();
-            FourthRow = fourthRow.ToList();
-            FifthRow = fifthRow.ToList();
-            SixthRow = sixthRow.ToList();
-            SeventhRow = seventhRow.ToList();
-            EighthRow = eighthRow.ToList();
-            NinthRow = ninthRow.ToList();
+            FirstRow = [.. firstRow];
+            SecondRow = [.. secondRow];
+            ThirdRow = [.. thirdRow];
+            FourthRow = [.. fourthRow];
+            FifthRow = [.. fifthRow];
+            SixthRow = [.. sixthRow];
+            SeventhRow = [.. seventhRow];
+            EighthRow = [.. eighthRow];
+            NinthRow = [.. ninthRow];
         }
 
         public AnnonymousCheckRequest(

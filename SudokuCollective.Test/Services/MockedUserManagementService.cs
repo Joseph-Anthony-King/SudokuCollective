@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Moq;
 using SudokuCollective.Core.Enums;
 using SudokuCollective.Core.Interfaces.Models.DomainObjects.Params;
@@ -35,7 +34,7 @@ namespace SudokuCollective.Test.Services
                     {
                         IsSuccess = true,
                         Message = UsersMessages.UserNameConfirmedMessage,
-                        Payload = new List<object> { new AuthenticatedUserNameResult { UserName = "TestSuperUser" } }
+                        Payload = [new AuthenticatedUserNameResult { UserName = "TestSuperUser" }]
                     } as IResult));
             #endregion
 
