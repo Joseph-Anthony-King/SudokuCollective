@@ -311,7 +311,9 @@ namespace SudokuCollective.Test.TestCases.Models
         {
             // Arrange
             sut = new SudokuMatrix();
-            sut.SetDifficulty(new Difficulty() { DifficultyLevel = DifficultyLevel.EVIL });
+            sut.Difficulty = new Difficulty() { 
+                DifficultyLevel = DifficultyLevel.EVIL 
+            };
 
             // Act
             await sut.GenerateSolutionAsync();
