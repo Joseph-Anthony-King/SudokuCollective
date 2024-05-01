@@ -115,9 +115,9 @@ namespace SudokuCollective.Core.Models
         #region Constructors
         public User()
         {
-            Games = new List<Game>();
-            Roles = new List<UserRole>();
-            Apps = new List<UserApp>();
+            Games = [];
+            Roles = [];
+            Apps = [];
 
             Id = 0;
             FirstName = string.Empty;
@@ -180,7 +180,7 @@ namespace SudokuCollective.Core.Models
             }
             else
             {
-                Games = new List<Game>();
+                Games = [];
             }
 
             if (roles != null)
@@ -189,7 +189,7 @@ namespace SudokuCollective.Core.Models
             }
             else
             {
-                Roles = new List<UserRole>();
+                Roles = [];
             }
 
             if (apps != null)
@@ -198,7 +198,7 @@ namespace SudokuCollective.Core.Models
             }
             else
             {
-                Apps = new List<UserApp>();
+                Apps = [];
             }
         }
         #endregion

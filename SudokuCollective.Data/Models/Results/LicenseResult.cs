@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using System.Text.Json.Serialization;
 using SudokuCollective.Core.Interfaces.Models.DomainObjects.Params;
 
@@ -24,7 +23,7 @@ namespace SudokuCollective.Data.Models.Results
             IsFromCache = false;
             Message = string.Empty;
             License = string.Empty;
-            Payload = new List<object>();
+            Payload = [];
         }
 
         public LicenseResult(
@@ -38,7 +37,7 @@ namespace SudokuCollective.Data.Models.Results
             IsFromCache = isFromCache;
             Message = message;
             License = license;
-            Payload = dataPacket.ToList();
+            Payload = [.. dataPacket];
         }
 
         public LicenseResult(

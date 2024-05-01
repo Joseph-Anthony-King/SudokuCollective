@@ -830,7 +830,7 @@ namespace SudokuCollective.Data.Utilities
             catch
             {
                 galleryNested = true;
-                gallery = new List<GalleryApp>();
+                gallery = [];
             }
 
             if (galleryNested)
@@ -847,11 +847,11 @@ namespace SudokuCollective.Data.Utilities
 
             if (gallery.Count > 0)
             {
-                gallery = gallery.OrderBy(a => ((IGalleryApp)a).Id).ToList();
+                gallery = [.. gallery.OrderBy(a => ((IGalleryApp)a).Id)];
                 
                 if (paginator.SortBy == SortValue.NULL)
                 {
-                    gallery = gallery.OrderBy(a => ((IGalleryApp)a).Id).ToList();
+                    gallery = [.. gallery.OrderBy(a => ((IGalleryApp)a).Id)];
                 }
                 else if (paginator.SortBy == SortValue.ID)
                 {

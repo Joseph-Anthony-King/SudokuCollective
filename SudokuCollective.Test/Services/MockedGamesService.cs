@@ -39,15 +39,15 @@ namespace SudokuCollective.Test.Services
                             .Result
                             .IsSuccess,
                         Message = GamesMessages.GameCreatedMessage,
-                        Payload = new List<object>()
-                        {
+                        Payload =
+                        [
                             MockedGamesRepository
                                 .SuccessfulRequest
                                 .Object
                                 .AddAsync(It.IsAny<Game>())
                                 .Result
                                 .Object
-                        }
+                        ]
                     } as IResult));
 
             SuccessfulRequest.Setup(Service =>
@@ -61,15 +61,15 @@ namespace SudokuCollective.Test.Services
                             .Result
                             .IsSuccess,
                         Message = GamesMessages.GameUpdatedMessage,
-                        Payload = new List<object>()
-                            {
+                        Payload =
+                            [
                                 MockedGamesRepository
                                     .SuccessfulRequest
                                     .Object
                                     .AddAsync(It.IsAny<Game>())
                                     .Result
                                     .Object
-                            }
+                            ]
                     } as IResult));
 
             SuccessfulRequest.Setup(Service =>
@@ -96,15 +96,15 @@ namespace SudokuCollective.Test.Services
                             .Result
                             .IsSuccess,
                         Message = GamesMessages.GameFoundMessage,
-                        Payload = new List<object>()
-                            {
+                        Payload =
+                            [
                                 MockedGamesRepository
                                     .SuccessfulRequest
                                     .Object
                                     .AddAsync(It.IsAny<Game>())
                                     .Result
                                     .Object
-                            }
+                            ]
                     } as IResult));
 
             SuccessfulRequest.Setup(Service =>
@@ -138,15 +138,15 @@ namespace SudokuCollective.Test.Services
                             .Result
                             .IsSuccess,
                         Message = GamesMessages.GameFoundMessage,
-                        Payload = new List<object>()
-                            {
+                        Payload =
+                            [
                                 MockedGamesRepository
                                     .SuccessfulRequest
                                     .Object
                                     .AddAsync(It.IsAny<Game>())
                                     .Result
                                     .Object
-                            }
+                            ]
                     } as IResult));
 
             SuccessfulRequest.Setup(Service =>
@@ -180,15 +180,15 @@ namespace SudokuCollective.Test.Services
                             .Result
                             .IsSuccess,
                         Message = GamesMessages.GameUpdatedMessage,
-                        Payload = new List<object>()
-                            {
+                        Payload =
+                            [
                                 MockedGamesRepository
                                     .SuccessfulRequest
                                     .Object
                                     .AddAsync(It.IsAny<Game>())
                                     .Result
                                     .Object
-                            }
+                            ]
                     } as IResult));
 
             SuccessfulRequest.Setup(Service =>
@@ -215,15 +215,15 @@ namespace SudokuCollective.Test.Services
                             .Result
                             .IsSuccess,
                         Message = GamesMessages.GameSolvedMessage,
-                        Payload = new List<object>()
-                            {
+                        Payload =
+                            [
                                 MockedGamesRepository
                                     .SuccessfulRequest
                                     .Object
                                     .AddAsync(It.IsAny<Game>())
                                     .Result
                                     .Object
-                            }
+                            ]
                     } as IResult));
 
             SuccessfulRequest.Setup(Service =>
@@ -232,7 +232,7 @@ namespace SudokuCollective.Test.Services
                     {
                         IsSuccess = true,
                         Message = GamesMessages.GameCreatedMessage,
-                        Payload = new List<object>() { TestObjects.GetAnnonymousGame() }
+                        Payload = [TestObjects.GetAnnonymousGame()]
                     } as IResult));
 
             SuccessfulRequest.Setup(Service =>

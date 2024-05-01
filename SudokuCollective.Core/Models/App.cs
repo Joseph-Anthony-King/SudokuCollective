@@ -189,8 +189,8 @@ namespace SudokuCollective.Core.Models
             {
                 App = this
             };
-            UserApps = new List<UserApp>();
-            Users = new List<UserDTO>();
+            UserApps = [];
+            Users = [];
             TimeFrame = TimeFrame.DAYS;
             AccessDuration = 1;
             DisplayInGallery = false;

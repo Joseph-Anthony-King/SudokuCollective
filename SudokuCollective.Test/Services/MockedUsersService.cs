@@ -47,13 +47,13 @@ namespace SudokuCollective.Test.Services
                             .Result
                             .IsSuccess,
                         Message = UsersMessages.UserCreatedMessage,
-                        Payload = new List<object>()
-                            {
+                        Payload =
+                            [
                                 new EmailConfirmationSentResult 
                                 { 
                                     EmailConfirmationSent = true 
                                 }
-                            }
+                            ]
                     } as IResult));
 
             SuccessfulRequest.Setup(service =>
@@ -70,15 +70,15 @@ namespace SudokuCollective.Test.Services
                             .Result
                             .IsSuccess,
                         Message = UsersMessages.UserFoundMessage,
-                        Payload = new List<object>()
-                            {
+                        Payload =
+                            [
                                 MockedUsersRepository
                                 .SuccessfulRequest
                                 .Object
                                 .AddAsync(It.IsAny<User>())
                                 .Result
                                 .Object
-                            }
+                            ]
                 } as IResult));
 
             SuccessfulRequest.Setup(service =>
@@ -119,15 +119,15 @@ namespace SudokuCollective.Test.Services
                             .Result
                             .IsSuccess,
                         Message = UsersMessages.UserUpdatedMessage,
-                        Payload = new List<object>()
-                            {
+                        Payload =
+                            [
                                 MockedUsersRepository
                                 .SuccessfulRequest
                                 .Object
                                 .AddAsync(It.IsAny<User>())
                                 .Result
                                 .Object
-                            }
+                            ]
                     } as IResult));
 
             SuccessfulRequest.Setup(service =>
@@ -159,15 +159,15 @@ namespace SudokuCollective.Test.Services
                     {
                         IsSuccess = true,
                         Message = UsersMessages.UserFoundMessage,
-                        Payload = new List<object>()
-                            {
+                        Payload =
+                            [
                                 MockedUsersRepository
                                 .SuccessfulRequest
                                 .Object
                                 .AddAsync(It.IsAny<User>())
                                 .Result
                                 .Object
-                            }
+                            ]
                     } as IResult));
 
             SuccessfulRequest.Setup(service =>
@@ -276,10 +276,10 @@ namespace SudokuCollective.Test.Services
                         .Result
                         .IsSuccess,
                     Message = UsersMessages.EmailConfirmedMessage,
-                    Payload = new List<object>()
-                    {
+                    Payload =
+                    [
                         TestObjects.GetConfirmEmailResult()
-                    }
+                    ]
                 } as IResult));
 
             SuccessfulRequest.Setup(service =>
@@ -293,10 +293,10 @@ namespace SudokuCollective.Test.Services
                             .Result
                             .IsSuccess,
                         Message = UsersMessages.UserFoundMessage,
-                        Payload = new List<object>()
-                        {
+                        Payload =
+                        [
                             TestObjects.GetInitiatePasswordResetResult()
-                        }
+                        ]
                     } as IResult));
 
             SuccessfulRequest.Setup(service =>
@@ -314,10 +314,10 @@ namespace SudokuCollective.Test.Services
                             .HasOutstandingEmailConfirmationAsync(It.IsAny<int>(), It.IsAny<int>())
                             .Result,
                         Message = UsersMessages.EmailConfirmationEmailResentMessage,
-                        Payload = new List<object>()
-                        {
+                        Payload =
+                        [
                             TestObjects.GetUserResult()
-                        }
+                        ]
                     } as IResult));
 
             SuccessfulRequest.Setup(service =>
@@ -333,10 +333,10 @@ namespace SudokuCollective.Test.Services
                             .Result
                             .IsSuccess,
                         Message = UsersMessages.EmailConfirmationRequestCancelledMessage,
-                        Payload = new List<object>()
-                            {
+                        Payload =
+                            [
                                 TestObjects.GetUserResult()
-                            }
+                            ]
                     } as IResult));
 
             SuccessfulRequest.Setup(service =>
@@ -352,10 +352,10 @@ namespace SudokuCollective.Test.Services
                             .Result
                             .IsSuccess,
                         Message = UsersMessages.PasswordResetRequestCancelledMessage,
-                        Payload = new List<object>()
-                            {
+                        Payload =
+                            [
                                 TestObjects.GetUserResult()
-                            }
+                            ]
                     } as IResult));
 
             SuccessfulRequest.Setup(service =>
@@ -368,10 +368,10 @@ namespace SudokuCollective.Test.Services
                         Message = string.Format("{0} and {1}",
                             UsersMessages.EmailConfirmationRequestCancelledMessage,
                             UsersMessages.PasswordResetRequestCancelledMessage),
-                        Payload = new List<object>()
-                            {
+                        Payload =
+                            [
                                 TestObjects.GetUserResult()
-                            }
+                            ]
                 } as IResult));
             #endregion
 
@@ -660,13 +660,13 @@ namespace SudokuCollective.Test.Services
                             .Result
                             .IsSuccess,
                         Message = UsersMessages.UserCreatedMessage,
-                        Payload = new List<object>()
-                            {
+                        Payload =
+                            [
                                 new EmailConfirmationSentResult 
                                 { 
                                     EmailConfirmationSent = true 
                                 }
-                            }
+                            ]
                     } as IResult));
 
             FailedResetPasswordRequest.Setup(service =>
@@ -683,15 +683,15 @@ namespace SudokuCollective.Test.Services
                             .Result
                             .IsSuccess,
                         Message = UsersMessages.UserFoundMessage,
-                        Payload = new List<object>()
-                            {
+                        Payload =
+                            [
                                 MockedUsersRepository
                                 .SuccessfulRequest
                                 .Object
                                 .AddAsync(It.IsAny<User>())
                                 .Result
                                 .Object
-                            }
+                            ]
                 } as IResult));
 
             FailedResetPasswordRequest.Setup(service =>
@@ -732,15 +732,15 @@ namespace SudokuCollective.Test.Services
                             .Result
                             .IsSuccess,
                         Message = UsersMessages.UserUpdatedMessage,
-                        Payload = new List<object>()
-                            {
+                        Payload =
+                            [
                                 MockedUsersRepository
                                 .SuccessfulRequest
                                 .Object
                                 .AddAsync(It.IsAny<User>())
                                 .Result
                                 .Object
-                            }
+                            ]
                     } as IResult));
 
             FailedResetPasswordRequest.Setup(service =>
@@ -772,15 +772,15 @@ namespace SudokuCollective.Test.Services
                     {
                         IsSuccess = true,
                         Message = UsersMessages.UserFoundMessage,
-                        Payload = new List<object>()
-                            {
+                        Payload =
+                            [
                                 MockedUsersRepository
                                 .SuccessfulRequest
                                 .Object
                                 .AddAsync(It.IsAny<User>())
                                 .Result
                                 .Object
-                            }
+                            ]
                     } as IResult));
 
             FailedResetPasswordRequest.Setup(service =>
@@ -889,10 +889,10 @@ namespace SudokuCollective.Test.Services
                         .Result
                         .IsSuccess,
                     Message = UsersMessages.EmailConfirmedMessage,
-                    Payload = new List<object>()
-                    {
+                    Payload =
+                    [
                         TestObjects.GetConfirmEmailResult()
-                    }
+                    ]
                 } as IResult));
 
             FailedResetPasswordRequest.Setup(service =>
@@ -906,10 +906,10 @@ namespace SudokuCollective.Test.Services
                             .Result
                             .IsSuccess,
                         Message = UsersMessages.UserFoundMessage,
-                        Payload = new List<object>()
-                        {
+                        Payload =
+                        [
                             TestObjects.GetInitiatePasswordResetResult()
-                        }
+                        ]
                     } as IResult));
 
             FailedResetPasswordRequest.Setup(service =>
@@ -927,10 +927,10 @@ namespace SudokuCollective.Test.Services
                             .HasOutstandingEmailConfirmationAsync(It.IsAny<int>(), It.IsAny<int>())
                             .Result,
                         Message = UsersMessages.EmailConfirmationEmailResentMessage,
-                        Payload = new List<object>()
-                        {
+                        Payload =
+                        [
                             TestObjects.GetUserResult()
-                        }
+                        ]
                     } as IResult));
 
             FailedResetPasswordRequest.Setup(service =>
@@ -946,10 +946,10 @@ namespace SudokuCollective.Test.Services
                             .Result
                             .IsSuccess,
                         Message = UsersMessages.EmailConfirmationRequestCancelledMessage,
-                        Payload = new List<object>()
-                            {
+                        Payload =
+                            [
                                 TestObjects.GetUserResult()
-                            }
+                            ]
                     } as IResult));
 
             FailedResetPasswordRequest.Setup(service =>
@@ -965,10 +965,10 @@ namespace SudokuCollective.Test.Services
                             .Result
                             .IsSuccess,
                         Message = UsersMessages.PasswordResetRequestCancelledMessage,
-                        Payload = new List<object>()
-                            {
+                        Payload =
+                            [
                                 TestObjects.GetUserResult()
-                            }
+                            ]
                     } as IResult));
 
             FailedResetPasswordRequest.Setup(service =>
@@ -981,10 +981,10 @@ namespace SudokuCollective.Test.Services
                         Message = string.Format("{0} and {1}",
                             UsersMessages.EmailConfirmationRequestCancelledMessage,
                             UsersMessages.PasswordResetRequestCancelledMessage),
-                        Payload = new List<object>()
-                            {
+                        Payload =
+                            [
                                 TestObjects.GetUserResult()
-                            }
+                            ]
                 } as IResult));
             #endregion
         }

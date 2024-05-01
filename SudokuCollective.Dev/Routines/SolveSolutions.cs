@@ -10,8 +10,8 @@ namespace SudokuCollective.Dev.Routines
 {
     internal static class SolveSolutions
     {
-        private static readonly List<string> _order = new()
-        { 
+        private static readonly List<string> _order =
+        [
             "first", 
             "second", 
             "third", 
@@ -21,7 +21,7 @@ namespace SudokuCollective.Dev.Routines
             "seventh", 
             "eighth", 
             "ninth"
-        };
+        ];
         private static readonly RowValidatedAttribute _rowValidatedAttribute = new();
 
         internal static void Run()

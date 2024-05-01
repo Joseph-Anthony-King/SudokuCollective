@@ -54,11 +54,11 @@ namespace SudokuCollective.Data.Models.Values
 
         public Values()
         {
-            Difficulties = new List<Difficulty>();
-            ReleaseEnvironments = new List<EnumListItem>();
-            SortValues = new List<EnumListItem>();
-            TimeFrames = new List<EnumListItem>();
-            Gallery = new List<GalleryApp>();
+            Difficulties = [];
+            ReleaseEnvironments = [];
+            SortValues = [];
+            TimeFrames = [];
+            Gallery = [];
         }
     }
 }

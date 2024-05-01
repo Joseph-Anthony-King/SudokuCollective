@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using System.Text.Json.Serialization;
 using SudokuCollective.Core.Interfaces.Models.DomainObjects.Results;
 
@@ -12,7 +11,7 @@ namespace SudokuCollective.Data.Models.Results
 
         public AnnonymousGameResult()
         {
-            SudokuMatrix = new List<List<int>>();
+            SudokuMatrix = [];
         }
 
         public AnnonymousGameResult(int[][] sudokuMatrix)
@@ -21,7 +20,7 @@ namespace SudokuCollective.Data.Models.Results
 
             foreach (var array in sudokuMatrix) {
                 
-                result.Add(array.ToList());
+                result.Add([.. array]);
             }
             
             SudokuMatrix = result;

@@ -146,15 +146,15 @@ namespace SudokuCollective.Test.TestCases.Services
             // Arrange
             var solveRequest = new AnnonymousCheckRequest()
             {
-                FirstRow = new List<int> { 0, 2, 0, 5, 0, 0, 8, 7, 6 },
-                SecondRow = new List<int> { 7, 0, 0, 1, 8, 0, 0, 5, 0 },
-                ThirdRow = new List<int> { 8, 5, 9, 7, 0, 0, 0, 4, 0 },
-                FourthRow = new List<int> { 5, 9, 0, 0, 0, 4, 6, 8, 1 },
-                FifthRow = new List<int> { 0, 1, 0, 0, 3, 0, 0, 0, 0 },
-                SixthRow = new List<int> { 0, 0, 0, 8, 6, 0, 0, 9, 5 },
-                SeventhRow = new List<int> { 2, 0, 7, 0, 0, 8, 0, 0, 9 },
-                EighthRow = new List<int> { 9, 0, 4, 0, 0, 7, 2, 0, 8 },
-                NinthRow = new List<int> { 0, 0, 0, 0, 0, 2, 4, 6, 0 }
+                FirstRow = [0, 2, 0, 5, 0, 0, 8, 7, 6],
+                SecondRow = [7, 0, 0, 1, 8, 0, 0, 5, 0],
+                ThirdRow = [8, 5, 9, 7, 0, 0, 0, 4, 0],
+                FourthRow = [5, 9, 0, 0, 0, 4, 6, 8, 1],
+                FifthRow = [0, 1, 0, 0, 3, 0, 0, 0, 0],
+                SixthRow = [0, 0, 0, 8, 6, 0, 0, 9, 5],
+                SeventhRow = [2, 0, 7, 0, 0, 8, 0, 0, 9],
+                EighthRow = [9, 0, 4, 0, 0, 7, 2, 0, 8],
+                NinthRow = [0, 0, 0, 0, 0, 2, 4, 6, 0]
             };
 
             // Act

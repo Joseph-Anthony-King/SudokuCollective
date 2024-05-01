@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
@@ -46,15 +45,15 @@ namespace SudokuCollective.Test.TestCases.Controllers
 
             annonymousCheckRequest = new AnnonymousCheckRequest()
             {
-                FirstRow = new List<int> { 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-                SecondRow = new List<int> { 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-                ThirdRow = new List<int> { 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-                FourthRow = new List<int> { 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-                FifthRow = new List<int> { 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-                SixthRow = new List<int> { 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-                SeventhRow = new List<int> { 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-                EighthRow = new List<int> { 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-                NinthRow = new List<int> { 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+                FirstRow = [0, 0, 0, 0, 0, 0, 0, 0, 0],
+                SecondRow = [0, 0, 0, 0, 0, 0, 0, 0, 0],
+                ThirdRow = [0, 0, 0, 0, 0, 0, 0, 0, 0],
+                FourthRow = [0, 0, 0, 0, 0, 0, 0, 0, 0],
+                FifthRow = [0, 0, 0, 0, 0, 0, 0, 0, 0],
+                SixthRow = [0, 0, 0, 0, 0, 0, 0, 0, 0],
+                SeventhRow = [0, 0, 0, 0, 0, 0, 0, 0, 0],
+                EighthRow = [0, 0, 0, 0, 0, 0, 0, 0, 0],
+                NinthRow = [0, 0, 0, 0, 0, 0, 0, 0, 0]
             };
 
             addSolutionPayload = new AddSolutionsPayload()

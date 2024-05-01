@@ -436,15 +436,15 @@ namespace SudokuCollective.Test.TestCases.Extensions
             // Arrange
             JsonElement json = new SolutionPayload()
             {
-                FirstRow = new List<int> { 1, 2, 3, 4, 5, 6, 7, 8, 9 },
-                SecondRow = new List<int> { 1, 2, 3, 4, 5, 6, 7, 8, 9 },
-                ThirdRow = new List<int> { 1, 2, 3, 4, 5, 6, 7, 8, 9 },
-                FourthRow = new List<int> { 1, 2, 3, 4, 5, 6, 7, 8, 9 },
-                FifthRow = new List<int> { 1, 2, 3, 4, 5, 6, 7, 8, 9 },
-                SixthRow = new List<int> { 1, 2, 3, 4, 5, 6, 7, 8, 9 },
-                SeventhRow = new List<int> { 1, 2, 3, 4, 5, 6, 7, 8, 9 },
-                EighthRow = new List<int> { 1, 2, 3, 4, 5, 6, 7, 8, 9 },
-                NinthRow = new List<int> { 1, 2, 3, 4, 5, 6, 7, 8, 9 }
+                FirstRow = [1, 2, 3, 4, 5, 6, 7, 8, 9],
+                SecondRow = [1, 2, 3, 4, 5, 6, 7, 8, 9],
+                ThirdRow = [1, 2, 3, 4, 5, 6, 7, 8, 9],
+                FourthRow = [1, 2, 3, 4, 5, 6, 7, 8, 9],
+                FifthRow = [1, 2, 3, 4, 5, 6, 7, 8, 9],
+                SixthRow = [1, 2, 3, 4, 5, 6, 7, 8, 9],
+                SeventhRow = [1, 2, 3, 4, 5, 6, 7, 8, 9],
+                EighthRow = [1, 2, 3, 4, 5, 6, 7, 8, 9],
+                NinthRow = [1, 2, 3, 4, 5, 6, 7, 8, 9]
             };
 
             // Act
