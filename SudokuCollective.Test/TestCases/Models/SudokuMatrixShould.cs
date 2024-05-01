@@ -186,11 +186,11 @@ namespace SudokuCollective.Test.TestCases.Models
         public void HaveNoObscuredCellsOnTestDifficulty()
         {
             // Arrange
-            populatedTestMatrix.SetDifficulty(new Difficulty()
+            populatedTestMatrix.Difficulty = new Difficulty()
             {
                 Name = "Test",
                 DifficultyLevel = DifficultyLevel.TEST
-            });
+            };
 
             // Act
             sut = populatedTestMatrix;
@@ -213,11 +213,11 @@ namespace SudokuCollective.Test.TestCases.Models
         public void HaveHiddenCellsIfDifficultyIsNotTest()
         {
             // Arrange
-            populatedTestMatrix.SetDifficulty(new Difficulty()
+            populatedTestMatrix.Difficulty = new Difficulty()
             {
                 Name = "Easy",
                 DifficultyLevel = DifficultyLevel.EASY
-            });
+            };
 
             // Act
             sut = populatedTestMatrix;
@@ -240,11 +240,11 @@ namespace SudokuCollective.Test.TestCases.Models
         public void HaveNoHiddenCellsIfDifficultyIsTest()
         {
             // Arrange
-            populatedTestMatrix.SetDifficulty(new Difficulty()
+            populatedTestMatrix.Difficulty = new Difficulty()
             {
                 Name = "Test",
                 DifficultyLevel = DifficultyLevel.TEST
-            });
+            };
 
             // Act
             sut = populatedTestMatrix;
@@ -295,12 +295,10 @@ namespace SudokuCollective.Test.TestCases.Models
 
             // Act
             sut = new SudokuMatrix(intList);
-
-            sut.SetDifficulty(new Difficulty()
+            foreach(var cell in sut.SudokuCells)
             {
-                Name = "Test",
-                DifficultyLevel = DifficultyLevel.TEST
-            });
+                cell.Hidden = false;
+            }
 
             // Assert
             Assert.That(sut.IsSolved(), Is.True);
@@ -340,12 +338,11 @@ namespace SudokuCollective.Test.TestCases.Models
 
             sut = new SudokuMatrix(intList);
 
-            sut.SetDifficulty(new Difficulty()
+            sut.Difficulty = new Difficulty()
             {
                 Name = "Easy",
                 DifficultyLevel = DifficultyLevel.EASY
-            }
-            );
+            };
 
             // Act
             await sut.SolveAsync();

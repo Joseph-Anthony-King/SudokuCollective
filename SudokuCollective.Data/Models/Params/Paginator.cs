@@ -72,13 +72,14 @@ namespace SudokuCollective.Data.Models.Params
 
         public static explicit operator SudokuCollective.Logs.Models.Paginator(Paginator paginator)
         {
-            var result = new SudokuCollective.Logs.Models.Paginator();
-
-            result.Page = paginator.Page;
-            result.ItemsPerPage = paginator.ItemsPerPage;
-            result.SortBy = paginator.SortBy;
-            result.OrderByDescending = paginator.OrderByDescending;
-            result.IncludeCompletedGames = paginator.IncludeCompletedGames;
+            var result = new SudokuCollective.Logs.Models.Paginator
+            {
+                Page = paginator.Page,
+                ItemsPerPage = paginator.ItemsPerPage,
+                SortBy = paginator.SortBy,
+                OrderByDescending = paginator.OrderByDescending,
+                IncludeCompletedGames = paginator.IncludeCompletedGames
+            };
 
             return result;
         }
