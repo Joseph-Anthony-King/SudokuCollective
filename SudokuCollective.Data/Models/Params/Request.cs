@@ -45,11 +45,12 @@ namespace SudokuCollective.Data.Models.Params
 
         public static explicit operator SudokuCollective.Logs.Models.Request(Request request)
         {
-            var result = new SudokuCollective.Logs.Models.Request();
-
-            result.License = request.License;
-            result.RequestorId = request.RequestorId;
-            result.AppId = request.AppId;
+            var result = new SudokuCollective.Logs.Models.Request
+            {
+                License = request.License,
+                RequestorId = request.RequestorId,
+                AppId = request.AppId
+            };
 
             return result;
         }

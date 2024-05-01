@@ -980,6 +980,8 @@ namespace SudokuCollective.Data.Services
                     },
                     intList);
 
+                game.SudokuMatrix.SetPattern();
+
                 result.IsSuccess = game.IsSolved();
 
                 if (result.IsSuccess)
