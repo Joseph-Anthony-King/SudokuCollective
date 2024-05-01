@@ -95,7 +95,6 @@ namespace SudokuCollective.Core.Models
             User = user;
             SudokuMatrix = matrix;
             SudokuMatrix.Difficulty = (Difficulty)difficulty;
-            SudokuMatrix.SetDifficulty(SudokuMatrix.Difficulty);
             AppId = appId;
 
             User.Games.Add(this);
@@ -111,8 +110,6 @@ namespace SudokuCollective.Core.Models
             {
                 SudokuMatrix.Difficulty = (Difficulty)difficulty;
             }
-
-            SudokuMatrix.SetDifficulty(SudokuMatrix.Difficulty);
         }
 
         [JsonConstructor]
