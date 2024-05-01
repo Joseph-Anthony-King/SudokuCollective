@@ -71,7 +71,7 @@ namespace SudokuCollective.Core.Interfaces.Models.DomainEntities
         List<int> NinthRowValues { get; }
         bool IsValid();
         bool IsSolved();
-        void SetDifficulty(IDifficulty difficulty = null);
+        void SetPattern();
         Task GenerateSolutionAsync();
         Task SolveAsync();
         List<int> ToIntList();

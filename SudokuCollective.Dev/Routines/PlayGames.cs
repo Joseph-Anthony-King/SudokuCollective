@@ -81,9 +81,8 @@ namespace SudokuCollective.Dev.Routines
                 }
             }
 
-            SudokuMatrix matrix = new()
-            {
-                Difficulty = (Difficulty)difficulty
+            SudokuMatrix matrix = new() { 
+                Difficulty = (Difficulty)difficulty 
             };
 
             await matrix.GenerateSolutionAsync();
