@@ -111,7 +111,7 @@ namespace SudokuCollective.Dev.Routines
 
                 Task solver = matrix.SolveAsync();
 
-                ConsoleSpiner spin = new ConsoleSpiner();
+                ConsoleSpiner spin = new();
 
                 while (!solver.IsCompleted)
                 {
@@ -124,14 +124,16 @@ namespace SudokuCollective.Dev.Routines
 
                 if (matrix.IsValid())
                 {
-                    var displayMatrix = new SudokuMatrix(matrix.ToIntList());
-
-                    displayMatrix.SetDifficulty(
-                        new Difficulty
+                    var displayMatrix = new SudokuMatrix(matrix.ToIntList())
+                    {
+                        Difficulty = new Difficulty
                         {
                             Name = "Test",
                             DifficultyLevel = DifficultyLevel.TEST
-                        });
+                        }
+                    };
+
+                    displayMatrix.SetPattern();
 
                     DisplayScreens.DisplayMatix(displayMatrix);
 

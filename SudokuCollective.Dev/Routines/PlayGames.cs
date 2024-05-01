@@ -81,11 +81,11 @@ namespace SudokuCollective.Dev.Routines
                 }
             }
 
-            SudokuMatrix matrix = new();
+            SudokuMatrix matrix = new() { 
+                Difficulty = (Difficulty)difficulty 
+            };
 
             await matrix.GenerateSolutionAsync();
-
-            matrix.SetDifficulty(difficulty);
 
             Game game = new(
                 user,
