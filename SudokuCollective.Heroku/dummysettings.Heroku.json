@@ -1,3 +1,5 @@
 {
-
+  "HerokuSettings": {
+    "AccessToken": "[Your value here]"
+  }
 }
