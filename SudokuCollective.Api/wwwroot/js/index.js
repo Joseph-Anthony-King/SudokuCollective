@@ -49,7 +49,7 @@ window.addEventListener('load', async () => {
 
     const htmlElement = document.getElementById('apiMessage');
 
-    await checkAPI(htmlElement);
+    await checkAPIAsync(htmlElement);
 
     document.getElementById('spinner').classList.add('hide');
 
@@ -59,13 +59,13 @@ window.addEventListener('load', async () => {
 
     setInterval(async () => {
 
-        await checkAPI(htmlElement);
+        await checkAPIAsync(htmlElement);
 
     }, 10000, htmlElement);
 
 }, false);
 
-async function checkAPI(htmlElement) {
+async function checkAPIAsync(htmlElement) {
 
     try {
         
