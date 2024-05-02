@@ -40,6 +40,7 @@ using SudokuCollective.Data.Jobs;
 using SudokuCollective.Data.Models.Payloads;
 using SudokuCollective.Data.Models.Requests;
 using SudokuCollective.Data.Models.Results;
+using SudokuCollective.Heroku;
 using Role = SudokuCollective.Core.Models.Role;
 
 namespace SudokuCollective.Api
@@ -91,7 +92,7 @@ namespace SudokuCollective.Api
 				options.UseNpgsql(
 					_environment.IsDevelopment() ?
 						Configuration.GetConnectionString("DatabaseConnection") :
-						GetHerokuPostgresConnectionString(),
+						HerokuIntegration.GetHerokuPostgresConnectionString(),
 					b => b.MigrationsAssembly("SudokuCollective.Api"));
 				options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
 			});
@@ -206,8 +207,8 @@ namespace SudokuCollective.Api
 				cacheConnectionString = Configuration.GetConnectionString("CacheConnection");
 			}
 			else
-			{
-				options = GetHerokuRedisConfigurationOptions(_environment, Configuration);
+            {
+				options = HerokuIntegration.GetHerokuRedisConfigurationOptions();
 
 				cacheConnectionString = options.ToString();
 			}
@@ -409,59 +410,6 @@ namespace SudokuCollective.Api
 					app,
 					Configuration,
 					env);
-		}
-
-		private static string GetHerokuPostgresConnectionString()
-		{
-			// get the connection string from the ENV variables
-			var connectionUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
-
-			// parse the connection string
-			var databaseUri = new Uri(connectionUrl);
-
-			var db = databaseUri.LocalPath.TrimStart('/');
-			string[] userInfo = databaseUri.UserInfo.Split(':', StringSplitOptions.RemoveEmptyEntries);
-
-			return $"User ID={userInfo[0]};Password={userInfo[1]};Host={databaseUri.Host};Port={databaseUri.Port};Database={db};Pooling=true;SSL Mode=Require;Trust Server Certificate=True;";
-		}
-
-		private static ConfigurationOptions GetHerokuRedisConfigurationOptions(
-			IWebHostEnvironment environment,
-			IConfiguration configuration)
-		{
-			string redisUrlString;
-
-			/* Since production is moving to Heroku this logic is being maintained for future reference
-				 in case it becomes relevant again in a new production deployment context.
-			if (environment.IsStaging())
-			{*/
-				// Get the connection string from the ENV variables in staging
-				redisUrlString = Environment.GetEnvironmentVariable("REDIS_URL");
-			/*}
-			else
-			{
-				// Get the connection string from appSettings in production
-				redisUrlString = configuration.GetConnectionString("CacheConnection");
-			}*/
-
-			// parse the connection string
-			var redisUri = new Uri(redisUrlString);
-			var userInfo = redisUri.UserInfo.Split(':');
-
-			var config = new ConfigurationOptions
-			{
-				EndPoints = { { redisUri.Host, redisUri.Port } },
-				Password = userInfo[1],
-				AbortOnConnectFail = true,
-				ConnectRetry = 3,
-				Ssl = true,
-				SslProtocols = System.Security.Authentication.SslProtocols.Tls12,
-			};
-
-			// Disable peer certificate verification
-			config.CertificateValidation += delegate { return true; };
-
-			return config;
 		}
 
 		private bool LifetimeValidator(DateTime? notBefore, DateTime? expires, SecurityToken token, TokenValidationParameters @params)
