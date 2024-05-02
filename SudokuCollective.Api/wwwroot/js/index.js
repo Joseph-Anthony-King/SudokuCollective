@@ -49,7 +49,7 @@ window.addEventListener('load', async () => {
 
     const htmlElement = document.getElementById('apiMessage');
 
-    await checkAPI(htmlElement);
+    await checkAPIAsync(htmlElement);
 
     document.getElementById('spinner').classList.add('hide');
 
@@ -59,13 +59,13 @@ window.addEventListener('load', async () => {
 
     setInterval(async () => {
 
-        await checkAPI(htmlElement);
+        await checkAPIAsync(htmlElement);
 
     }, 10000, htmlElement);
 
 }, false);
 
-async function checkAPI(htmlElement) {
+async function checkAPIAsync(htmlElement) {
 
     try {
         
@@ -106,7 +106,7 @@ async function checkAPI(htmlElement) {
 
             console.debug('data: ', data);
 
-            if (data.status === 404 && data.message === 'Status Code 404: It was not possible to connect to the redis server(s). There was an authentication failure; check that passwords (or client certificates) are configured correctly: (IOException) Unable to read data from the transport connection: Connection aborted') {
+            if (data.status === 404 && data.message === 'Status Code 404: It was not possible to connect to the redis server(s). There was an authentication failure; check that passwords (or client certificates) are configured correctly: (IOException) Unable to read data from the transport connection: Connection aborted.') {
                 console.debug("TODO: HerokuService reset redis connection logic will go here...")
             }
 
