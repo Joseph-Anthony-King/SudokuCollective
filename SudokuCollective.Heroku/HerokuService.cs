@@ -5,7 +5,7 @@ namespace SudokuCollective.Heroku
 {
     internal static class HerokuService
     {
-        internal static Task UpdateHerokuRedisConnectionStringAsync()
+        internal static void UpdateHerokuRedisConnectionStringAsync()
         {
             // Connect to Heroku API
 
@@ -16,7 +16,7 @@ namespace SudokuCollective.Heroku
             // Update App redis connection
         }
 
-        internal static Task UpdateHerokuPostgresConnectionStringAsync()
+        internal static void UpdateHerokuPostgresConnectionStringAsync()
         {
             // Connect to Heroku API
 

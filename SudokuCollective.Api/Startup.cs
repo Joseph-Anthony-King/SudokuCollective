@@ -21,59 +21,53 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Hangfire;
 using StackExchange.Redis;
-using Swashbuckle.AspNetCore.SwaggerGen;
 using Swashbuckle.AspNetCore.SwaggerUI;
+using SudokuCollective.Api.Filters;
 using SudokuCollective.Api.Middleware;
 using SudokuCollective.Api.Models;
 using SudokuCollective.Cache;
 using SudokuCollective.Core.Interfaces.Cache;
+using SudokuCollective.Core.Interfaces.Jobs;
 using SudokuCollective.Core.Interfaces.Services;
 using SudokuCollective.Core.Interfaces.ServiceModels;
 using SudokuCollective.Core.Interfaces.Repositories;
 using SudokuCollective.Core.Models;
+using SudokuCollective.Data.Jobs;
 using SudokuCollective.Data.Models;
 using SudokuCollective.Data.Models.Authentication;
-using SudokuCollective.Data.Services;
-using SudokuCollective.Repos;
-using SudokuCollective.Core.Interfaces.Jobs;
-using SudokuCollective.Data.Jobs;
 using SudokuCollective.Data.Models.Payloads;
 using SudokuCollective.Data.Models.Requests;
 using SudokuCollective.Data.Models.Results;
+using SudokuCollective.Data.Services;
 using SudokuCollective.Heroku;
+using SudokuCollective.Repos;
 using Role = SudokuCollective.Core.Models.Role;
 
 namespace SudokuCollective.Api
 {
-	/// <summary>
-	/// Startup Class
-	/// </summary>
-	public class Startup
-	{
-		private readonly IWebHostEnvironment _environment;
+    /// <summary>
+    /// Startup Class
+    /// </summary>
+    /// <remarks>
+    /// Startup Class Constructor
+    /// </remarks>
+    /// <param name="configuration"></param>
+    /// <param name="environment"></param>
+    public class Startup(IConfiguration configuration, IWebHostEnvironment environment)
+    {
+		private readonly IWebHostEnvironment _environment = environment;
 		private ILogger<Startup> _logger;
 
-		/// <summary>
-		/// Startup Class Configuration
-		/// </summary>
-		public IConfiguration Configuration { get; }
+        /// <summary>
+        /// Startup Class Configuration
+        /// </summary>
+        public IConfiguration Configuration { get; } = configuration;
 
-		/// <summary>
-		/// Startup Class Constructor
-		/// </summary>
-		/// <param name="configuration"></param>
-		/// <param name="environment"></param>
-		public Startup(IConfiguration configuration, IWebHostEnvironment environment)
-		{
-			Configuration = configuration;
-			_environment = environment;
-		}
-
-		/// <summary>
-		/// This method gets called by the runtime. Use this method to add services to the container.
-		/// </summary>
-		/// <param name="services"></param>
-		public void ConfigureServices(IServiceCollection services)
+        /// <summary>
+        /// This method gets called by the runtime. Use this method to add services to the container.
+        /// </summary>
+        /// <param name="services"></param>
+        public void ConfigureServices(IServiceCollection services)
 		{
 			// Add logger to ConfigureServices to aid in debugging remote hosts...
 			using var loggerFactory = LoggerFactory.Create(builder =>
@@ -419,61 +413,6 @@ namespace SudokuCollective.Api
 				return expires > DateTime.UtcNow;
 			}
 			return false;
-		}
-	}
-
-	/// <summary>
-	/// A Swashbuckler filter to filter out the error controller.
-	/// </summary>
-	public class ErrorControllerFilter : IDocumentFilter
-	{
-		/// <summary>
-		/// A method which applies the filter.
-		/// </summary>
-		public void Apply(OpenApiDocument swaggerDoc, DocumentFilterContext context)
-		{
-			var route = "/error";
-			swaggerDoc.Paths.Remove(route);
-		}
-	}
-
-	/// <summary>
-	/// A Swashbuckler filter which displays api paths in lower case.
-	/// </summary>
-	public class PathLowercaseDocumentFilter : IDocumentFilter
-	{
-		/// <summary>
-		/// A method which applies the filter.
-		/// </summary>
-		public void Apply(OpenApiDocument swaggerDoc, DocumentFilterContext context)
-		{
-			var dictionaryPath = swaggerDoc.Paths.ToDictionary(x => ToLowercase(x.Key), x => x.Value);
-			var newPaths = new OpenApiPaths();
-			foreach (var path in dictionaryPath)
-			{
-				newPaths.Add(path.Key, path.Value);
-			}
-			swaggerDoc.Paths = newPaths;
-		}
-
-		private static string ToLowercase(string key)
-		{
-			var parts = key.Split('/').Select(part => part.Contains('}') ? part : part.ToLowerInvariant());
-			return string.Join('/', parts);
-		}
-	}
-
-	/// <summary>
-	/// A custom document filter to include models in the swagger documentation.
-	/// </summary>
-	public class CustomModelDocumentFilter<T> : IDocumentFilter where T : class
-	{
-		/// <summary>
-		/// A method to apply the filter
-		/// </summary>
-		public void Apply(OpenApiDocument openapiDoc, DocumentFilterContext context)
-		{
-			context.SchemaGenerator.GenerateSchema(typeof(T), context.SchemaRepository);
 		}
 	}
 }
