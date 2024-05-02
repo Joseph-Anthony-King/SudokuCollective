@@ -10,7 +10,7 @@ window.addEventListener('load', async () => {
 
         if (!sudokuCollectiveIndexInfo || new Date(sudokuCollectiveIndexInfo.expirationDate) < date) {
 
-            const response = await fetch("api/index");
+            const response = await fetch('api/index');
 
             if (response.ok) {
 
@@ -26,11 +26,13 @@ window.addEventListener('load', async () => {
 
             } else {
 
-                console.error('response returned an error: ', response);
+                var data = JSON.parse(await response.text());
 
-                var error = await response.text();
+                data['status'] = response.status;
 
-                throw new Error(error);
+                console.debug('data: ', data);
+
+                throw new Error(data.message);
             }
         }
 
@@ -67,8 +69,8 @@ async function checkAPI(htmlElement) {
 
     try {
         
-        const response = await fetch("api/v1/values", {
-            method: "POST",
+        const response = await fetch('api/v1/values', {
+            method: 'POST',
             headers: { 'content-type': 'application/json' },
             body: JSON.stringify({
                 page: 0,
@@ -98,11 +100,17 @@ async function checkAPI(htmlElement) {
 
         } else {
 
-            console.error('response returned an error: ', response);
+            var data = JSON.parse(await response.text());
 
-            var error = await response.text();
+            data['status'] = response.status;
 
-            throw new Error(error);
+            console.debug('data: ', data);
+
+            if (data.status === 404 && data.message === 'Status Code 404: It was not possible to connect to the redis server(s). There was an authentication failure; check that passwords (or client certificates) are configured correctly: (IOException) Unable to read data from the transport connection: Connection aborted') {
+                console.debug("TODO: HerokuService reset redis connection logic will go here...")
+            }
+
+            throw new Error(data.message);
         }
 
     } catch (error) {
@@ -129,16 +137,16 @@ function updateIndex(htmlElement, message, isSuccess) {
     
             if (htmlElement.classList.contains('text-yellow')) {
 
-                htmlElement.classList.add("text-white");
-                htmlElement.classList.remove("text-yellow");
+                htmlElement.classList.add('text-white');
+                htmlElement.classList.remove('text-yellow');
             }
     
         } else {
     
             if (!htmlElement.classList.contains('text-yellow')) {
 
-                htmlElement.classList.remove("text-white");
-                htmlElement.classList.add("text-yellow");
+                htmlElement.classList.remove('text-white');
+                htmlElement.classList.add('text-yellow');
             }
         }
 
@@ -148,6 +156,6 @@ function updateIndex(htmlElement, message, isSuccess) {
             message = 'message invalid';
         }
 
-        console.log("Invalid HTMLElement for message: " + message);
+        console.log('Invalid HTMLElement for message: ' + message);
     }
 }
