@@ -11,16 +11,27 @@ window.addEventListener('load', async () => {
         if (!sudokuCollectiveIndexInfo || new Date(sudokuCollectiveIndexInfo.expirationDate) < date) {
 
             const response = await fetch("api/index");
-        
-            const missionStatement = (await response.json()).missionStatement;
-            
-            var expirationDate = new Date();
-            
-            expirationDate.setDate(expirationDate.getDate() + 1);
-        
-            sudokuCollectiveIndexInfo = { missionStatement, expirationDate }
-        
-            localStorage.setItem('sudokuCollectiveIndexInfo', JSON.stringify(sudokuCollectiveIndexInfo));
+
+            if (response.ok) {
+
+                const missionStatement = (await response.json()).missionStatement;
+
+                var expirationDate = new Date();
+
+                expirationDate.setDate(expirationDate.getDate() + 1);
+
+                sudokuCollectiveIndexInfo = { missionStatement, expirationDate }
+
+                localStorage.setItem('sudokuCollectiveIndexInfo', JSON.stringify(sudokuCollectiveIndexInfo));
+
+            } else {
+
+                console.error('response returned an error: ', response);
+
+                var error = await response.text();
+
+                throw new Error(error);
+            }
         }
 
         document.getElementById('missionStatement').innerHTML = sudokuCollectiveIndexInfo.missionStatement;
@@ -29,7 +40,7 @@ window.addEventListener('load', async () => {
 
     } catch (error) {
         
-        console.log(error);
+        console.error('Error returned: ', error);
     }
     
     document.getElementById('year').innerHTML = date.getFullYear();
@@ -68,20 +79,31 @@ async function checkAPI(htmlElement) {
             })
         });
 
-        const data = await response.json();
+        if (response.ok) {
 
-        let message;
+            const data = await response.json();
 
-        if (data.isSuccess) {
+            let message;
 
-            message = 'The Sudoku Collective API is up and running!';
+            if (data.isSuccess) {
+
+                message = 'The Sudoku Collective API is up and running!';
+
+            } else {
+
+                message = data.message;
+            }
+
+            updateIndex(htmlElement, message, data.isSuccess);
 
         } else {
 
-            message = data.message;
-        }
+            console.error('response returned an error: ', response);
 
-        updateIndex(htmlElement, message, data.isSuccess);
+            var error = await response.text();
+
+            throw new Error(error);
+        }
 
     } catch (error) {
         
@@ -89,6 +111,8 @@ async function checkAPI(htmlElement) {
             htmlElement, 
             'Error connecting to Sudoku Collective API: <br/>' + error, 
             false);
+
+        console.error('Error returned: ', error);
     }
 }
 
