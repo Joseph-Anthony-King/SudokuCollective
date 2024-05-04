@@ -2,8 +2,10 @@ using System;
 using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using SudokuCollective.Api.Utilities;
 using SudokuCollective.Core.Interfaces.Services;
@@ -15,38 +17,32 @@ namespace SudokuCollective.Api.Controllers.V1
     /// <summary>
     /// Difficulties Controller Class
     /// </summary>
+    /// <remarks>
+    /// Difficulties Controller Constructor
+    /// </remarks>
+    /// <param name="difficultiesService"></param>
+    /// <param name="appsService"></param>
+    /// <param name="requestService"></param>
+    /// <param name="httpContextAccessor"></param>
+    /// <param name="logger"></param>
+    /// <param name="environment"></param>
     [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
     [Route("api/v1/[controller]")]
     [ApiController]
-    public class DifficultiesController : ControllerBase
+    public class DifficultiesController(
+        IDifficultiesService difficultiesService,
+        IAppsService appsService,
+        IRequestService requestService,
+        IHttpContextAccessor httpContextAccessor,
+        ILogger<DifficultiesController> logger, 
+        IWebHostEnvironment environment) : ControllerBase
     {
-        private readonly IDifficultiesService _difficultiesService;
-        private readonly IAppsService _appsService;
-        private readonly IRequestService _requestService;
-        private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly ILogger<DifficultiesController> _logger;
-
-        /// <summary>
-        /// Difficulties Controller Constructor
-        /// </summary>
-        /// <param name="difficultiesService"></param>
-        /// <param name="appsService"></param>
-        /// <param name="requestService"></param>
-        /// <param name="httpContextAccessor"></param>
-        /// <param name="logger"></param>
-        public DifficultiesController(
-            IDifficultiesService difficultiesService,
-            IAppsService appsService,
-            IRequestService requestService,
-            IHttpContextAccessor httpContextAccessor,
-            ILogger<DifficultiesController> logger)
-        {
-            _difficultiesService = difficultiesService;
-            _appsService = appsService;
-            _requestService = requestService;
-            _httpContextAccessor = httpContextAccessor;
-            _logger = logger;
-        }
+        private readonly IDifficultiesService _difficultiesService = difficultiesService;
+        private readonly IAppsService _appsService = appsService;
+        private readonly IRequestService _requestService = requestService;
+        private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
+        private readonly ILogger<DifficultiesController> _logger = logger;
+        private readonly IWebHostEnvironment _environment = environment;
 
         /// <summary>
         /// An endpoint to get a difficulty, does not require a login.
@@ -79,6 +75,9 @@ namespace SudokuCollective.Api.Controllers.V1
                 }
                 else
                 {
+                    if (_environment.IsDevelopment() == false)
+                        result = (Result)await ControllerUtilities.InterceptHerokuIOExceptions(result, _environment, _logger);
+
                     result.Message = ControllerMessages.StatusCode404(result.Message);
 
                     return NotFound(result);
@@ -122,6 +121,9 @@ namespace SudokuCollective.Api.Controllers.V1
                 }
                 else
                 {
+                    if (_environment.IsDevelopment() == false)
+                        result = (Result)await ControllerUtilities.InterceptHerokuIOExceptions(result, _environment, _logger);
+
                     result.Message = ControllerMessages.StatusCode404(result.Message);
 
                     return NotFound(result);
@@ -173,7 +175,7 @@ namespace SudokuCollective.Api.Controllers.V1
         {
             try
             {
-                if (request == null) throw new ArgumentNullException(nameof(request));
+                ArgumentNullException.ThrowIfNull(request);
 
                 _requestService.Update(request);
 
@@ -193,6 +195,9 @@ namespace SudokuCollective.Api.Controllers.V1
                     }
                     else
                     {
+                        if (_environment.IsDevelopment() == false)
+                            result = (Result)await ControllerUtilities.InterceptHerokuIOExceptions(result, _environment, _logger);
+
                         result.Message = ControllerMessages.StatusCode400(result.Message);
 
                         return BadRequest(result);
@@ -205,11 +210,12 @@ namespace SudokuCollective.Api.Controllers.V1
             }
             catch (Exception e)
             {
-                return ControllerUtilities.ProcessException<DifficultiesController>(
+                return await ControllerUtilities.ProcessException<DifficultiesController>(
                     this,
                     _requestService,
                     _logger,
-                    e);
+                    e,
+                    environment);
             }
         }
 
@@ -252,7 +258,7 @@ namespace SudokuCollective.Api.Controllers.V1
             {
                 if (id == 0) throw new ArgumentException(ControllerMessages.IdCannotBeZeroMessage);
 
-                if (request == null) throw new ArgumentNullException(nameof(request));
+                ArgumentNullException.ThrowIfNull(request);
 
                 _requestService.Update(request);
 
@@ -272,6 +278,9 @@ namespace SudokuCollective.Api.Controllers.V1
                     }
                     else
                     {
+                        if (_environment.IsDevelopment() == false)
+                            result = (Result)await ControllerUtilities.InterceptHerokuIOExceptions(result, _environment, _logger);
+
                         result.Message = ControllerMessages.StatusCode404(result.Message);
 
                         return NotFound(result);
@@ -284,11 +293,12 @@ namespace SudokuCollective.Api.Controllers.V1
             }
             catch (Exception e)
             {
-                return ControllerUtilities.ProcessException<DifficultiesController>(
+                return await ControllerUtilities.ProcessException<DifficultiesController>(
                     this,
                     _requestService,
                     _logger,
-                    e);
+                    e,
+                    environment);
             }
         }
 
@@ -327,7 +337,7 @@ namespace SudokuCollective.Api.Controllers.V1
             {
                 if (id == 0) throw new ArgumentException(ControllerMessages.IdCannotBeZeroMessage);
 
-                if (request == null) throw new ArgumentNullException(nameof(request));
+                ArgumentNullException.ThrowIfNull(request);
 
                 _requestService.Update(request);
 
@@ -347,6 +357,9 @@ namespace SudokuCollective.Api.Controllers.V1
                     }
                     else
                     {
+                        if (_environment.IsDevelopment() == false)
+                            result = (Result)await ControllerUtilities.InterceptHerokuIOExceptions(result, _environment, _logger);
+
                         result.Message = ControllerMessages.StatusCode404(result.Message);
 
                         return NotFound(result);
@@ -359,11 +372,12 @@ namespace SudokuCollective.Api.Controllers.V1
             } 
             catch (Exception e)
             {
-                return ControllerUtilities.ProcessException<DifficultiesController>(
+                return await ControllerUtilities.ProcessException<DifficultiesController>(
                     this,
                     _requestService,
                     _logger,
-                    e);
+                    e,
+                    environment);
             }
         }
     }

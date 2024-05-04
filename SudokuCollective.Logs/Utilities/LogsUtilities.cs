@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 
 [assembly: InternalsVisibleTo("SudokuCollective.Api")]
 [assembly: InternalsVisibleTo("SudokuCollective.Data")]
+[assembly: InternalsVisibleTo("SudokuCollective.Heroku")]
 [assembly: InternalsVisibleTo("SudokuCollective.Repos")]
 [assembly: InternalsVisibleTo("SudokuCollective.Test")]
 namespace SudokuCollective.Logs.Utilities
@@ -72,6 +73,11 @@ namespace SudokuCollective.Logs.Utilities
         internal static EventId GetHangfireErrorEventId()
         {
             return new EventId(402, "Hangfire Event Error");
+        }
+
+        internal static EventId GetHerokuProxyErrorEventId()
+        {
+            return new EventId(500, "HerokuProxy Event Error");
         }
     }
 }

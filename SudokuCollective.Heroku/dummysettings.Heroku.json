@@ -1,0 +1,22 @@
+{
+  "HerokuCredentials": {
+    "Client": "[Your value here]",
+    "ID": "[Your value here]",
+    "Description": "[Your value here]",
+    "Scope": "[Your value here]",
+    "Token": "[Your value here]",
+    "UpdatedAt": "[Your value here]"
+  },
+  "Environments": {
+    "Staging": {
+      "HerokuApp": "[Your value here]",
+      "HerokuPostgresApp": "[Your value here]",
+      "HerokuRedis": "[Your value here]"
+    },
+    "Production": {
+      "HerokuApp": "[Your value here]",
+      "HerokuPostgresApp": "[Your value here]",
+      "HerokuRedisApp": "[Your value here]"
+    }
+  }
+}

@@ -12,6 +12,7 @@ using SudokuCollective.Data.Models;
 using SudokuCollective.Test.Services;
 using SudokuCollective.Data.Models.Params;
 using SudokuCollective.Data.Models.Requests;
+using Microsoft.AspNetCore.Hosting;
 
 namespace SudokuCollective.Test.TestCases.Controllers
 {
@@ -26,6 +27,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
         private MockedRequestService mockedRequestService;
         private Mock<IHttpContextAccessor> mockedHttpContextAccessor;
         private Mock<ILogger<SolutionsController>> mockedLogger;
+        private Mock<IWebHostEnvironment> mockedWebHostEnvironment;
         private Request request;
         private AnnonymousCheckRequest annonymousCheckRequest;
         private AddSolutionsPayload addSolutionPayload;
@@ -39,6 +41,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             mockAppsService = new MockedAppsService(context);
             mockedRequestService = new MockedRequestService();
             mockedHttpContextAccessor = new Mock<IHttpContextAccessor>();
+            mockedWebHostEnvironment = new Mock<IWebHostEnvironment>();
             mockedLogger = new Mock<ILogger<SolutionsController>>();
 
             request = TestObjects.GetRequest();
@@ -71,21 +74,24 @@ namespace SudokuCollective.Test.TestCases.Controllers
                 mockAppsService.SuccessfulRequest.Object,
                 mockedRequestService.SuccessfulRequest.Object,
                 mockedHttpContextAccessor.Object,
-                mockedLogger.Object);
+                mockedLogger.Object,
+                mockedWebHostEnvironment.Object);
 
             sutFailure = new SolutionsController(
                 mockSolutionsService.FailedRequest.Object,
                 mockAppsService.SuccessfulRequest.Object,
                 mockedRequestService.SuccessfulRequest.Object,
                 mockedHttpContextAccessor.Object,
-                mockedLogger.Object);
+                mockedLogger.Object,
+                mockedWebHostEnvironment.Object);
 
             sutSolvedFailure = new SolutionsController(
                 mockSolutionsService.SolveFailedRequest.Object,
                 mockAppsService.SuccessfulRequest.Object,
                 mockedRequestService.SuccessfulRequest.Object,
                 mockedHttpContextAccessor.Object,
-                mockedLogger.Object);
+                mockedLogger.Object,
+                mockedWebHostEnvironment.Object);
         }
 
         [Test]

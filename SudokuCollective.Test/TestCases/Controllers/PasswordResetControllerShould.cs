@@ -1,7 +1,10 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using Moq;
 using NUnit.Framework;
 using SudokuCollective.Api.Controllers;
 using SudokuCollective.Data.Models;
@@ -17,6 +20,8 @@ namespace SudokuCollective.Test.TestCases.Controllers
         private MockedUsersService mockedUsersService;
         private MockedAppsService mockedAppsService;
         private string passwordResetToken;
+        private Mock<ILogger<PasswordResetController>> mockedLogger;
+        private Mock<IWebHostEnvironment> mockedWebHostEnvironment;
 
         [SetUp]
         public async Task Setup()
@@ -25,10 +30,14 @@ namespace SudokuCollective.Test.TestCases.Controllers
 
             mockedUsersService = new MockedUsersService(context);
             mockedAppsService = new MockedAppsService(context);
+            mockedLogger = new Mock<ILogger<PasswordResetController>>();
+            mockedWebHostEnvironment = new Mock<IWebHostEnvironment>();
 
             sut = new PasswordResetController(
                 mockedUsersService.SuccessfulRequest.Object,
-                mockedAppsService.SuccessfulRequest.Object);
+                mockedAppsService.SuccessfulRequest.Object,
+                mockedLogger.Object,
+                mockedWebHostEnvironment.Object);
 
             passwordResetToken = Guid.NewGuid().ToString();
         }

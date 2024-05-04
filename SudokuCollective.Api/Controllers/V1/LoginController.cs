@@ -1,7 +1,9 @@
 using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using SudokuCollective.Api.Utilities;
 using SudokuCollective.Core.Enums;
@@ -16,34 +18,29 @@ namespace SudokuCollective.Api.Controllers.V1
     /// <summary>
     /// Login Controller Class
     /// </summary>
+    /// <remarks>
+    /// Login Controller Constructor
+    /// </remarks>
+    /// <param name="authService"></param>
+    /// <param name="userManagementService"></param>
+    /// <param name="requestService"></param>
+    /// <param name="logger"></param>
+    /// <param name="environment"></param>
     [Authorize]
     [Route("api/v1/[controller]")]
     [ApiController]
-    public class LoginController : ControllerBase
+    public class LoginController(
+        IAuthenticateService authService,
+        IUserManagementService userManagementService,
+        IRequestService requestService,
+        ILogger<LoginController> logger,
+        IWebHostEnvironment environment) : ControllerBase
     {
-        private readonly IAuthenticateService _authService;
-        private readonly IUserManagementService _userManagementService;
-        private readonly IRequestService _requestService;
-        private readonly ILogger<LoginController> _logger;
-
-        /// <summary>
-        /// Login Controller Constructor
-        /// </summary>
-        /// <param name="authService"></param>
-        /// <param name="userManagementService"></param>
-        /// <param name="requestService"></param>
-        /// <param name="logger"></param>
-        public LoginController(
-            IAuthenticateService authService,
-            IUserManagementService userManagementService,
-            IRequestService requestService,
-            ILogger<LoginController> logger)
-        {
-            _authService = authService;
-            _userManagementService = userManagementService;
-            _requestService = requestService;
-            _logger = logger;
-        }
+        private readonly IAuthenticateService _authService = authService;
+        private readonly IUserManagementService _userManagementService = userManagementService;
+        private readonly IRequestService _requestService = requestService;
+        private readonly ILogger<LoginController> _logger = logger;
+        private readonly IWebHostEnvironment _environment = environment;
 
         /// <summary>
         /// An endpoint which issues authorization tokens, does not require a login.
@@ -51,7 +48,7 @@ namespace SudokuCollective.Api.Controllers.V1
         /// <param name="request"></param>
         /// <returns>An authenticated user and a authorization token.</returns>
         /// <response code="200">Returns a result object with the an authenticated user, an authorization token, and the token's expiration date included in the payload array.</response>
-		/// <response code="400">Returns a result object with a message describing any validation errors for the username or password.</response>
+        /// <response code="400">Returns a result object with a message describing any validation errors for the username or password.</response>
         /// <response code="404">Returns a result object with the message stating the user was not found.</response>
         /// <response code="500">Returns a result object with the message stating any errors logging in the user.</response>
         /// <remarks>
@@ -94,6 +91,9 @@ namespace SudokuCollective.Api.Controllers.V1
                 }
                 else
                 {
+                    if (_environment.IsDevelopment() == false)
+                        result = (Result)await ControllerUtilities.InterceptHerokuIOExceptions(result, _environment, _logger);
+
                     var confirmAuthenticationIssueResponse = await _userManagementService
                         .ConfirmAuthenticationIssueAsync(
                             request.UserName,
@@ -119,11 +119,12 @@ namespace SudokuCollective.Api.Controllers.V1
             }
             catch (Exception e)
             {
-                return ControllerUtilities.ProcessException<LoginController>(
+                return await ControllerUtilities.ProcessException<LoginController>(
                     this,
                     _requestService,
                     _logger,
-                    e);
+                    e,
+                    environment);
             }
         }
 
@@ -165,17 +166,21 @@ namespace SudokuCollective.Api.Controllers.V1
                 }
                 else
                 {
+                    if (_environment.IsDevelopment() == false)
+                        result = (Result)await ControllerUtilities.InterceptHerokuIOExceptions(result, _environment, _logger);
+
                     result.Message = ControllerMessages.StatusCode404(result.Message);
                     return NotFound(result);
                 }
             }
             catch (Exception e)
             {
-                return ControllerUtilities.ProcessException<LoginController>(
+                return await ControllerUtilities.ProcessException<LoginController>(
                     this,
                     _requestService,
                     _logger,
-                    e);
+                    e,
+                    environment);
             }
         }
     }

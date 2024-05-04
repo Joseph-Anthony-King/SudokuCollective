@@ -38,5 +38,9 @@ namespace SudokuCollective.Api.Models
         /// confirmed.
         /// </summary>
         public bool NewEmailAddressConfirmed { get; set; }
+        /// <summary>
+        /// Any error messages incurred during the process are passed through here.
+        /// </summary>
+        public string ErrorMessage { get; set; }
     }
 }

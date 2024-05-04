@@ -2,8 +2,10 @@ using System;
 using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using SudokuCollective.Api.Utilities;
 using SudokuCollective.Core.Interfaces.Services;
@@ -15,39 +17,32 @@ namespace SudokuCollective.Api.Controllers.V1
     /// <summary>
     /// Roles Controller Class
     /// </summary>
+    /// <remarks>
+    /// Roles Controller Constructor
+    /// </remarks>
+    /// <param name="rolesService"></param>
+    /// <param name="appsService"></param>
+    /// <param name="requestService"></param>
+    /// <param name="httpContextAccessor"></param>
+    /// <param name="logger"></param>
+    /// <param name="environment"></param>
     [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
     [Route("api/v1/[controller]")]
     [ApiController]
-    public class RolesController : ControllerBase
+    public class RolesController(
+        IRolesService rolesService,
+        IAppsService appsService,
+        IRequestService requestService,
+        IHttpContextAccessor httpContextAccessor,
+        ILogger<RolesController> logger,
+        IWebHostEnvironment environment) : ControllerBase
     {
-        private readonly IRolesService _rolesService;
-        private readonly IAppsService _appsService;
-        private readonly IRequestService _requestService;
-        private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly ILogger<RolesController> _logger;
-
-
-        /// <summary>
-        /// Roles Controller Constructor
-        /// </summary>
-        /// <param name="rolesService"></param>
-        /// <param name="appsService"></param>
-        /// <param name="requestService"></param>
-        /// <param name="httpContextAccessor"></param>
-        /// <param name="logger"></param>
-        public RolesController(
-            IRolesService rolesService,
-            IAppsService appsService,
-            IRequestService requestService,
-            IHttpContextAccessor httpContextAccessor,
-            ILogger<RolesController> logger)
-        {
-            _rolesService = rolesService;
-            _appsService = appsService;
-            _requestService = requestService;
-            _httpContextAccessor = httpContextAccessor;
-            _logger = logger;
-        }
+        private readonly IRolesService _rolesService = rolesService;
+        private readonly IAppsService _appsService = appsService;
+        private readonly IRequestService _requestService = requestService;
+        private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
+        private readonly ILogger<RolesController> _logger = logger;
+        private readonly IWebHostEnvironment _environment = environment;
 
         /// <summary>
         /// An endpoint to get a role, does not require a login.
@@ -79,6 +74,9 @@ namespace SudokuCollective.Api.Controllers.V1
                 }
                 else
                 {
+                    if (_environment.IsDevelopment() == false)
+                        result = (Result)await ControllerUtilities.InterceptHerokuIOExceptions(result, _environment, _logger);
+
                     result.Message = ControllerMessages.StatusCode404(result.Message);
 
                     return NotFound(result);
@@ -122,6 +120,9 @@ namespace SudokuCollective.Api.Controllers.V1
                 }
                 else
                 {
+                    if (_environment.IsDevelopment() == false)
+                        result = (Result)await ControllerUtilities.InterceptHerokuIOExceptions(result, _environment, _logger);
+
                     result.Message = ControllerMessages.StatusCode404(result.Message);
 
                     return NotFound(result);
@@ -171,7 +172,7 @@ namespace SudokuCollective.Api.Controllers.V1
         {
             try
             {
-                if (request == null) throw new ArgumentNullException(nameof(request));
+                ArgumentNullException.ThrowIfNull(request);
 
                 _requestService.Update(request);
 
@@ -191,6 +192,9 @@ namespace SudokuCollective.Api.Controllers.V1
                     }
                     else
                     {
+                        if (_environment.IsDevelopment() == false)
+                            result = (Result)await ControllerUtilities.InterceptHerokuIOExceptions(result, _environment, _logger);
+
                         result.Message = ControllerMessages.StatusCode400(result.Message);
 
                         return BadRequest(result);
@@ -203,11 +207,12 @@ namespace SudokuCollective.Api.Controllers.V1
             }
             catch (Exception e)
             {
-                return ControllerUtilities.ProcessException<RolesController>(
+                return await ControllerUtilities.ProcessException<RolesController>(
                     this,
                     _requestService,
                     _logger,
-                    e);
+                    e,
+                    environment);
             }
         }
 
@@ -250,7 +255,7 @@ namespace SudokuCollective.Api.Controllers.V1
             {
                 if (id == 0) throw new ArgumentException(ControllerMessages.IdCannotBeZeroMessage);
 
-                if (request == null) throw new ArgumentNullException(nameof(request));
+                ArgumentNullException.ThrowIfNull(request);
 
                 _requestService.Update(request);
 
@@ -270,6 +275,9 @@ namespace SudokuCollective.Api.Controllers.V1
                     }
                     else
                     {
+                        if (_environment.IsDevelopment() == false)
+                            result = (Result)await ControllerUtilities.InterceptHerokuIOExceptions(result, _environment, _logger);
+
                         result.Message = ControllerMessages.StatusCode404(result.Message);
 
                         return NotFound(result);
@@ -282,11 +290,12 @@ namespace SudokuCollective.Api.Controllers.V1
             }
             catch (Exception e)
             {
-                return ControllerUtilities.ProcessException<RolesController>(
+                return await ControllerUtilities.ProcessException<RolesController>(
                     this,
                     _requestService,
                     _logger,
-                    e);
+                    e,
+                    environment);
             }
         }
 
@@ -325,7 +334,7 @@ namespace SudokuCollective.Api.Controllers.V1
             {
                 if (id == 0) throw new ArgumentException(ControllerMessages.IdCannotBeZeroMessage);
 
-                if (request == null) throw new ArgumentNullException(nameof(request));
+                ArgumentNullException.ThrowIfNull(request);
 
                 _requestService.Update(request);
 
@@ -345,6 +354,9 @@ namespace SudokuCollective.Api.Controllers.V1
                     }
                     else
                     {
+                        if (_environment.IsDevelopment() == false)
+                            result = (Result)await ControllerUtilities.InterceptHerokuIOExceptions(result, _environment, _logger);
+
                         result.Message = ControllerMessages.StatusCode404(result.Message);
 
                         return NotFound(result);
@@ -357,11 +369,12 @@ namespace SudokuCollective.Api.Controllers.V1
             }
             catch (Exception e)
             {
-                return ControllerUtilities.ProcessException<RolesController>(
+                return await ControllerUtilities.ProcessException<RolesController>(
                     this,
                     _requestService,
                     _logger,
-                    e);
+                    e,
+                    environment);
             }
         }
     }
