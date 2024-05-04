@@ -10,12 +10,10 @@
   "Environments": {
     "Staging": {
       "HerokuApp": "[Your value here]",
-      "HerokuPostgresApp": "[Your value here]",
       "HerokuRedis": "[Your value here]"
     },
     "Production": {
       "HerokuApp": "[Your value here]",
-      "HerokuPostgresApp": "[Your value here]",
       "HerokuRedisApp": "[Your value here]"
     }
   }
