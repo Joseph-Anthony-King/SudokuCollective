@@ -10,23 +10,17 @@ namespace SudokuCollective.Api.Controllers
     /// <summary>
     /// Index Controller Class
     /// </summary>
+    /// <remarks>
+    /// Index Controller Constructor
+    /// </remarks>
     [AllowAnonymous]
     [Route("api/[controller]")]
     [ApiController]
-    public class IndexController : ControllerBase
+    public class IndexController(IConfiguration configuration, IWebHostEnvironment environment) : ControllerBase
     {
-        private IWebHostEnvironment _environment;
-        private IConfiguration _configuration { get; }
+        private IWebHostEnvironment _environment = environment;
+        private IConfiguration _configuration { get; } = configuration;
 
-        /// <summary>
-        /// Index Controller Constructor
-        /// </summary>
-        public IndexController(IConfiguration configuration, IWebHostEnvironment environment)
-        {
-            _configuration = configuration;
-            _environment = environment;
-        }
-        
         /// <summary>
         /// An endpoint to obtain and populate the Sudoku Collective mission statement on the index home page.
         /// </summary>
@@ -40,7 +34,7 @@ namespace SudokuCollective.Api.Controllers
                 _configuration.GetSection("MissionStatement").Value : 
                 Environment.GetEnvironmentVariable("MISSIONSTATEMENT");
 
-            return Ok(new { missionStatement = missionStatement });
+            return Ok(new { missionStatement });
         }
     }
 }

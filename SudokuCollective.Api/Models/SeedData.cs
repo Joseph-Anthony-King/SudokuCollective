@@ -97,24 +97,24 @@ namespace SudokuCollective.Api.Models
                             0,
                             env.IsDevelopment() ? 
                                 config.GetValue<string>("DefaultUserAccounts:SuperUser:UserName") : 
-                                Environment.GetEnvironmentVariable("SUPER_USER_USERNAME"),
+                                Environment.GetEnvironmentVariable("SUPER_USER:USERNAME"),
                             env.IsDevelopment() ? 
                                 config.GetValue<string>("DefaultUserAccounts:SuperUser:FirstName") : 
-                                Environment.GetEnvironmentVariable("SUPER_USER_FIRSTNAME"),
+                                Environment.GetEnvironmentVariable("SUPER_USER:FIRSTNAME"),
                             env.IsDevelopment() ? 
                                 config.GetValue<string>("DefaultUserAccounts:SuperUser:LastName") : 
-                                Environment.GetEnvironmentVariable("SUPER_USER_LASTNAME"),
+                                Environment.GetEnvironmentVariable("SUPER_USER:LASTNAME"),
                             env.IsDevelopment() ? 
                                 config.GetValue<string>("DefaultUserAccounts:SuperUser:NickName") : 
-                                Environment.GetEnvironmentVariable("SUPER_USER_NICKNAME"),
+                                Environment.GetEnvironmentVariable("SUPER_USER:NICKNAME"),
                             env.IsDevelopment() ? 
                                 config.GetValue<string>("DefaultUserAccounts:SuperUser:Email") : 
-                                Environment.GetEnvironmentVariable("SUPER_USER_EMAIL"),
+                                Environment.GetEnvironmentVariable("SUPER_USER:EMAIL"),
                             true,
                             false,
                             env.IsDevelopment() ? 
                                 BCrypt.Net.BCrypt.HashPassword(config.GetValue<string>("DefaultUserAccounts:SuperUser:Password", salt)) : 
-                                BCrypt.Net.BCrypt.HashPassword(config.GetValue<string>("SUPER_USER_PASSWORD", salt)),
+                                BCrypt.Net.BCrypt.HashPassword(config.GetValue<string>("SUPER_USER:PASSWORD", salt)),
                             false,
                             true,
                             createdDate,
@@ -127,24 +127,24 @@ namespace SudokuCollective.Api.Models
                             0,
                             env.IsDevelopment() ? 
                                 config.GetValue<string>("DefaultUserAccounts:AdminUser:UserName") : 
-                                Environment.GetEnvironmentVariable("ADMIN_USER_USERNAME"),
+                                Environment.GetEnvironmentVariable("ADMIN_USER:USERNAME"),
                             env.IsDevelopment() ? 
                                 config.GetValue<string>("DefaultUserAccounts:AdminUser:FirstName") : 
-                                Environment.GetEnvironmentVariable("ADMIN_USER_FIRSTNAME"),
+                                Environment.GetEnvironmentVariable("ADMIN_USER:FIRSTNAME"),
                             env.IsDevelopment() ? 
                                 config.GetValue<string>("DefaultUserAccounts:AdminUser:LastName") : 
-                                Environment.GetEnvironmentVariable("ADMIN_USER_LASTNAME"),
+                                Environment.GetEnvironmentVariable("ADMIN_USER:LASTNAME"),
                             env.IsDevelopment() ? 
                                 config.GetValue<string>("DefaultUserAccounts:AdminUser:NickName") : 
-                                Environment.GetEnvironmentVariable("ADMIN_USER_NICKNAME"),
+                                Environment.GetEnvironmentVariable("ADMIN_USER:NICKNAME"),
                             env.IsDevelopment() ? 
                                 config.GetValue<string>("DefaultUserAccounts:AdminUser:Email") : 
-                                Environment.GetEnvironmentVariable("ADMIN_USER_EMAIL"),
+                                Environment.GetEnvironmentVariable("ADMIN_USER:EMAIL"),
                             true,
                             false,
                             env.IsDevelopment() ? 
                                 BCrypt.Net.BCrypt.HashPassword(config.GetValue<string>("DefaultUserAccounts:AdminUser:Password", salt)) : 
-                                BCrypt.Net.BCrypt.HashPassword(config.GetValue<string>("ADMIN_USER_PASSWORD", salt)),
+                                BCrypt.Net.BCrypt.HashPassword(config.GetValue<string>("ADMIN_USER:PASSWORD", salt)),
                             false,
                             true,
                             createdDate,
@@ -160,56 +160,56 @@ namespace SudokuCollective.Api.Models
                             0,
                             env.IsDevelopment() ? 
                                 config.GetValue<string>("DefaultAdminApp:Name") : 
-                                Environment.GetEnvironmentVariable("ADMIN_APP_NAME"),
+                                Environment.GetEnvironmentVariable("ADMIN_APP:NAME"),
                             env.IsDevelopment() ? 
                                 config.GetValue<string>("DefaultAdminApp:License") : 
-                                Environment.GetEnvironmentVariable("ADMIN_APP_LICENSE"),
+                                Environment.GetEnvironmentVariable("ADMIN_APP:LICENSE"),
                             1,
                             env.IsDevelopment() ? 
                                 config.GetValue<string>("DefaultUserAccounts:SuperUser:UserName") : 
-                                Environment.GetEnvironmentVariable("SUPER_USER_USERNAME"),
+                                Environment.GetEnvironmentVariable("SUPER_USER:USERNAME"),
                             env.IsDevelopment() ? 
                                 config.GetValue<string>("DefaultAdminApp:LocalUrl") : 
-                                Environment.GetEnvironmentVariable("ADMIN_APP_LOCAL_URL"),
+                                Environment.GetEnvironmentVariable("ADMIN_APP:LOCAL_URL"),
                             env.IsDevelopment() ?
                                 config.GetValue<string>("DefaultAdminApp:QaUrl") :
-                                Environment.GetEnvironmentVariable("ADMIN_APP_QA_URL"),
+                                Environment.GetEnvironmentVariable("ADMIN_APP:QA_URL"),
                             env.IsDevelopment() ? 
                                 config.GetValue<string>("DefaultAdminApp:StagingUrl") : 
-                                Environment.GetEnvironmentVariable("ADMIN_APP_STAGING_URL"),
+                                Environment.GetEnvironmentVariable("ADMIN_APP:STAGING_URL"),
                             env.IsDevelopment() ? 
                                 config.GetValue<string>("DefaultAdminApp:ProdUrl") : 
-                                Environment.GetEnvironmentVariable("ADMIN_APP_PROD_URL"),
+                                Environment.GetEnvironmentVariable("ADMIN_APP:PROD_URL"),
                             env.IsDevelopment() ?
                                 config.GetValue<string>("DefaultAdminApp:SourceCodeUrl") :
-                                Environment.GetEnvironmentVariable("ADMIN_APP_SOURCE_CODE_URL"),
+                                Environment.GetEnvironmentVariable("ADMIN_APP:SOURCE_CODE_URL"),
                             true,
                             true,
                             true,
                             env.IsDevelopment() ?
                                 config.GetValue<ReleaseEnvironment>("DefaultAdminApp:ReleaseEnvironment") :
-                                Enum.Parse<ReleaseEnvironment>(Environment.GetEnvironmentVariable("ADMIN_APP_RELEASE_ENVIRONMENT")),
+                                Enum.Parse<ReleaseEnvironment>(Environment.GetEnvironmentVariable("ADMIN_APP:RELEASE_ENVIRONMENT")),
                             env.IsDevelopment() ?
                                 config.GetValue<bool>("DefaultAdminApp:DisableCustomUrls") :
-                                bool.Parse(Environment.GetEnvironmentVariable("ADMIN_APP_DISABLE_CUSTOM_URLS")),
+                                bool.Parse(Environment.GetEnvironmentVariable("ADMIN_APP:DISABLE_CUSTOM_URLS")),
                             env.IsDevelopment() ? 
                                 config.GetValue<string>("DefaultAdminApp:CustomEmailAction") : 
-                                Environment.GetEnvironmentVariable("ADMIN_APP_CUSTOM_EMAIL_ACTION"),
+                                Environment.GetEnvironmentVariable("ADMIN_APP:CUSTOM_EMAIL_ACTION"),
                             env.IsDevelopment() ? 
                                 config.GetValue<string>("DefaultAdminApp:CustomPasswordAction") : 
-                                Environment.GetEnvironmentVariable("ADMIN_APP_CUSTOM_PASSWORD_ACTION"),
+                                Environment.GetEnvironmentVariable("ADMIN_APP:CUSTOM_PASSWORD_ACTION"),
                             env.IsDevelopment() ?
                                 config.GetValue<TimeFrame>("DefaultAdminApp:TimeFrame") :
-                                Enum.Parse<TimeFrame>(Environment.GetEnvironmentVariable("ADMIN_APP_TIME_FRAME")),
+                                Enum.Parse<TimeFrame>(Environment.GetEnvironmentVariable("ADMIN_APP:TIME_FRAME")),
                             env.IsDevelopment() ?
                                 config.GetValue<int>("DefaultAdminApp:AccessDuration") :
-                                int.Parse(Environment.GetEnvironmentVariable("ADMIN_APP_ACCESS_DURATION")),
+                                int.Parse(Environment.GetEnvironmentVariable("ADMIN_APP:ACCESS_DURATION")),
                             true,
                             createdDate,
                             DateTime.MinValue,
                             env.IsDevelopment() ?
                                 config.GetValue<bool>("DefaultAdminApp:UseCustomSMTPServer") :
-                                bool.Parse(Environment.GetEnvironmentVariable("ADMIN_APP_USE_CUSTOM_STMP_SERVER"))
+                                bool.Parse(Environment.GetEnvironmentVariable("ADMIN_APP:USE_CUSTOM_STMP_SERVER"))
                             )
                     );
                     context.SaveChanges();
@@ -219,50 +219,50 @@ namespace SudokuCollective.Api.Models
                             0,
                             env.IsDevelopment() ? 
                                 config.GetValue<string>("DefaultClientApp:Name") : 
-                                Environment.GetEnvironmentVariable("CLIENT_APP_NAME"),
+                                Environment.GetEnvironmentVariable("CLIENT_APP:NAME"),
                             env.IsDevelopment() ? 
                                 config.GetValue<string>("DefaultClientApp:License") : 
-                                Environment.GetEnvironmentVariable("CLIENT_APP_LICENSE"),
+                                Environment.GetEnvironmentVariable("CLIENT_APP:LICENSE"),
                             2,
                             env.IsDevelopment() ? 
                                 config.GetValue<string>("DefaultUserAccounts:AdminUser:UserName") : 
-                                Environment.GetEnvironmentVariable("ADMIN_USER_USERNAME"),
+                                Environment.GetEnvironmentVariable("ADMIN_USER:USERNAME"),
                             env.IsDevelopment() ? 
                                 config.GetValue<string>("DefaultClientApp:LocalUrl") : 
-                                Environment.GetEnvironmentVariable("CLIENT_APP_LOCAL_URL"),
+                                Environment.GetEnvironmentVariable("CLIENT_APP:LOCAL_URL"),
                             env.IsDevelopment() ? 
                                 config.GetValue<string>("DefaultClientApp:QaUrl") : 
-                                Environment.GetEnvironmentVariable("CLIENT_APP_QA_URL"),
+                                Environment.GetEnvironmentVariable("CLIENT_APP:QA_URL"),
                             env.IsDevelopment() ?
                                 config.GetValue<string>("DefaultClientApp:StagingUrl") :
-                                Environment.GetEnvironmentVariable("CLIENT_APP_STAGING_URL"),
+                                Environment.GetEnvironmentVariable("CLIENT_APP:STAGING_URL"),
                             env.IsDevelopment() ? 
                                 config.GetValue<string>("DefaultClientApp:ProdUrl") : 
-                                Environment.GetEnvironmentVariable("CLIENT_APP_PROD_URL"),
+                                Environment.GetEnvironmentVariable("CLIENT_APP:PROD_URL"),
                             env.IsDevelopment() ?
                                 config.GetValue<string>("DefaultClientApp:SourceCodeUrl") :
-                                Environment.GetEnvironmentVariable("CLIENT_APP_SOURCE_CODE_URL"),
+                                Environment.GetEnvironmentVariable("CLIENT_APP:SOURCE_CODE_URL"),
                             false,
                             true,
                             true,
                             env.IsDevelopment() ?
                                 config.GetValue<ReleaseEnvironment>("DefaultClientApp:ReleaseEnvironment") :
-                                Enum.Parse<ReleaseEnvironment>(Environment.GetEnvironmentVariable("CLIENT_APP_RELEASE_ENVIRONMENT")),
+                                Enum.Parse<ReleaseEnvironment>(Environment.GetEnvironmentVariable("CLIENT_APP:RELEASE_ENVIRONMENT")),
                             env.IsDevelopment() ?
                                 config.GetValue<bool>("DefaultClientApp:DisableCustomUrls") :
-                                bool.Parse(Environment.GetEnvironmentVariable("CLIENT_APP_DISABLE_CUSTOM_URLS")),
+                                bool.Parse(Environment.GetEnvironmentVariable("CLIENT_APP:DISABLE_CUSTOM_URLS")),
                             env.IsDevelopment() ? 
                                 config.GetValue<string>("DefaultClientApp:CustomEmailAction") : 
-                                Environment.GetEnvironmentVariable("CLIENT_APP_CUSTOM_EMAIL_ACTION"),
+                                Environment.GetEnvironmentVariable("CLIENT_APP:CUSTOM_EMAIL_ACTION"),
                             env.IsDevelopment() ? 
                                 config.GetValue<string>("DefaultClientApp:CustomPasswordAction") : 
-                                Environment.GetEnvironmentVariable("CLIENT_APP_CUSTOM_PASSWORD_ACTION"),
+                                Environment.GetEnvironmentVariable("CLIENT_APP:CUSTOM_PASSWORD_ACTION"),
                             env.IsDevelopment() ?
                                 config.GetValue<TimeFrame>("DefaultClientApp:TimeFrame") : 
-                                Enum.Parse<TimeFrame>(Environment.GetEnvironmentVariable("CLIENT_APP_TIME_FRAME")),
+                                Enum.Parse<TimeFrame>(Environment.GetEnvironmentVariable("CLIENT_APP:TIME_FRAME")),
                             env.IsDevelopment() ?
                                 config.GetValue<int>("DefaultClientApp:AccessDuration") : 
-                                int.Parse(Environment.GetEnvironmentVariable("CLIENT_APP_ACCESS_DURATION")),
+                                int.Parse(Environment.GetEnvironmentVariable("CLIENT_APP:ACCESS_DURATION")),
                             false,
                             createdDate,
                             DateTime.MinValue,
@@ -275,26 +275,26 @@ namespace SudokuCollective.Api.Models
                             0,
                             env.IsDevelopment() ? 
                                 config.GetValue<string>("DefaultSandboxApp:Name") : 
-                                Environment.GetEnvironmentVariable("SANDBOX_APP_NAME"),
+                                Environment.GetEnvironmentVariable("SANDBOX_APP:NAME"),
                             env.IsDevelopment() ? 
                                 config.GetValue<string>("DefaultSandboxApp:License") : 
-                                Environment.GetEnvironmentVariable("SANDBOX_APP_LICENSE"),
+                                Environment.GetEnvironmentVariable("SANDBOX_APP:LICENSE"),
                             1,
                             env.IsDevelopment() ? 
                                 config.GetValue<string>("DefaultUserAccounts:SuperUser:UserName") : 
-                                Environment.GetEnvironmentVariable("SUPER_USER_USERNAME"),
+                                Environment.GetEnvironmentVariable("SUPER_USER:USERNAME"),
                             env.IsDevelopment() ? 
                                 config.GetValue<string>("DefaultSandboxApp:LocalUrl") : 
-                                Environment.GetEnvironmentVariable("SANDBOX_APP_LOCAL_URL"),
+                                Environment.GetEnvironmentVariable("SANDBOX_APP:LOCAL_URL"),
                             env.IsDevelopment() ? 
                                 config.GetValue<string>("DefaultSandboxApp:QaUrl") : 
-                                Environment.GetEnvironmentVariable("SANDBOX_APP_QA_URL"),
+                                Environment.GetEnvironmentVariable("SANDBOX_APP:QA_URL"),
                             env.IsDevelopment() ?
                                 config.GetValue<string>("DefaultSandboxApp:StagingUrl") :
-                                Environment.GetEnvironmentVariable("SANDBOX_APP_STAGING_URL"),
+                                Environment.GetEnvironmentVariable("SANDBOX_APP:STAGING_URL"),
                             env.IsDevelopment() ? 
                                 config.GetValue<string>("DefaultSandboxApp:ProdUrl") : 
-                                Environment.GetEnvironmentVariable("SANDBOX_APP_PROD_URL"),
+                                Environment.GetEnvironmentVariable("SANDBOX_APP:PROD_URL"),
                             string.Empty,
                             true,
                             true,
@@ -320,19 +320,19 @@ namespace SudokuCollective.Api.Models
                             0,
                             env.IsDevelopment() ?
                                 config.GetValue<string>("EmailMetaData:SmtpServer") :
-                                Environment.GetEnvironmentVariable("SMTP_SMTP_SERVER"),
+                                Environment.GetEnvironmentVariable("SMTP_SERVER:SERVER"),
                             env.IsDevelopment() ?
                                 config.GetValue<int>("EmailMetaData:Port") :
-                                int.Parse(Environment.GetEnvironmentVariable("SMTP_PORT")),
+                                int.Parse(Environment.GetEnvironmentVariable("SMTP_SERVER:PORT")),
                             env.IsDevelopment() ?
                                 config.GetValue<string>("EmailMetaData:Username") :
-                                Environment.GetEnvironmentVariable("SMTP_USERNAME"),
+                                Environment.GetEnvironmentVariable("SMTP_SERVER:USERNAME"),
                             env.IsDevelopment() ?
                                 config.GetValue<string>("EmailMetaData:Password") :
-                                Environment.GetEnvironmentVariable("SMTP_PASSWORD"),
+                                Environment.GetEnvironmentVariable("SMTP_SERVER:PASSWORD"),
                             env.IsDevelopment() ?
                                 config.GetValue<string>("EmailMetaData:FromEmail") :
-                                Environment.GetEnvironmentVariable("SMTP_FROM_EMAIL"),
+                                Environment.GetEnvironmentVariable("SMTP_SERVER:FROM_EMAIL"),
                             1)
                     );
                     context.SaveChanges();

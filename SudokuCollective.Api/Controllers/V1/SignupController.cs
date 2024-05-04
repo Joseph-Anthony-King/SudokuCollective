@@ -20,37 +20,28 @@ namespace SudokuCollective.Api.Controllers.V1
     /// <summary>
     /// Signup Controller Class
     /// </summary>
+    /// <remarks>
+    /// Signup Controller Constructor
+    /// </remarks>
+    /// <param name="usersService"></param>
+    /// <param name="authService"></param>
+    /// <param name="requestService"></param>
+    /// <param name="logger"></param>
+    /// <param name="environment"></param>
     [Route("api/v1/[controller]")]
     [ApiController]
-    public class SignupController : ControllerBase
+    public class SignupController(
+        IUsersService usersService,
+        IAuthenticateService authService,
+        IRequestService requestService,
+        ILogger<SignupController> logger,
+        IWebHostEnvironment environment) : ControllerBase
     {
-        private readonly IUsersService _usersService;
-        private readonly IAuthenticateService _authService;
-        private readonly IRequestService _requestService;
-        private readonly IWebHostEnvironment _hostEnvironment;
-        private readonly ILogger<SignupController> _logger;
-
-        /// <summary>
-        /// Signup Controller Constructor
-        /// </summary>
-        /// <param name="usersService"></param>
-        /// <param name="authService"></param>
-        /// <param name="requestService"></param>
-        /// <param name="hostEnvironment"></param>
-        /// <param name="logger"></param>
-        public SignupController(
-            IUsersService usersService,
-            IAuthenticateService authService,
-            IRequestService requestService,
-            IWebHostEnvironment hostEnvironment, 
-            ILogger<SignupController> logger)
-        {
-            _usersService = usersService;
-            _authService = authService;
-            _requestService = requestService;
-            _hostEnvironment = hostEnvironment;
-            _logger = logger;
-        }
+        private readonly IUsersService _usersService = usersService;
+        private readonly IAuthenticateService _authService = authService;
+        private readonly IRequestService _requestService = requestService;
+        private readonly ILogger<SignupController> _logger = logger;
+        private readonly IWebHostEnvironment _environment = environment;
 
         /// <summary>
         /// An endpoint which creates new users, does not require a login.
@@ -96,15 +87,15 @@ namespace SudokuCollective.Api.Controllers.V1
 
                 string emailtTemplatePath;
 
-                if (_hostEnvironment.IsDevelopment() && !string.IsNullOrEmpty(_hostEnvironment.WebRootPath))
+                if (_environment.IsDevelopment() && !string.IsNullOrEmpty(_environment.WebRootPath))
                 {
-                    emailtTemplatePath = Path.Combine(_hostEnvironment.WebRootPath, "/Content/EmailTemplates/create-email-inlined.html");
+                    emailtTemplatePath = Path.Combine(_environment.WebRootPath, "/Content/EmailTemplates/create-email-inlined.html");
 
                     var currentDirectory = string.Format("{0}{1}", AppContext.BaseDirectory, "{0}");
 
                     emailtTemplatePath = string.Format(currentDirectory, emailtTemplatePath);
                 }
-                else if (_hostEnvironment.IsStaging() || _hostEnvironment.IsProduction())
+                else if (_environment.IsStaging() || _environment.IsProduction())
                 {
                     string baseURL = AppContext.BaseDirectory;
                     
@@ -148,6 +139,9 @@ namespace SudokuCollective.Api.Controllers.V1
                     }
                     else
                     {
+                        if (_environment.IsDevelopment() == false)
+                            authenticateResult = (Result)await ControllerUtilities.InterceptHerokuIOExceptions(authenticateResult, _environment, _logger);
+
                         result.Message = ControllerMessages.StatusCode404(authenticateResult.Message);
 
                         return NotFound(result);
@@ -155,6 +149,9 @@ namespace SudokuCollective.Api.Controllers.V1
                 }
                 else
                 {
+                    if (_environment.IsDevelopment() == false)
+                        result = (Result)await ControllerUtilities.InterceptHerokuIOExceptions(result, _environment, _logger);
+
                     result.Message = ControllerMessages.StatusCode404(result.Message);
 
                     return NotFound(result);
@@ -162,11 +159,12 @@ namespace SudokuCollective.Api.Controllers.V1
             }
             catch (Exception e)
             {
-                return ControllerUtilities.ProcessException<SignupController>(
+                return await ControllerUtilities.ProcessException<SignupController>(
                     this,
                     _requestService,
                     _logger,
-                    e);
+                    e,
+                    environment);
             }
         }
 
@@ -210,9 +208,9 @@ namespace SudokuCollective.Api.Controllers.V1
 
                 string emailtTemplatePath;
 
-                if (!string.IsNullOrEmpty(_hostEnvironment.WebRootPath))
+                if (!string.IsNullOrEmpty(_environment.WebRootPath))
                 {
-                    emailtTemplatePath = Path.Combine(_hostEnvironment.WebRootPath, "/Content/EmailTemplates/create-email-inlined.html");
+                    emailtTemplatePath = Path.Combine(_environment.WebRootPath, "/Content/EmailTemplates/create-email-inlined.html");
 
                     var currentDirectory = string.Format("{0}{1}", AppContext.BaseDirectory, "{0}");
 
@@ -238,6 +236,9 @@ namespace SudokuCollective.Api.Controllers.V1
                 }
                 else
                 {
+                    if (_environment.IsDevelopment() == false)
+                        result = (Result)await ControllerUtilities.InterceptHerokuIOExceptions(result, _environment, _logger);
+
                     result.Message = ControllerMessages.StatusCode404(result.Message);
 
                     return NotFound(result);
@@ -245,11 +246,12 @@ namespace SudokuCollective.Api.Controllers.V1
             }
             catch (Exception e)
             {
-                return ControllerUtilities.ProcessException<SignupController>(
+                return await ControllerUtilities.ProcessException<SignupController>(
                     this,
                     _requestService,
                     _logger,
-                    e);
+                    e,
+                    environment);
             }
         }
     }

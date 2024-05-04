@@ -1,7 +1,11 @@
 using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using SudokuCollective.Api.Utilities;
 using SudokuCollective.Core.Interfaces.Services;
 using SudokuCollective.Data.Messages;
 using SudokuCollective.Data.Models.Params;
@@ -11,21 +15,23 @@ namespace SudokuCollective.Api.Controllers.V1
     /// <summary>
     /// Values Controller Class
     /// </summary>
+    /// <remarks>
+    /// Values Controller Constructor
+    /// </remarks>
+    /// <param name="valuesService"></param>
+    /// <param name="logger"></param>
+    /// <param name="environment"></param>
     [AllowAnonymous]
     [Route("api/v1/[controller]")]
     [ApiController]
-    public class ValuesController : ControllerBase
+    public class ValuesController(
+        IValuesService valuesService,
+        ILogger<ValuesController> logger,
+        IWebHostEnvironment environment) : ControllerBase
     {
-        private readonly IValuesService _valuesService;
-
-        /// <summary>
-        /// Values Controller Constructor
-        /// </summary>
-        /// <param name="valuesService"></param>
-        public ValuesController(IValuesService valuesService)
-        {
-            _valuesService = valuesService;
-        }
+        private readonly IValuesService _valuesService = valuesService;
+        ILogger<ValuesController> _logger = logger;
+        private readonly IWebHostEnvironment _environment = environment;
 
         /// <summary>
         /// An endpoint used to return all menu items you will use you in your settings, does not require a login.
@@ -85,6 +91,9 @@ namespace SudokuCollective.Api.Controllers.V1
                 }
                 else
                 {
+                    if (_environment.IsDevelopment() == false)
+                        result = (Result)await ControllerUtilities.InterceptHerokuIOExceptions(result, _environment, _logger);
+
                     result.Message = ControllerMessages.StatusCode404(result.Message);
 
                     return NotFound(result);
