@@ -12,6 +12,7 @@ using SudokuCollective.Api.Controllers.V1;
 using SudokuCollective.Test.Services;
 using SudokuCollective.Data.Models.Params;
 using SudokuCollective.Data.Models.Payloads;
+using Microsoft.AspNetCore.Hosting;
 
 namespace SudokuCollective.Test.TestCases.Controllers
 {
@@ -25,6 +26,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
         private MockedRequestService mockedRequestService;
         private Mock<IHttpContextAccessor> mockedHttpContextAccessor;
         private Mock<ILogger<DifficultiesController>> mockedLogger;
+        private Mock<IWebHostEnvironment> mockedWebHostEnvironment;
         private Request request;
         private CreateDifficultyPayload createDifficultyPayload;
         private UpdateDifficultyPayload updateDifficultyPayload;
@@ -38,6 +40,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             mockedRequestService = new MockedRequestService();
             mockedHttpContextAccessor = new Mock<IHttpContextAccessor>();
             mockedLogger = new Mock<ILogger<DifficultiesController>>();
+            mockedWebHostEnvironment = new Mock<IWebHostEnvironment>();
 
             request = TestObjects.GetRequest();
 
@@ -60,14 +63,16 @@ namespace SudokuCollective.Test.TestCases.Controllers
                 mockedAppsService.SuccessfulRequest.Object,
                 mockedRequestService.SuccessfulRequest.Object,
                 mockedHttpContextAccessor.Object,
-                mockedLogger.Object);
+                mockedLogger.Object,
+                mockedWebHostEnvironment.Object);
 
             sutFailure = new DifficultiesController(
                 mockedDifficultiesService.FailedRequest.Object,
                 mockedAppsService.SuccessfulRequest.Object,
                 mockedRequestService.SuccessfulRequest.Object,
                 mockedHttpContextAccessor.Object,
-                mockedLogger.Object);
+                mockedLogger.Object,
+                mockedWebHostEnvironment.Object);
         }
 
         [Test]

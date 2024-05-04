@@ -6,7 +6,7 @@ using SudokuCollective.Core.Models;
 [assembly:InternalsVisibleTo("SudokuCollective.Test")]
 namespace SudokuCollective.Core.Utilities
 {
-    internal static class SudokuMatrixUtilities
+    public static class SudokuMatrixUtilities
     {
         /* The most straight forward method for solving a sudoku puzzle is to review the associated
          * row, column and region for any given sudoku cell and if all three lists contain only one
@@ -21,7 +21,7 @@ namespace SudokuCollective.Core.Utilities
          * That's pretty much it.  This algorithm works for simple sudoku puzzles but if after this 
          * process the remaining sudoku cells have more than one possible value you then need a process
          * to try and eliminate these remaining values. The Sudoku Matrix solve method will do this. */
-        internal static List<int> SolveByElimination(ISudokuMatrix sudokuMatrix, List<int> paramList)
+        public static List<int> SolveByElimination(ISudokuMatrix sudokuMatrix, List<int> paramList)
         {
             var MissingFirstColumn = MissingSudokuValues(sudokuMatrix.FirstColumnValues);
             var MissingSecondColumn = MissingSudokuValues(sudokuMatrix.SecondColumnValues);

@@ -35,9 +35,9 @@ namespace SudokuCollective.Repos
 		#region Methods
 		public async Task<IRepositoryResponse> AddAsync(TEntity entity)
 		{
-			if (entity == null) throw new ArgumentNullException(nameof(entity));
+            ArgumentNullException.ThrowIfNull(entity);
 
-			var result = new RepositoryResponse();
+            var result = new RepositoryResponse();
 
 			if (entity.Id != 0)
 			{
@@ -427,9 +427,9 @@ namespace SudokuCollective.Repos
 
 		public async Task<IRepositoryResponse> UpdateAsync(TEntity entity)
 		{
-			if (entity == null) throw new ArgumentNullException(nameof(entity));
+            ArgumentNullException.ThrowIfNull(entity);
 
-			var result = new RepositoryResponse();
+            var result = new RepositoryResponse();
 
 			if (entity.Id == 0)
 			{
@@ -562,9 +562,9 @@ namespace SudokuCollective.Repos
 
 		public async Task<IRepositoryResponse> UpdateRangeAsync(List<TEntity> entities)
 		{
-			if (entities == null) throw new ArgumentNullException(nameof(entities));
+            ArgumentNullException.ThrowIfNull(entities);
 
-			var result = new RepositoryResponse();
+            var result = new RepositoryResponse();
 
 			try
 			{
@@ -711,9 +711,9 @@ namespace SudokuCollective.Repos
 
 		public async Task<IRepositoryResponse> DeleteAsync(TEntity entity)
 		{
-			if (entity == null) throw new ArgumentNullException(nameof(entity));
+            ArgumentNullException.ThrowIfNull(entity);
 
-			var result = new RepositoryResponse();
+            var result = new RepositoryResponse();
 
 			if (entity.Id == 0 || entity.Id == 1 || entity.IsSuperUser)
 			{
@@ -912,9 +912,9 @@ namespace SudokuCollective.Repos
 
 		public async Task<IRepositoryResponse> DeleteRangeAsync(List<TEntity> entities)
 		{
-			if (entities == null) throw new ArgumentNullException(nameof(entities));
+            ArgumentNullException.ThrowIfNull(entities);
 
-			var result = new RepositoryResponse();
+            var result = new RepositoryResponse();
 
 			try
 			{
@@ -1459,9 +1459,9 @@ namespace SudokuCollective.Repos
 
 		public async Task<IRepositoryResponse> AddRolesAsync(int userId, List<int> roleIds)
 		{
-			if (roleIds == null) throw new ArgumentNullException(nameof(roleIds));
+            ArgumentNullException.ThrowIfNull(roleIds);
 
-			var result = new RepositoryResponse();
+            var result = new RepositoryResponse();
 
 			if (userId == 0)
 			{
@@ -1670,9 +1670,9 @@ namespace SudokuCollective.Repos
 
 		public async Task<IRepositoryResponse> RemoveRolesAsync(int userId, List<int> roleIds)
 		{
-			if (roleIds == null) throw new ArgumentNullException(nameof(roleIds));
+            ArgumentNullException.ThrowIfNull(roleIds);
 
-			var result = new RepositoryResponse();
+            var result = new RepositoryResponse();
 
 			if (userId == 0)
 			{
@@ -1862,9 +1862,9 @@ namespace SudokuCollective.Repos
 
 		public async Task<IRepositoryResponse> ConfirmEmailAsync(IEmailConfirmation emailConfirmation)
 		{
-			if (emailConfirmation == null) throw new ArgumentNullException(nameof(emailConfirmation));
+            ArgumentNullException.ThrowIfNull(emailConfirmation);
 
-			var result = new RepositoryResponse();
+            var result = new RepositoryResponse();
 
 			try
 			{
@@ -2014,9 +2014,9 @@ namespace SudokuCollective.Repos
 
 		public async Task<IRepositoryResponse> UpdateEmailAsync(IEmailConfirmation emailConfirmation)
 		{
-			if (emailConfirmation == null) throw new ArgumentNullException(nameof(emailConfirmation));
+            ArgumentNullException.ThrowIfNull(emailConfirmation);
 
-			var result = new RepositoryResponse();
+            var result = new RepositoryResponse();
 
 			try
 			{

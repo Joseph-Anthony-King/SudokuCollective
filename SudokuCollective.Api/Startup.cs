@@ -97,7 +97,7 @@ namespace SudokuCollective.Api
 
 			var sandboxLicense = _environment.IsDevelopment() ?
 				Configuration.GetSection("DefaultSandboxApp:License").Value :
-				Environment.GetEnvironmentVariable("SANDBOX_APP_LICENSE");
+				Environment.GetEnvironmentVariable("SANDBOX_APP:LICENSE");
 
 			services.AddSwaggerGen(swagger =>
 			{
@@ -241,11 +241,11 @@ namespace SudokuCollective.Api
 					Configuration.GetSection("tokenManagement").Get<TokenManagement>() :
 					new TokenManagement
 					{
-						Secret = Environment.GetEnvironmentVariable("TOKEN_SECRET"),
-						Issuer = Environment.GetEnvironmentVariable("TOKEN_ISSUER"),
-						Audience = Environment.GetEnvironmentVariable("TOKEN_AUDIENCE"),
-						AccessExpiration = Convert.ToInt32(Environment.GetEnvironmentVariable("TOKEN_ACCESS_EXPIRATION")),
-						RefreshExpiration = Convert.ToInt32(Environment.GetEnvironmentVariable("TOKEN_REFRESH_EXPIRATION"))
+						Secret = Environment.GetEnvironmentVariable("TOKEN:SECRET"),
+						Issuer = Environment.GetEnvironmentVariable("TOKEN:ISSUER"),
+						Audience = Environment.GetEnvironmentVariable("TOKEN:AUDIENCE"),
+						AccessExpiration = Convert.ToInt32(Environment.GetEnvironmentVariable("TOKEN:ACCESS_EXPIRATION")),
+						RefreshExpiration = Convert.ToInt32(Environment.GetEnvironmentVariable("TOKEN:REFRESH_EXPIRATION"))
 					};
 
 			var secret = Encoding.ASCII.GetBytes(tokenManagement.Secret);
@@ -326,11 +326,11 @@ namespace SudokuCollective.Api
 					Configuration.GetSection("emailMetaData").Get<EmailMetaData>() :
 					new EmailMetaData
 					{
-						SmtpServer = Environment.GetEnvironmentVariable("SMTP_SMTP_SERVER"),
-						Port = Convert.ToInt32(Environment.GetEnvironmentVariable("SMTP_PORT")),
-						UserName = Environment.GetEnvironmentVariable("SMTP_USERNAME"),
-						Password = Environment.GetEnvironmentVariable("SMTP_PASSWORD"),
-						FromEmail = Environment.GetEnvironmentVariable("SMTP_FROM_EMAIL")
+						SmtpServer = Environment.GetEnvironmentVariable("SMTP_SERVER:SERVER"),
+						Port = Convert.ToInt32(Environment.GetEnvironmentVariable("SMTP_SERVER:PORT")),
+						UserName = Environment.GetEnvironmentVariable("SMTP_SERVER:USERNAME"),
+						Password = Environment.GetEnvironmentVariable("SMTP_SERVER:PASSWORD"),
+						FromEmail = Environment.GetEnvironmentVariable("SMTP_SERVER:FROM_EMAIL")
 					};
 
 			services.AddSingleton<IEmailMetaData>(emailMetaData);
