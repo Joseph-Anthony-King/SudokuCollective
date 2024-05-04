@@ -23,6 +23,7 @@ namespace SudokuCollective.Api.Controllers
     /// </remarks>
     /// <param name="usersService"></param>
     /// <param name="appsService"></param>
+    /// <param name="logger"></param>
     /// <param name="environment"></param>
     [Route("[controller]")]
     [Controller]

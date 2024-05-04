@@ -28,10 +28,6 @@ window.addEventListener('load', async () => {
 
                 var data = JSON.parse(await response.text());
 
-                data['status'] = response.status;
-
-                console.debug('data: ', data);
-
                 throw new Error(data.message);
             }
         }
@@ -101,14 +97,6 @@ async function checkAPIAsync(htmlElement) {
         } else {
 
             var data = JSON.parse(await response.text());
-
-            data['status'] = response.status;
-
-            console.debug('data: ', data);
-
-            if (data.status === 404 && data.message === 'Status Code 404: It was not possible to connect to the redis server(s). There was an authentication failure; check that passwords (or client certificates) are configured correctly: (IOException) Unable to read data from the transport connection: Connection aborted.') {
-                console.debug("TODO: HerokuService reset redis connection logic will go here...")
-            }
 
             throw new Error(data.message);
         }
