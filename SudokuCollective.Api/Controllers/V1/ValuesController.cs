@@ -30,7 +30,7 @@ namespace SudokuCollective.Api.Controllers.V1
         IWebHostEnvironment environment) : ControllerBase
     {
         private readonly IValuesService _valuesService = valuesService;
-        ILogger<ValuesController> _logger = logger;
+        readonly ILogger<ValuesController> _logger = logger;
         private readonly IWebHostEnvironment _environment = environment;
 
         /// <summary>
