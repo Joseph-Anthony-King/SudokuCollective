@@ -25,8 +25,8 @@ namespace SudokuCollective.Test.TestCases.Controllers
         private MockedRequestService mockedRequestService;
         private SignupRequest signupRequest;
         private ResendEmailConfirmationRequest Request;
-        private Mock<IWebHostEnvironment> mockedWebHostEnvironment;
         private Mock<ILogger<SignupController>> mockedLogger;
+        private Mock<IWebHostEnvironment> mockedWebHostEnvironment;
 
         [SetUp]
         public async Task Setup()
@@ -36,21 +36,21 @@ namespace SudokuCollective.Test.TestCases.Controllers
             mockedUsersService = new MockedUsersService(context);
             mockedAuthenticateService = new MockedAuthenticateService();
             mockedRequestService = new MockedRequestService();
-            mockedWebHostEnvironment = new Mock<IWebHostEnvironment>();
             mockedLogger = new Mock<ILogger<SignupController>>();
+            mockedWebHostEnvironment = new Mock<IWebHostEnvironment>();
 
             sutSuccess = new SignupController(
                 mockedUsersService.SuccessfulRequest.Object,
                 mockedAuthenticateService.SuccessfulRequest.Object,
                 mockedRequestService.SuccessfulRequest.Object,
-                mockedWebHostEnvironment.Object,
-                mockedLogger.Object);
+                mockedLogger.Object,
+                mockedWebHostEnvironment.Object);
             sutFailure = new SignupController(
                 mockedUsersService.FailedRequest.Object,
                 mockedAuthenticateService.FailedRequest.Object,
                 mockedRequestService.SuccessfulRequest.Object,
-                mockedWebHostEnvironment.Object,
-                mockedLogger.Object);
+                mockedLogger.Object,
+                mockedWebHostEnvironment.Object);
 
             signupRequest = new SignupRequest()
             {

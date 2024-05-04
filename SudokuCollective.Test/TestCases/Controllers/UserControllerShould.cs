@@ -32,22 +32,22 @@ namespace SudokuCollective.Test.TestCases.Controllers
 		private RequestPasswordResetRequest requestPasswordResetRequest;
 		private UpdateUserRolePayload updateUserRolePayload;
 		private ResendRequestPasswordRequest resendRequestPasswordRequest;
-		private Mock<IWebHostEnvironment> mockWebHostEnvironment;
 		private Mock<IHttpContextAccessor> mockedHttpContextAccessor;
 		private Mock<ILogger<UsersController>> mockedLogger;
+        private Mock<IWebHostEnvironment> mockWebHostEnvironment;
 
-		[SetUp]
+        [SetUp]
 		public async Task Setup()
 		{
 			context = await TestDatabase.GetDatabaseContext();
 			mockedUsersService = new MockedUsersService(context);
 			mockedAppsService = new MockedAppsService(context);
 			mockedRequestService = new MockedRequestService();
-			mockWebHostEnvironment = new Mock<IWebHostEnvironment>();
 			mockedHttpContextAccessor = new Mock<IHttpContextAccessor>();
 			mockedLogger = new Mock<ILogger<UsersController>>();
+            mockWebHostEnvironment = new Mock<IWebHostEnvironment>();
 
-			request = TestObjects.GetRequest();
+            request = TestObjects.GetRequest();
 
 			updateUserPayload = new UpdateUserPayload()
 			{
@@ -79,25 +79,25 @@ namespace SudokuCollective.Test.TestCases.Controllers
 					mockedUsersService.SuccessfulRequest.Object,
 					mockedAppsService.SuccessfulRequest.Object,
 					mockedRequestService.SuccessfulRequest.Object,
-					mockWebHostEnvironment.Object,
 					mockedHttpContextAccessor.Object,
-					mockedLogger.Object);
+					mockedLogger.Object,
+                    mockWebHostEnvironment.Object);
 
 			sutFailure = new UsersController(
 					mockedUsersService.FailedRequest.Object,
 					mockedAppsService.SuccessfulRequest.Object,
 					mockedRequestService.SuccessfulRequest.Object,
-					mockWebHostEnvironment.Object,
 					mockedHttpContextAccessor.Object,
-					mockedLogger.Object);
+					mockedLogger.Object,
+                    mockWebHostEnvironment.Object);
 
 			sutFailureResetPassword = new UsersController(
 					mockedUsersService.FailedResetPasswordRequest.Object,
 					mockedAppsService.SuccessfulRequest.Object,
 					mockedRequestService.SuccessfulRequest.Object,
-					mockWebHostEnvironment.Object,
 					mockedHttpContextAccessor.Object,
-					mockedLogger.Object);
+					mockedLogger.Object,
+                    mockWebHostEnvironment.Object);
 		}
 
 		[Test, Category("Controllers")]

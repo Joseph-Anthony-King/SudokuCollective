@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -24,6 +25,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
         private MockedRequestService mockedRequestService;
         private Mock<IHttpContextAccessor> mockedHttpContextAccessor;
         private Mock<ILogger<LicensesController>> mockedLogger;
+        private Mock<IWebHostEnvironment> mockedWebHostEnvironment;
         private Request request;
         private LicensePayload licensePayload;
 
@@ -35,6 +37,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             mockedRequestService = new MockedRequestService();
             mockedHttpContextAccessor = new Mock<IHttpContextAccessor>();
             mockedLogger = new Mock<ILogger<LicensesController>>();
+            mockedWebHostEnvironment = new Mock<IWebHostEnvironment>();
 
             request = TestObjects.GetRequest();
 
@@ -44,12 +47,14 @@ namespace SudokuCollective.Test.TestCases.Controllers
                 mockedAppsService.SuccessfulRequest.Object,
                 mockedRequestService.SuccessfulRequest.Object,
                 mockedHttpContextAccessor.Object,
-                mockedLogger.Object);
+                mockedLogger.Object,
+                mockedWebHostEnvironment.Object);
             sutFailure = new LicensesController(
                 mockedAppsService.FailedRequest.Object,
                 mockedRequestService.SuccessfulRequest.Object,
                 mockedHttpContextAccessor.Object,
-                mockedLogger.Object);
+                mockedLogger.Object,
+                mockedWebHostEnvironment.Object);
         }
 
         [Test]
