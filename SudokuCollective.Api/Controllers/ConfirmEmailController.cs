@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using SudokuCollective.Api.Controllers.V1;
 using SudokuCollective.Api.Models;
 using SudokuCollective.Api.Utilities;
 using SudokuCollective.Core.Interfaces.Services;
