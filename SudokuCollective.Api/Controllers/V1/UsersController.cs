@@ -27,7 +27,6 @@ namespace SudokuCollective.Api.Controllers.V1
     /// <param name="usersService"></param>
     /// <param name="appsService"></param>
     /// <param name="requestService"></param>
-    /// <param name="hostEnvironment"></param>
     /// <param name="httpContextAccessor"></param>
     /// <param name="logger"></param>
     /// <param name="environment"></param>
