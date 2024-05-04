@@ -34,9 +34,9 @@ namespace SudokuCollective.Repos
 		#region Methods
 		public async Task<IRepositoryResponse> AddAsync(TEntity entity)
 		{
-			if (entity == null) throw new ArgumentNullException(nameof(entity));
+            ArgumentNullException.ThrowIfNull(entity);
 
-			var result = new RepositoryResponse();
+            var result = new RepositoryResponse();
 
 			if (entity.Id != 0)
 			{
@@ -709,9 +709,9 @@ namespace SudokuCollective.Repos
 
 		public async Task<IRepositoryResponse> UpdateAsync(TEntity entity)
 		{
-			if (entity == null) throw new ArgumentNullException(nameof(entity));
+            ArgumentNullException.ThrowIfNull(entity);
 
-			var result = new RepositoryResponse();
+            var result = new RepositoryResponse();
 
 			try
 			{
@@ -808,9 +808,9 @@ namespace SudokuCollective.Repos
 
 		public async Task<IRepositoryResponse> UpdateRangeAsync(List<TEntity> entities)
 		{
-			if (entities == null) throw new ArgumentNullException(nameof(entities));
+            ArgumentNullException.ThrowIfNull(entities);
 
-			var result = new RepositoryResponse();
+            var result = new RepositoryResponse();
 
 			try
 			{
@@ -906,9 +906,9 @@ namespace SudokuCollective.Repos
 
 		public async Task<IRepositoryResponse> DeleteAsync(TEntity entity)
 		{
-			if (entity == null) throw new ArgumentNullException(nameof(entity));
+            ArgumentNullException.ThrowIfNull(entity);
 
-			var result = new RepositoryResponse();
+            var result = new RepositoryResponse();
 
 			try
 			{
@@ -1039,8 +1039,8 @@ namespace SudokuCollective.Repos
 
 		public async Task<IRepositoryResponse> DeleteRangeAsync(List<TEntity> entities)
 		{
-			if (entities == null) throw new ArgumentNullException(nameof(entities));
-			var result = new RepositoryResponse();
+            ArgumentNullException.ThrowIfNull(entities);
+            var result = new RepositoryResponse();
 
 			try
 			{
@@ -1168,9 +1168,9 @@ namespace SudokuCollective.Repos
 
 		public async Task<IRepositoryResponse> ResetAsync(TEntity entity)
 		{
-			if (entity == null) throw new ArgumentNullException(nameof(entity));
+            ArgumentNullException.ThrowIfNull(entity);
 
-			var result = new RepositoryResponse();
+            var result = new RepositoryResponse();
 
 			if (entity.Id == 0)
 			{

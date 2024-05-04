@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
 using SudokuCollective.Api.Controllers;
@@ -17,6 +18,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
         private ConfirmEmailController sutSuccess;
         private ConfirmEmailController sutFailure;
         private MockedUsersService mockedUsersService;
+        private Mock<ILogger<ConfirmEmailController>> mockedLogger;
         private Mock<IWebHostEnvironment> mockedWebHostEnvironment;
         private string emailConfirmationToken;
 
@@ -26,13 +28,16 @@ namespace SudokuCollective.Test.TestCases.Controllers
             context = await TestDatabase.GetDatabaseContext();
 
             mockedUsersService = new MockedUsersService(context);
+            mockedLogger = new Mock<ILogger<ConfirmEmailController>>();
             mockedWebHostEnvironment = new Mock<IWebHostEnvironment>();
 
             sutSuccess = new ConfirmEmailController(
                 mockedUsersService.SuccessfulRequest.Object,
+                mockedLogger.Object,
                 mockedWebHostEnvironment.Object);
             sutFailure = new ConfirmEmailController(
                 mockedUsersService.FailedRequest.Object,
+                mockedLogger.Object,
                 mockedWebHostEnvironment.Object);
 
             emailConfirmationToken = Guid.NewGuid().ToString();

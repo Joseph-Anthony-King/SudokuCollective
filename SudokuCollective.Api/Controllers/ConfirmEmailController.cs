@@ -4,8 +4,13 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using SudokuCollective.Api.Controllers.V1;
 using SudokuCollective.Api.Models;
+using SudokuCollective.Api.Utilities;
 using SudokuCollective.Core.Interfaces.Services;
+using SudokuCollective.Data.Models.Params;
 using SudokuCollective.Data.Models.Results;
 
 namespace SudokuCollective.Api.Controllers
@@ -13,23 +18,19 @@ namespace SudokuCollective.Api.Controllers
     /// <summary>
     /// Confirm Email Controller
     /// </summary>
+    /// <remarks>
+    /// Confirm Email Controller Constructor
+    /// </remarks>
     [Route("[controller]")]
     [Controller]
-    public class ConfirmEmailController : Controller
+    public class ConfirmEmailController(
+        IUsersService usersServ,
+        ILogger<ConfirmEmailController> logger,
+        IWebHostEnvironment environment) : Controller
     {
-        private readonly IUsersService _usersService;
-        private readonly IWebHostEnvironment _hostEnvironment;
-
-        /// <summary>
-        /// Confirm Email Controller Constructor
-        /// </summary>
-        public ConfirmEmailController(
-            IUsersService usersServ,
-            IWebHostEnvironment environment)
-        {
-            _usersService = usersServ;
-            _hostEnvironment = environment;
-        }
+        private readonly IUsersService _usersService = usersServ;
+        private readonly ILogger<ConfirmEmailController> _logger = logger;
+        private readonly IWebHostEnvironment _environment = environment;
 
         /// <summary>
         /// A default endpoint to process confirm email requests, does not require a login.
@@ -82,9 +83,9 @@ namespace SudokuCollective.Api.Controllers
 
             string emailtTemplatePath;
 
-            if (!string.IsNullOrEmpty(_hostEnvironment.WebRootPath))
+            if (!string.IsNullOrEmpty(_environment.WebRootPath))
             {
-                emailtTemplatePath = Path.Combine(_hostEnvironment.WebRootPath, "/Content/EmailTemplates/confirm-new-email-inlined.html");
+                emailtTemplatePath = Path.Combine(_environment.WebRootPath, "/Content/EmailTemplates/confirm-new-email-inlined.html");
 
                 var currentDirectory = string.Format("{0}{1}", AppContext.BaseDirectory, "{0}");
 
@@ -115,9 +116,13 @@ namespace SudokuCollective.Api.Controllers
             }
             else
             {
+                if (_environment.IsDevelopment() == false)
+                    result = (Result)await ControllerUtilities.InterceptHerokuIOExceptions(result, _environment, _logger);
+
                 var confirmEmailModel = new ConfirmEmail
                 {
-                    IsSuccess = result.IsSuccess
+                    IsSuccess = result.IsSuccess,
+                    ErrorMessage = result.Message,
                 };
 
                 return View(confirmEmailModel);

@@ -270,9 +270,11 @@ __pycache__/
 */appsettings.json
 */appsettings.Docker.json
 */appsettings.Development.json
+*/appsettings.Heroku.json
 */appsettings.Staging.json
 */appsettings.Production.json
 */appsettings.Test.json
+*/appsettings.*.json
 
 # docker compose
 docker-compose.yml

@@ -1,5 +1,8 @@
 ﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using Moq;
 using NUnit.Framework;
 using SudokuCollective.Api.Controllers.V1;
 using SudokuCollective.Data.Models;
@@ -14,13 +17,20 @@ namespace SudokuCollective.Test.TestCases.Controllers
         private DatabaseContext context;
         private ValuesController sut;
         private MockedValuesService mockedValuesService;
+        private Mock<ILogger<ValuesController>> mockedLogger;
+        private Mock<IWebHostEnvironment> mockWebHostEnvironment;
 
         [SetUp]
         public async Task SetUp()
         {
             context = await TestDatabase.GetDatabaseContext();
             mockedValuesService = new MockedValuesService(context);
-            sut = new ValuesController(mockedValuesService.Request.Object);
+            mockedLogger = new Mock<ILogger<ValuesController>>();
+            mockWebHostEnvironment = new Mock<IWebHostEnvironment>();
+            sut = new ValuesController(
+                mockedValuesService.Request.Object,
+                mockedLogger.Object,
+                mockWebHostEnvironment.Object);
         }
 
         [Test, Category("Controller")]

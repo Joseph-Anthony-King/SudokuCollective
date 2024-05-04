@@ -33,9 +33,9 @@ namespace SudokuCollective.Repos
 		#region Methods
 		public async Task<IRepositoryResponse> CreateAsync(TEntity entity)
 		{
-			if (entity == null) throw new ArgumentNullException(nameof(entity));
+            ArgumentNullException.ThrowIfNull(entity);
 
-			var result = new RepositoryResponse();
+            var result = new RepositoryResponse();
 
 			if (entity.Id != 0)
 			{
@@ -183,9 +183,9 @@ namespace SudokuCollective.Repos
 
 		public async Task<IRepositoryResponse> UpdateAsync(TEntity entity)
 		{
-			if (entity == null) throw new ArgumentNullException(nameof(entity));
+            ArgumentNullException.ThrowIfNull(entity);
 
-			var result = new RepositoryResponse();
+            var result = new RepositoryResponse();
 
 			if (entity.Id == 0)
 			{
@@ -265,9 +265,9 @@ namespace SudokuCollective.Repos
 
 		public async Task<IRepositoryResponse> DeleteAsync(TEntity entity)
 		{
-			if (entity == null) throw new ArgumentNullException(nameof(entity));
+            ArgumentNullException.ThrowIfNull(entity);
 
-			var result = new RepositoryResponse();
+            var result = new RepositoryResponse();
 
 			if (entity.Id == 0)
 			{
