@@ -54,7 +54,7 @@ namespace SudokuCollective.Api.Utilities
             var message = e.Message;
 
             if (environment.IsDevelopment() == false &&
-                message.Equals("It was not possible to connect to the redis server(s). There was an authentication failure; check that passwords (or client certificates) are configured correctly: (IOException) Unable to read data from the transport connection: Connection aborted."))
+                message.Contains("redis server(s)"))
             {
                 message = await InterceptHerokuIOExceptionsLogic<T>(message, environment, logger, httpMessageHandler);
             }
@@ -154,7 +154,7 @@ namespace SudokuCollective.Api.Utilities
             ILogger<T> logger,
             HttpMessageHandler httpMessageHandler = null)
         {
-            if (message.Equals("It was not possible to connect to the redis server(s). There was an authentication failure; check that passwords (or client certificates) are configured correctly: (IOException) Unable to read data from the transport connection: Connection aborted."))
+            if (message.Contains("redis server(s)"))
             {
                 var isStaging = environment.IsStaging() == true && environment.IsProduction() == false;
 
