@@ -35,13 +35,14 @@ namespace SudokuCollective.Heroku
 
             using var httpClient = httpMessageHandler == null ? new HttpClient() : new HttpClient(httpMessageHandler);
 
+            httpClient.DefaultRequestHeaders.Add("Accept", "application/vnd.heroku+json; version=3");
+            httpClient.DefaultRequestHeaders.Add("Authorization", string.Format("Bearer {0}", Environment.GetEnvironmentVariable("HEROKUCREDENTIALS:TOKEN")));
+            httpClient.DefaultRequestHeaders.Add("user-agent", herokuApp);
+
             #region Obtain Heroku Redis Settings
             var getUrl = string.Format(configUrl, herokuRedisApp);
 
             using var getRequest = new HttpRequestMessage(HttpMethod.Get, getUrl);
-
-            getRequest.Headers.Add("Accept", "application/vnd.heroku+json; version=3");
-            getRequest.Headers.Add("Authorization", string.Format("Bearer {0}", Environment.GetEnvironmentVariable("HEROKUCREDENTIALS:TOKEN")));
 
             var getResponse = await httpClient.SendAsync(getRequest);
 
@@ -64,9 +65,6 @@ namespace SudokuCollective.Heroku
             var patchUrl = string.Format(configVarsUrl, herokuApp);
 
             using var patchRequest = new HttpRequestMessage(HttpMethod.Patch, patchUrl);
-
-            patchRequest.Headers.Add("Accept", "application/vnd.heroku+json; version=3");
-            patchRequest.Headers.Add("Authorization", string.Format("Bearer {0}", Environment.GetEnvironmentVariable("HEROKUCREDENTIALS:TOKEN")));
 
             using StringContent body = new(
                 JsonSerializer.Serialize<HerokuConnectionStrings>(
@@ -97,9 +95,6 @@ namespace SudokuCollective.Heroku
             using var deleteMessage = new HttpRequestMessage(HttpMethod.Delete, deleteUrl);
 
             var deleteResponse = await httpClient.SendAsync(deleteMessage);
-
-            deleteResponse.Headers.Add("Accept", "application/vnd.heroku+json; version=3");
-            deleteResponse.Headers.Add("Authorization", string.Format("Bearer {0}", Environment.GetEnvironmentVariable("HEROKUCREDENTIALS:TOKEN")));
 
             if (deleteResponse.IsSuccessStatusCode)
             {
