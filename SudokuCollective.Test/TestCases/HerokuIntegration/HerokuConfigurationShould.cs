@@ -22,7 +22,7 @@ namespace SudokuCollective.Test.TestCases.HerokuIntegration
         public void ReturnARedisConfigurationObject()
         {
             // Arrange and Act
-            Environment.SetEnvironmentVariable("REDIS:TLS_URL", "rediss://:user-pasword@host:15790");
+            Environment.SetEnvironmentVariable("REDIS:URL", "rediss://:user-pasword@host:15790");
             var result = HerokuConfiguration.ConfigureHerokuRedisConnection();
 
             // Assert
