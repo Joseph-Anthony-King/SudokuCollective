@@ -24,7 +24,7 @@ namespace SudokuCollective.HerokuIntegration
         internal static ConfigurationOptions ConfigureHerokuRedisConnection()
         {
             // Get the connection string from the ENV variables in staging
-            string redisUrlString = Environment.GetEnvironmentVariable("REDIS:TLS_URL")!;
+            string redisUrlString = Environment.GetEnvironmentVariable("REDIS:URL")!;
 
             // parse the connection string
             var redisUri = new Uri(redisUrlString);
