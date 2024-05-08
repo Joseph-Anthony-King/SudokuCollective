@@ -7,14 +7,6 @@
     "Token": "[Your value here]",
     "UpdatedAt": "[Your value here]"
   },
-  "Environments": {
-    "Staging": {
-      "HerokuApp": "[Your value here]",
-      "HerokuRedis": "[Your value here]"
-    },
-    "Production": {
-      "HerokuApp": "[Your value here]",
-      "HerokuRedisApp": "[Your value here]"
-    }
-  }
+  "HerokuApp": "[Your value here]",
+  "HerokuRedis": "[Your value here]"
 }

@@ -14,6 +14,7 @@ using SudokuCollective.Test.Repositories;
 using SudokuCollective.Test.TestData;
 using SudokuCollective.Core.Interfaces.Models.DomainObjects.Values;
 using SudokuCollective.Core.Interfaces.Models;
+using System.Net.Http;
 
 namespace SudokuCollective.Test.Cache
 {
@@ -59,7 +60,8 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<string>(),
                     It.IsAny<DateTime>(),
                     It.IsAny<ICacheKeys>(),
-                    It.IsAny<App>()))
+                    It.IsAny<App>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .Returns(Task.FromResult(new RepositoryResponse()
                 {
                     IsSuccess = true,
@@ -78,7 +80,8 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<string>(),
                     It.IsAny<DateTime>(),
                     It.IsAny<ICacheKeys>(),
-                    It.IsAny<Difficulty>()))
+                    It.IsAny<Difficulty>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .Returns(Task.FromResult(new RepositoryResponse()
                 {
                     IsSuccess = true,
@@ -97,7 +100,8 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<string>(),
                     It.IsAny<DateTime>(),
                     It.IsAny<ICacheKeys>(),
-                    It.IsAny<Role>()))
+                    It.IsAny<Role>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .Returns(Task.FromResult(new RepositoryResponse()
                 {
                     IsSuccess = true,
@@ -116,7 +120,8 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<string>(),
                     It.IsAny<DateTime>(),
                     It.IsAny<ICacheKeys>(),
-                    It.IsAny<User>()))
+                    It.IsAny<User>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .Returns(Task.FromResult(new RepositoryResponse()
                 {
                     IsSuccess = true,
@@ -135,14 +140,16 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<string>(),
                     It.IsAny<DateTime>(),
                     It.IsAny<int>(),
-                    It.IsAny<IResult>()))
+                    It.IsAny<IResult>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .ReturnsAsync((
                     IAppsRepository<App> repo,
                     IDistributedCache cache,
                     string cacheKey,
                     DateTime expiration,
                     int id,
-                    IResult result) =>
+                    IResult result,
+                    HttpMessageHandler httpMessageHandler) =>
                     {
                         if (result != null)
                         {
@@ -168,14 +175,16 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<string>(),
                     It.IsAny<DateTime>(),
                     It.IsAny<int>(),
-                    It.IsAny<IResult>()))
+                    It.IsAny<IResult>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .ReturnsAsync((
                     IDifficultiesRepository<Difficulty> repo,
                     IDistributedCache cache,
                     string cacheKey,
                     DateTime expiration,
                     int id,
-                    IResult result) =>
+                    IResult result,
+                    HttpMessageHandler httpMessageHandler) =>
                 {
                     if (result != null)
                     {
@@ -201,14 +210,16 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<string>(),
                     It.IsAny<DateTime>(),
                     It.IsAny<int>(),
-                    It.IsAny<IResult>()))
+                    It.IsAny<IResult>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .ReturnsAsync((
                     IRolesRepository<Role> repo,
                     IDistributedCache cache,
                     string cacheKey,
                     DateTime expiration,
                     int id,
-                    IResult result) =>
+                    IResult result,
+                    HttpMessageHandler httpMessageHandler) =>
                 {
                     if (result != null)
                     {
@@ -234,14 +245,16 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<string>(),
                     It.IsAny<DateTime>(),
                     It.IsAny<int>(),
-                    It.IsAny<IResult>()))
+                    It.IsAny<IResult>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .ReturnsAsync((
                     IUsersRepository<User> repo,
                     IDistributedCache cache,
                     string cacheKey,
                     DateTime expiration,
                     int id,
-                    IResult result) =>
+                    IResult result,
+                    HttpMessageHandler httpMessageHandler) =>
                     {
                         if (result != null)
                         {
@@ -266,13 +279,15 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<IDistributedCache>(),
                     It.IsAny<string>(),
                     It.IsAny<DateTime>(),
-                    It.IsAny<IResult>()))
+                    It.IsAny<IResult>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .ReturnsAsync((
                     IAppsRepository<App> repo,
                     IDistributedCache cache,
                     string cacheKey,
                     DateTime expiration,
-                    IResult result) =>
+                    IResult result,
+                    HttpMessageHandler httpMessageHandler) =>
                         new Tuple<IRepositoryResponse, IResult>(
                             new RepositoryResponse
                             {
@@ -291,13 +306,15 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<IDistributedCache>(),
                     It.IsAny<string>(),
                     It.IsAny<DateTime>(),
-                    It.IsAny<IResult>()))
+                    It.IsAny<IResult>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .ReturnsAsync((
                     IDifficultiesRepository<Difficulty> repo,
                     IDistributedCache cache,
                     string cacheKey,
                     DateTime expiration,
-                    IResult result) =>
+                    IResult result,
+                    HttpMessageHandler httpMessageHandler) =>
                         new Tuple<IRepositoryResponse, IResult>(
                             new RepositoryResponse
                             {
@@ -316,13 +333,15 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<IDistributedCache>(),
                     It.IsAny<string>(),
                     It.IsAny<DateTime>(),
-                    It.IsAny<IResult>()))
+                    It.IsAny<IResult>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .ReturnsAsync((
                     IRolesRepository<Role> repo,
                     IDistributedCache cache,
                     string cacheKey,
                     DateTime expiration,
-                    IResult result) =>
+                    IResult result,
+                    HttpMessageHandler httpMessageHandler) =>
                         new Tuple<IRepositoryResponse, IResult>(
                             new RepositoryResponse
                             {
@@ -341,13 +360,15 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<IDistributedCache>(),
                     It.IsAny<string>(),
                     It.IsAny<DateTime>(),
-                    It.IsAny<IResult>()))
+                    It.IsAny<IResult>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .ReturnsAsync((
                     ISolutionsRepository<SudokuSolution> repo,
                     IDistributedCache cache,
                     string cacheKey,
                     DateTime expiration,
-                    IResult result) =>
+                    IResult result,
+                    HttpMessageHandler httpMessageHandler) =>
                         new Tuple<IRepositoryResponse, IResult>(
                             new RepositoryResponse
                             {
@@ -366,13 +387,15 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<IDistributedCache>(),
                     It.IsAny<string>(),
                     It.IsAny<DateTime>(),
-                    It.IsAny<IResult>()))
+                    It.IsAny<IResult>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .ReturnsAsync((
                     IUsersRepository<User> repo,
                     IDistributedCache cache,
                     string cacheKey,
                     DateTime expiration,
-                    IResult result) =>
+                    IResult result,
+                    HttpMessageHandler httpMessageHandler) =>
                         new Tuple<IRepositoryResponse, IResult>(
                             new RepositoryResponse
                             {
@@ -391,7 +414,8 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<IDistributedCache>(),
                     It.IsAny<ICacheKeys>(),
                     It.IsAny<App>(),
-                    It.IsAny<string>()))
+                    It.IsAny<string>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         IsSuccess = true,
@@ -409,7 +433,8 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<IDistributedCache>(),
                     It.IsAny<ICacheKeys>(),
                     It.IsAny<Difficulty>(),
-                    It.IsAny<string>()))
+                    It.IsAny<string>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .Returns(Task.FromResult(new RepositoryResponse()
                 {
                     IsSuccess = true,
@@ -427,7 +452,8 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<IDistributedCache>(),
                     It.IsAny<ICacheKeys>(),
                     It.IsAny<Role>(),
-                    It.IsAny<string>()))
+                    It.IsAny<string>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .Returns(Task.FromResult(new RepositoryResponse()
                 {
                     IsSuccess = true,
@@ -445,7 +471,8 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<IDistributedCache>(),
                     It.IsAny<ICacheKeys>(),
                     It.IsAny<User>(),
-                    It.IsAny<string>()))
+                    It.IsAny<string>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .Returns(Task.FromResult(new RepositoryResponse()
                 {
                     IsSuccess = true,
@@ -463,7 +490,8 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<IDistributedCache>(),
                     It.IsAny<ICacheKeys>(),
                     It.IsAny<App>(),
-                    It.IsAny<string>()))
+                    It.IsAny<string>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .Returns(Task.FromResult(new RepositoryResponse()
                 {
                     IsSuccess = true
@@ -475,7 +503,8 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<IDistributedCache>(),
                     It.IsAny<ICacheKeys>(),
                     It.IsAny<Difficulty>(),
-                    It.IsAny<string>()))
+                    It.IsAny<string>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .Returns(Task.FromResult(new RepositoryResponse()
                 {
                     IsSuccess = true
@@ -487,7 +516,8 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<IDistributedCache>(),
                     It.IsAny<ICacheKeys>(),
                     It.IsAny<Role>(),
-                    It.IsAny<string>()))
+                    It.IsAny<string>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .Returns(Task.FromResult(new RepositoryResponse()
                 {
                     IsSuccess = true
@@ -499,7 +529,8 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<IDistributedCache>(),
                     It.IsAny<ICacheKeys>(),
                     It.IsAny<User>(),
-                    It.IsAny<string>()))
+                    It.IsAny<string>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .Returns(Task.FromResult(new RepositoryResponse()
                 {
                     IsSuccess = true
@@ -511,7 +542,8 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<IDistributedCache>(),
                     It.IsAny<string>(),
                     It.IsAny<DateTime>(),
-                    It.IsAny<int>()))
+                    It.IsAny<int>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .Returns(Task.FromResult(true));
 
             SuccessfulRequest.Setup(cache =>
@@ -520,13 +552,15 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<IDistributedCache>(),
                     It.IsAny<string>(),
                     It.IsAny<DateTime>(),
-                    It.IsAny<int>()))
+                    It.IsAny<int>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .Returns(Task.FromResult(true));
 
             SuccessfulRequest.Setup(cache =>
                 cache.RemoveKeysAsync(
                     It.IsAny<IDistributedCache>(),
-                    It.IsAny<List<string>>()));
+                    It.IsAny<List<string>>(),
+                    It.IsAny<HttpMessageHandler>()));
 
             SuccessfulRequest.Setup(cache =>
                 cache.GetAppByLicenseWithCacheAsync(
@@ -535,14 +569,16 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<string>(),
                     It.IsAny<DateTime>(),
                     It.IsAny<string>(),
-                    It.IsAny<IResult>()))
+                    It.IsAny<IResult>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .ReturnsAsync((
                     IAppsRepository<App> repo,
                     IDistributedCache cache,
                     string cacheKey,
                     DateTime expiration,
                     string license,
-                    IResult result) =>
+                    IResult result,
+                    HttpMessageHandler httpMessageHandler) =>
                         new Tuple<IRepositoryResponse, IResult>(
                             new RepositoryResponse
                             {
@@ -562,14 +598,16 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<string>(),
                     It.IsAny<DateTime>(),
                     It.IsAny<int>(),
-                    It.IsAny<IResult>()))
+                    It.IsAny<IResult>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .ReturnsAsync((
                     IAppsRepository<App> repo,
                     IDistributedCache cache,
                     string cacheKey,
                     DateTime expiration,
                     int id,
-                    IResult result) =>
+                    IResult result,
+                    HttpMessageHandler httpMessageHandler) =>
                         new Tuple<IRepositoryResponse, IResult>(
                             new RepositoryResponse
                             {
@@ -589,14 +627,16 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<string>(),
                     It.IsAny<DateTime>(),
                     It.IsAny<int>(),
-                    It.IsAny<IResult>()))
+                    It.IsAny<IResult>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .ReturnsAsync((
                     IAppsRepository<App> repo,
                     IDistributedCache cache,
                     string cacheKey,
                     DateTime expiration,
                     int id,
-                    IResult result) =>
+                    IResult result,
+                    HttpMessageHandler httpMessageHandler) =>
                         new Tuple<IRepositoryResponse, IResult>(
                             new RepositoryResponse
                             {
@@ -616,14 +656,16 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<string>(),
                     It.IsAny<DateTime>(),
                     It.IsAny<int>(),
-                    It.IsAny<IResult>()))
+                    It.IsAny<IResult>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .ReturnsAsync((
                     IAppsRepository<App> repo,
                     IDistributedCache cache,
                     string cacheKey,
                     DateTime expiration,
                     int id,
-                    IResult result) =>
+                    IResult result,
+                    HttpMessageHandler httpMessageHandler) =>
                         new Tuple<IRepositoryResponse, IResult>(
                             new RepositoryResponse
                             {
@@ -643,14 +685,16 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<string>(),
                     It.IsAny<DateTime>(),
                     It.IsAny<int>(),
-                    It.IsAny<IResult>()))
+                    It.IsAny<IResult>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .ReturnsAsync((
                     IAppsRepository<App> repo,
                     IDistributedCache cache,
                     string cacheKey,
                     DateTime expiration,
                     int id,
-                    IResult result) =>
+                    IResult result,
+                    HttpMessageHandler httpMessageHandler) =>
                         new Tuple<IRepositoryResponse, IResult>(
                             new RepositoryResponse
                             {
@@ -671,7 +715,8 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<DateTime>(),
                     It.IsAny<ICacheKeys>(),
                     It.IsAny<int>(),
-                    It.IsAny<IResult>()))
+                    It.IsAny<IResult>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .ReturnsAsync((
                     IAppsRepository<App> repo,
                     IDistributedCache cache,
@@ -679,7 +724,8 @@ namespace SudokuCollective.Test.Cache
                     DateTime expiration,
                     ICacheKeys cacheKeys,
                     int id,
-                    IResult result) =>
+                    IResult result,
+                    HttpMessageHandler httpMessageHandler) =>
                         new Tuple<string, IResult>(TestObjects.GetLicense(), result));
 
             SuccessfulRequest.Setup(cache =>
@@ -687,7 +733,8 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<IAppsRepository<App>>(),
                     It.IsAny<IDistributedCache>(),
                     It.IsAny<ICacheKeys>(),
-                    It.IsAny<App>()))
+                    It.IsAny<App>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .Returns(Task.FromResult(new RepositoryResponse()
                 {
                     IsSuccess = true,
@@ -704,7 +751,8 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<IAppsRepository<App>>(),
                     It.IsAny<IDistributedCache>(),
                     It.IsAny<ICacheKeys>(),
-                    It.IsAny<int>()))
+                    It.IsAny<int>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .Returns(Task.FromResult(new RepositoryResponse()
                 {
                     IsSuccess = true,
@@ -721,7 +769,8 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<IAppsRepository<App>>(),
                     It.IsAny<IDistributedCache>(),
                     It.IsAny<ICacheKeys>(),
-                    It.IsAny<int>()))
+                    It.IsAny<int>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .Returns(Task.FromResult(new RepositoryResponse()
                 {
                     IsSuccess = true,
@@ -739,7 +788,8 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<IDistributedCache>(),
                     It.IsAny<string>(),
                     It.IsAny<DateTime>(),
-                    It.IsAny<string>()))
+                    It.IsAny<string>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .Returns(Task.FromResult(true));
 
             SuccessfulRequest.Setup(cache =>
@@ -751,7 +801,8 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<ICacheKeys>(),
                     It.IsAny<string>(),
                     It.IsAny<string>(),
-                    It.IsAny<IResult>()))
+                    It.IsAny<IResult>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .ReturnsAsync((
                     IUsersRepository<User> repo,
                     IDistributedCache cache,
@@ -760,7 +811,8 @@ namespace SudokuCollective.Test.Cache
                     ICacheKeys cacheKeys,
                     string userName,
                     string license,
-                    IResult result) =>
+                    IResult result,
+                    HttpMessageHandler httpMessageHandler) =>
                     {
                         if (result != null)
                         {
@@ -786,14 +838,16 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<string>(),
                     It.IsAny<DateTime>(),
                     It.IsAny<string>(),
-                    It.IsAny<IResult>()))
+                    It.IsAny<IResult>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .ReturnsAsync((
                     IUsersRepository<User> repo,
                     IDistributedCache cache,
                     string cacheKey,
                     DateTime expiration,
                     string email,
-                    IResult result) =>
+                    IResult result,
+                    HttpMessageHandler httpMessageHandler) =>
                         new Tuple<IRepositoryResponse, IResult>(
                             new RepositoryResponse
                             {
@@ -813,7 +867,8 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<IDistributedCache>(),
                     It.IsAny<ICacheKeys>(),
                     It.IsAny<EmailConfirmation>(),
-                    It.IsAny<string>()))
+                    It.IsAny<string>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .Returns(Task.FromResult(new RepositoryResponse()
                 {
                     IsSuccess = true,
@@ -831,7 +886,8 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<IDistributedCache>(),
                     It.IsAny<ICacheKeys>(),
                     It.IsAny<EmailConfirmation>(),
-                    It.IsAny<string>()))
+                    It.IsAny<string>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .Returns(Task.FromResult(new RepositoryResponse()
                 {
                     IsSuccess = true,
@@ -849,7 +905,8 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<IDistributedCache>(),
                     It.IsAny<string>(),
                     It.IsAny<DateTime>(),
-                    It.IsAny<int>()))
+                    It.IsAny<int>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .Returns(Task.FromResult(true));
 
             SuccessfulRequest.Setup(cache =>
@@ -858,7 +915,8 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<IDistributedCache>(),
                     It.IsAny<string>(),
                     It.IsAny<DateTime>(),
-                    It.IsAny<DifficultyLevel>()))
+                    It.IsAny<DifficultyLevel>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .Returns(Task.FromResult(true));
 
             SuccessfulRequest.Setup(cache =>
@@ -867,7 +925,8 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<IDistributedCache>(),
                     It.IsAny<string>(),
                     It.IsAny<DateTime>(),
-                    It.IsAny<RoleLevel>()))
+                    It.IsAny<RoleLevel>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .Returns(Task.FromResult(true));
 
             SuccessfulRequest.Setup(cache =>
@@ -880,7 +939,8 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<List<IEnumListItem>>(),
                     It.IsAny<List<IEnumListItem>>(),
                     It.IsAny<List<IEnumListItem>>(),
-                    It.IsAny<IResult>()
+                    It.IsAny<IResult>(),
+                    It.IsAny<HttpMessageHandler>()
                 )).Returns(Task.FromResult(new Tuple<IValues, IResult>(
                     (IValues)(TestObjects.GetValues()), 
                     TestObjects.GetResult())));
@@ -891,7 +951,8 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<IDistributedCache>(),
                     It.IsAny<string>(),
                     It.IsAny<DateTime>(),
-                    It.IsAny<IResult>()
+                    It.IsAny<IResult>(),
+                    It.IsAny<HttpMessageHandler>()
                 )).ReturnsAsync(new Tuple<IRepositoryResponse, IResult>(
                     new RepositoryResponse
                     {
@@ -909,7 +970,8 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<string>(),
                     It.IsAny<DateTime>(),
                     It.IsAny<ICacheKeys>(),
-                    It.IsAny<App>()))
+                    It.IsAny<App>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .Returns(Task.FromResult(new RepositoryResponse()
                 {
                     IsSuccess = false
@@ -922,7 +984,8 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<string>(),
                     It.IsAny<DateTime>(),
                     It.IsAny<ICacheKeys>(),
-                    It.IsAny<Difficulty>()))
+                    It.IsAny<Difficulty>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .Returns(Task.FromResult(new RepositoryResponse()
                 {
                     IsSuccess = false
@@ -935,7 +998,8 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<string>(),
                     It.IsAny<DateTime>(),
                     It.IsAny<ICacheKeys>(),
-                    It.IsAny<Role>()))
+                    It.IsAny<Role>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .Returns(Task.FromResult(new RepositoryResponse()
                 {
                     IsSuccess = false
@@ -948,7 +1012,8 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<string>(),
                     It.IsAny<DateTime>(),
                     It.IsAny<ICacheKeys>(),
-                    It.IsAny<User>()))
+                    It.IsAny<User>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .Returns(Task.FromResult(new RepositoryResponse()
                 {
                     IsSuccess = false
@@ -961,14 +1026,16 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<string>(),
                     It.IsAny<DateTime>(),
                     It.IsAny<int>(),
-                    It.IsAny<IResult>()))
+                    It.IsAny<IResult>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .ReturnsAsync((
                     IAppsRepository<App> repo,
                     IDistributedCache cache,
                     string cacheKey,
                     DateTime expiration,
                     int id,
-                    IResult result) =>
+                    IResult result,
+                    HttpMessageHandler httpMessageHandler) =>
                         new Tuple<IRepositoryResponse, IResult>(
                             new RepositoryResponse
                             {
@@ -982,14 +1049,16 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<string>(),
                     It.IsAny<DateTime>(),
                     It.IsAny<int>(),
-                    It.IsAny<IResult>()))
+                    It.IsAny<IResult>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .ReturnsAsync((
                     IDifficultiesRepository<Difficulty> repo,
                     IDistributedCache cache,
                     string cacheKey,
                     DateTime expiration,
                     int id,
-                    IResult result) =>
+                    IResult result,
+                    HttpMessageHandler httpMessageHandler) =>
                         new Tuple<IRepositoryResponse, IResult>(
                             new RepositoryResponse
                             {
@@ -1003,14 +1072,16 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<string>(),
                     It.IsAny<DateTime>(),
                     It.IsAny<int>(),
-                    It.IsAny<IResult>()))
+                    It.IsAny<IResult>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .ReturnsAsync((
                     IRolesRepository<Role> repo,
                     IDistributedCache cache,
                     string cacheKey,
                     DateTime expiration,
                     int id,
-                    IResult result) =>
+                    IResult result,
+                    HttpMessageHandler httpMessageHandler) =>
                         new Tuple<IRepositoryResponse, IResult>(
                             new RepositoryResponse
                             {
@@ -1024,14 +1095,16 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<string>(),
                     It.IsAny<DateTime>(),
                     It.IsAny<int>(),
-                    It.IsAny<IResult>()))
+                    It.IsAny<IResult>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .ReturnsAsync((
                     IUsersRepository<User> repo,
                     IDistributedCache cache,
                     string cacheKey,
                     DateTime expiration,
                     int id,
-                    IResult result) =>
+                    IResult result,
+                    HttpMessageHandler httpMessageHandler) =>
                         new Tuple<IRepositoryResponse, IResult>(
                             new RepositoryResponse
                             {
@@ -1044,13 +1117,15 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<IDistributedCache>(),
                     It.IsAny<string>(),
                     It.IsAny<DateTime>(),
-                    It.IsAny<IResult>()))
+                    It.IsAny<IResult>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .ReturnsAsync((
                     IAppsRepository<App> repo,
                     IDistributedCache cache,
                     string cacheKey,
                     DateTime expiration,
-                    IResult result) =>
+                    IResult result,
+                    HttpMessageHandler httpMessageHandler) =>
                         new Tuple<IRepositoryResponse, IResult>(
                             new RepositoryResponse
                             {
@@ -1063,13 +1138,15 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<IDistributedCache>(),
                     It.IsAny<string>(),
                     It.IsAny<DateTime>(),
-                    It.IsAny<IResult>()))
+                    It.IsAny<IResult>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .ReturnsAsync((
                     IDifficultiesRepository<Difficulty> repo,
                     IDistributedCache cache,
                     string cacheKey,
                     DateTime expiration,
-                    IResult result) =>
+                    IResult result,
+                    HttpMessageHandler httpMessageHandler) =>
                         new Tuple<IRepositoryResponse, IResult>(
                             new RepositoryResponse
                             {
@@ -1082,13 +1159,15 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<IDistributedCache>(),
                     It.IsAny<string>(),
                     It.IsAny<DateTime>(),
-                    It.IsAny<IResult>()))
+                    It.IsAny<IResult>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .ReturnsAsync((
                     IRolesRepository<Role> repo,
                     IDistributedCache cache,
                     string cacheKey,
                     DateTime expiration,
-                    IResult result) =>
+                    IResult result,
+                    HttpMessageHandler httpMessageHandler) =>
                         new Tuple<IRepositoryResponse, IResult>(
                             new RepositoryResponse
                             {
@@ -1101,13 +1180,15 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<IDistributedCache>(),
                     It.IsAny<string>(),
                     It.IsAny<DateTime>(),
-                    It.IsAny<IResult>()))
+                    It.IsAny<IResult>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .ReturnsAsync((
                     ISolutionsRepository<SudokuSolution> repo,
                     IDistributedCache cache,
                     string cacheKey,
                     DateTime expiration,
-                    IResult result) =>
+                    IResult result,
+                    HttpMessageHandler httpMessageHandler) =>
                         new Tuple<IRepositoryResponse, IResult>(
                             new RepositoryResponse
                             {
@@ -1120,13 +1201,15 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<IDistributedCache>(),
                     It.IsAny<string>(),
                     It.IsAny<DateTime>(),
-                    It.IsAny<IResult>()))
+                    It.IsAny<IResult>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .ReturnsAsync((
                     IUsersRepository<User> repo,
                     IDistributedCache cache,
                     string cacheKey,
                     DateTime expiration,
-                    IResult result) =>
+                    IResult result,
+                    HttpMessageHandler httpMessageHandler) =>
                         new Tuple<IRepositoryResponse, IResult>(
                             new RepositoryResponse
                             {
@@ -1139,7 +1222,8 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<IDistributedCache>(),
                     It.IsAny<ICacheKeys>(),
                     It.IsAny<App>(),
-                    It.IsAny<string>()))
+                    It.IsAny<string>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .Returns(Task.FromResult(new RepositoryResponse()
                 {
                     IsSuccess = false
@@ -1151,7 +1235,8 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<IDistributedCache>(),
                     It.IsAny<ICacheKeys>(),
                     It.IsAny<Difficulty>(),
-                    It.IsAny<string>()))
+                    It.IsAny<string>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .Returns(Task.FromResult(new RepositoryResponse()
                 {
                     IsSuccess = false
@@ -1163,7 +1248,8 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<IDistributedCache>(),
                     It.IsAny<ICacheKeys>(),
                     It.IsAny<Role>(),
-                    It.IsAny<string>()))
+                    It.IsAny<string>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .Returns(Task.FromResult(new RepositoryResponse()
                 {
                     IsSuccess = false
@@ -1175,7 +1261,8 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<IDistributedCache>(),
                     It.IsAny<ICacheKeys>(),
                     It.IsAny<User>(),
-                    It.IsAny<string>()))
+                    It.IsAny<string>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .Returns(Task.FromResult(new RepositoryResponse()
                 {
                     IsSuccess = false
@@ -1187,7 +1274,8 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<IDistributedCache>(),
                     It.IsAny<ICacheKeys>(),
                     It.IsAny<App>(),
-                    It.IsAny<string>()))
+                    It.IsAny<string>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .Returns(Task.FromResult(new RepositoryResponse()
                 {
                     IsSuccess = false
@@ -1199,7 +1287,8 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<IDistributedCache>(),
                     It.IsAny<ICacheKeys>(),
                     It.IsAny<Difficulty>(),
-                    It.IsAny<string>()))
+                    It.IsAny<string>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .Returns(Task.FromResult(new RepositoryResponse()
                 {
                     IsSuccess = false
@@ -1211,7 +1300,8 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<IDistributedCache>(),
                     It.IsAny<ICacheKeys>(),
                     It.IsAny<Role>(),
-                    It.IsAny<string>()))
+                    It.IsAny<string>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .Returns(Task.FromResult(new RepositoryResponse()
                 {
                     IsSuccess = false
@@ -1223,7 +1313,8 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<IDistributedCache>(),
                     It.IsAny<ICacheKeys>(),
                     It.IsAny<User>(),
-                    It.IsAny<string>()))
+                    It.IsAny<string>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .Returns(Task.FromResult(new RepositoryResponse()
                 {
                     IsSuccess = false
@@ -1235,7 +1326,8 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<IDistributedCache>(),
                     It.IsAny<string>(),
                     It.IsAny<DateTime>(),
-                    It.IsAny<int>()))
+                    It.IsAny<int>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .Returns(Task.FromResult(false));
 
             FailedRequest.Setup(cache =>
@@ -1244,13 +1336,15 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<IDistributedCache>(),
                     It.IsAny<string>(),
                     It.IsAny<DateTime>(),
-                    It.IsAny<int>()))
+                    It.IsAny<int>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .Returns(Task.FromResult(false));
 
             FailedRequest.Setup(cache =>
                 cache.RemoveKeysAsync(
                     It.IsAny<IDistributedCache>(),
-                    It.IsAny<List<string>>()));
+                    It.IsAny<List<string>>(),
+                    It.IsAny<HttpMessageHandler>()));
 
             FailedRequest.Setup(cache =>
                 cache.GetAppByLicenseWithCacheAsync(
@@ -1259,14 +1353,16 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<string>(),
                     It.IsAny<DateTime>(),
                     It.IsAny<string>(),
-                    It.IsAny<IResult>()))
+                    It.IsAny<IResult>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .ReturnsAsync((
                     IAppsRepository<App> repo,
                     IDistributedCache cache,
                     string cacheKey,
                     DateTime expiration,
                     string license,
-                    IResult result) =>
+                    IResult result,
+                    HttpMessageHandler httpMessageHandler) =>
                         new Tuple<IRepositoryResponse, IResult>(
                             new RepositoryResponse
                             {
@@ -1280,14 +1376,16 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<string>(),
                     It.IsAny<DateTime>(),
                     It.IsAny<int>(),
-                    It.IsAny<IResult>()))
+                    It.IsAny<IResult>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .ReturnsAsync((
                     IAppsRepository<App> repo,
                     IDistributedCache cache,
                     string cacheKey,
                     DateTime expiration,
                     int id,
-                    IResult result) =>
+                    IResult result,
+                    HttpMessageHandler httpMessageHandler) =>
                         new Tuple<IRepositoryResponse, IResult>(
                             new RepositoryResponse
                             {
@@ -1301,14 +1399,16 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<string>(),
                     It.IsAny<DateTime>(),
                     It.IsAny<int>(),
-                    It.IsAny<IResult>()))
+                    It.IsAny<IResult>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .ReturnsAsync((
                     IAppsRepository<App> repo,
                     IDistributedCache cache,
                     string cacheKey,
                     DateTime expiration,
                     int id,
-                    IResult result) =>
+                    IResult result,
+                    HttpMessageHandler httpMessageHandler) =>
                         new Tuple<IRepositoryResponse, IResult>(
                             new RepositoryResponse
                             {
@@ -1322,14 +1422,16 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<string>(),
                     It.IsAny<DateTime>(),
                     It.IsAny<int>(),
-                    It.IsAny<IResult>()))
+                    It.IsAny<IResult>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .ReturnsAsync((
                     IAppsRepository<App> repo,
                     IDistributedCache cache,
                     string cacheKey,
                     DateTime expiration,
                     int id,
-                    IResult result) =>
+                    IResult result,
+                    HttpMessageHandler httpMessageHandler) =>
                         new Tuple<IRepositoryResponse, IResult>(
                             new RepositoryResponse
                             {
@@ -1343,14 +1445,16 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<string>(),
                     It.IsAny<DateTime>(),
                     It.IsAny<int>(),
-                    It.IsAny<IResult>()))
+                    It.IsAny<IResult>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .ReturnsAsync((
                     IAppsRepository<App> repo,
                     IDistributedCache cache,
                     string cacheKey,
                     DateTime expiration,
                     int id,
-                    IResult result) =>
+                    IResult result,
+                    HttpMessageHandler httpMessageHandler) =>
                         new Tuple<IRepositoryResponse, IResult>(
                             new RepositoryResponse
                             {
@@ -1365,7 +1469,8 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<DateTime>(),
                     It.IsAny<ICacheKeys>(),
                     It.IsAny<int>(),
-                    It.IsAny<IResult>()))
+                    It.IsAny<IResult>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .ReturnsAsync((
                     IAppsRepository<App> repo,
                     IDistributedCache cache,
@@ -1373,7 +1478,8 @@ namespace SudokuCollective.Test.Cache
                     DateTime expiration,
                     ICacheKeys cacheKeys,
                     int id,
-                    IResult result) =>
+                    IResult result,
+                    HttpMessageHandler httpMessageHandler) =>
                         new Tuple<string, IResult>(TestObjects.GetLicense(), result));
 
             FailedRequest.Setup(cache =>
@@ -1381,7 +1487,8 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<IAppsRepository<App>>(),
                     It.IsAny<IDistributedCache>(),
                     It.IsAny<ICacheKeys>(),
-                    It.IsAny<App>()))
+                    It.IsAny<App>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .Returns(Task.FromResult(new RepositoryResponse()
                 {
                     IsSuccess = false
@@ -1392,7 +1499,8 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<IAppsRepository<App>>(),
                     It.IsAny<IDistributedCache>(),
                     It.IsAny<ICacheKeys>(),
-                    It.IsAny<int>()))
+                    It.IsAny<int>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .Returns(Task.FromResult(new RepositoryResponse()
                 {
                     IsSuccess = false
@@ -1403,7 +1511,8 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<IAppsRepository<App>>(),
                     It.IsAny<IDistributedCache>(),
                     It.IsAny<ICacheKeys>(),
-                    It.IsAny<int>()))
+                    It.IsAny<int>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .Returns(Task.FromResult(new RepositoryResponse()
                 {
                     IsSuccess = false
@@ -1415,7 +1524,8 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<IDistributedCache>(),
                     It.IsAny<string>(),
                     It.IsAny<DateTime>(),
-                    It.IsAny<string>()))
+                    It.IsAny<string>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .Returns(Task.FromResult(true));
 
             FailedRequest.Setup(cache =>
@@ -1427,7 +1537,8 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<ICacheKeys>(),
                     It.IsAny<string>(),
                     It.IsAny<string>(),
-                    It.IsAny<IResult>()))
+                    It.IsAny<IResult>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .ReturnsAsync((
                     IUsersRepository<User> repo,
                     IDistributedCache cache,
@@ -1436,7 +1547,8 @@ namespace SudokuCollective.Test.Cache
                     ICacheKeys cacheKeys,
                     string userName,
                     string license,
-                    IResult result) =>
+                    IResult result,
+                    HttpMessageHandler httpMessageHandler) =>
                 {
                     if (result != null)
                     {
@@ -1456,14 +1568,16 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<string>(),
                     It.IsAny<DateTime>(),
                     It.IsAny<string>(),
-                    It.IsAny<IResult>()))
+                    It.IsAny<IResult>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .ReturnsAsync((
                     IUsersRepository<User> repo,
                     IDistributedCache cache,
                     string cacheKey,
                     DateTime expiration,
                     string email,
-                    IResult result) =>
+                    IResult result,
+                    HttpMessageHandler httpMessageHandler) =>
                         new Tuple<IRepositoryResponse, IResult>(
                             new RepositoryResponse
                             {
@@ -1477,7 +1591,8 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<IDistributedCache>(),
                     It.IsAny<ICacheKeys>(),
                     It.IsAny<EmailConfirmation>(),
-                    It.IsAny<string>()))
+                    It.IsAny<string>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .Returns(Task.FromResult(new RepositoryResponse()
                 {
                     IsSuccess = false
@@ -1489,7 +1604,8 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<IDistributedCache>(),
                     It.IsAny<ICacheKeys>(),
                     It.IsAny<EmailConfirmation>(),
-                    It.IsAny<string>()))
+                    It.IsAny<string>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .Returns(Task.FromResult(new RepositoryResponse()
                 {
                     IsSuccess = false
@@ -1501,7 +1617,8 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<IDistributedCache>(),
                     It.IsAny<string>(),
                     It.IsAny<DateTime>(),
-                    It.IsAny<int>()))
+                    It.IsAny<int>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .Returns(Task.FromResult(false));
 
             FailedRequest.Setup(cache =>
@@ -1510,7 +1627,8 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<IDistributedCache>(),
                     It.IsAny<string>(),
                     It.IsAny<DateTime>(),
-                    It.IsAny<DifficultyLevel>()))
+                    It.IsAny<DifficultyLevel>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .Returns(Task.FromResult(false));
 
             FailedRequest.Setup(cache =>
@@ -1519,7 +1637,8 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<IDistributedCache>(),
                     It.IsAny<string>(),
                     It.IsAny<DateTime>(),
-                    It.IsAny<RoleLevel>()))
+                    It.IsAny<RoleLevel>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .Returns(Task.FromResult(false));
 
             FailedRequest.Setup(cache =>
@@ -1528,7 +1647,8 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<IDistributedCache>(),
                     It.IsAny<string>(),
                     It.IsAny<DateTime>(),
-                    It.IsAny<IResult>()
+                    It.IsAny<IResult>(),
+                    It.IsAny<HttpMessageHandler>()
                 )).ReturnsAsync(new Tuple<IRepositoryResponse, IResult>(
                     new RepositoryResponse
                     {
@@ -1545,7 +1665,8 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<string>(),
                     It.IsAny<DateTime>(),
                     It.IsAny<ICacheKeys>(),
-                    It.IsAny<App>()))
+                    It.IsAny<App>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .Returns(Task.FromResult(new RepositoryResponse()
                 {
                     IsSuccess = true,
@@ -1564,7 +1685,8 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<string>(),
                     It.IsAny<DateTime>(),
                     It.IsAny<ICacheKeys>(),
-                    It.IsAny<Difficulty>()))
+                    It.IsAny<Difficulty>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .Returns(Task.FromResult(new RepositoryResponse()
                 {
                     IsSuccess = true,
@@ -1583,7 +1705,8 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<string>(),
                     It.IsAny<DateTime>(),
                     It.IsAny<ICacheKeys>(),
-                    It.IsAny<Role>()))
+                    It.IsAny<Role>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .Returns(Task.FromResult(new RepositoryResponse()
                 {
                     IsSuccess = true,
@@ -1602,7 +1725,8 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<string>(),
                     It.IsAny<DateTime>(),
                     It.IsAny<ICacheKeys>(),
-                    It.IsAny<User>()))
+                    It.IsAny<User>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .Returns(Task.FromResult(new RepositoryResponse()
                 {
                     IsSuccess = true,
@@ -1621,14 +1745,16 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<string>(),
                     It.IsAny<DateTime>(),
                     It.IsAny<int>(),
-                    It.IsAny<IResult>()))
+                    It.IsAny<IResult>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .ReturnsAsync((
                     IAppsRepository<App> repo,
                     IDistributedCache cache,
                     string cacheKey,
                     DateTime expiration,
                     int id,
-                    IResult result) =>
+                    IResult result,
+                    HttpMessageHandler httpMessageHandler) =>
                         new Tuple<IRepositoryResponse, IResult>(
                             new RepositoryResponse
                             {
@@ -1648,14 +1774,16 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<string>(),
                     It.IsAny<DateTime>(),
                     It.IsAny<int>(),
-                    It.IsAny<IResult>()))
+                    It.IsAny<IResult>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .ReturnsAsync((
                     IDifficultiesRepository<Difficulty> repo,
                     IDistributedCache cache,
                     string cacheKey,
                     DateTime expiration,
                     int id,
-                    IResult result) =>
+                    IResult result,
+                    HttpMessageHandler httpMessageHandler) =>
                         new Tuple<IRepositoryResponse, IResult>(
                             new RepositoryResponse
                             {
@@ -1675,14 +1803,16 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<string>(),
                     It.IsAny<DateTime>(),
                     It.IsAny<int>(),
-                    It.IsAny<IResult>()))
+                    It.IsAny<IResult>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .ReturnsAsync((
                     IRolesRepository<Role> repo,
                     IDistributedCache cache,
                     string cacheKey,
                     DateTime expiration,
                     int id,
-                    IResult result) =>
+                    IResult result,
+                    HttpMessageHandler httpMessageHandler) =>
                         new Tuple<IRepositoryResponse, IResult>(
                             new RepositoryResponse
                             {
@@ -1702,14 +1832,16 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<string>(),
                     It.IsAny<DateTime>(),
                     It.IsAny<int>(),
-                    It.IsAny<IResult>()))
+                    It.IsAny<IResult>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .ReturnsAsync((
                     IUsersRepository<User> repo,
                     IDistributedCache cache,
                     string cacheKey,
                     DateTime expiration,
                     int id,
-                    IResult result) =>
+                    IResult result,
+                    HttpMessageHandler httpMessageHandler) =>
                         new Tuple<IRepositoryResponse, IResult>(
                             new RepositoryResponse
                             {
@@ -1728,13 +1860,15 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<IDistributedCache>(),
                     It.IsAny<string>(),
                     It.IsAny<DateTime>(),
-                    It.IsAny<IResult>()))
+                    It.IsAny<IResult>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .ReturnsAsync((
                     IAppsRepository<App> repo,
                     IDistributedCache cache,
                     string cacheKey,
                     DateTime expiration,
-                    IResult result) =>
+                    IResult result,
+                    HttpMessageHandler httpMessageHandler) =>
                         new Tuple<IRepositoryResponse, IResult>(
                             new RepositoryResponse
                             {
@@ -1753,13 +1887,15 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<IDistributedCache>(),
                     It.IsAny<string>(),
                     It.IsAny<DateTime>(),
-                    It.IsAny<IResult>()))
+                    It.IsAny<IResult>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .ReturnsAsync((
                     IDifficultiesRepository<Difficulty> repo,
                     IDistributedCache cache,
                     string cacheKey,
                     DateTime expiration,
-                    IResult result) =>
+                    IResult result,
+                    HttpMessageHandler httpMessageHandler) =>
                         new Tuple<IRepositoryResponse, IResult>(
                             new RepositoryResponse
                             {
@@ -1778,13 +1914,15 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<IDistributedCache>(),
                     It.IsAny<string>(),
                     It.IsAny<DateTime>(),
-                    It.IsAny<IResult>()))
+                    It.IsAny<IResult>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .ReturnsAsync((
                     IRolesRepository<Role> repo,
                     IDistributedCache cache,
                     string cacheKey,
                     DateTime expiration,
-                    IResult result) =>
+                    IResult result,
+                    HttpMessageHandler httpMessageHandler) =>
                         new Tuple<IRepositoryResponse, IResult>(
                             new RepositoryResponse
                             {
@@ -1803,13 +1941,15 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<IDistributedCache>(),
                     It.IsAny<string>(),
                     It.IsAny<DateTime>(),
-                    It.IsAny<IResult>()))
+                    It.IsAny<IResult>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .ReturnsAsync((
                     ISolutionsRepository<SudokuSolution> repo,
                     IDistributedCache cache,
                     string cacheKey,
                     DateTime expiration,
-                    IResult result) =>
+                    IResult result,
+                    HttpMessageHandler httpMessageHandler) =>
                         new Tuple<IRepositoryResponse, IResult>(
                             new RepositoryResponse
                             {
@@ -1828,13 +1968,15 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<IDistributedCache>(),
                     It.IsAny<string>(),
                     It.IsAny<DateTime>(),
-                    It.IsAny<IResult>()))
+                    It.IsAny<IResult>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .ReturnsAsync((
                     IUsersRepository<User> repo,
                     IDistributedCache cache,
                     string cacheKey,
                     DateTime expiration,
-                    IResult result) =>
+                    IResult result,
+                    HttpMessageHandler httpMessageHandler) =>
                         new Tuple<IRepositoryResponse, IResult>(
                             new RepositoryResponse
                             {
@@ -1853,7 +1995,8 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<IDistributedCache>(),
                     It.IsAny<ICacheKeys>(),
                     It.IsAny<App>(),
-                    It.IsAny<string>()))
+                    It.IsAny<string>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .Returns(Task.FromResult(new RepositoryResponse()
                 {
                     IsSuccess = true,
@@ -1871,7 +2014,8 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<IDistributedCache>(),
                     It.IsAny<ICacheKeys>(),
                     It.IsAny<Difficulty>(),
-                    It.IsAny<string>()))
+                    It.IsAny<string>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .Returns(Task.FromResult(new RepositoryResponse()
                 {
                     IsSuccess = true,
@@ -1889,7 +2033,8 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<IDistributedCache>(),
                     It.IsAny<ICacheKeys>(),
                     It.IsAny<Role>(),
-                    It.IsAny<string>()))
+                    It.IsAny<string>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .Returns(Task.FromResult(new RepositoryResponse()
                 {
                     IsSuccess = true,
@@ -1907,7 +2052,8 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<IDistributedCache>(),
                     It.IsAny<ICacheKeys>(),
                     It.IsAny<User>(),
-                    It.IsAny<string>()))
+                    It.IsAny<string>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .Returns(Task.FromResult(new RepositoryResponse()
                 {
                     IsSuccess = true,
@@ -1925,7 +2071,8 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<IDistributedCache>(),
                     It.IsAny<ICacheKeys>(),
                     It.IsAny<App>(),
-                    It.IsAny<string>()))
+                    It.IsAny<string>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .Returns(Task.FromResult(new RepositoryResponse()
                 {
                     IsSuccess = true
@@ -1937,7 +2084,8 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<IDistributedCache>(),
                     It.IsAny<ICacheKeys>(),
                     It.IsAny<Difficulty>(),
-                    It.IsAny<string>()))
+                    It.IsAny<string>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .Returns(Task.FromResult(new RepositoryResponse()
                 {
                     IsSuccess = true
@@ -1949,7 +2097,8 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<IDistributedCache>(),
                     It.IsAny<ICacheKeys>(),
                     It.IsAny<Role>(),
-                    It.IsAny<string>()))
+                    It.IsAny<string>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .Returns(Task.FromResult(new RepositoryResponse()
                 {
                     IsSuccess = true
@@ -1961,7 +2110,8 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<IDistributedCache>(),
                     It.IsAny<ICacheKeys>(),
                     It.IsAny<User>(),
-                    It.IsAny<string>()))
+                    It.IsAny<string>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .Returns(Task.FromResult(new RepositoryResponse()
                 {
                     IsSuccess = true
@@ -1973,7 +2123,8 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<IDistributedCache>(),
                     It.IsAny<string>(),
                     It.IsAny<DateTime>(),
-                    It.IsAny<int>()))
+                    It.IsAny<int>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .Returns(Task.FromResult(true));
 
             CreateDifficultyRoleSuccessfulRequest.Setup(cache =>
@@ -1982,13 +2133,15 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<IDistributedCache>(),
                     It.IsAny<string>(),
                     It.IsAny<DateTime>(),
-                    It.IsAny<int>()))
+                    It.IsAny<int>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .Returns(Task.FromResult(true));
 
             CreateDifficultyRoleSuccessfulRequest.Setup(cache =>
                 cache.RemoveKeysAsync(
                     It.IsAny<IDistributedCache>(),
-                    It.IsAny<List<string>>()));
+                    It.IsAny<List<string>>(),
+                    It.IsAny<HttpMessageHandler>()));
 
             CreateDifficultyRoleSuccessfulRequest.Setup(cache =>
                 cache.GetAppByLicenseWithCacheAsync(
@@ -1997,14 +2150,16 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<string>(),
                     It.IsAny<DateTime>(),
                     It.IsAny<string>(),
-                    It.IsAny<IResult>()))
+                    It.IsAny<IResult>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .ReturnsAsync((
                     IAppsRepository<App> repo,
                     IDistributedCache cache,
                     string cacheKey,
                     DateTime expiration,
                     string license,
-                    IResult result) =>
+                    IResult result,
+                    HttpMessageHandler httpMessageHandler) =>
                         new Tuple<IRepositoryResponse, IResult>(
                             new RepositoryResponse
                             {
@@ -2024,14 +2179,16 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<string>(),
                     It.IsAny<DateTime>(),
                     It.IsAny<int>(),
-                    It.IsAny<IResult>()))
+                    It.IsAny<IResult>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .ReturnsAsync((
                     IAppsRepository<App> repo,
                     IDistributedCache cache,
                     string cacheKey,
                     DateTime expiration,
                     int id,
-                    IResult result) =>
+                    IResult result,
+                    HttpMessageHandler httpMessageHandler) =>
                         new Tuple<IRepositoryResponse, IResult>(
                             new RepositoryResponse
                             {
@@ -2051,14 +2208,16 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<string>(),
                     It.IsAny<DateTime>(),
                     It.IsAny<int>(),
-                    It.IsAny<IResult>()))
+                    It.IsAny<IResult>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .ReturnsAsync((
                     IAppsRepository<App> repo,
                     IDistributedCache cache,
                     string cacheKey,
                     DateTime expiration,
                     int id,
-                    IResult result) =>
+                    IResult result,
+                    HttpMessageHandler httpMessageHandler) =>
                         new Tuple<IRepositoryResponse, IResult>(
                             new RepositoryResponse
                             {
@@ -2078,14 +2237,16 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<string>(),
                     It.IsAny<DateTime>(),
                     It.IsAny<int>(),
-                    It.IsAny<IResult>()))
+                    It.IsAny<IResult>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .ReturnsAsync((
                     IAppsRepository<App> repo,
                     IDistributedCache cache,
                     string cacheKey,
                     DateTime expiration,
                     int id,
-                    IResult result) =>
+                    IResult result,
+                    HttpMessageHandler httpMessageHandler) =>
                         new Tuple<IRepositoryResponse, IResult>(
                             new RepositoryResponse
                             {
@@ -2105,14 +2266,16 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<string>(),
                     It.IsAny<DateTime>(),
                     It.IsAny<int>(),
-                    It.IsAny<IResult>()))
+                    It.IsAny<IResult>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .ReturnsAsync((
                     IAppsRepository<App> repo,
                     IDistributedCache cache,
                     string cacheKey,
                     DateTime expiration,
                     int id,
-                    IResult result) =>
+                    IResult result,
+                    HttpMessageHandler httpMessageHandler) =>
                         new Tuple<IRepositoryResponse, IResult>(
                             new RepositoryResponse
                             {
@@ -2133,7 +2296,8 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<DateTime>(),
                     It.IsAny<ICacheKeys>(),
                     It.IsAny<int>(),
-                    It.IsAny<IResult>()))
+                    It.IsAny<IResult>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .ReturnsAsync((
                     IAppsRepository<App> repo,
                     IDistributedCache cache,
@@ -2141,7 +2305,8 @@ namespace SudokuCollective.Test.Cache
                     DateTime expiration,
                     ICacheKeys cacheKeys,
                     int id,
-                    IResult result) =>
+                    IResult result,
+                    HttpMessageHandler httpMessageHandler) =>
                         new Tuple<string, IResult>(TestObjects.GetLicense(), result));
 
             CreateDifficultyRoleSuccessfulRequest.Setup(cache =>
@@ -2149,7 +2314,8 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<IAppsRepository<App>>(),
                     It.IsAny<IDistributedCache>(),
                     It.IsAny<ICacheKeys>(),
-                    It.IsAny<App>()))
+                    It.IsAny<App>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .Returns(Task.FromResult(new RepositoryResponse()
                 {
                     IsSuccess = true,
@@ -2166,7 +2332,8 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<IAppsRepository<App>>(),
                     It.IsAny<IDistributedCache>(),
                     It.IsAny<ICacheKeys>(),
-                    It.IsAny<int>()))
+                    It.IsAny<int>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .Returns(Task.FromResult(new RepositoryResponse()
                 {
                     IsSuccess = true,
@@ -2183,7 +2350,8 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<IAppsRepository<App>>(),
                     It.IsAny<IDistributedCache>(),
                     It.IsAny<ICacheKeys>(),
-                    It.IsAny<int>()))
+                    It.IsAny<int>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .Returns(Task.FromResult(new RepositoryResponse()
                 {
                     IsSuccess = true,
@@ -2201,7 +2369,8 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<IDistributedCache>(),
                     It.IsAny<string>(),
                     It.IsAny<DateTime>(),
-                    It.IsAny<string>()))
+                    It.IsAny<string>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .Returns(Task.FromResult(true));
 
             CreateDifficultyRoleSuccessfulRequest.Setup(cache =>
@@ -2213,7 +2382,8 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<ICacheKeys>(),
                     It.IsAny<string>(),
                     It.IsAny<string>(),
-                    It.IsAny<IResult>()))
+                    It.IsAny<IResult>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .ReturnsAsync((
                     IUsersRepository<User> repo,
                     IDistributedCache cache,
@@ -2222,7 +2392,8 @@ namespace SudokuCollective.Test.Cache
                     ICacheKeys cacheKeys,
                     string userName,
                     string license,
-                    IResult result) =>
+                    IResult result,
+                    HttpMessageHandler httpMessageHandler) =>
                 {
                     result.IsSuccess = true;
                     return new Tuple<IRepositoryResponse, IResult>(
@@ -2245,14 +2416,16 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<string>(),
                     It.IsAny<DateTime>(),
                     It.IsAny<string>(),
-                    It.IsAny<IResult>()))
+                    It.IsAny<IResult>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .ReturnsAsync((
                     IUsersRepository<User> repo,
                     IDistributedCache cache,
                     string cacheKey,
                     DateTime expiration,
                     string email,
-                    IResult result) =>
+                    IResult result,
+                    HttpMessageHandler httpMessageHandler) =>
                         new Tuple<IRepositoryResponse, IResult>(
                             new RepositoryResponse
                             {
@@ -2272,7 +2445,8 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<IDistributedCache>(),
                     It.IsAny<ICacheKeys>(),
                     It.IsAny<EmailConfirmation>(),
-                    It.IsAny<string>()))
+                    It.IsAny<string>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .Returns(Task.FromResult(new RepositoryResponse()
                 {
                     IsSuccess = true,
@@ -2290,7 +2464,8 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<IDistributedCache>(),
                     It.IsAny<ICacheKeys>(),
                     It.IsAny<EmailConfirmation>(),
-                    It.IsAny<string>()))
+                    It.IsAny<string>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .Returns(Task.FromResult(new RepositoryResponse()
                 {
                     IsSuccess = true,
@@ -2308,7 +2483,8 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<IDistributedCache>(),
                     It.IsAny<string>(),
                     It.IsAny<DateTime>(),
-                    It.IsAny<int>()))
+                    It.IsAny<int>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .Returns(Task.FromResult(true));
 
             CreateDifficultyRoleSuccessfulRequest.Setup(cache =>
@@ -2317,7 +2493,8 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<IDistributedCache>(),
                     It.IsAny<string>(),
                     It.IsAny<DateTime>(),
-                    It.IsAny<DifficultyLevel>()))
+                    It.IsAny<DifficultyLevel>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .Returns(Task.FromResult(false));
 
             CreateDifficultyRoleSuccessfulRequest.Setup(cache =>
@@ -2326,7 +2503,8 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<IDistributedCache>(),
                     It.IsAny<string>(),
                     It.IsAny<DateTime>(),
-                    It.IsAny<RoleLevel>()))
+                    It.IsAny<RoleLevel>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .Returns(Task.FromResult(false));
 
             CreateDifficultyRoleSuccessfulRequest.Setup(cache =>
@@ -2335,7 +2513,8 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<IDistributedCache>(),
                     It.IsAny<string>(),
                     It.IsAny<DateTime>(),
-                    It.IsAny<IResult>()
+                    It.IsAny<IResult>(),
+                    It.IsAny<HttpMessageHandler>()
                 )).ReturnsAsync(new Tuple<IRepositoryResponse, IResult>(
                     new RepositoryResponse
                     {
@@ -2353,7 +2532,8 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<string>(),
                     It.IsAny<DateTime>(),
                     It.IsAny<ICacheKeys>(),
-                    It.IsAny<App>()))
+                    It.IsAny<App>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .Returns(Task.FromResult(new RepositoryResponse()
                 {
                     IsSuccess = true,
@@ -2372,7 +2552,8 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<string>(),
                     It.IsAny<DateTime>(),
                     It.IsAny<ICacheKeys>(),
-                    It.IsAny<Difficulty>()))
+                    It.IsAny<Difficulty>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .Returns(Task.FromResult(new RepositoryResponse()
                 {
                     IsSuccess = true,
@@ -2391,7 +2572,8 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<string>(),
                     It.IsAny<DateTime>(),
                     It.IsAny<ICacheKeys>(),
-                    It.IsAny<Role>()))
+                    It.IsAny<Role>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .Returns(Task.FromResult(new RepositoryResponse()
                 {
                     IsSuccess = true,
@@ -2410,7 +2592,8 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<string>(),
                     It.IsAny<DateTime>(),
                     It.IsAny<ICacheKeys>(),
-                    It.IsAny<User>()))
+                    It.IsAny<User>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .Returns(Task.FromResult(new RepositoryResponse()
                 {
                     IsSuccess = true,
@@ -2429,14 +2612,16 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<string>(),
                     It.IsAny<DateTime>(),
                     It.IsAny<int>(),
-                    It.IsAny<IResult>()))
+                    It.IsAny<IResult>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .ReturnsAsync((
                     IAppsRepository<App> repo,
                     IDistributedCache cache,
                     string cacheKey,
                     DateTime expiration,
                     int id,
-                    IResult result) =>
+                    IResult result,
+                    HttpMessageHandler httpMessageHandler) =>
                 {
                     if (result != null)
                     {
@@ -2462,14 +2647,16 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<string>(),
                     It.IsAny<DateTime>(),
                     It.IsAny<int>(),
-                    It.IsAny<IResult>()))
+                    It.IsAny<IResult>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .ReturnsAsync((
                     IDifficultiesRepository<Difficulty> repo,
                     IDistributedCache cache,
                     string cacheKey,
                     DateTime expiration,
                     int id,
-                    IResult result) =>
+                    IResult result,
+                    HttpMessageHandler httpMessageHandler) =>
                 {
                     if (result != null)
                     {
@@ -2495,14 +2682,16 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<string>(),
                     It.IsAny<DateTime>(),
                     It.IsAny<int>(),
-                    It.IsAny<IResult>()))
+                    It.IsAny<IResult>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .ReturnsAsync((
                     IRolesRepository<Role> repo,
                     IDistributedCache cache,
                     string cacheKey,
                     DateTime expiration,
                     int id,
-                    IResult result) =>
+                    IResult result,
+                    HttpMessageHandler httpMessageHandler) =>
                 {
                     if (result != null)
                     {
@@ -2528,14 +2717,16 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<string>(),
                     It.IsAny<DateTime>(),
                     It.IsAny<int>(),
-                    It.IsAny<IResult>()))
+                    It.IsAny<IResult>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .ReturnsAsync((
                     IUsersRepository<User> repo,
                     IDistributedCache cache,
                     string cacheKey,
                     DateTime expiration,
                     int id,
-                    IResult result) =>
+                    IResult result,
+                    HttpMessageHandler httpMessageHandler) =>
                 {
                     if (result != null)
                     {
@@ -2560,13 +2751,15 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<IDistributedCache>(),
                     It.IsAny<string>(),
                     It.IsAny<DateTime>(),
-                    It.IsAny<IResult>()))
+                    It.IsAny<IResult>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .ReturnsAsync((
                     IAppsRepository<App> repo,
                     IDistributedCache cache,
                     string cacheKey,
                     DateTime expiration,
-                    IResult result) =>
+                    IResult result,
+                    HttpMessageHandler httpMessageHandler) =>
                         new Tuple<IRepositoryResponse, IResult>(
                             new RepositoryResponse
                             {
@@ -2585,13 +2778,15 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<IDistributedCache>(),
                     It.IsAny<string>(),
                     It.IsAny<DateTime>(),
-                    It.IsAny<IResult>()))
+                    It.IsAny<IResult>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .ReturnsAsync((
                     IDifficultiesRepository<Difficulty> repo,
                     IDistributedCache cache,
                     string cacheKey,
                     DateTime expiration,
-                    IResult result) =>
+                    IResult result,
+                    HttpMessageHandler httpMessageHandler) =>
                         new Tuple<IRepositoryResponse, IResult>(
                             new RepositoryResponse
                             {
@@ -2610,13 +2805,15 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<IDistributedCache>(),
                     It.IsAny<string>(),
                     It.IsAny<DateTime>(),
-                    It.IsAny<IResult>()))
+                    It.IsAny<IResult>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .ReturnsAsync((
                     IRolesRepository<Role> repo,
                     IDistributedCache cache,
                     string cacheKey,
                     DateTime expiration,
-                    IResult result) =>
+                    IResult result,
+                    HttpMessageHandler httpMessageHandler) =>
                         new Tuple<IRepositoryResponse, IResult>(
                             new RepositoryResponse
                             {
@@ -2635,13 +2832,15 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<IDistributedCache>(),
                     It.IsAny<string>(),
                     It.IsAny<DateTime>(),
-                    It.IsAny<IResult>()))
+                    It.IsAny<IResult>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .ReturnsAsync((
                     ISolutionsRepository<SudokuSolution> repo,
                     IDistributedCache cache,
                     string cacheKey,
                     DateTime expiration,
-                    IResult result) =>
+                    IResult result,
+                    HttpMessageHandler httpMessageHandler) =>
                         new Tuple<IRepositoryResponse, IResult>(
                             new RepositoryResponse
                             {
@@ -2660,13 +2859,15 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<IDistributedCache>(),
                     It.IsAny<string>(),
                     It.IsAny<DateTime>(),
-                    It.IsAny<IResult>()))
+                    It.IsAny<IResult>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .ReturnsAsync((
                     IUsersRepository<User> repo,
                     IDistributedCache cache,
                     string cacheKey,
                     DateTime expiration,
-                    IResult result) =>
+                    IResult result,
+                    HttpMessageHandler httpMessageHandler) =>
                         new Tuple<IRepositoryResponse, IResult>(
                             new RepositoryResponse
                             {
@@ -2685,7 +2886,8 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<IDistributedCache>(),
                     It.IsAny<ICacheKeys>(),
                     It.IsAny<App>(),
-                    It.IsAny<string>()))
+                    It.IsAny<string>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .Returns(Task.FromResult(new RepositoryResponse()
                 {
                     IsSuccess = true,
@@ -2703,7 +2905,8 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<IDistributedCache>(),
                     It.IsAny<ICacheKeys>(),
                     It.IsAny<Difficulty>(),
-                    It.IsAny<string>()))
+                    It.IsAny<string>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .Returns(Task.FromResult(new RepositoryResponse()
                 {
                     IsSuccess = true,
@@ -2721,7 +2924,8 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<IDistributedCache>(),
                     It.IsAny<ICacheKeys>(),
                     It.IsAny<Role>(),
-                    It.IsAny<string>()))
+                    It.IsAny<string>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .Returns(Task.FromResult(new RepositoryResponse()
                 {
                     IsSuccess = true,
@@ -2739,7 +2943,8 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<IDistributedCache>(),
                     It.IsAny<ICacheKeys>(),
                     It.IsAny<User>(),
-                    It.IsAny<string>()))
+                    It.IsAny<string>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .Returns(Task.FromResult(new RepositoryResponse()
                 {
                     IsSuccess = true,
@@ -2757,7 +2962,8 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<IDistributedCache>(),
                     It.IsAny<ICacheKeys>(),
                     It.IsAny<App>(),
-                    It.IsAny<string>()))
+                    It.IsAny<string>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .Returns(Task.FromResult(new RepositoryResponse()
                 {
                     IsSuccess = true
@@ -2769,7 +2975,8 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<IDistributedCache>(),
                     It.IsAny<ICacheKeys>(),
                     It.IsAny<Difficulty>(),
-                    It.IsAny<string>()))
+                    It.IsAny<string>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .Returns(Task.FromResult(new RepositoryResponse()
                 {
                     IsSuccess = true
@@ -2781,7 +2988,8 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<IDistributedCache>(),
                     It.IsAny<ICacheKeys>(),
                     It.IsAny<Role>(),
-                    It.IsAny<string>()))
+                    It.IsAny<string>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .Returns(Task.FromResult(new RepositoryResponse()
                 {
                     IsSuccess = true
@@ -2793,7 +3001,8 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<IDistributedCache>(),
                     It.IsAny<ICacheKeys>(),
                     It.IsAny<User>(),
-                    It.IsAny<string>()))
+                    It.IsAny<string>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .Returns(Task.FromResult(new RepositoryResponse()
                 {
                     IsSuccess = true
@@ -2805,7 +3014,8 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<IDistributedCache>(),
                     It.IsAny<string>(),
                     It.IsAny<DateTime>(),
-                    It.IsAny<int>()))
+                    It.IsAny<int>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .Returns(Task.FromResult(true));
 
             PermitSuperUserSuccessfulRequest.Setup(cache =>
@@ -2814,13 +3024,15 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<IDistributedCache>(),
                     It.IsAny<string>(),
                     It.IsAny<DateTime>(),
-                    It.IsAny<int>()))
+                    It.IsAny<int>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .Returns(Task.FromResult(true));
 
             PermitSuperUserSuccessfulRequest.Setup(cache =>
                 cache.RemoveKeysAsync(
                     It.IsAny<IDistributedCache>(),
-                    It.IsAny<List<string>>()));
+                    It.IsAny<List<string>>(),
+                    It.IsAny<HttpMessageHandler>()));
 
             PermitSuperUserSuccessfulRequest.Setup(cache =>
                 cache.GetAppByLicenseWithCacheAsync(
@@ -2829,14 +3041,16 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<string>(),
                     It.IsAny<DateTime>(),
                     It.IsAny<string>(),
-                    It.IsAny<IResult>()))
+                    It.IsAny<IResult>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .ReturnsAsync((
                     IAppsRepository<App> repo,
                     IDistributedCache cache,
                     string cacheKey,
                     DateTime expiration,
                     string license,
-                    IResult result) =>
+                    IResult result,
+                    HttpMessageHandler httpMessageHandler) =>
                         new Tuple<IRepositoryResponse, IResult>(
                             new RepositoryResponse
                             {
@@ -2856,14 +3070,16 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<string>(),
                     It.IsAny<DateTime>(),
                     It.IsAny<int>(),
-                    It.IsAny<IResult>()))
+                    It.IsAny<IResult>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .ReturnsAsync((
                     IAppsRepository<App> repo,
                     IDistributedCache cache,
                     string cacheKey,
                     DateTime expiration,
                     int id,
-                    IResult result) =>
+                    IResult result,
+                    HttpMessageHandler httpMessageHandler) =>
                         new Tuple<IRepositoryResponse, IResult>(
                             new RepositoryResponse
                             {
@@ -2883,14 +3099,16 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<string>(),
                     It.IsAny<DateTime>(),
                     It.IsAny<int>(),
-                    It.IsAny<IResult>()))
+                    It.IsAny<IResult>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .ReturnsAsync((
                     IAppsRepository<App> repo,
                     IDistributedCache cache,
                     string cacheKey,
                     DateTime expiration,
                     int id,
-                    IResult result) =>
+                    IResult result,
+                    HttpMessageHandler httpMessageHandler) =>
                         new Tuple<IRepositoryResponse, IResult>(
                             new RepositoryResponse
                             {
@@ -2910,14 +3128,16 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<string>(),
                     It.IsAny<DateTime>(),
                     It.IsAny<int>(),
-                    It.IsAny<IResult>()))
+                    It.IsAny<IResult>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .ReturnsAsync((
                     IAppsRepository<App> repo,
                     IDistributedCache cache,
                     string cacheKey,
                     DateTime expiration,
                     int id,
-                    IResult result) =>
+                    IResult result,
+                    HttpMessageHandler httpMessageHandler) =>
                         new Tuple<IRepositoryResponse, IResult>(
                             new RepositoryResponse
                             {
@@ -2937,14 +3157,16 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<string>(),
                     It.IsAny<DateTime>(),
                     It.IsAny<int>(),
-                    It.IsAny<IResult>()))
+                    It.IsAny<IResult>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .ReturnsAsync((
                     IAppsRepository<App> repo,
                     IDistributedCache cache,
                     string cacheKey,
                     DateTime expiration,
                     int id,
-                    IResult result) =>
+                    IResult result,
+                    HttpMessageHandler httpMessageHandler) =>
                         new Tuple<IRepositoryResponse, IResult>(
                             new RepositoryResponse
                             {
@@ -2965,7 +3187,8 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<DateTime>(),
                     It.IsAny<ICacheKeys>(),
                     It.IsAny<int>(),
-                    It.IsAny<IResult>()))
+                    It.IsAny<IResult>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .ReturnsAsync((
                     IAppsRepository<App> repo,
                     IDistributedCache cache,
@@ -2973,7 +3196,8 @@ namespace SudokuCollective.Test.Cache
                     DateTime expiration,
                     ICacheKeys cacheKeys,
                     int id,
-                    IResult result) =>
+                    IResult result,
+                    HttpMessageHandler httpMessageHandler) =>
                         new Tuple<string, IResult>(TestObjects.GetThirdLicense(), result));
 
             PermitSuperUserSuccessfulRequest.Setup(cache =>
@@ -2981,7 +3205,8 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<IAppsRepository<App>>(),
                     It.IsAny<IDistributedCache>(),
                     It.IsAny<ICacheKeys>(),
-                    It.IsAny<App>()))
+                    It.IsAny<App>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .Returns(Task.FromResult(new RepositoryResponse()
                 {
                     IsSuccess = true,
@@ -2998,7 +3223,8 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<IAppsRepository<App>>(),
                     It.IsAny<IDistributedCache>(),
                     It.IsAny<ICacheKeys>(),
-                    It.IsAny<int>()))
+                    It.IsAny<int>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .Returns(Task.FromResult(new RepositoryResponse()
                 {
                     IsSuccess = true,
@@ -3015,7 +3241,8 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<IAppsRepository<App>>(),
                     It.IsAny<IDistributedCache>(),
                     It.IsAny<ICacheKeys>(),
-                    It.IsAny<int>()))
+                    It.IsAny<int>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .Returns(Task.FromResult(new RepositoryResponse()
                 {
                     IsSuccess = true,
@@ -3033,7 +3260,8 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<IDistributedCache>(),
                     It.IsAny<string>(),
                     It.IsAny<DateTime>(),
-                    It.IsAny<string>()))
+                    It.IsAny<string>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .Returns(Task.FromResult(true));
 
             PermitSuperUserSuccessfulRequest.Setup(cache =>
@@ -3045,7 +3273,8 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<ICacheKeys>(),
                     It.IsAny<string>(),
                     It.IsAny<string>(),
-                    It.IsAny<IResult>()))
+                    It.IsAny<IResult>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .ReturnsAsync((
                     IUsersRepository<User> repo,
                     IDistributedCache cache,
@@ -3054,7 +3283,8 @@ namespace SudokuCollective.Test.Cache
                     ICacheKeys cacheKeys,
                     string userName,
                     string license,
-                    IResult result) =>
+                    IResult result,
+                    HttpMessageHandler httpMessageHandler) =>
                 {
                     if (result != null)
                     {
@@ -3080,14 +3310,16 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<string>(),
                     It.IsAny<DateTime>(),
                     It.IsAny<string>(),
-                    It.IsAny<IResult>()))
+                    It.IsAny<IResult>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .ReturnsAsync((
                     IUsersRepository<User> repo,
                     IDistributedCache cache,
                     string cacheKey,
                     DateTime expiration,
                     string email,
-                    IResult result) =>
+                    IResult result,
+                    HttpMessageHandler httpMessageHandler) =>
                         new Tuple<IRepositoryResponse, IResult>(
                             new RepositoryResponse
                             {
@@ -3107,7 +3339,8 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<IDistributedCache>(),
                     It.IsAny<ICacheKeys>(),
                     It.IsAny<EmailConfirmation>(),
-                    It.IsAny<string>()))
+                    It.IsAny<string>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .Returns(Task.FromResult(new RepositoryResponse()
                 {
                     IsSuccess = true,
@@ -3125,7 +3358,8 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<IDistributedCache>(),
                     It.IsAny<ICacheKeys>(),
                     It.IsAny<EmailConfirmation>(),
-                    It.IsAny<string>()))
+                    It.IsAny<string>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .Returns(Task.FromResult(new RepositoryResponse()
                 {
                     IsSuccess = true,
@@ -3143,7 +3377,8 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<IDistributedCache>(),
                     It.IsAny<string>(),
                     It.IsAny<DateTime>(),
-                    It.IsAny<int>()))
+                    It.IsAny<int>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .Returns(Task.FromResult(true));
 
             PermitSuperUserSuccessfulRequest.Setup(cache =>
@@ -3152,7 +3387,8 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<IDistributedCache>(),
                     It.IsAny<string>(),
                     It.IsAny<DateTime>(),
-                    It.IsAny<DifficultyLevel>()))
+                    It.IsAny<DifficultyLevel>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .Returns(Task.FromResult(true));
 
             PermitSuperUserSuccessfulRequest.Setup(cache =>
@@ -3161,7 +3397,8 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<IDistributedCache>(),
                     It.IsAny<string>(),
                     It.IsAny<DateTime>(),
-                    It.IsAny<RoleLevel>()))
+                    It.IsAny<RoleLevel>(),
+                    It.IsAny<HttpMessageHandler>()))
                 .Returns(Task.FromResult(true));
 
             PermitSuperUserSuccessfulRequest.Setup(cache =>
@@ -3170,7 +3407,8 @@ namespace SudokuCollective.Test.Cache
                     It.IsAny<IDistributedCache>(),
                     It.IsAny<string>(),
                     It.IsAny<DateTime>(),
-                    It.IsAny<IResult>()
+                    It.IsAny<IResult>(),
+                    It.IsAny<HttpMessageHandler>()
                 )).ReturnsAsync(new Tuple<IRepositoryResponse, IResult>(
                     new RepositoryResponse
                     {

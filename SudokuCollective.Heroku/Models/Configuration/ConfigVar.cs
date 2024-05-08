@@ -1,8 +1,9 @@
 ﻿using System.Runtime.CompilerServices;
 using System.Text.Json.Serialization;
 
+[assembly: InternalsVisibleTo("SudokuCollective.Cache")]
 [assembly: InternalsVisibleTo("SudokuCollective.Test")]
-namespace SudokuCollective.Heroku.Models
+namespace SudokuCollective.HerokuIntegration.Models.Configuration
 {
     internal class ConfigVar
     {
@@ -11,15 +12,15 @@ namespace SudokuCollective.Heroku.Models
         [JsonPropertyName("value")]
         public string Value { get; set; }
 
-        internal ConfigVar() 
+        internal ConfigVar()
         {
             Name = string.Empty;
             Value = string.Empty;
         }
 
         [JsonConstructor]
-        internal ConfigVar(string name, string value) 
-        { 
+        internal ConfigVar(string name, string value)
+        {
             Name = name;
             Value = value;
         }
