@@ -4,12 +4,9 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using SudokuCollective.Api.Models;
-using SudokuCollective.Api.Utilities;
 using SudokuCollective.Core.Interfaces.Services;
-using SudokuCollective.Data.Models.Params;
 using SudokuCollective.Data.Models.Results;
 
 namespace SudokuCollective.Api.Controllers
@@ -115,9 +112,6 @@ namespace SudokuCollective.Api.Controllers
             }
             else
             {
-                if (_environment.IsDevelopment() == false)
-                    result = (Result)await ControllerUtilities.InterceptHerokuIOExceptions(result, _environment, _logger);
-
                 var confirmEmailModel = new ConfirmEmail
                 {
                     IsSuccess = result.IsSuccess,
