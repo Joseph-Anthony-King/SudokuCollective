@@ -971,9 +971,7 @@ namespace SudokuCollective.Core.Models
 
                 _stopwatch.Start();
 
-                var tmp = new SudokuMatrix(this.ToIntList());
-
-                var seed = SudokuMatrixUtilities.SolveByElimination(tmp, tmp.ToIntList());
+                var seed = SudokuMatrixUtilities.SolveByElimination(this, this.ToIntList());
 
                 if (seed.Contains(0))
                 {
