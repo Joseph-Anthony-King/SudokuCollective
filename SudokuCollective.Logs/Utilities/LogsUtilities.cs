@@ -3,7 +3,7 @@ using Microsoft.Extensions.Logging;
 
 [assembly: InternalsVisibleTo("SudokuCollective.Api")]
 [assembly: InternalsVisibleTo("SudokuCollective.Data")]
-[assembly: InternalsVisibleTo("SudokuCollective.Heroku")]
+[assembly: InternalsVisibleTo("SudokuCollective.HerokuIntegration")]
 [assembly: InternalsVisibleTo("SudokuCollective.Repos")]
 [assembly: InternalsVisibleTo("SudokuCollective.Test")]
 namespace SudokuCollective.Logs.Utilities

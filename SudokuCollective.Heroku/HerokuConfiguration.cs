@@ -1,12 +1,13 @@
 ﻿using System.Runtime.CompilerServices;
 using StackExchange.Redis;
 
-[assembly: InternalsVisibleTo("SudokuCollective.Api")]
-namespace SudokuCollective.Heroku
+[assembly: InternalsVisibleTo("SudokuCollective.Cache")]
+[assembly: InternalsVisibleTo("SudokuCollective.Test")]
+namespace SudokuCollective.HerokuIntegration
 {
-    internal static class HerokuIntegration
+    internal static class HerokuConfiguration
     {
-        internal static string GetHerokuPostgresConnectionString()
+        internal static string ConfigureHerokuPostgresConnection()
         {
             // get the connection string from the ENV variables
             var connectionUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
@@ -20,10 +21,10 @@ namespace SudokuCollective.Heroku
             return $"User ID={userInfo[0]};Password={userInfo[1]};Host={databaseUri.Host};Port={databaseUri.Port};Database={db};Pooling=true;SSL Mode=Require;Trust Server Certificate=True;";
         }
 
-        internal static ConfigurationOptions GetHerokuRedisConfigurationOptions()
+        internal static ConfigurationOptions ConfigureHerokuRedisConnection()
         {
             // Get the connection string from the ENV variables in staging
-            string redisUrlString = Environment.GetEnvironmentVariable("REDIS:URL")!;
+            string redisUrlString = Environment.GetEnvironmentVariable("REDIS:TLS_URL")!;
 
             // parse the connection string
             var redisUri = new Uri(redisUrlString);

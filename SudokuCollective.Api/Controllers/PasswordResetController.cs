@@ -1,15 +1,9 @@
-using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using SudokuCollective.Api.Utilities;
 using SudokuCollective.Core.Enums;
 using SudokuCollective.Core.Interfaces.Services;
 using SudokuCollective.Core.Models;
-using SudokuCollective.Data.Models.Params;
 using SudokuCollective.Data.Models.Requests;
 using SudokuCollective.Data.Models.Results;
 
@@ -23,20 +17,14 @@ namespace SudokuCollective.Api.Controllers
     /// </remarks>
     /// <param name="usersService"></param>
     /// <param name="appsService"></param>
-    /// <param name="logger"></param>
-    /// <param name="environment"></param>
     [Route("[controller]")]
     [Controller]
     public class PasswordResetController(
         IUsersService usersService,
-        IAppsService appsService,
-        ILogger<PasswordResetController> logger,
-        IWebHostEnvironment environment) : Controller
+        IAppsService appsService) : Controller
     {
         private readonly IUsersService _usersService = usersService;
         private readonly IAppsService _appsService = appsService;
-        private readonly ILogger<PasswordResetController> _logger = logger;
-        private readonly IWebHostEnvironment _environment = environment;
 
         /// <summary>
         /// A default endpoint to process password reset requests, does not require a login.
@@ -103,9 +91,6 @@ namespace SudokuCollective.Api.Controllers
             }
             else
             {
-                if (_environment.IsDevelopment() == false)
-                    result = (Result)await ControllerUtilities.InterceptHerokuIOExceptions(result, _environment, _logger);
-
                 var passwordReset = new SudokuCollective.Api.Models.PasswordReset
                 {
                     IsSuccess = result.IsSuccess,
@@ -164,9 +149,6 @@ namespace SudokuCollective.Api.Controllers
                 }
                 else
                 {
-                    if (_environment.IsDevelopment() == false) 
-                        updatePasswordResult = (Result)await ControllerUtilities.InterceptHerokuIOExceptions(updatePasswordResult, _environment, _logger);
-
                     passwordReset.IsSuccess = updatePasswordResult.IsSuccess;
                     passwordReset.ErrorMessage = updatePasswordResult.Message;
 
@@ -175,9 +157,6 @@ namespace SudokuCollective.Api.Controllers
             }
             else
             {
-                if (_environment.IsDevelopment() == false)
-                    userResult = (Result)await ControllerUtilities.InterceptHerokuIOExceptions(userResult, _environment, _logger);
-
                 passwordReset.NewPassword = string.Empty;
                 passwordReset.ErrorMessage = userResult.Message;
 

@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using SudokuCollective.Api.Utilities;
 using SudokuCollective.Core.Interfaces.Services;
@@ -97,9 +96,6 @@ namespace SudokuCollective.Api.Controllers.V1
                     }
                     else
                     {
-                        if (_environment.IsDevelopment() == false)
-                            result = (Result)await ControllerUtilities.InterceptHerokuIOExceptions(result, _environment, _logger);
-
                         result.Message = ControllerMessages.StatusCode404(result.Message);
 
                         return NotFound(result);
@@ -112,12 +108,11 @@ namespace SudokuCollective.Api.Controllers.V1
             }
             catch (Exception e)
             {
-                return await ControllerUtilities.ProcessException(
+                return ControllerUtilities.ProcessException(
                     this,
                     _requestService,
                     _logger,
-                    e,
-                    environment);
+                    e);
             }
         }
 
@@ -200,9 +195,6 @@ namespace SudokuCollective.Api.Controllers.V1
                     }
                     else
                     {
-                        if (_environment.IsDevelopment() == false)
-                            result = (Result)await ControllerUtilities.InterceptHerokuIOExceptions(result, _environment, _logger);
-
                         result.Message = ControllerMessages.StatusCode404(result.Message);
 
                         return NotFound(result);
@@ -215,12 +207,11 @@ namespace SudokuCollective.Api.Controllers.V1
             }
             catch (Exception e)
             {
-                return await ControllerUtilities.ProcessException(
+                return ControllerUtilities.ProcessException(
                     this,
                     _requestService,
                     _logger,
-                    e,
-                    environment);
+                    e);
             }
         }
 
@@ -286,9 +277,6 @@ namespace SudokuCollective.Api.Controllers.V1
                     }
                     else
                     {
-                        if (_environment.IsDevelopment() == false)
-                            result = (Result)await ControllerUtilities.InterceptHerokuIOExceptions(result, _environment, _logger);
-
                         result.Message = ControllerMessages.StatusCode404(result.Message);
 
                         return NotFound(result);
@@ -307,12 +295,11 @@ namespace SudokuCollective.Api.Controllers.V1
             }
             catch (Exception e)
             {
-                return await ControllerUtilities.ProcessException(
+                return ControllerUtilities.ProcessException(
                     this,
                     _requestService,
                     _logger,
-                    e,
-                    environment);
+                    e);
             }
         }
 
@@ -376,9 +363,6 @@ namespace SudokuCollective.Api.Controllers.V1
                     }
                     else
                     {
-                        if (_environment.IsDevelopment() == false)
-                            result = (Result)await ControllerUtilities.InterceptHerokuIOExceptions(result, _environment, _logger);
-
                         result.Message = ControllerMessages.StatusCode404(result.Message);
 
                         return NotFound(result);
@@ -391,12 +375,11 @@ namespace SudokuCollective.Api.Controllers.V1
             }
             catch (Exception e)
             {
-                return await ControllerUtilities.ProcessException(
+                return ControllerUtilities.ProcessException(
                     this,
                     _requestService,
                     _logger,
-                    e,
-                    environment);
+                    e);
             }
         }
 
@@ -477,9 +460,6 @@ namespace SudokuCollective.Api.Controllers.V1
                     }
                     else
                     {
-                        if (_environment.IsDevelopment() == false)
-                            result = (Result)await ControllerUtilities.InterceptHerokuIOExceptions(result, _environment, _logger);
-
                         result.Message = ControllerMessages.StatusCode404(result.Message);
 
                         return NotFound(result);
@@ -492,12 +472,11 @@ namespace SudokuCollective.Api.Controllers.V1
             }
             catch (Exception e)
             {
-                return await ControllerUtilities.ProcessException(
+                return ControllerUtilities.ProcessException(
                     this,
                     _requestService,
                     _logger,
-                    e,
-                    environment);
+                    e);
             }
         }
 
@@ -582,9 +561,6 @@ namespace SudokuCollective.Api.Controllers.V1
                     }
                     else
                     {
-                        if (_environment.IsDevelopment() == false)
-                            result = (Result)await ControllerUtilities.InterceptHerokuIOExceptions(result, _environment, _logger);
-
                         result.Message = ControllerMessages.StatusCode404(result.Message);
 
                         return NotFound(result);
@@ -597,12 +573,11 @@ namespace SudokuCollective.Api.Controllers.V1
             }
             catch (Exception e)
             {
-                return await ControllerUtilities.ProcessException(
+                return ControllerUtilities.ProcessException(
                     this,
                     _requestService,
                     _logger,
-                    e,
-                    environment);
+                    e);
             }
         }
 
@@ -686,9 +661,6 @@ namespace SudokuCollective.Api.Controllers.V1
                     }
                     else
                     {
-                        if (_environment.IsDevelopment() == false)
-                            result = (Result)await ControllerUtilities.InterceptHerokuIOExceptions(result, _environment, _logger);
-
                         result.Message = ControllerMessages.StatusCode404(result.Message);
 
                         return NotFound(result);
@@ -701,12 +673,11 @@ namespace SudokuCollective.Api.Controllers.V1
             }
             catch (Exception e)
             {
-                return await ControllerUtilities.ProcessException(
+                return ControllerUtilities.ProcessException(
                     this,
                     _requestService,
                     _logger,
-                    e,
-                    environment);
+                    e);
             }
         }
 
@@ -798,9 +769,6 @@ namespace SudokuCollective.Api.Controllers.V1
                     }
                     else
                     {
-                        if (_environment.IsDevelopment() == false)
-                            result = (Result)await ControllerUtilities.InterceptHerokuIOExceptions(result, _environment, _logger);
-
                         result.Message = ControllerMessages.StatusCode404(result.Message);
 
                         return NotFound(result);
@@ -813,12 +781,11 @@ namespace SudokuCollective.Api.Controllers.V1
             }
             catch (Exception e)
             {
-                return await ControllerUtilities.ProcessException(
+                return ControllerUtilities.ProcessException(
                     this,
                     _requestService,
                     _logger,
-                    e,
-                    environment);
+                    e);
             }
         }
 
@@ -910,9 +877,6 @@ namespace SudokuCollective.Api.Controllers.V1
                     }
                     else
                     {
-                        if (_environment.IsDevelopment() == false)
-                            result = (Result)await ControllerUtilities.InterceptHerokuIOExceptions(result, _environment, _logger);
-
                         result.Message = ControllerMessages.StatusCode404(result.Message);
 
                         return NotFound(result);
@@ -925,12 +889,11 @@ namespace SudokuCollective.Api.Controllers.V1
             }
             catch (Exception e)
             {
-                return await ControllerUtilities.ProcessException(
+                return ControllerUtilities.ProcessException(
                     this,
                     _requestService,
                     _logger,
-                    e,
-                    environment);
+                    e);
             }
         }
 
@@ -994,9 +957,6 @@ namespace SudokuCollective.Api.Controllers.V1
                     }
                     else
                     {
-                        if (_environment.IsDevelopment() == false)
-                            result = (Result)await ControllerUtilities.InterceptHerokuIOExceptions(result, _environment, _logger);
-
                         result.Message = ControllerMessages.StatusCode404(result.Message);
 
                         return NotFound(result);
@@ -1009,12 +969,11 @@ namespace SudokuCollective.Api.Controllers.V1
             }
             catch (Exception e)
             {
-                return await ControllerUtilities.ProcessException(
+                return ControllerUtilities.ProcessException(
                     this,
                     _requestService,
                     _logger,
-                    e,
-                    environment);
+                    e);
             }
         }
 
@@ -1078,9 +1037,6 @@ namespace SudokuCollective.Api.Controllers.V1
                     }
                     else
                     {
-                        if (_environment.IsDevelopment() == false)
-                            result = (Result)await ControllerUtilities.InterceptHerokuIOExceptions(result, _environment, _logger);
-
                         result.Message = ControllerMessages.StatusCode404(result.Message);
 
                         return NotFound(result);
@@ -1093,12 +1049,11 @@ namespace SudokuCollective.Api.Controllers.V1
             }
             catch (Exception e)
             {
-                return await ControllerUtilities.ProcessException(
+                return ControllerUtilities.ProcessException(
                     this,
                     _requestService,
                     _logger,
-                    e,
-                    environment);
+                    e);
             }
         }
 
@@ -1157,9 +1112,6 @@ namespace SudokuCollective.Api.Controllers.V1
                     }
                     else
                     {
-                        if (_environment.IsDevelopment() == false)
-                            result = (Result)await ControllerUtilities.InterceptHerokuIOExceptions(result, _environment, _logger);
-
                         result.Message = ControllerMessages.StatusCode404(result.Message);
 
                         return NotFound(result);
@@ -1172,12 +1124,11 @@ namespace SudokuCollective.Api.Controllers.V1
             }
             catch (Exception e)
             {
-                return await ControllerUtilities.ProcessException(
+                return ControllerUtilities.ProcessException(
                     this,
                     _requestService,
                     _logger,
-                    e,
-                    environment);
+                    e);
             }
         }
 
@@ -1237,9 +1188,6 @@ namespace SudokuCollective.Api.Controllers.V1
                     }
                     else
                     {
-                        if (_environment.IsDevelopment() == false)
-                            result = (Result)await ControllerUtilities.InterceptHerokuIOExceptions(result, _environment, _logger);
-
                         result.Message = ControllerMessages.StatusCode404(result.Message);
 
                         return NotFound(result);
@@ -1252,12 +1200,11 @@ namespace SudokuCollective.Api.Controllers.V1
             }
             catch (Exception e)
             {
-                return await ControllerUtilities.ProcessException(
+                return ControllerUtilities.ProcessException(
                     this,
                     _requestService,
                     _logger,
-                    e,
-                    environment);
+                    e);
             }
         }
 
@@ -1319,9 +1266,6 @@ namespace SudokuCollective.Api.Controllers.V1
                     }
                     else
                     {
-                        if (_environment.IsDevelopment() == false)
-                            result = (Result)await ControllerUtilities.InterceptHerokuIOExceptions(result, _environment, _logger);
-
                         result.Message = ControllerMessages.StatusCode404(result.Message);
 
                         return NotFound(result);
@@ -1340,12 +1284,11 @@ namespace SudokuCollective.Api.Controllers.V1
             }
             catch (Exception e)
             {
-                return await ControllerUtilities.ProcessException(
+                return ControllerUtilities.ProcessException(
                     this,
                     _requestService,
                     _logger,
-                    e,
-                    environment);
+                    e);
             }
         }
 
@@ -1409,9 +1352,6 @@ namespace SudokuCollective.Api.Controllers.V1
                     }
                     else
                     {
-                        if (_environment.IsDevelopment() == false)
-                            result = (Result)await ControllerUtilities.InterceptHerokuIOExceptions(result, _environment, _logger);
-
                         result.Message = ControllerMessages.StatusCode404(result.Message);
 
                         return NotFound(result);
@@ -1424,12 +1364,11 @@ namespace SudokuCollective.Api.Controllers.V1
             }
             catch (Exception e)
             {
-                return await ControllerUtilities.ProcessException(
+                return ControllerUtilities.ProcessException(
                     this,
                     _requestService,
                     _logger,
-                    e,
-                    environment);
+                    e);
             }
         }
 
@@ -1493,9 +1432,6 @@ namespace SudokuCollective.Api.Controllers.V1
                     }
                     else
                     {
-                        if (_environment.IsDevelopment() == false)
-                            result = (Result)await ControllerUtilities.InterceptHerokuIOExceptions(result, _environment, _logger);
-
                         result.Message = ControllerMessages.StatusCode404(result.Message);
 
                         return NotFound(result);
@@ -1508,12 +1444,11 @@ namespace SudokuCollective.Api.Controllers.V1
             }
             catch (Exception e)
             {
-                return await ControllerUtilities.ProcessException(
+                return ControllerUtilities.ProcessException(
                     this,
                     _requestService,
                     _logger,
-                    e,
-                    environment);
+                    e);
             }
         }
 
@@ -1561,9 +1496,6 @@ namespace SudokuCollective.Api.Controllers.V1
                 }
                 else
                 {
-                    if (_environment.IsDevelopment() == false)
-                        result = (Result)await ControllerUtilities.InterceptHerokuIOExceptions(result, _environment, _logger);
-
                     result.Message = ControllerMessages.StatusCode404(result.Message);
 
                     return NotFound(result);
