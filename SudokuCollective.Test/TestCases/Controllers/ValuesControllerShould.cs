@@ -17,20 +17,14 @@ namespace SudokuCollective.Test.TestCases.Controllers
         private DatabaseContext context;
         private ValuesController sut;
         private MockedValuesService mockedValuesService;
-        private Mock<ILogger<ValuesController>> mockedLogger;
-        private Mock<IWebHostEnvironment> mockWebHostEnvironment;
 
         [SetUp]
         public async Task SetUp()
         {
             context = await TestDatabase.GetDatabaseContext();
             mockedValuesService = new MockedValuesService(context);
-            mockedLogger = new Mock<ILogger<ValuesController>>();
-            mockWebHostEnvironment = new Mock<IWebHostEnvironment>();
             sut = new ValuesController(
-                mockedValuesService.Request.Object,
-                mockedLogger.Object,
-                mockWebHostEnvironment.Object);
+                mockedValuesService.Request.Object);
         }
 
         [Test, Category("Controller")]

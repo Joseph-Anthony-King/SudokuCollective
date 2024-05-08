@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using SudokuCollective.Api.Utilities;
 using SudokuCollective.Core.Interfaces.Services;
@@ -100,9 +99,6 @@ namespace SudokuCollective.Api.V1.Controllers
                     }
                     else
                     {
-                        if (_environment.IsDevelopment() == false)
-                            result = (Result)await ControllerUtilities.InterceptHerokuIOExceptions(result, _environment, _logger);
-
                         result.Message = ControllerMessages.StatusCode404(result.Message);
 
                         return NotFound(result);
@@ -115,12 +111,11 @@ namespace SudokuCollective.Api.V1.Controllers
             }
             catch (Exception e)
             {
-                return await ControllerUtilities.ProcessException<SolutionsController>(
+                return ControllerUtilities.ProcessException<SolutionsController>(
                     this,
                     _requestService,
                     _logger,
-                    e,
-                    environment);
+                    e);
             }
         }
 
@@ -174,9 +169,6 @@ namespace SudokuCollective.Api.V1.Controllers
                     }
                     else
                     {
-                        if (_environment.IsDevelopment() == false)
-                            result = (Result)await ControllerUtilities.InterceptHerokuIOExceptions(result, _environment, _logger);
-
                         result.Message = ControllerMessages.StatusCode404(result.Message);
 
                         return NotFound(result);
@@ -189,12 +181,11 @@ namespace SudokuCollective.Api.V1.Controllers
             }
             catch (Exception e)
             {
-                return await ControllerUtilities.ProcessException<SolutionsController>(
+                return ControllerUtilities.ProcessException<SolutionsController>(
                     this,
                     _requestService,
                     _logger,
-                    e,
-                    environment);
+                    e);
             }
         }
 
@@ -251,9 +242,6 @@ namespace SudokuCollective.Api.V1.Controllers
                 }
                 else
                 {
-                    if (_environment.IsDevelopment() == false)
-                        result = (Result)await ControllerUtilities.InterceptHerokuIOExceptions(result, _environment, _logger);
-
                     result.Message = ControllerMessages.StatusCode400(result.Message);
 
                     return BadRequest(result);
@@ -261,12 +249,11 @@ namespace SudokuCollective.Api.V1.Controllers
             }
             catch (Exception e)
             {
-                return await ControllerUtilities.ProcessException<SolutionsController>(
+                return ControllerUtilities.ProcessException<SolutionsController>(
                     this,
                     _requestService,
                     _logger,
-                    e,
-                    environment);
+                    e);
             }
         }
 
@@ -303,12 +290,11 @@ namespace SudokuCollective.Api.V1.Controllers
             }
             catch (Exception e)
             {
-                return await ControllerUtilities.ProcessException<SolutionsController>(
+                return ControllerUtilities.ProcessException<SolutionsController>(
                     this,
                     _requestService,
                     _logger,
-                    e,
-                    environment);
+                    e);
             }
         }
 
@@ -371,12 +357,11 @@ namespace SudokuCollective.Api.V1.Controllers
             }
             catch (Exception e)
             {
-                return await ControllerUtilities.ProcessException<SolutionsController>(
+                return ControllerUtilities.ProcessException<SolutionsController>(
                     this,
                     _requestService,
                     _logger,
-                    e,
-                    environment);
+                    e);
             }
         }
     }

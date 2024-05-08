@@ -1,8 +1,9 @@
 using System.Runtime.CompilerServices;
 using System.Text.Json.Serialization;
 
+[assembly: InternalsVisibleTo("SudokuCollective.Cache")]
 [assembly: InternalsVisibleTo("SudokuCollective.Test")]
-namespace SudokuCollective.Heroku.Models
+namespace SudokuCollective.HerokuIntegration.Models.Requests
 {
     internal class HerokuCredentials
     {

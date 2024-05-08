@@ -39,7 +39,7 @@ using SudokuCollective.Data.Models.Payloads;
 using SudokuCollective.Data.Models.Requests;
 using SudokuCollective.Data.Models.Results;
 using SudokuCollective.Data.Services;
-using SudokuCollective.Heroku;
+using SudokuCollective.HerokuIntegration;
 using SudokuCollective.Repos;
 using Role = SudokuCollective.Core.Models.Role;
 
@@ -86,7 +86,7 @@ namespace SudokuCollective.Api
 				options.UseNpgsql(
 					_environment.IsDevelopment() ?
 						Configuration.GetConnectionString("DatabaseConnection") :
-						HerokuIntegration.GetHerokuPostgresConnectionString(),
+						HerokuConfiguration.ConfigureHerokuPostgresConnection(),
 					b => b.MigrationsAssembly("SudokuCollective.Api"));
 				options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
 			});
@@ -202,7 +202,7 @@ namespace SudokuCollective.Api
 			}
 			else
             {
-				options = HerokuIntegration.GetHerokuRedisConfigurationOptions();
+				options = HerokuConfiguration.ConfigureHerokuRedisConnection();
 
 				cacheConnectionString = options.ToString();
 			}
