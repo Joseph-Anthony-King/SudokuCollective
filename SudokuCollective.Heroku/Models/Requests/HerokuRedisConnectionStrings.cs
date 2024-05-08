@@ -1,24 +1,25 @@
 ﻿using System.Runtime.CompilerServices;
 using System.Text.Json.Serialization;
 
+[assembly: InternalsVisibleTo("SudokuCollective.Cache")]
 [assembly: InternalsVisibleTo("SudokuCollective.Test")]
-namespace SudokuCollective.Heroku.Models
+namespace SudokuCollective.HerokuIntegration.Models.Requests
 {
-    internal class HerokuConnectionStrings
+    internal class HerokuRedisConnectionStrings
     {
         [JsonPropertyName("REDIS:TLS_URL")]
         public string RedisTlsUrl { get; set; }
         [JsonPropertyName("REDIS:URL")]
         public string RedisUrl { get; set; }
 
-        internal HerokuConnectionStrings() 
+        internal HerokuRedisConnectionStrings()
         {
             RedisTlsUrl = string.Empty;
             RedisUrl = string.Empty;
         }
 
         [JsonConstructor]
-        internal HerokuConnectionStrings(
+        internal HerokuRedisConnectionStrings(
             string redisTlsUrl,
             string redisUrl)
         {

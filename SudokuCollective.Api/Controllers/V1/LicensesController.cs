@@ -2,10 +2,8 @@
 using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using SudokuCollective.Api.Utilities;
 using SudokuCollective.Core.Interfaces.Services;
@@ -24,7 +22,6 @@ namespace SudokuCollective.Api.Controllers.V1
     /// <param name="requestService"></param>
     /// <param name="httpContextAccessor"></param>
     /// <param name="logger"></param>
-    /// <param name="environment"></param>
     [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
     [Route("api/[controller]")]
     [ApiController]
@@ -32,14 +29,12 @@ namespace SudokuCollective.Api.Controllers.V1
         IAppsService appsService,
         IRequestService requestService,
         IHttpContextAccessor httpContextAccessor,
-        ILogger<LicensesController> logger,
-        IWebHostEnvironment environment) : ControllerBase
+        ILogger<LicensesController> logger) : ControllerBase
     {
         private readonly IAppsService _appsService = appsService;
         private readonly IRequestService _requestService = requestService;
         private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
         private readonly ILogger<LicensesController> _logger = logger;
-        private readonly IWebHostEnvironment _environment = environment;
 
         /// <summary>
         /// An endpoint to create app licenses, requires superuser or admin roles.
@@ -97,9 +92,6 @@ namespace SudokuCollective.Api.Controllers.V1
                     }
                     else
                     {
-                        if (_environment.IsDevelopment() == false)
-                            result = (Result)await ControllerUtilities.InterceptHerokuIOExceptions(result, _environment, _logger);
-
                         result.Message = ControllerMessages.StatusCode400(result.Message);
 
                         return BadRequest(result);
@@ -112,12 +104,11 @@ namespace SudokuCollective.Api.Controllers.V1
             }
             catch (Exception e)
             {
-                return await ControllerUtilities.ProcessException<LicensesController>(
+                return ControllerUtilities.ProcessException<LicensesController>(
                     this,
                     _requestService,
                     _logger,
-                    e,
-                    environment);
+                    e);
             }
         }
 
@@ -177,9 +168,6 @@ namespace SudokuCollective.Api.Controllers.V1
                     }
                     else
                     {
-                        if (_environment.IsDevelopment() == false)
-                            result = await ControllerUtilities.InterceptHerokuIOExceptions(result, _environment, _logger);
-
                         result.Message = ControllerMessages.StatusCode404(result.Message);
 
                         return NotFound(result);
@@ -192,12 +180,11 @@ namespace SudokuCollective.Api.Controllers.V1
             }
             catch (Exception e)
             {
-                return await ControllerUtilities.ProcessException<LicensesController>(
+                return ControllerUtilities.ProcessException<LicensesController>(
                     this,
                     _requestService,
                     _logger,
-                    e,
-                    environment);
+                    e);
             }
         }
     }

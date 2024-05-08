@@ -33,7 +33,7 @@
     <ProjectReference Include="..\SudokuCollective.Cache\SudokuCollective.Cache.csproj" />
     <ProjectReference Include="..\SudokuCollective.Core\SudokuCollective.Core.csproj" />
     <ProjectReference Include="..\SudokuCollective.Data\SudokuCollective.Data.csproj" />
-    <ProjectReference Include="..\SudokuCollective.Heroku\SudokuCollective.Heroku.csproj" />
+    <ProjectReference Include="..\SudokuCollective.Heroku\SudokuCollective.HerokuIntegration.csproj" />
     <ProjectReference Include="..\SudokuCollective.Logs\SudokuCollective.Logs.csproj" />
     <ProjectReference Include="..\SudokuCollective.Repos\SudokuCollective.Repos.csproj" />
     <ProjectReference Include="..\SudokuCollective.Api\SudokuCollective.Api.csproj" />

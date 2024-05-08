@@ -2,6 +2,7 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Logging;
 using SudokuCollective.Core.Enums;
 using SudokuCollective.Core.Interfaces.Cache;
 using SudokuCollective.Core.Interfaces.ServiceModels;
@@ -13,6 +14,8 @@ using SudokuCollective.Data.Models;
 using SudokuCollective.Data.Models.Values;
 using SudokuCollective.Core.Interfaces.Models.DomainObjects.Values;
 using SudokuCollective.Core.Interfaces.Models.DomainEntities;
+using SudokuCollective.HerokuIntegration;
+using SudokuCollective.HerokuIntegration.Models.Responses;
 
 namespace SudokuCollective.Cache
 {
@@ -24,7 +27,8 @@ namespace SudokuCollective.Cache
             string cacheKey,
             DateTime expiration,
             ICacheKeys keys,
-            T entity) where T : IDomainEntity
+            T entity,
+            HttpMessageHandler httpMessageHandler = null) where T : IDomainEntity
         {
             try
             {
@@ -104,8 +108,22 @@ namespace SudokuCollective.Cache
 
                 return response;
             }
-            catch
+            catch (Exception ex)
             {
+                if (ex.Message.Contains("redis server(s)"))
+                {
+                    try
+                    {
+                        var response = await InterceptHerokuRedisExceptions(httpMessageHandler);
+
+                        throw new IOException(response.Message);
+                    }
+                    catch (Exception) 
+                    { 
+                        throw; 
+                    }
+                }
+
                 throw;
             }
         }
@@ -116,7 +134,8 @@ namespace SudokuCollective.Cache
             string cacheKey,
             DateTime expiration,
             int id,
-            IResult result = null) where T : IDomainEntity
+            IResult result = null,
+            HttpMessageHandler httpMessageHandler = null) where T : IDomainEntity
         {
             try
             {
@@ -164,8 +183,22 @@ namespace SudokuCollective.Cache
 
                 return new Tuple<IRepositoryResponse, IResult>(response, result);
             }
-            catch
+            catch (Exception ex)
             {
+                if (ex.Message.Contains("redis server(s)"))
+                {
+                    try
+                    {
+                        var response = await InterceptHerokuRedisExceptions(httpMessageHandler);
+
+                        throw new IOException(response.Message);
+                    }
+                    catch (Exception)
+                    {
+                        throw;
+                    }
+                }
+
                 throw;
             }
         }
@@ -175,7 +208,8 @@ namespace SudokuCollective.Cache
             IDistributedCache cache,
             string cacheKey,
             DateTime expiration,
-            IResult result = null) where T : IDomainEntity
+            IResult result = null,
+            HttpMessageHandler httpMessageHandler = null) where T : IDomainEntity
         {
             try
             {
@@ -224,8 +258,22 @@ namespace SudokuCollective.Cache
 
                 return new Tuple<IRepositoryResponse, IResult>(response, result);
             }
-            catch
+            catch (Exception ex)
             {
+                if (ex.Message.Contains("redis server(s)"))
+                {
+                    try
+                    {
+                        var response = await InterceptHerokuRedisExceptions(httpMessageHandler);
+
+                        throw new IOException(response.Message);
+                    }
+                    catch (Exception)
+                    {
+                        throw;
+                    }
+                }
+
                 throw;
             }
         }
@@ -235,7 +283,8 @@ namespace SudokuCollective.Cache
             IDistributedCache cache,
             ICacheKeys keys,
             T entity,
-            string license = null) where T : IDomainEntity
+            string license = null,
+            HttpMessageHandler httpMessageHandler = null) where T : IDomainEntity
         {
             try
             {
@@ -287,8 +336,22 @@ namespace SudokuCollective.Cache
 
                 return response;
             }
-            catch
+            catch (Exception ex)
             {
+                if (ex.Message.Contains("redis server(s)"))
+                {
+                    try
+                    {
+                        var response = await InterceptHerokuRedisExceptions(httpMessageHandler);
+
+                        throw new IOException(response.Message);
+                    }
+                    catch (Exception)
+                    {
+                        throw;
+                    }
+                }
+
                 throw;
             }
         }
@@ -298,7 +361,8 @@ namespace SudokuCollective.Cache
             IDistributedCache cache,
             ICacheKeys keys,
             T entity,
-            string license = null) where T : IDomainEntity
+            string license = null,
+            HttpMessageHandler httpMessageHandler = null) where T : IDomainEntity
         {
             try
             {
@@ -400,8 +464,22 @@ namespace SudokuCollective.Cache
 
                 return response;
             }
-            catch
+            catch (Exception ex)
             {
+                if (ex.Message.Contains("redis server(s)"))
+                {
+                    try
+                    {
+                        var response = await InterceptHerokuRedisExceptions(httpMessageHandler);
+
+                        throw new IOException(response.Message);
+                    }
+                    catch (Exception)
+                    {
+                        throw;
+                    }
+                }
+
                 throw;
             }
         }
@@ -411,7 +489,8 @@ namespace SudokuCollective.Cache
             IDistributedCache cache,
             string cacheKey,
             DateTime expiration,
-            int id) where T : IDomainEntity
+            int id,
+            HttpMessageHandler httpMessageHandler = null) where T : IDomainEntity
         {
             try
             {
@@ -448,15 +527,30 @@ namespace SudokuCollective.Cache
 
                 return result;
             }
-            catch
+            catch (Exception ex)
             {
+                if (ex.Message.Contains("redis server(s)"))
+                {
+                    try
+                    {
+                        var response = await InterceptHerokuRedisExceptions(httpMessageHandler);
+
+                        throw new IOException(response.Message);
+                    }
+                    catch (Exception)
+                    {
+                        throw;
+                    }
+                }
+
                 throw;
             }
         }
 
         public async Task RemoveKeysAsync(
             IDistributedCache cache,
-            List<string> keys)
+            List<string> keys,
+            HttpMessageHandler httpMessageHandler = null)
         {
             foreach (var key in keys)
             {
@@ -474,7 +568,8 @@ namespace SudokuCollective.Cache
             string cacheKey,
             DateTime expiration,
             string license,
-            IResult result = null)
+            IResult result = null,
+            HttpMessageHandler httpMessageHandler = null)
         {
             try
             {
@@ -522,8 +617,22 @@ namespace SudokuCollective.Cache
 
                 return new Tuple<IRepositoryResponse, IResult>(response, result);
             }
-            catch
+            catch (Exception ex)
             {
+                if (ex.Message.Contains("redis server(s)"))
+                {
+                    try
+                    {
+                        var response = await InterceptHerokuRedisExceptions(httpMessageHandler);
+
+                        throw new IOException(response.Message);
+                    }
+                    catch (Exception)
+                    {
+                        throw;
+                    }
+                }
+
                 throw;
             }
         }
@@ -534,7 +643,8 @@ namespace SudokuCollective.Cache
             string cacheKey,
             DateTime expiration,
             int id,
-            IResult result = null)
+            IResult result = null,
+            HttpMessageHandler httpMessageHandler = null)
         {
             try
             {
@@ -583,8 +693,22 @@ namespace SudokuCollective.Cache
 
                 return new Tuple<IRepositoryResponse, IResult>(response, result);
             }
-            catch
+            catch (Exception ex)
             {
+                if (ex.Message.Contains("redis server(s)"))
+                {
+                    try
+                    {
+                        var response = await InterceptHerokuRedisExceptions(httpMessageHandler);
+
+                        throw new IOException(response.Message);
+                    }
+                    catch (Exception)
+                    {
+                        throw;
+                    }
+                }
+
                 throw;
             }
         }
@@ -595,7 +719,8 @@ namespace SudokuCollective.Cache
             string cacheKey,
             DateTime expiration,
             int id,
-            IResult result = null)
+            IResult result = null,
+            HttpMessageHandler httpMessageHandler = null)
         {
             try
             {
@@ -645,8 +770,22 @@ namespace SudokuCollective.Cache
 
                 return new Tuple<IRepositoryResponse, IResult>(response, result);
             }
-            catch
+            catch (Exception ex)
             {
+                if (ex.Message.Contains("redis server(s)"))
+                {
+                    try
+                    {
+                        var response = await InterceptHerokuRedisExceptions(httpMessageHandler);
+
+                        throw new IOException(response.Message);
+                    }
+                    catch (Exception)
+                    {
+                        throw;
+                    }
+                }
+
                 throw;
             }
         }
@@ -657,7 +796,8 @@ namespace SudokuCollective.Cache
             string cacheKey,
             DateTime expiration,
             int ownerId,
-            IResult result = null)
+            IResult result = null,
+            HttpMessageHandler httpMessageHandler = null)
         {
             try
             {
@@ -706,8 +846,22 @@ namespace SudokuCollective.Cache
 
                 return new Tuple<IRepositoryResponse, IResult>(response, result);
             }
-            catch
+            catch (Exception ex)
             {
+                if (ex.Message.Contains("redis server(s)"))
+                {
+                    try
+                    {
+                        var response = await InterceptHerokuRedisExceptions(httpMessageHandler);
+
+                        throw new IOException(response.Message);
+                    }
+                    catch (Exception)
+                    {
+                        throw;
+                    }
+                }
+
                 throw;
             }
         }
@@ -718,7 +872,8 @@ namespace SudokuCollective.Cache
             string cacheKey,
             DateTime expiration,
             int userId,
-            IResult result = null)
+            IResult result = null,
+            HttpMessageHandler httpMessageHandler = null)
         {
             try
             {
@@ -767,8 +922,22 @@ namespace SudokuCollective.Cache
 
                 return new Tuple<IRepositoryResponse, IResult>(response, result);
             }
-            catch
+            catch (Exception ex)
             {
+                if (ex.Message.Contains("redis server(s)"))
+                {
+                    try
+                    {
+                        var response = await InterceptHerokuRedisExceptions(httpMessageHandler);
+
+                        throw new IOException(response.Message);
+                    }
+                    catch (Exception)
+                    {
+                        throw;
+                    }
+                }
+
                 throw;
             }
         }
@@ -780,7 +949,8 @@ namespace SudokuCollective.Cache
             DateTime expiration,
             ICacheKeys keys,
             int id,
-            IResult result = null)
+            IResult result = null,
+            HttpMessageHandler httpMessageHandler = null)
         {
             try
             {
@@ -824,8 +994,22 @@ namespace SudokuCollective.Cache
 
                 return new Tuple<string, IResult>(license, result);
             }
-            catch
+            catch (Exception ex)
             {
+                if (ex.Message.Contains("redis server(s)"))
+                {
+                    try
+                    {
+                        var response = await InterceptHerokuRedisExceptions(httpMessageHandler);
+
+                        throw new IOException(response.Message);
+                    }
+                    catch (Exception)
+                    {
+                        throw;
+                    }
+                }
+
                 throw;
             }
         }
@@ -834,7 +1018,8 @@ namespace SudokuCollective.Cache
             IAppsRepository<App> repo,
             IDistributedCache cache,
             ICacheKeys keys,
-            App app)
+            App app,
+            HttpMessageHandler httpMessageHandler = null)
         {
             try
             {
@@ -854,8 +1039,22 @@ namespace SudokuCollective.Cache
 
                 return response;
             }
-            catch
+            catch (Exception ex)
             {
+                if (ex.Message.Contains("redis server(s)"))
+                {
+                    try
+                    {
+                        var response = await InterceptHerokuRedisExceptions(httpMessageHandler);
+
+                        throw new IOException(response.Message);
+                    }
+                    catch (Exception)
+                    {
+                        throw;
+                    }
+                }
+
                 throw;
             }
         }
@@ -864,7 +1063,8 @@ namespace SudokuCollective.Cache
             IAppsRepository<App> repo,
             IDistributedCache cache,
             ICacheKeys keys,
-            int id)
+            int id,
+            HttpMessageHandler httpMessageHandler = null)
         {
             try
             {
@@ -895,8 +1095,22 @@ namespace SudokuCollective.Cache
 
                 return response;
             }
-            catch
+            catch (Exception ex)
             {
+                if (ex.Message.Contains("redis server(s)"))
+                {
+                    try
+                    {
+                        var response = await InterceptHerokuRedisExceptions(httpMessageHandler);
+
+                        throw new IOException(response.Message);
+                    }
+                    catch (Exception)
+                    {
+                        throw;
+                    }
+                }
+
                 throw;
             }
         }
@@ -905,7 +1119,8 @@ namespace SudokuCollective.Cache
             IAppsRepository<App> repo,
             IDistributedCache cache,
             ICacheKeys keys,
-            int id)
+            int id,
+            HttpMessageHandler httpMessageHandler = null)
         {
             try
             {
@@ -936,8 +1151,22 @@ namespace SudokuCollective.Cache
 
                 return response;
             }
-            catch
+            catch (Exception ex)
             {
+                if (ex.Message.Contains("redis server(s)"))
+                {
+                    try
+                    {
+                        var response = await InterceptHerokuRedisExceptions(httpMessageHandler);
+
+                        throw new IOException(response.Message);
+                    }
+                    catch (Exception)
+                    {
+                        throw;
+                    }
+                }
+
                 throw;
             }
         }
@@ -947,7 +1176,8 @@ namespace SudokuCollective.Cache
             IDistributedCache cache,
             string cacheKey,
             DateTime expiration,
-            string license)
+            string license,
+            HttpMessageHandler httpMessageHandler = null)
         {
             try
             {
@@ -984,8 +1214,22 @@ namespace SudokuCollective.Cache
 
                 return result;
             }
-            catch
+            catch (Exception ex)
             {
+                if (ex.Message.Contains("redis server(s)"))
+                {
+                    try
+                    {
+                        var response = await InterceptHerokuRedisExceptions(httpMessageHandler);
+
+                        throw new IOException(response.Message);
+                    }
+                    catch (Exception)
+                    {
+                        throw;
+                    }
+                }
+
                 throw;
             }
         }
@@ -1000,7 +1244,8 @@ namespace SudokuCollective.Cache
             ICacheKeys keys,
             string username,
             string license = null,
-            IResult result = null)
+            IResult result = null,
+            HttpMessageHandler httpMessageHandler = null)
         {
             try
             {
@@ -1055,8 +1300,22 @@ namespace SudokuCollective.Cache
 
                 return new Tuple<IRepositoryResponse, IResult>(response, result);
             }
-            catch
+            catch (Exception ex)
             {
+                if (ex.Message.Contains("redis server(s)"))
+                {
+                    try
+                    {
+                        var response = await InterceptHerokuRedisExceptions(httpMessageHandler);
+
+                        throw new IOException(response.Message);
+                    }
+                    catch (Exception)
+                    {
+                        throw;
+                    }
+                }
+
                 throw;
             }
         }
@@ -1067,7 +1326,8 @@ namespace SudokuCollective.Cache
             string cacheKey,
             DateTime expiration,
             string email,
-            IResult result = null)
+            IResult result = null,
+            HttpMessageHandler httpMessageHandler = null)
         {
             try
             {
@@ -1115,8 +1375,22 @@ namespace SudokuCollective.Cache
 
                 return new Tuple<IRepositoryResponse, IResult>(response, result);
             }
-            catch
+            catch (Exception ex)
             {
+                if (ex.Message.Contains("redis server(s)"))
+                {
+                    try
+                    {
+                        var response = await InterceptHerokuRedisExceptions(httpMessageHandler);
+
+                        throw new IOException(response.Message);
+                    }
+                    catch (Exception)
+                    {
+                        throw;
+                    }
+                }
+
                 throw;
             }
         }
@@ -1126,7 +1400,8 @@ namespace SudokuCollective.Cache
             IDistributedCache cache,
             ICacheKeys keys,
             EmailConfirmation emailConfirmation,
-            string license)
+            string license,
+            HttpMessageHandler httpMessageHandler = null)
         {
             try
             {
@@ -1148,8 +1423,22 @@ namespace SudokuCollective.Cache
 
                 return response;
             }
-            catch
+            catch (Exception ex)
             {
+                if (ex.Message.Contains("redis server(s)"))
+                {
+                    try
+                    {
+                        var response = await InterceptHerokuRedisExceptions(httpMessageHandler);
+
+                        throw new IOException(response.Message);
+                    }
+                    catch (Exception)
+                    {
+                        throw;
+                    }
+                }
+
                 throw;
             }
         }
@@ -1159,7 +1448,8 @@ namespace SudokuCollective.Cache
             IDistributedCache cache,
             ICacheKeys keys,
             EmailConfirmation emailConfirmation,
-            string license)
+            string license,
+            HttpMessageHandler httpMessageHandler = null)
         {
             try
             {
@@ -1181,8 +1471,22 @@ namespace SudokuCollective.Cache
 
                 return response;
             }
-            catch
+            catch (Exception ex)
             {
+                if (ex.Message.Contains("redis server(s)"))
+                {
+                    try
+                    {
+                        var response = await InterceptHerokuRedisExceptions(httpMessageHandler);
+
+                        throw new IOException(response.Message);
+                    }
+                    catch (Exception)
+                    {
+                        throw;
+                    }
+                }
+
                 throw;
             }
         }
@@ -1192,7 +1496,8 @@ namespace SudokuCollective.Cache
             IDistributedCache cache,
             string cacheKey,
             DateTime expiration,
-            int id)
+            int id,
+            HttpMessageHandler httpMessageHandler = null)
         {
             try
             {
@@ -1229,8 +1534,22 @@ namespace SudokuCollective.Cache
 
                 return result;
             }
-            catch
+            catch (Exception ex)
             {
+                if (ex.Message.Contains("redis server(s)"))
+                {
+                    try
+                    {
+                        var response = await InterceptHerokuRedisExceptions(httpMessageHandler);
+
+                        throw new IOException(response.Message);
+                    }
+                    catch (Exception)
+                    {
+                        throw;
+                    }
+                }
+
                 throw;
             }
         }
@@ -1242,7 +1561,8 @@ namespace SudokuCollective.Cache
             IDistributedCache cache,
             string cacheKey,
             DateTime expiration,
-            DifficultyLevel difficultyLevel)
+            DifficultyLevel difficultyLevel,
+            HttpMessageHandler httpMessageHandler = null)
         {
             try
             {
@@ -1279,8 +1599,22 @@ namespace SudokuCollective.Cache
 
                 return result;
             }
-            catch
+            catch (Exception ex)
             {
+                if (ex.Message.Contains("redis server(s)"))
+                {
+                    try
+                    {
+                        var response = await InterceptHerokuRedisExceptions(httpMessageHandler);
+
+                        throw new IOException(response.Message);
+                    }
+                    catch (Exception)
+                    {
+                        throw;
+                    }
+                }
+
                 throw;
             }
         }
@@ -1292,7 +1626,8 @@ namespace SudokuCollective.Cache
             IDistributedCache cache,
             string cacheKey,
             DateTime expiration,
-            RoleLevel roleLevel)
+            RoleLevel roleLevel,
+            HttpMessageHandler httpMessageHandler = null)
         {
             try
             {
@@ -1329,8 +1664,22 @@ namespace SudokuCollective.Cache
 
                 return result;
             }
-            catch
+            catch (Exception ex)
             {
+                if (ex.Message.Contains("redis server(s)"))
+                {
+                    try
+                    {
+                        var response = await InterceptHerokuRedisExceptions(httpMessageHandler);
+
+                        throw new IOException(response.Message);
+                    }
+                    catch (Exception)
+                    {
+                        throw;
+                    }
+                }
+
                 throw;
             }
         }
@@ -1344,7 +1693,8 @@ namespace SudokuCollective.Cache
             List<IEnumListItem> releaseEnvironments,
             List<IEnumListItem> sortValues,
             List<IEnumListItem> timeFrames,
-            IResult result = null)
+            IResult result = null,
+            HttpMessageHandler httpMessageHandler = null)
         {
             try
             {
@@ -1404,8 +1754,22 @@ namespace SudokuCollective.Cache
 
                 return new Tuple<IValues, IResult>(values, result);
             }
-            catch
+            catch (Exception ex)
             {
+                if (ex.Message.Contains("redis server(s)"))
+                {
+                    try
+                    {
+                        var response = await InterceptHerokuRedisExceptions(httpMessageHandler);
+
+                        throw new IOException(response.Message);
+                    }
+                    catch (Exception)
+                    {
+                        throw;
+                    }
+                }
+
                 throw;
             }
         }
@@ -1415,7 +1779,8 @@ namespace SudokuCollective.Cache
             IDistributedCache cache, 
             string cacheKey, 
             DateTime expiration, 
-            IResult result = null)
+            IResult result = null,
+            HttpMessageHandler httpMessageHandler = null)
         {
             try
             {
@@ -1490,7 +1855,33 @@ namespace SudokuCollective.Cache
 
                 return new Tuple<IRepositoryResponse, IResult>(response, result);
             }
-            catch
+            catch (Exception ex)
+            {
+                if (ex.Message.Contains("redis server(s)"))
+                {
+                    try
+                    {
+                        var response = await InterceptHerokuRedisExceptions(httpMessageHandler);
+
+                        throw new IOException(response.Message);
+                    }
+                    catch (Exception)
+                    {
+                        throw;
+                    }
+                }
+
+                throw;
+            }
+        }
+
+        private static async Task<HerokuRedisProxyResponse> InterceptHerokuRedisExceptions(HttpMessageHandler httpMessageHandler = null, ILogger logger = null)
+        {
+            try
+            {
+                return await HerokuRedisProxy.UpdateConnectionStringAsync(httpMessageHandler, logger);
+            }
+            catch (Exception)
             {
                 throw;
             }
