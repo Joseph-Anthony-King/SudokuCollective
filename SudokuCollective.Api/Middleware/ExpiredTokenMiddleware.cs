@@ -11,18 +11,17 @@ namespace SudokuCollective.Api.Middleware
     /// <summary>
     /// Custom middleware to handle the expired token response.
     /// </summary>
-    public class ExpiredTokenMiddleware
+    /// <remarks>
+    /// Custom middleware constructor.
+    /// </remarks>
+    /// <param name="next"></param>
+    public class ExpiredTokenMiddleware(RequestDelegate next)
     {
-        private readonly RequestDelegate _next;
-
-        /// <summary>
-        /// Custom middleware constructor.
-        /// </summary>
-        /// <param name="next"></param>
-        public ExpiredTokenMiddleware(RequestDelegate next)
+        private readonly RequestDelegate _next = next;
+        private readonly JsonSerializerOptions _serializerOptions = new()
         {
-            _next = next;
-        }
+            ReferenceHandler = ReferenceHandler.IgnoreCycles
+        };
 
         /// <summary>
         /// Custom response issued by middleware if the token has expired.
@@ -44,10 +43,7 @@ namespace SudokuCollective.Api.Middleware
 
                 var json = JsonSerializer.Serialize(
                     result,
-                    new JsonSerializerOptions
-                    {
-                        ReferenceHandler = ReferenceHandler.IgnoreCycles
-                    });
+                    _serializerOptions);
 
                 var data = Encoding.UTF8.GetBytes(json);
 

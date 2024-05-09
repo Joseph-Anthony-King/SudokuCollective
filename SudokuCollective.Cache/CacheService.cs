@@ -21,6 +21,11 @@ namespace SudokuCollective.Cache
 {
     public class CacheService : ICacheService
     {
+        private readonly JsonSerializerOptions _serializerOptions = new()
+        {
+            ReferenceHandler = ReferenceHandler.IgnoreCycles
+        };
+
         public async Task<IRepositoryResponse> AddWithCacheAsync<T>(
             IRepository<T> repo,
             IDistributedCache cache,
@@ -38,10 +43,7 @@ namespace SudokuCollective.Cache
                 {
                     var serializedItem = JsonSerializer.Serialize(
                         (T)response.Object,
-                        new JsonSerializerOptions
-                        {
-                            ReferenceHandler = ReferenceHandler.IgnoreCycles 
-                        });
+                        _serializerOptions);
                     var encodedItem = Encoding.UTF8.GetBytes(serializedItem);
                     var options = new DistributedCacheEntryOptions()
                         .SetAbsoluteExpiration(expiration);
@@ -165,11 +167,8 @@ namespace SudokuCollective.Cache
                     if (response.IsSuccess && response.Object != null)
                     {
                         var serializedItem = JsonSerializer.Serialize<T>(
-                            (T)response.Object, 
-                            new JsonSerializerOptions 
-                            {
-                                ReferenceHandler = ReferenceHandler.IgnoreCycles
-                            });
+                            (T)response.Object,
+                            _serializerOptions);
                         var encodedItem = Encoding.UTF8.GetBytes(serializedItem);
                         var options = new DistributedCacheEntryOptions()
                             .SetAbsoluteExpiration(expiration);
@@ -240,11 +239,8 @@ namespace SudokuCollective.Cache
                     if (response.IsSuccess && response.Objects.Count > 0)
                     {
                         var serializedItems = JsonSerializer.Serialize<List<T>>(
-                            response.Objects.ConvertAll(x => (T)x), 
-                            new JsonSerializerOptions 
-                            { 
-                                ReferenceHandler = ReferenceHandler.IgnoreCycles 
-                            });
+                            response.Objects.ConvertAll(x => (T)x),
+                            _serializerOptions);
                         var encodedItems = Encoding.UTF8.GetBytes(serializedItems);
                         var options = new DistributedCacheEntryOptions()
                             .SetAbsoluteExpiration(expiration);
@@ -508,11 +504,8 @@ namespace SudokuCollective.Cache
                     var response = await repo.HasEntityAsync(id);
 
                     var serializedItem = JsonSerializer.Serialize<bool>(
-                        response, 
-                        new JsonSerializerOptions 
-                        { 
-                            ReferenceHandler = ReferenceHandler.IgnoreCycles
-                        });
+                        response,
+                        _serializerOptions);
                     var encodedItem = Encoding.UTF8.GetBytes(serializedItem);
                     var options = new DistributedCacheEntryOptions()
                         .SetAbsoluteExpiration(expiration);
@@ -599,11 +592,8 @@ namespace SudokuCollective.Cache
                     if (response.IsSuccess && response.Object != null)
                     {
                         var serializedItem = JsonSerializer.Serialize<App>(
-                            (App)response.Object, 
-                            new JsonSerializerOptions 
-                            { 
-                                ReferenceHandler = ReferenceHandler.IgnoreCycles 
-                            });
+                            (App)response.Object,
+                            _serializerOptions);
                         var encodedItem = Encoding.UTF8.GetBytes(serializedItem);
                         var options = new DistributedCacheEntryOptions()
                             .SetAbsoluteExpiration(expiration);
@@ -675,11 +665,8 @@ namespace SudokuCollective.Cache
                     if (response.IsSuccess && response.Objects.Count > 0)
                     {
                         var serializedItems = JsonSerializer.Serialize<List<User>>(
-                            response.Objects.ConvertAll(u => (User)u), 
-                            new JsonSerializerOptions 
-                            { 
-                                ReferenceHandler = ReferenceHandler.IgnoreCycles 
-                            });
+                            response.Objects.ConvertAll(u => (User)u),
+                            _serializerOptions);
                         var encodedItems = Encoding.UTF8.GetBytes(serializedItems);
                         var options = new DistributedCacheEntryOptions()
                             .SetAbsoluteExpiration(expiration);
@@ -752,11 +739,8 @@ namespace SudokuCollective.Cache
                     if (response.IsSuccess && response.Objects.Count > 0)
                     {
                         var serializedItems = JsonSerializer.Serialize<List<User>>(
-                            response.Objects.ConvertAll(u => (User)u), 
-                            new JsonSerializerOptions 
-                            { 
-                                ReferenceHandler = ReferenceHandler.IgnoreCycles 
-                            });
+                            response.Objects.ConvertAll(u => (User)u),
+                            _serializerOptions);
                         var encodedItems = Encoding.UTF8.GetBytes(serializedItems);
                         var options = new DistributedCacheEntryOptions()
                             .SetAbsoluteExpiration(expiration);
@@ -828,11 +812,8 @@ namespace SudokuCollective.Cache
                     if (response.IsSuccess && response.Objects.Count > 0)
                     {
                         var serializedItems = JsonSerializer.Serialize<List<App>>(
-                            response.Objects.ConvertAll(a => (App)a), 
-                            new JsonSerializerOptions 
-                            { 
-                                ReferenceHandler = ReferenceHandler.IgnoreCycles
-                            });
+                            response.Objects.ConvertAll(a => (App)a),
+                            _serializerOptions);
                         var encodedItems = Encoding.UTF8.GetBytes(serializedItems);
                         var options = new DistributedCacheEntryOptions()
                             .SetAbsoluteExpiration(expiration);
@@ -904,11 +885,8 @@ namespace SudokuCollective.Cache
                     if (response.IsSuccess && response.Objects.Count > 0)
                     {
                         var serializedItems = JsonSerializer.Serialize<List<App>>(
-                            response.Objects.ConvertAll(a => (App)a), 
-                            new JsonSerializerOptions 
-                            { 
-                                ReferenceHandler = ReferenceHandler.IgnoreCycles 
-                            });
+                            response.Objects.ConvertAll(a => (App)a),
+                            _serializerOptions);
                         var encodedItems = Encoding.UTF8.GetBytes(serializedItems);
                         var options = new DistributedCacheEntryOptions()
                             .SetAbsoluteExpiration(expiration);
@@ -976,11 +954,8 @@ namespace SudokuCollective.Cache
                     if (!string.IsNullOrEmpty(license))
                     {
                         var serializedItem = JsonSerializer.Serialize<string>(
-                            license, 
-                            new JsonSerializerOptions 
-                            { 
-                                ReferenceHandler = ReferenceHandler.IgnoreCycles 
-                            });
+                            license,
+                            _serializerOptions);
                         var encodedItem = Encoding.UTF8.GetBytes(serializedItem);
                         var options = new DistributedCacheEntryOptions()
                             .SetAbsoluteExpiration(expiration);
@@ -1195,11 +1170,8 @@ namespace SudokuCollective.Cache
                     var response = await repo.IsAppLicenseValidAsync(license);
 
                     var serializedItem = JsonSerializer.Serialize<bool>(
-                        response, 
-                        new JsonSerializerOptions 
-                        { 
-                            ReferenceHandler = ReferenceHandler.IgnoreCycles 
-                        });
+                        response,
+                        _serializerOptions);
                     var encodedItem = Encoding.UTF8.GetBytes(serializedItem);
                     var options = new DistributedCacheEntryOptions()
                         .SetAbsoluteExpiration(expiration);
@@ -1275,11 +1247,8 @@ namespace SudokuCollective.Cache
                     if (response.IsSuccess && response.Object != null)
                     {
                         var serializedItem = JsonSerializer.Serialize<User>(
-                            (User)response.Object, 
-                            new JsonSerializerOptions 
-                            { 
-                                ReferenceHandler = ReferenceHandler.IgnoreCycles 
-                            });
+                            (User)response.Object,
+                            _serializerOptions);
                         var encodedItem = Encoding.UTF8.GetBytes(serializedItem);
                         var options = new DistributedCacheEntryOptions()
                             .SetAbsoluteExpiration(expiration);
@@ -1357,11 +1326,8 @@ namespace SudokuCollective.Cache
                     if (response.IsSuccess && response.Object != null)
                     {
                         var serializedItem = JsonSerializer.Serialize<User>(
-                            (User)response.Object, 
-                            new JsonSerializerOptions 
-                            { 
-                                ReferenceHandler = ReferenceHandler.IgnoreCycles
-                            });
+                            (User)response.Object,
+                            _serializerOptions);
                         var encodedItem = Encoding.UTF8.GetBytes(serializedItem);
                         var options = new DistributedCacheEntryOptions()
                             .SetAbsoluteExpiration(expiration);
@@ -1515,11 +1481,8 @@ namespace SudokuCollective.Cache
                     var response = await repo.IsUserRegisteredAsync(id);
 
                     var serializedItem = JsonSerializer.Serialize<bool>(
-                        response, 
-                        new JsonSerializerOptions 
-                        { 
-                            ReferenceHandler = ReferenceHandler.IgnoreCycles 
-                        });
+                        response,
+                        _serializerOptions);
                     var encodedItem = Encoding.UTF8.GetBytes(serializedItem);
                     var options = new DistributedCacheEntryOptions()
                         .SetAbsoluteExpiration(expiration);
@@ -1580,11 +1543,8 @@ namespace SudokuCollective.Cache
                     var response = await repo.HasDifficultyLevelAsync(difficultyLevel);
 
                     var serializedItem = JsonSerializer.Serialize<bool>(
-                        response, 
-                        new JsonSerializerOptions 
-                        { 
-                            ReferenceHandler = ReferenceHandler.IgnoreCycles 
-                        });
+                        response,
+                        _serializerOptions);
                     var encodedItem = Encoding.UTF8.GetBytes(serializedItem);
                     var options = new DistributedCacheEntryOptions()
                         .SetAbsoluteExpiration(expiration);
@@ -1645,11 +1605,8 @@ namespace SudokuCollective.Cache
                     var response = await repo.HasRoleLevelAsync(roleLevel);
 
                     var serializedItem = JsonSerializer.Serialize<bool>(
-                        response, 
-                        new JsonSerializerOptions 
-                        { 
-                            ReferenceHandler = ReferenceHandler.IgnoreCycles 
-                        });
+                        response,
+                        _serializerOptions);
                     var encodedItem = Encoding.UTF8.GetBytes(serializedItem);
                     var options = new DistributedCacheEntryOptions()
                         .SetAbsoluteExpiration(expiration);
@@ -1737,11 +1694,8 @@ namespace SudokuCollective.Cache
                     values.Gallery = galleryApps.ConvertAll(a => (IGalleryApp)a);
 
                     var serializedItem = JsonSerializer.Serialize<Values>(
-                        (Values)values, 
-                        new JsonSerializerOptions 
-                        { 
-                            ReferenceHandler = ReferenceHandler.IgnoreCycles 
-                        });
+                        (Values)values,
+                        _serializerOptions);
                     var encodedItem = Encoding.UTF8.GetBytes(serializedItem);
                     var options = new DistributedCacheEntryOptions()
                         .SetAbsoluteExpiration(expiration);
@@ -1831,11 +1785,8 @@ namespace SudokuCollective.Cache
                         if (galleryApps.Count > 0)
                         {
                             var serializedItems = JsonSerializer.Serialize<List<GalleryApp>>(
-                                galleryApps, 
-                                new JsonSerializerOptions 
-                                { 
-                                    ReferenceHandler = ReferenceHandler.IgnoreCycles 
-                                });
+                                galleryApps,
+                                _serializerOptions);
                             var encodedItems = Encoding.UTF8.GetBytes(serializedItems);
                             var options = new DistributedCacheEntryOptions()
                                 .SetAbsoluteExpiration(expiration);
