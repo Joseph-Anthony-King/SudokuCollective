@@ -42,6 +42,7 @@ using SudokuCollective.Data.Services;
 using SudokuCollective.HerokuIntegration;
 using SudokuCollective.Repos;
 using Role = SudokuCollective.Core.Models.Role;
+using static System.Net.WebRequestMethods;
 
 namespace SudokuCollective.Api
 {
@@ -55,8 +56,8 @@ namespace SudokuCollective.Api
     /// <param name="environment"></param>
     public class Startup(IConfiguration configuration, IWebHostEnvironment environment)
     {
-		private readonly IWebHostEnvironment _environment = environment;
-		private ILogger<Startup> _logger;
+        private readonly IWebHostEnvironment _environment = environment;
+        private ILogger<Startup> _logger;
 
         /// <summary>
         /// Startup Class Configuration
@@ -68,351 +69,376 @@ namespace SudokuCollective.Api
         /// </summary>
         /// <param name="services"></param>
         public void ConfigureServices(IServiceCollection services)
-		{
-			// Add logger to ConfigureServices to aid in debugging remote hosts...
-			using var loggerFactory = LoggerFactory.Create(builder =>
-			{
-				builder.SetMinimumLevel(LogLevel.Information);
-				builder.AddConsole();
-				builder.AddEventSourceLogger();
-			});
+        {
+            // Add logger to ConfigureServices to aid in debugging remote hosts...
+            using var loggerFactory = LoggerFactory.Create(builder =>
+            {
+                builder.SetMinimumLevel(LogLevel.Information);
+                builder.AddConsole();
+                builder.AddEventSourceLogger();
+            });
 
-			_logger = loggerFactory.CreateLogger<Startup>();
+            _logger = loggerFactory.CreateLogger<Startup>();
 
-			_logger.LogInformation(message: string.Format("Initiating service configuration in {0} environment...", _environment.EnvironmentName));
+            _logger.LogInformation(message: string.Format("Initiating service configuration in {0} environment...", _environment.EnvironmentName));
 
-			services.AddDbContext<DatabaseContext>(options =>
-			{
-				options.UseNpgsql(
-					_environment.IsDevelopment() ?
-						Configuration.GetConnectionString("DatabaseConnection") :
-						HerokuConfiguration.ConfigureHerokuPostgresConnection(),
-					b => b.MigrationsAssembly("SudokuCollective.Api"));
-				options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
-			});
+            services.AddDbContext<DatabaseContext>(options =>
+            {
+                options.UseNpgsql(
+                    _environment.IsDevelopment() ?
+                        Configuration.GetConnectionString("DatabaseConnection") :
+                        HerokuConfiguration.ConfigureHerokuPostgresConnection(),
+                    b => b.MigrationsAssembly("SudokuCollective.Api"));
+                options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
+            });
 
-			var swaggerDescription = _environment.IsDevelopment() ?
-				Configuration.GetSection("MissionStatement").Value :
-				Environment.GetEnvironmentVariable("MISSIONSTATEMENT");
+            var swaggerDescription = _environment.IsDevelopment() ?
+                Configuration.GetSection("MissionStatement").Value :
+                Environment.GetEnvironmentVariable("MISSIONSTATEMENT");
 
-			var sandboxLicense = _environment.IsDevelopment() ?
-				Configuration.GetSection("DefaultSandboxApp:License").Value :
-				Environment.GetEnvironmentVariable("SANDBOX_APP:LICENSE");
+            var sandboxLicense = _environment.IsDevelopment() ?
+                Configuration.GetSection("DefaultSandboxApp:License").Value :
+                Environment.GetEnvironmentVariable("SANDBOX_APP:LICENSE");
 
-			services.AddSwaggerGen(swagger =>
-			{
-				swagger.SwaggerDoc(
-					"v1",
-					new OpenApiInfo
-					{
-						Version = "v1",
-						Title = "SudokuCollective API",
-						Description = string.Format("{0} \r\n\r\n For testing purposes please use the Sudoku Collective Sandbox App if you haven't created your own app: \r\n\r\n Id: 3 \r\n\r\n  License: {1}",
-							swaggerDescription,
-							sandboxLicense)
-					});
-				swagger.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
-				{
-					Name = "Authorization",
-					Type = SecuritySchemeType.ApiKey,
-					Scheme = "Bearer",
-					BearerFormat = "JWT",
-					In = ParameterLocation.Header,
-					Description = "JWT Authorization header using the Bearer scheme. \r\n\r\n Enter 'Bearer' [space] and then your token in the text input below.\r\n\r\nExample: \"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...\""
-				});
-				swagger.AddSecurityRequirement(new OpenApiSecurityRequirement
-					{
-						{
-							new OpenApiSecurityScheme
-							{
-								Reference = new OpenApiReference
-								{
-									Type = ReferenceType.SecurityScheme,
-									Id = "Bearer"
-								}
-							},
-						Array.Empty<string>()
-					}
-				});
-				swagger.MapType(typeof(JsonElement), () => new OpenApiSchema
-				{
-					Type = "object",
-					Example = new OpenApiString("{}")
-				});
+            services.AddSwaggerGen(swagger =>
+            {
+                swagger.SwaggerDoc(
+                    "v1",
+                    new OpenApiInfo
+                    {
+                        Version = "v1",
+                        Title = "SudokuCollective API",
+                        Description = string.Format("{0} \r\n\r\n For testing purposes please use the Sudoku Collective Sandbox App if you haven't created your own app: \r\n\r\n Id: 3 \r\n\r\n  License: {1}",
+                            swaggerDescription,
+                            sandboxLicense)
+                    });
+                swagger.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
+                {
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.ApiKey,
+                    Scheme = "Bearer",
+                    BearerFormat = "JWT",
+                    In = ParameterLocation.Header,
+                    Description = "JWT Authorization header using the Bearer scheme. \r\n\r\n Enter 'Bearer' [space] and then your token in the text input below.\r\n\r\nExample: \"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...\""
+                });
+                swagger.AddSecurityRequirement(new OpenApiSecurityRequirement
+                    {
+                        {
+                            new OpenApiSecurityScheme
+                            {
+                                Reference = new OpenApiReference
+                                {
+                                    Type = ReferenceType.SecurityScheme,
+                                    Id = "Bearer"
+                                }
+                            },
+                        Array.Empty<string>()
+                    }
+                });
+                swagger.MapType(typeof(JsonElement), () => new OpenApiSchema
+                {
+                    Type = "object",
+                    Example = new OpenApiString("{}")
+                });
 
-				var swashbucklePayloadArray = new OpenApiArray
+                var swashbucklePayloadArray = new OpenApiArray
                 {
                     new OpenApiObject()
                 };
 
-				swagger.MapType(typeof(List<object>), () => new OpenApiSchema
-				{
-					Type = "array",
-					Example = swashbucklePayloadArray
-				});
+                swagger.MapType(typeof(List<object>), () => new OpenApiSchema
+                {
+                    Type = "array",
+                    Example = swashbucklePayloadArray
+                });
 
-				swagger.DocumentFilter<ErrorControllerFilter>();
-				swagger.DocumentFilter<PathLowercaseDocumentFilter>();
+                swagger.DocumentFilter<ErrorControllerFilter>();
+                swagger.DocumentFilter<PathLowercaseDocumentFilter>();
 
-				// Add domain model documentation to Swashbuckler
-				swagger.DocumentFilter<CustomModelDocumentFilter<App>>();
-				swagger.DocumentFilter<CustomModelDocumentFilter<UserDTO>>();
-				swagger.DocumentFilter<CustomModelDocumentFilter<Difficulty>>();
-				swagger.DocumentFilter<CustomModelDocumentFilter<GalleryApp>>();
-				swagger.DocumentFilter<CustomModelDocumentFilter<Game>>();
-				swagger.DocumentFilter<CustomModelDocumentFilter<Role>>();
-				swagger.DocumentFilter<CustomModelDocumentFilter<SMTPServerSettings>>();
-				swagger.DocumentFilter<CustomModelDocumentFilter<SudokuCell>>();
-				swagger.DocumentFilter<CustomModelDocumentFilter<SudokuMatrix>>();
-				swagger.DocumentFilter<CustomModelDocumentFilter<SudokuSolution>>();
-				swagger.DocumentFilter<CustomModelDocumentFilter<AppPayload>>();
-				swagger.DocumentFilter<CustomModelDocumentFilter<CreateDifficultyPayload>>();
-				swagger.DocumentFilter<CustomModelDocumentFilter<UpdateDifficultyPayload>>();
-				swagger.DocumentFilter<CustomModelDocumentFilter<CreateGamePayload>>();
-				swagger.DocumentFilter<CustomModelDocumentFilter<GamePayload>>();
-				swagger.DocumentFilter<CustomModelDocumentFilter<GamesPayload>>();
-				swagger.DocumentFilter<CustomModelDocumentFilter<LicensePayload>>();
-				swagger.DocumentFilter<CustomModelDocumentFilter<CreateRolePayload>>();
-				swagger.DocumentFilter<CustomModelDocumentFilter<UpdateRolePayload>>();
-				swagger.DocumentFilter<CustomModelDocumentFilter<AddSolutionsPayload>>();
-				swagger.DocumentFilter<CustomModelDocumentFilter<SolutionPayload>>();
-				swagger.DocumentFilter<CustomModelDocumentFilter<PasswordResetPayload>>();
-				swagger.DocumentFilter<CustomModelDocumentFilter<RequestPasswordResetPayload>>();
-				swagger.DocumentFilter<CustomModelDocumentFilter<UpdateUserPayload>>();
-				swagger.DocumentFilter<CustomModelDocumentFilter<UpdateUserRolePayload>>();
-				swagger.DocumentFilter<CustomModelDocumentFilter<AnnonymousGameRequest>>();
-				swagger.DocumentFilter<CustomModelDocumentFilter<UpdatePasswordRequest>>();
-				swagger.DocumentFilter<CustomModelDocumentFilter<ConfirmEmailResult>>();
+                // Add domain model documentation to Swashbuckler
+                swagger.DocumentFilter<CustomModelDocumentFilter<App>>();
+                swagger.DocumentFilter<CustomModelDocumentFilter<UserDTO>>();
+                swagger.DocumentFilter<CustomModelDocumentFilter<Difficulty>>();
+                swagger.DocumentFilter<CustomModelDocumentFilter<GalleryApp>>();
+                swagger.DocumentFilter<CustomModelDocumentFilter<Game>>();
+                swagger.DocumentFilter<CustomModelDocumentFilter<Role>>();
+                swagger.DocumentFilter<CustomModelDocumentFilter<SMTPServerSettings>>();
+                swagger.DocumentFilter<CustomModelDocumentFilter<SudokuCell>>();
+                swagger.DocumentFilter<CustomModelDocumentFilter<SudokuMatrix>>();
+                swagger.DocumentFilter<CustomModelDocumentFilter<SudokuSolution>>();
+                swagger.DocumentFilter<CustomModelDocumentFilter<AppPayload>>();
+                swagger.DocumentFilter<CustomModelDocumentFilter<CreateDifficultyPayload>>();
+                swagger.DocumentFilter<CustomModelDocumentFilter<UpdateDifficultyPayload>>();
+                swagger.DocumentFilter<CustomModelDocumentFilter<CreateGamePayload>>();
+                swagger.DocumentFilter<CustomModelDocumentFilter<GamePayload>>();
+                swagger.DocumentFilter<CustomModelDocumentFilter<GamesPayload>>();
+                swagger.DocumentFilter<CustomModelDocumentFilter<LicensePayload>>();
+                swagger.DocumentFilter<CustomModelDocumentFilter<CreateRolePayload>>();
+                swagger.DocumentFilter<CustomModelDocumentFilter<UpdateRolePayload>>();
+                swagger.DocumentFilter<CustomModelDocumentFilter<AddSolutionsPayload>>();
+                swagger.DocumentFilter<CustomModelDocumentFilter<SolutionPayload>>();
+                swagger.DocumentFilter<CustomModelDocumentFilter<PasswordResetPayload>>();
+                swagger.DocumentFilter<CustomModelDocumentFilter<RequestPasswordResetPayload>>();
+                swagger.DocumentFilter<CustomModelDocumentFilter<UpdateUserPayload>>();
+                swagger.DocumentFilter<CustomModelDocumentFilter<UpdateUserRolePayload>>();
+                swagger.DocumentFilter<CustomModelDocumentFilter<AnnonymousGameRequest>>();
+                swagger.DocumentFilter<CustomModelDocumentFilter<UpdatePasswordRequest>>();
+                swagger.DocumentFilter<CustomModelDocumentFilter<ConfirmEmailResult>>();
 
-				var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-				var filePath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-				swagger.IncludeXmlComments(filePath);
-			});
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var filePath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                swagger.IncludeXmlComments(filePath);
+            });
 
-			// Add redis cache
-			ConfigurationOptions options;
+            // Add redis cache
+            ConfigurationOptions options;
 
-			string cacheConnectionString = "";
+            string cacheConnectionString = "";
 
-			if (_environment.IsDevelopment())
-			{
-				options = ConfigurationOptions.Parse(Configuration.GetConnectionString("CacheConnection"));
-
-				cacheConnectionString = Configuration.GetConnectionString("CacheConnection");
-			}
-			else
+            if (_environment.IsDevelopment())
             {
-				options = HerokuConfiguration.ConfigureHerokuRedisConnection();
+                options = ConfigurationOptions.Parse(Configuration.GetConnectionString("CacheConnection"));
 
-				cacheConnectionString = options.ToString();
-			}
+                cacheConnectionString = Configuration.GetConnectionString("CacheConnection");
+            }
+            else
+            {
+                options = HerokuConfiguration.ConfigureHerokuRedisConnection();
 
-			services.AddSingleton<Lazy<IConnectionMultiplexer>>(sp =>
-				new Lazy<IConnectionMultiplexer>(() =>
-				{
-					return ConnectionMultiplexer.Connect(options);
-				}));
+                cacheConnectionString = options.ToString();
+            }
 
-			services.AddStackExchangeRedisCache(redisOptions =>
-			{
-				redisOptions.InstanceName = "SudokuCollective";
-				redisOptions.Configuration = cacheConnectionString;
-				redisOptions.ConfigurationOptions = options;
-				redisOptions.ConnectionMultiplexerFactory = () =>
-				{
-					var serviceProvider = services.BuildServiceProvider();
-					Lazy<IConnectionMultiplexer> connection = serviceProvider.GetService<Lazy<IConnectionMultiplexer>>();
-					return Task.FromResult(connection.Value);
-				};
-			});
+            services.AddSingleton<Lazy<IConnectionMultiplexer>>(sp =>
+                new Lazy<IConnectionMultiplexer>(() =>
+                {
+                    return ConnectionMultiplexer.Connect(options);
+                }));
 
-			// Add Hangfire services.
-			services.AddHangfire(configuration => configuration
-				.SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
-				.UseSimpleAssemblyNameTypeSerializer()
-				.UseRecommendedSerializerSettings()
-				.UseInMemoryStorage());
+            services.AddStackExchangeRedisCache(redisOptions =>
+            {
+                redisOptions.InstanceName = "SudokuCollective";
+                redisOptions.Configuration = cacheConnectionString;
+                redisOptions.ConfigurationOptions = options;
+                redisOptions.ConnectionMultiplexerFactory = () =>
+                {
+                    var serviceProvider = services.BuildServiceProvider();
+                    Lazy<IConnectionMultiplexer> connection = serviceProvider.GetService<Lazy<IConnectionMultiplexer>>();
+                    return Task.FromResult(connection.Value);
+                };
+            });
 
-			// Add the processing server as IHostedService
-			services.AddHangfireServer();
+            // Add Hangfire services.
+            services.AddHangfire(configuration => configuration
+                .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
+                .UseSimpleAssemblyNameTypeSerializer()
+                .UseRecommendedSerializerSettings()
+                .UseInMemoryStorage());
 
-			// Add JWT Token authentication
-			var tokenManagement = _environment.IsDevelopment() ?
-					Configuration.GetSection("tokenManagement").Get<TokenManagement>() :
-					new TokenManagement
-					{
-						Secret = Environment.GetEnvironmentVariable("TOKEN:SECRET"),
-						Issuer = Environment.GetEnvironmentVariable("TOKEN:ISSUER"),
-						Audience = Environment.GetEnvironmentVariable("TOKEN:AUDIENCE"),
-						AccessExpiration = Convert.ToInt32(Environment.GetEnvironmentVariable("TOKEN:ACCESS_EXPIRATION")),
-						RefreshExpiration = Convert.ToInt32(Environment.GetEnvironmentVariable("TOKEN:REFRESH_EXPIRATION"))
-					};
+            // Add the processing server as IHostedService
+            services.AddHangfireServer();
 
-			var secret = Encoding.ASCII.GetBytes(tokenManagement.Secret);
+            // Add JWT Token authentication
+            var tokenManagement = _environment.IsDevelopment() ?
+                    Configuration.GetSection("tokenManagement").Get<TokenManagement>() :
+                    new TokenManagement
+                    {
+                        Secret = Environment.GetEnvironmentVariable("TOKEN:SECRET"),
+                        Issuer = Environment.GetEnvironmentVariable("TOKEN:ISSUER"),
+                        Audience = Environment.GetEnvironmentVariable("TOKEN:AUDIENCE"),
+                        AccessExpiration = Convert.ToInt32(Environment.GetEnvironmentVariable("TOKEN:ACCESS_EXPIRATION")),
+                        RefreshExpiration = Convert.ToInt32(Environment.GetEnvironmentVariable("TOKEN:REFRESH_EXPIRATION"))
+                    };
 
-			services.AddSingleton<ITokenManagement>(tokenManagement);
+            var secret = Encoding.ASCII.GetBytes(tokenManagement.Secret);
 
-			services.AddAuthentication(x =>
-			{
-				x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-				x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-			}).AddJwtBearer(x =>
-			{
-				x.RequireHttpsMetadata = false;
-				x.SaveToken = true;
-				x.TokenValidationParameters = new TokenValidationParameters
-				{
-					ValidateIssuerSigningKey = true,
-					IssuerSigningKey = new SymmetricSecurityKey(secret),
-					ValidIssuer = tokenManagement.Issuer,
-					ValidAudience = tokenManagement.Audience,
-					ValidateIssuer = true,
-					ValidateAudience = true,
-					ValidateLifetime = true,
-					LifetimeValidator = LifetimeValidator,
-				};
-				x.Events = new JwtBearerEvents
-				{
-					OnAuthenticationFailed = context =>
-					{
-						_logger.LogInformation(context.Exception.GetType().ToString());
-						if (context.Exception.GetType() == typeof(SecurityTokenInvalidLifetimeException))
-						{
-							context.Response.Headers.Append("Token-Expired", "true");
+            services.AddSingleton<ITokenManagement>(tokenManagement);
+
+            services.AddAuthentication(x =>
+            {
+                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(x =>
+            {
+                x.RequireHttpsMetadata = false;
+                x.SaveToken = true;
+                x.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(secret),
+                    ValidIssuer = tokenManagement.Issuer,
+                    ValidAudience = tokenManagement.Audience,
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    LifetimeValidator = LifetimeValidator,
+                };
+                x.Events = new JwtBearerEvents
+                {
+                    OnAuthenticationFailed = context =>
+                    {
+                        _logger.LogInformation(context.Exception.GetType().ToString());
+                        if (context.Exception.GetType() == typeof(SecurityTokenInvalidLifetimeException))
+                        {
+                            context.Response.Headers.Append("Token-Expired", "true");
                         }
 
-						return Task.CompletedTask;
-					}
-				};
-			});
+                        return Task.CompletedTask;
+                    }
+                };
+            });
 
-			services.AddMvc(options => options.EnableEndpointRouting = false);
+            services.AddCors(options => options.AddPolicy(
+                "ClientsCorsPolicy",
+                builder =>
+                {
+                    builder
+                        .WithOrigins([
+                            "http://localhost:8080",
+                            "http://localhost:8082",
+                            "http://localhost:5173/",
+                            "http://10.5.12.3:5173/",
+                            "http://172.31.112.1:5173/",
+                            "http://172.20.176.1:5173/",
+                            "http://localhost:5175/",
+                            "http://10.5.12.3:5175/",
+                            "https://sudokucollective-admin-staging.pages.dev",
+                            "https://sudokucollective-admin-prod.pages.dev",
+                            "https://admin.sudokucollective.com",
+                        ])
+                        .AllowAnyMethod()
+                        .AllowAnyHeader();
+                }
+                )
+            );
 
-			services.AddControllers()
-					.AddJsonOptions(x =>
-					{
-						x.JsonSerializerOptions.AllowTrailingCommas = true;
-						x.JsonSerializerOptions.IncludeFields = false;
-						x.JsonSerializerOptions.IgnoreReadOnlyProperties = false;
-						x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
-					});
-			services.AddSingleton<ICacheKeys, CacheKeys>();
-			services.AddSingleton<ICachingStrategy, CachingStrategy>();
+            services.AddMvc(options => options.EnableEndpointRouting = false);
 
-			services.AddScoped<IDataJobs, DataJobs>();
-			services.AddScoped<IAppsRepository<App>, AppsRepository<App>>();
-			services.AddScoped<IUsersRepository<User>, UsersRepository<User>>();
-			services.AddScoped<IAppAdminsRepository<AppAdmin>, AppAdminsRepository<AppAdmin>>();
-			services.AddScoped<IGamesRepository<Game>, GamesRepository<Game>>();
-			services.AddScoped<IDifficultiesRepository<Difficulty>, DifficultiesRepository<Difficulty>>();
-			services.AddScoped<IRolesRepository<Role>, RolesRepository<Role>>();
-			services.AddScoped<ISolutionsRepository<SudokuSolution>, SolutionsRepository<SudokuSolution>>();
-			services.AddScoped<IEmailConfirmationsRepository<EmailConfirmation>, EmailConfirmationsRepository<EmailConfirmation>>();
-			services.AddScoped<IPasswordResetsRepository<Core.Models.PasswordReset>, PasswordResetsRepository<Core.Models.PasswordReset>>();
-			services.AddScoped<IAuthenticateService, AuthenticateService>();
-			services.AddScoped<IUserManagementService, UserManagementService>();
-			services.AddScoped<IAppsService, AppsService>();
-			services.AddScoped<IUsersService, UsersService>();
-			services.AddScoped<IGamesService, GamesService>();
-			services.AddScoped<IDifficultiesService, DifficultiesService>();
-			services.AddScoped<IRolesService, RolesService>();
-			services.AddScoped<ISolutionsService, SolutionsService>();
-			services.AddScoped<IEmailService, EmailService>();
-			services.AddScoped<ICacheService, CacheService>();
-			services.AddScoped<IRequestService, RequestService>();
-			services.AddScoped<IValuesService, ValuesService>();
+            services.AddControllers()
+                    .AddJsonOptions(x =>
+                    {
+                        x.JsonSerializerOptions.AllowTrailingCommas = true;
+                        x.JsonSerializerOptions.IncludeFields = false;
+                        x.JsonSerializerOptions.IgnoreReadOnlyProperties = false;
+                        x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+                    });
+            services.AddSingleton<ICacheKeys, CacheKeys>();
+            services.AddSingleton<ICachingStrategy, CachingStrategy>();
 
-			var emailMetaData = _environment.IsDevelopment() ?
-					Configuration.GetSection("emailMetaData").Get<EmailMetaData>() :
-					new EmailMetaData
-					{
-						SmtpServer = Environment.GetEnvironmentVariable("SMTP_SERVER:SERVER"),
-						Port = Convert.ToInt32(Environment.GetEnvironmentVariable("SMTP_SERVER:PORT")),
-						UserName = Environment.GetEnvironmentVariable("SMTP_SERVER:USERNAME"),
-						Password = Environment.GetEnvironmentVariable("SMTP_SERVER:PASSWORD"),
-						FromEmail = Environment.GetEnvironmentVariable("SMTP_SERVER:FROM_EMAIL")
-					};
+            services.AddScoped<IDataJobs, DataJobs>();
+            services.AddScoped<IAppsRepository<App>, AppsRepository<App>>();
+            services.AddScoped<IUsersRepository<User>, UsersRepository<User>>();
+            services.AddScoped<IAppAdminsRepository<AppAdmin>, AppAdminsRepository<AppAdmin>>();
+            services.AddScoped<IGamesRepository<Game>, GamesRepository<Game>>();
+            services.AddScoped<IDifficultiesRepository<Difficulty>, DifficultiesRepository<Difficulty>>();
+            services.AddScoped<IRolesRepository<Role>, RolesRepository<Role>>();
+            services.AddScoped<ISolutionsRepository<SudokuSolution>, SolutionsRepository<SudokuSolution>>();
+            services.AddScoped<IEmailConfirmationsRepository<EmailConfirmation>, EmailConfirmationsRepository<EmailConfirmation>>();
+            services.AddScoped<IPasswordResetsRepository<Core.Models.PasswordReset>, PasswordResetsRepository<Core.Models.PasswordReset>>();
+            services.AddScoped<IAuthenticateService, AuthenticateService>();
+            services.AddScoped<IUserManagementService, UserManagementService>();
+            services.AddScoped<IAppsService, AppsService>();
+            services.AddScoped<IUsersService, UsersService>();
+            services.AddScoped<IGamesService, GamesService>();
+            services.AddScoped<IDifficultiesService, DifficultiesService>();
+            services.AddScoped<IRolesService, RolesService>();
+            services.AddScoped<ISolutionsService, SolutionsService>();
+            services.AddScoped<IEmailService, EmailService>();
+            services.AddScoped<ICacheService, CacheService>();
+            services.AddScoped<IRequestService, RequestService>();
+            services.AddScoped<IValuesService, ValuesService>();
 
-			services.AddSingleton<IEmailMetaData>(emailMetaData);
+            var emailMetaData = _environment.IsDevelopment() ?
+                    Configuration.GetSection("emailMetaData").Get<EmailMetaData>() :
+                    new EmailMetaData
+                    {
+                        SmtpServer = Environment.GetEnvironmentVariable("SMTP_SERVER:SERVER"),
+                        Port = Convert.ToInt32(Environment.GetEnvironmentVariable("SMTP_SERVER:PORT")),
+                        UserName = Environment.GetEnvironmentVariable("SMTP_SERVER:USERNAME"),
+                        Password = Environment.GetEnvironmentVariable("SMTP_SERVER:PASSWORD"),
+                        FromEmail = Environment.GetEnvironmentVariable("SMTP_SERVER:FROM_EMAIL")
+                    };
 
-			services.AddHttpContextAccessor();
-		}
+            services.AddSingleton<IEmailMetaData>(emailMetaData);
 
-		/// <summary>
-		/// This method gets called by the runtime. Use this method to configure the HTTP request pipeline...
-		/// </summary>
-		/// <param name="app"></param>
-		/// <param name="env"></param>
-		public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
-		{
-			if (env.IsDevelopment())
-			{
-				app.UseDeveloperExceptionPage();
-			}
+            services.AddHttpContextAccessor();
+        }
 
-			app.UseCors(x => x.AllowAnyOrigin()
-					.AllowAnyMethod()
-					.AllowAnyHeader());
+        /// <summary>
+        /// This method gets called by the runtime. Use this method to configure the HTTP request pipeline...
+        /// </summary>
+        /// <param name="app"></param>
+        /// <param name="env"></param>
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        {
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+            }
 
-			app.UseHttpsRedirection();
+            app.UseHttpsRedirection();
 
-			app.UseExceptionHandler("/error");
+            app.UseExceptionHandler("/error");
 
-			app.UseRouting();
+            app.UseRouting();
 
-			app.UseAuthentication();
+            app.UseAuthentication();
 
-			app.UseMiddleware<ExpiredTokenMiddleware>();
+            app.UseMiddleware<ExpiredTokenMiddleware>();
 
-			app.UseSwagger();
+            app.UseSwagger();
 
-			app.UseSwaggerUI(swaggerUI =>
-			{
-				var swaggerTitle = "SudokuCollective API v1";
-				swaggerUI.DocumentTitle = swaggerTitle;
-				swaggerUI.SwaggerEndpoint("/swagger/v1/swagger.json", swaggerTitle);
-				swaggerUI.DocExpansion(DocExpansion.None);
-			});
+            app.UseSwaggerUI(swaggerUI =>
+            {
+                var swaggerTitle = "SudokuCollective API v1";
+                swaggerUI.DocumentTitle = swaggerTitle;
+                swaggerUI.SwaggerEndpoint("/swagger/v1/swagger.json", swaggerTitle);
+                swaggerUI.DocExpansion(DocExpansion.None);
+            });
 
-			// Initialize and set the path for the welcome page saved in wwwroot
-			DefaultFilesOptions defaultFile = new DefaultFilesOptions();
-			defaultFile.DefaultFileNames.Clear();
-			defaultFile.DefaultFileNames.Add("index.html");
+            // Initialize and set the path for the welcome page saved in wwwroot
+            DefaultFilesOptions defaultFile = new DefaultFilesOptions();
+            defaultFile.DefaultFileNames.Clear();
+            defaultFile.DefaultFileNames.Add("index.html");
 
-			app.UseDefaultFiles(defaultFile);
+            app.UseDefaultFiles(defaultFile);
 
-			app.UseHangfireDashboard();
+            app.UseHangfireDashboard();
 
-			app.UseStaticFiles();
+            app.UseStaticFiles();
 
-			app.UseMvc();
+            app.UseCors(builder => builder
+                .AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader());
 
-			app.UseEndpoints(endpoints =>
-			{
-				endpoints.MapControllers();
-				endpoints.MapHangfireDashboard();
-			});
+            app.UseMvc();
 
-			app.Use(async (context, next) =>
-			{
-				context.Request.EnableBuffering();
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+                endpoints.MapHangfireDashboard();
+            });
 
-				await next();
-			});
+            app.Use(async (context, next) =>
+            {
+                context.Request.EnableBuffering();
 
-			SeedData.EnsurePopulated(
-					app,
-					Configuration,
-					env);
-		}
+                await next();
+            });
 
-		private bool LifetimeValidator(DateTime? notBefore, DateTime? expires, SecurityToken token, TokenValidationParameters @params)
-		{
-			if (expires != null)
-			{
-				return expires > DateTime.UtcNow;
-			}
-			return false;
-		}
-	}
+            SeedData.EnsurePopulated(
+                    app,
+                    Configuration,
+                    env);
+        }
+
+        private bool LifetimeValidator(DateTime? notBefore, DateTime? expires, SecurityToken token, TokenValidationParameters @params)
+        {
+            if (expires != null)
+            {
+                return expires > DateTime.UtcNow;
+            }
+            return false;
+        }
+    }
 }
