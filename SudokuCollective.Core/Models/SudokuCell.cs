@@ -20,6 +20,10 @@ namespace SudokuCollective.Core.Models
         private int _row = 0;
         private int _value = 0;
         private int _displayValue = 0;
+        private readonly JsonSerializerOptions _serializerOptions = new()
+        {
+            ReferenceHandler = ReferenceHandler.IgnoreCycles
+        };
         #endregion
 
         #region Properties
@@ -213,10 +217,7 @@ namespace SudokuCollective.Core.Models
 
         public string ToJson() => JsonSerializer.Serialize(
             this,
-            new JsonSerializerOptions
-            {
-                ReferenceHandler = ReferenceHandler.IgnoreCycles
-            });
+            _serializerOptions);
 
         public IDomainEntity Cast<T>() => throw new System.NotImplementedException();
         #endregion

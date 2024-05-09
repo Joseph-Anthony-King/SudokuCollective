@@ -12,6 +12,13 @@ namespace SudokuCollective.Core.Models
 {
     public class UserDTO : IUserDTO
     {
+        #region Fields
+        private readonly JsonSerializerOptions _serializerOptions = new()
+        {
+            ReferenceHandler = ReferenceHandler.IgnoreCycles
+        };
+        #endregion
+
         #region Properties
         [Required, JsonPropertyName("id")]
         public int Id { get; set; }
@@ -87,10 +94,7 @@ namespace SudokuCollective.Core.Models
 
         public string ToJson() => JsonSerializer.Serialize(
             this,
-            new JsonSerializerOptions
-            {
-                ReferenceHandler = ReferenceHandler.IgnoreCycles
-            });
+            _serializerOptions);
 
         public IDomainEntity Cast<T>() => throw new System.NotImplementedException();
     #endregion

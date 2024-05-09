@@ -27,6 +27,10 @@ namespace SudokuCollective.Core.Models
         private int _accessDuration = 0;
         private readonly GuidValidatedAttribute _guidValidator = new();
         private readonly UrlValidatedAttribute _urlValidator = new();
+        private readonly JsonSerializerOptions _serializerOptions = new()
+        {
+            ReferenceHandler = ReferenceHandler.IgnoreCycles
+        };
         #endregion
 
         #region Properties
@@ -39,9 +43,9 @@ namespace SudokuCollective.Core.Models
         [GuidValidated(ErrorMessage = AttributeMessages.InvalidLicense)]
         public string License
         {
-            get =>_license;
+            get => _license;
             set => _license = CoreUtilities.SetNullableField(
-                value, 
+                value,
                 _guidValidator,
                 AttributeMessages.InvalidLicense);
         }
@@ -54,7 +58,7 @@ namespace SudokuCollective.Core.Models
         {
             get => _localUrl;
             set => _localUrl = CoreUtilities.SetNullableField(
-                value, 
+                value,
                 _urlValidator,
                 AttributeMessages.InvalidUrl);
         }
@@ -72,7 +76,7 @@ namespace SudokuCollective.Core.Models
         {
             get => _stagingUrl;
             set => _stagingUrl = CoreUtilities.SetNullableField(
-                value, 
+                value,
                 _urlValidator,
                 AttributeMessages.InvalidUrl);
         }
@@ -81,7 +85,7 @@ namespace SudokuCollective.Core.Models
         {
             get => _prodUrl;
             set => _prodUrl = CoreUtilities.SetNullableField(
-                value, 
+                value,
                 _urlValidator,
                 AttributeMessages.InvalidUrl);
         }
@@ -90,7 +94,7 @@ namespace SudokuCollective.Core.Models
         {
             get => _sourceCodeUrl;
             set => _sourceCodeUrl = CoreUtilities.SetNullableField(
-                value, 
+                value,
                 _urlValidator,
                 AttributeMessages.InvalidUrl);
         }
@@ -197,14 +201,14 @@ namespace SudokuCollective.Core.Models
         }
 
         public App(
-                string name, 
-                string license, 
-                int ownerId, 
-                string ownerUserName, 
-                string localUrl, 
-                string qaUrl, 
-                string stagingUrl, 
-                string prodUrl, 
+                string name,
+                string license,
+                int ownerId,
+                string ownerUserName,
+                string localUrl,
+                string qaUrl,
+                string stagingUrl,
+                string prodUrl,
                 string sourceCodeUrl,
                 bool useCustomSMTPServer = false,
                 string smtpServer = null,
@@ -337,10 +341,7 @@ namespace SudokuCollective.Core.Models
 
         public string ToJson() => JsonSerializer.Serialize(
             this,
-            new JsonSerializerOptions
-            {
-                ReferenceHandler = ReferenceHandler.IgnoreCycles
-            });
+            _serializerOptions);
 
         public IDomainEntity Cast<T>()
         {
@@ -352,7 +353,7 @@ namespace SudokuCollective.Core.Models
                 {
                     Id = Id,
                     Name = Name,
-                    Url = Environment == ReleaseEnvironment.LOCAL ? 
+                    Url = Environment == ReleaseEnvironment.LOCAL ?
                         LocalUrl :
                         Environment == ReleaseEnvironment.STAGING ?
                             StagingUrl :
@@ -462,7 +463,7 @@ namespace SudokuCollective.Core.Models
         }
 
         private int GetUserCount()
-        {  
+        {
             if (Users != null)
             {
                 return Users.Count;

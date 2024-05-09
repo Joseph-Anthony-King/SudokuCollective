@@ -24,6 +24,10 @@ namespace SudokuCollective.Core.Models
         private bool _isAdmin;
         private readonly UserNameValidatedAttribute _userNameValidatedAttribute = new();
         private readonly EmailValidatedAttribute _emailValidator = new();
+        private readonly JsonSerializerOptions _serializerOptions = new()
+        {
+            ReferenceHandler = ReferenceHandler.IgnoreCycles
+        };
         #endregion
 
         #region Properties
@@ -238,10 +242,7 @@ namespace SudokuCollective.Core.Models
 
         public string ToJson() => JsonSerializer.Serialize(
             this,
-            new JsonSerializerOptions
-            {
-                ReferenceHandler = ReferenceHandler.IgnoreCycles
-            });
+            _serializerOptions);
 
         public IDomainEntity Cast<T>()
         {
