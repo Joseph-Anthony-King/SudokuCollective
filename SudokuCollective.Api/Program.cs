@@ -34,10 +34,7 @@ namespace SudokuCollective.Api
                         configure.ConfigureKestrel(options =>
                         {
                             options.Limits.MaxConcurrentConnections = null;
-                            options.Limits.RequestHeadersTimeout = TimeSpan.FromMinutes(1);
-                            options.Limits.KeepAliveTimeout = TimeSpan.FromMinutes(10);
-                            options.Limits.Http2.KeepAlivePingDelay = TimeSpan.FromSeconds(30);
-                            options.Limits.Http2.KeepAlivePingTimeout = TimeSpan.FromMinutes(1);
+                            options.Limits.KeepAliveTimeout = TimeSpan.FromSeconds(30);
                         });
                     })
                     .Build()

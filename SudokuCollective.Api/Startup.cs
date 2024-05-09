@@ -108,7 +108,7 @@ namespace SudokuCollective.Api
                     {
                         Version = "v1",
                         Title = "SudokuCollective API",
-                        Description = string.Format("{0} \r\n\r\n For testing purposes please use the Sudoku Collective Sandbox App if you haven't created your own app: \r\n\r\n Id: 3 \r\n\r\n  License: {1}",
+                        Description = string.Format("{0} \r\n\r\n For testing purposes please use the Sudoku Collective Sandbox App if you haven't created your own app: \r\n\r\n Id: 3 \r\n\r\n  License: {1} \r\n\r\n Please note there is a 30 second time limit on all requests after which time all requests will be cancelled.",
                             swaggerDescription,
                             sandboxLicense)
                     });
@@ -289,26 +289,13 @@ namespace SudokuCollective.Api
 
             services.AddCors(options => options.AddPolicy(
                 "ClientsCorsPolicy",
-                builder =>
+                builder => 
                 {
                     builder
-                        .WithOrigins([
-                            "http://localhost:8080",
-                            "http://localhost:8082",
-                            "http://localhost:5173/",
-                            "http://10.5.12.3:5173/",
-                            "http://172.31.112.1:5173/",
-                            "http://172.20.176.1:5173/",
-                            "http://localhost:5175/",
-                            "http://10.5.12.3:5175/",
-                            "https://sudokucollective-admin-staging.pages.dev",
-                            "https://sudokucollective-admin-prod.pages.dev",
-                            "https://admin.sudokucollective.com",
-                        ])
+                        .AllowAnyOrigin()
                         .AllowAnyMethod()
                         .AllowAnyHeader();
-                }
-                )
+                })
             );
 
             services.AddMvc(options => options.EnableEndpointRouting = false);
