@@ -19,6 +19,10 @@ namespace SudokuCollective.Core.Models
         private string _newEmailAddress = string.Empty;
         private readonly EmailValidatedAttribute _emailValidatedAttribute = new();
         private readonly GuidValidatedAttribute _guidValidator = new();
+        private readonly JsonSerializerOptions _serializerOptions = new()
+        {
+            ReferenceHandler = ReferenceHandler.IgnoreCycles
+        };
         #endregion
 
         #region Properties
@@ -154,10 +158,7 @@ namespace SudokuCollective.Core.Models
 
         public string ToJson() => JsonSerializer.Serialize(
             this,
-            new JsonSerializerOptions
-            {
-                ReferenceHandler = ReferenceHandler.IgnoreCycles
-            });
+            _serializerOptions);
 
         public IDomainEntity Cast<T>() => throw new System.NotImplementedException();
 

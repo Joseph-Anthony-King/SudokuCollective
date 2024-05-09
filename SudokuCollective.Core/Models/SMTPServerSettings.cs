@@ -7,6 +7,14 @@ namespace SudokuCollective.Core.Models
 {
     public class SMTPServerSettings : ISMTPServerSettings
     {
+        #region Fields
+        private readonly JsonSerializerOptions _serializerOptions = new()
+        {
+            ReferenceHandler = ReferenceHandler.IgnoreCycles
+        };
+        #endregion
+
+        #region Properties
         [JsonPropertyName("id"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
         public int Id { get; set; }
         [JsonPropertyName("smtpServer")]
@@ -29,7 +37,9 @@ namespace SudokuCollective.Core.Models
         }
         [JsonIgnore]
         public App App { get; set; }
+        #endregion
 
+        #region Constructors
         public SMTPServerSettings()
         {
             Id = 0;
@@ -69,7 +79,9 @@ namespace SudokuCollective.Core.Models
                 App = new App();
             }
         }
+        #endregion
 
+        #region Methods
         public bool AreSettingsValid()
         {
             var result = true;
@@ -99,11 +111,9 @@ namespace SudokuCollective.Core.Models
 
         public string ToJson() => JsonSerializer.Serialize(
             this,
-            new JsonSerializerOptions
-            {
-                ReferenceHandler = ReferenceHandler.IgnoreCycles
-            });
+            _serializerOptions);
 
         public IDomainEntity Cast<T>() => throw new System.NotImplementedException();
+        #endregion
     }
 }

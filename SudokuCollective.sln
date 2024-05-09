@@ -23,7 +23,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SudokuCollective.Logs", "Su
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SudokuCollective.Encrypt", "SudokuCollective.Encrypt\SudokuCollective.Encrypt.csproj", "{1009B5A2-358D-4820-BD92-82925B10F941}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SudokuCollective.HerokuIntegration", "SudokuCollective.Heroku\SudokuCollective.HerokuIntegration.csproj", "{FA148FF5-8D25-44A2-8B57-24666D1ADD94}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SudokuCollective.HerokuIntegration", "SudokuCollective.HerokuIntegration\SudokuCollective.HerokuIntegration.csproj", "{FA148FF5-8D25-44A2-8B57-24666D1ADD94}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
