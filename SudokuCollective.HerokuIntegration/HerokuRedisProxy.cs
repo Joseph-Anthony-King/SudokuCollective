@@ -8,7 +8,6 @@ using SudokuCollective.HerokuIntegration.Models.Requests;
 using SudokuCollective.HerokuIntegration.Models.Responses;
 using SudokuCollective.Logs.Utilities;
 
-[assembly: InternalsVisibleTo("SudokuCollective.Api")]
 [assembly: InternalsVisibleTo("SudokuCollective.Cache")]
 [assembly: InternalsVisibleTo("SudokuCollective.Test")]
 namespace SudokuCollective.HerokuIntegration
