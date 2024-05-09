@@ -15,6 +15,10 @@ namespace SudokuCollective.Core.Models
         #region Fields
         private string _token = string.Empty;
         private readonly GuidValidatedAttribute _guidValidator = new();
+        private readonly JsonSerializerOptions _serializerOptions = new()
+        {
+            ReferenceHandler = ReferenceHandler.IgnoreCycles
+        };
         #endregion
 
         #region Properties
@@ -69,10 +73,7 @@ namespace SudokuCollective.Core.Models
 
         public string ToJson() => JsonSerializer.Serialize(
             this,
-            new JsonSerializerOptions
-            {
-                ReferenceHandler = ReferenceHandler.IgnoreCycles
-            });
+            _serializerOptions);
 
         public IDomainEntity Cast<T>() => throw new System.NotImplementedException();
         #endregion

@@ -11,7 +11,7 @@
   <ItemGroup>
     <ProjectReference Include="..\SudokuCollective.Core\SudokuCollective.Core.csproj" />
     <ProjectReference Include="..\SudokuCollective.Data\SudokuCollective.Data.csproj" />
-    <ProjectReference Include="..\SudokuCollective.Heroku\SudokuCollective.HerokuIntegration.csproj" />
+    <ProjectReference Include="..\SudokuCollective.HerokuIntegration\SudokuCollective.HerokuIntegration.csproj" />
   </ItemGroup>
 
 </Project>
