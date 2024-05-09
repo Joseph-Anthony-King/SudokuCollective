@@ -28,7 +28,17 @@ namespace SudokuCollective.Api
 
             try
             {
-                CreateHostBuilder(args).Build().Run();
+                CreateHostBuilder(args)
+                    .ConfigureWebHost(configure =>
+                    {
+                        configure.ConfigureKestrel(options =>
+                        {
+                            options.Limits.MaxConcurrentConnections = null;
+                            options.Limits.KeepAliveTimeout = TimeSpan.FromSeconds(30);
+                        });
+                    })
+                    .Build()
+                    .Run();
             }
             catch (Exception ex)
             {
