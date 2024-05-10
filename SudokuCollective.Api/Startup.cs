@@ -42,7 +42,6 @@ using SudokuCollective.Data.Services;
 using SudokuCollective.HerokuIntegration;
 using SudokuCollective.Repos;
 using Role = SudokuCollective.Core.Models.Role;
-using static System.Net.WebRequestMethods;
 
 namespace SudokuCollective.Api
 {
@@ -308,6 +307,7 @@ namespace SudokuCollective.Api
                         x.JsonSerializerOptions.IgnoreReadOnlyProperties = false;
                         x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
                     });
+
             services.AddSingleton<ICacheKeys, CacheKeys>();
             services.AddSingleton<ICachingStrategy, CachingStrategy>();
 
@@ -383,7 +383,7 @@ namespace SudokuCollective.Api
             });
 
             // Initialize and set the path for the welcome page saved in wwwroot
-            DefaultFilesOptions defaultFile = new DefaultFilesOptions();
+            DefaultFilesOptions defaultFile = new();
             defaultFile.DefaultFileNames.Clear();
             defaultFile.DefaultFileNames.Add("index.html");
 
