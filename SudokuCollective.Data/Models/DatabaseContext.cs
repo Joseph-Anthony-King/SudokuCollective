@@ -179,8 +179,7 @@ namespace SudokuCollective.Data.Models
                 .Ignore(matrix => matrix.SixthRowDisplayedValues)
                 .Ignore(matrix => matrix.SeventhRowDisplayedValues)
                 .Ignore(matrix => matrix.EighthRowDisplayedValues)
-                .Ignore(matrix => matrix.NinthRowDisplayedValues)
-                .Ignore(matrix => matrix.Stopwatch);
+                .Ignore(matrix => matrix.NinthRowDisplayedValues);
 
             modelBuilder.Entity<Game>()
                 .HasKey(game => game.Id);
