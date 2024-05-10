@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace SudokuCollective.Api.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialMigrationNoEncryption : Migration
+    public partial class DBNoEncryptionInitialMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
