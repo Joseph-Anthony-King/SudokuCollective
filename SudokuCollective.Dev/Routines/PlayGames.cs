@@ -95,8 +95,6 @@ namespace SudokuCollective.Dev.Routines
               KeepScore = true
             };
 
-            game.SudokuMatrix.Stopwatch.Start();
-
             do
             {
                 DisplayScreens.GameScreen(game);

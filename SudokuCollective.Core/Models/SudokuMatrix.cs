@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
-using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Text.Json;
@@ -26,7 +25,6 @@ namespace SudokuCollective.Core.Models
         private readonly Queue<SudokuCellEventArgs> _sudokuCellEventsQueue = [];
         private bool _sudokuCellEventsQueueRunning = false;
         private readonly SudokuCellsValidatedAttribute _sudokuCellsValidator = new();
-        private readonly Stopwatch _stopwatch = new();
         private readonly JsonSerializerOptions _serializerOptions = new()
         {
             ReferenceHandler = ReferenceHandler.IgnoreCycles
@@ -68,11 +66,6 @@ namespace SudokuCollective.Core.Models
                 value, 
                 _sudokuCellsValidator, 
                 AttributeMessages.InvalidSudokuCells);
-        }
-        [JsonIgnore]
-        public Stopwatch Stopwatch
-        {
-            get => _stopwatch;
         }
 
         #region SudokuCell List Properties
@@ -582,7 +575,13 @@ namespace SudokuCollective.Core.Models
                 }
             }
 
-            Difficulty = new Difficulty();
+            Difficulty = new Difficulty()
+            {
+                Id = 2,
+                Name = "Test",
+                DisplayName = "Test",
+                DifficultyLevel = DifficultyLevel.TEST,
+            };
         }
 
         public SudokuMatrix(List<int> intList) : this()
@@ -923,10 +922,11 @@ namespace SudokuCollective.Core.Models
                 if (Difficulty.DifficultyLevel != DifficultyLevel.TEST && Difficulty.DifficultyLevel != DifficultyLevel.NULL)
                 {
                     var testSolutions = new List<string>();
+                    var intList = this.ToDisplayedIntList();
 
                     for (var i = 0; i < 15; i++)
                     {
-                        var testMatrix = new SudokuMatrix(this.Difficulty, this.ToDisplayedIntList());
+                        var testMatrix = new SudokuMatrix(this.Difficulty, intList);
                         await testMatrix.SolveAsync();
                         testSolutions.Add(testMatrix.ToValuesString());
 
@@ -971,23 +971,14 @@ namespace SudokuCollective.Core.Models
         {
             await Task.Run(() =>
             {
-                _stopwatch.Reset();
-
-                _stopwatch.Start();
-
                 var seed = SudokuMatrixUtilities.SolveByElimination(this, this.ToIntList());
 
                 if (seed.Contains(0))
                 {
-                    SudokuMatrix matrix;
+                    SudokuMatrix matrix = null;
 
                     do
                     {
-                        if (!_stopwatch.IsRunning)
-                        {
-                            _stopwatch.Start();
-                        }
-
                         matrix = new SudokuMatrix(seed);
 
                         foreach (var sudokuCell in matrix.SudokuCells)
@@ -1019,21 +1010,12 @@ namespace SudokuCollective.Core.Models
                             }
                         }
 
-                        _stopwatch.Stop();
-
-                    } while (_stopwatch.Elapsed.TotalMinutes < 3 && !matrix.IsValid());
+                    } while (!matrix.IsValid());
 
                     seed = matrix.ToIntList();
                 }
 
-                var result = new SudokuMatrix(seed);
-
-                SudokuCells = result.SudokuCells;
-
-                if (_stopwatch.IsRunning)
-                {
-                    _stopwatch.Stop();
-                }
+                SudokuCells = new SudokuMatrix(seed).SudokuCells;
             });
         }
 
@@ -1142,9 +1124,10 @@ namespace SudokuCollective.Core.Models
                             }
                         }
                     }
-                    _sudokuCellEventsQueueRunning = false;
 
                 } while (_sudokuCellEventsQueue.Count > 0);
+
+                _sudokuCellEventsQueueRunning = false;
             }
         }
         #endregion

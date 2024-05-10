@@ -467,7 +467,7 @@ namespace SudokuCollective.Core.Utilities
 
                 count++;
 
-            } while (count < 10);
+            } while (count < 5);
 
             var result = new SudokuMatrix(tmp.ToIntList());
             return result.ToIntList();
