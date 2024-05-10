@@ -124,9 +124,7 @@ namespace SudokuCollective.Test.TestCases.Models
             {
                 cell.DisplayedValue = cell.Value;
             }
-            sut.SudokuMatrix.Stopwatch.Start();
-            Thread.Sleep(1000);
-            sut.SudokuMatrix.Stopwatch.Stop();
+            
             sut.IsSolved();
 
             // Assert

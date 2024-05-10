@@ -137,22 +137,13 @@ namespace SudokuCollective.Dev.Routines
 
                     DisplayScreens.DisplayMatix(displayMatrix);
 
-                    // Format and display the TimeSpan value.
-                    string elapsedTime = String.Format("{0:00}:{1:00}:{2:00}.{3:00}",
-                        matrix.Stopwatch.Elapsed.Hours,
-                        matrix.Stopwatch.Elapsed.Minutes,
-                        matrix.Stopwatch.Elapsed.Seconds,
-                        matrix.Stopwatch.Elapsed.Milliseconds / 10);
-
-                    Console.Write("\n\nTime to generate solution: " + elapsedTime + "\n\n");
-
                 }
                 else
                 {
-                    Console.WriteLine("\nNeed more values in order to deduce a solution.\n");
+                    Console.WriteLine("\n\nNeed more values in order to deduce a solution.\n");
                 }
 
-                Console.Write("Would you like to solve another solution (yes/no): ");
+                Console.Write("\n\nWould you like to solve another solution (yes/no): ");
 
                 var result = Console.ReadLine();
 
