@@ -166,11 +166,6 @@ namespace SudokuCollective.Core.Models
             {
                 if (SudokuMatrix.IsSolved())
                 {
-                    if (SudokuMatrix.Stopwatch.IsRunning)
-                    {
-                        SudokuMatrix.Stopwatch.Stop();
-                    }
-
                     foreach (var sudokuCell in SudokuMatrix.SudokuCells)
                     {
                         if (sudokuCell.DisplayedValue > 0)
