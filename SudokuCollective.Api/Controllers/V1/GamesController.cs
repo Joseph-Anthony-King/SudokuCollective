@@ -169,7 +169,7 @@ namespace SudokuCollective.Api.V1.Controllers
                     request.RequestorId))
                 {
                     var result = await _gamesService.UpdateAsync(
-                        id, 
+                        id,
                         request);
 
                     if (result.IsSuccess)
@@ -323,7 +323,7 @@ namespace SudokuCollective.Api.V1.Controllers
                     request.RequestorId))
                 {
                     var result = await _gamesService.GetGameAsync(
-                        id, 
+                        id,
                         request.AppId);
 
                     if (result.IsSuccess)
@@ -666,7 +666,7 @@ namespace SudokuCollective.Api.V1.Controllers
                     request.RequestorId))
                 {
                     var result = await _gamesService.UpdateMyGameAsync(
-                        id, 
+                        id,
                         request);
 
                     if (result.IsSuccess)
@@ -876,41 +876,31 @@ namespace SudokuCollective.Api.V1.Controllers
         /// </remarks>
         [AllowAnonymous]
         [HttpGet("CreateAnnonymous")]
-        public ActionResult<Result> CreateAnnonymous([FromQuery] AnnonymousGameRequest request)
+        public async Task<ActionResult<Result>> CreateAnnonymousAsync([FromQuery] AnnonymousGameRequest request)
         {
             try
             {
                 ArgumentNullException.ThrowIfNull(request);
-                
+
                 IResult result;
 
                 if (request.DifficultyLevel == DifficultyLevel.NULL || request.DifficultyLevel == DifficultyLevel.TEST)
                 {
                     result = new Result
-                    { 
+                    {
                         Message = ControllerMessages.StatusCode400(DifficultiesMessages.DifficultyNotValidMessage)
                     };
-                    
-                    return BadRequest(result);
-                }
-
-                if (request.AppId == 0)
-                {
-                    result = new Result
-                    {
-                        Message = ControllerMessages.StatusCode400(AppsMessages.AppNotFoundMessage)
-                    };
 
                     return BadRequest(result);
                 }
 
-                result = _gamesService.ScheduleCreateAnnonymous(request.DifficultyLevel, request.AppId);
+                result = await _gamesService.CreateAnnonymousAsync(request.DifficultyLevel);
 
                 if (result.IsSuccess)
                 {
-                    result.Message = ControllerMessages.StatusCode102(result.Message);
+                    result.Message = ControllerMessages.StatusCode200(result.Message);
 
-                    return StatusCode((int)HttpStatusCode.Processing, result);
+                    return Ok(result);
                 }
                 else
                 {
