@@ -24,7 +24,6 @@ namespace SudokuCollective.Api.V1.Controllers
     /// <param name="requestService"></param>
     /// <param name="httpContextAccessor"></param>
     /// <param name="logger"></param>
-    /// <param name="environment"></param>
     [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
     [Route("api/v1/[controller]")]
     [ApiController]
@@ -33,15 +32,13 @@ namespace SudokuCollective.Api.V1.Controllers
         IAppsService appsService,
         IRequestService requestService,
         IHttpContextAccessor httpContextAccessor,
-        ILogger<SolutionsController> logger,
-        IWebHostEnvironment environment) : ControllerBase
+        ILogger<SolutionsController> logger) : ControllerBase
     {
         private readonly ISolutionsService _solutionsService = solutionsService;
         private readonly IAppsService _appsService = appsService;
         private readonly IRequestService _requestService = requestService;
         private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
         private readonly ILogger<SolutionsController> _logger = logger;
-        private readonly IWebHostEnvironment _environment = environment;
 
         /// <summary>
         /// An endpoint to get a solution, requires the user role

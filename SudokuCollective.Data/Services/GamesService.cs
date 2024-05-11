@@ -6,6 +6,7 @@ using Hangfire;
 using Microsoft.Extensions.Logging;
 using SudokuCollective.Core.Enums;
 using SudokuCollective.Core.Interfaces.Jobs;
+using SudokuCollective.Core.Interfaces.Models.DomainEntities;
 using SudokuCollective.Core.Interfaces.Models.DomainObjects.Params;
 using SudokuCollective.Core.Interfaces.Models.DomainObjects.Payloads;
 using SudokuCollective.Core.Interfaces.Repositories;
@@ -32,6 +33,7 @@ namespace SudokuCollective.Data.Services
         private readonly IRequestService _requestService;
         private readonly IBackgroundJobClient _jobClient;
         private readonly IDataJobs _dataJobs;
+        private readonly ISudokuJobs _sudokuJobs;
         private readonly ILogger<GamesService> _logger;
         #endregion
 
@@ -44,6 +46,7 @@ namespace SudokuCollective.Data.Services
             IRequestService requestService,
             IBackgroundJobClient jobClient,
             IDataJobs dataJobs,
+            ISudokuJobs sudokuJobs,
             ILogger<GamesService> logger)
         {
             _gamesRepository = gamesRepsitory;
@@ -53,6 +56,7 @@ namespace SudokuCollective.Data.Services
             _requestService = requestService;
             _jobClient = jobClient;
             _dataJobs = dataJobs;
+            _sudokuJobs = sudokuJobs;
             _logger = logger;
         }
         #endregion
@@ -955,6 +959,45 @@ namespace SudokuCollective.Data.Services
                     result,
                     e);
             }
+        }
+
+        public IResult ScheduleCreateAnnonymous(DifficultyLevel difficultyLevel, int appId)
+        {
+            var result = new Result();
+
+            try
+            {
+                if (difficultyLevel == DifficultyLevel.NULL || difficultyLevel == DifficultyLevel.TEST)
+                {
+                    result.IsSuccess = false;
+                    result.Message = DifficultiesMessages.DifficultyNotValidMessage;
+                }
+
+                if (appId == 0)
+                {
+                    result.IsSuccess = false;
+                    result.Message = AppsMessages.AppsNotFoundMessage;
+                }
+
+                var jobId = _jobClient.Schedule(() => 
+                    _sudokuJobs.CreateGameJobAsync(difficultyLevel, appId), 
+                    TimeSpan.FromSeconds(1));
+
+                result.IsSuccess = true;
+                result.Message = string.Format("Create game job {0) scheduled", jobId);
+                result.Payload.Add(new { jobId });
+
+                return result;
+            }
+            catch (Exception e)
+            {
+                return DataUtilities.ProcessException<GamesService>(
+                    _requestService,
+                    _logger,
+                    result,
+                    e);
+            }
+
         }
 
         public IResult CheckAnnonymous(List<int> intList)

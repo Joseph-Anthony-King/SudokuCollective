@@ -312,6 +312,7 @@ namespace SudokuCollective.Api
             services.AddSingleton<ICachingStrategy, CachingStrategy>();
 
             services.AddScoped<IDataJobs, DataJobs>();
+            services.AddScoped<ISudokuJobs, SudokuJobs>();
             services.AddScoped<IAppsRepository<App>, AppsRepository<App>>();
             services.AddScoped<IUsersRepository<User>, UsersRepository<User>>();
             services.AddScoped<IAppAdminsRepository<AppAdmin>, AppAdminsRepository<AppAdmin>>();

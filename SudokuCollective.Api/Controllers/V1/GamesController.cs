@@ -876,7 +876,7 @@ namespace SudokuCollective.Api.V1.Controllers
         /// </remarks>
         [AllowAnonymous]
         [HttpGet("CreateAnnonymous")]
-        public async Task<ActionResult<Result>> CreateAnnonymousAsync([FromQuery] AnnonymousGameRequest request)
+        public ActionResult<Result> CreateAnnonymous([FromQuery] AnnonymousGameRequest request)
         {
             try
             {
@@ -894,13 +894,23 @@ namespace SudokuCollective.Api.V1.Controllers
                     return BadRequest(result);
                 }
 
-                result = await _gamesService.CreateAnnonymousAsync(request.DifficultyLevel);
+                if (request.AppId == 0)
+                {
+                    result = new Result
+                    {
+                        Message = ControllerMessages.StatusCode400(AppsMessages.AppNotFoundMessage)
+                    };
+
+                    return BadRequest(result);
+                }
+
+                result = _gamesService.ScheduleCreateAnnonymous(request.DifficultyLevel, request.AppId);
 
                 if (result.IsSuccess)
                 {
-                    result.Message = ControllerMessages.StatusCode200(result.Message);
+                    result.Message = ControllerMessages.StatusCode102(result.Message);
 
-                    return Ok(result);
+                    return StatusCode((int)HttpStatusCode.Processing, result);
                 }
                 else
                 {
