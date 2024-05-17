@@ -24,83 +24,57 @@ using SudokuCollective.Data.Models.Results;
 
 namespace SudokuCollective.Data.Services
 {
-    public class SolutionsService : ISolutionsService
+    public class SolutionsService(
+        ISolutionsRepository<SudokuSolution> solutionsRepository,
+        IRequestService requestService,
+        IDistributedCache distributedCache,
+        ICacheService cacheService,
+        ICacheKeys cacheKeys,
+        IBackgroundJobClient jobClient,
+        IDataJobs dataJobs,
+        ILogger<SolutionsService> logger) : ISolutionsService
     {
         #region Fields
-        private readonly ISolutionsRepository<SudokuSolution> _solutionsRepository;
-        private readonly IRequestService _requestService;
-        private readonly IDistributedCache _distributedCache;
-        private readonly ICacheService _cacheService;
-        private readonly ICacheKeys _cacheKeys;
-        private readonly IBackgroundJobClient _jobClient;
-        private readonly IDataJobs _dataJobs;
-        private readonly ILogger<SolutionsService> _logger;
-        #endregion
-
-        #region Constructor
-        public SolutionsService(
-            ISolutionsRepository<SudokuSolution> solutionsRepository,
-            IRequestService requestService,
-            IDistributedCache distributedCache,
-            ICacheService cacheService,
-            ICacheKeys cacheKeys,
-            IBackgroundJobClient jobClient,
-            IDataJobs dataJobs,
-            ILogger<SolutionsService> logger)
-        {
-            _solutionsRepository = solutionsRepository;
-            _requestService = requestService;
-            _distributedCache = distributedCache;
-            _cacheService = cacheService;
-            _cacheKeys = cacheKeys;
-            _jobClient = jobClient;
-            _dataJobs = dataJobs;
-            _logger = logger;
-        }
+        private readonly ISolutionsRepository<SudokuSolution> _solutionsRepository = solutionsRepository;
+        private readonly IRequestService _requestService = requestService;
+        private readonly IDistributedCache _distributedCache = distributedCache;
+        private readonly ICacheService _cacheService = cacheService;
+        private readonly ICacheKeys _cacheKeys = cacheKeys;
+        private readonly IBackgroundJobClient _jobClient = jobClient;
+        private readonly IDataJobs _dataJobs = dataJobs;
+        private readonly ILogger<SolutionsService> _logger = logger;
         #endregion
 
         #region Methods
-
         public async Task<IResult> GetAsync(int id)
         {
             var result = new Result();
 
-            if (id == 0)
-            {
-                result.IsSuccess = false;
-                result.Message = SolutionsMessages.SolutionNotFoundMessage;
-
-                return result;
-            }
-
             try
             {
+                ArgumentNullException.ThrowIfNull(id, nameof(id));
+
+                ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id, nameof(id));
+
                 var solutionResponse = await _solutionsRepository.GetAsync(id);
 
-                if (solutionResponse.IsSuccess)
-                {
-                    var solution = (SudokuSolution)solutionResponse.Object;
-
-                    result.IsSuccess = solutionResponse.IsSuccess;
-                    result.Message = SolutionsMessages.SolutionFoundMessage;
-                    result.Payload.Add(solution);
-
-                    return result;
-                }
-                else if (!solutionResponse.IsSuccess && solutionResponse.Exception != null)
+                if (!solutionResponse.IsSuccess)
                 {
                     result.IsSuccess = solutionResponse.IsSuccess;
-                    result.Message = solutionResponse.Exception.Message;
+                    result.Message = solutionResponse.Exception != null ? 
+                        solutionResponse.Exception.Message : 
+                        SolutionsMessages.SolutionNotFoundMessage;
 
                     return result;
                 }
-                else
-                {
-                    result.IsSuccess = false;
-                    result.Message = SolutionsMessages.SolutionNotFoundMessage;
 
-                    return result;
-                }
+                var solution = (SudokuSolution)solutionResponse.Object;
+
+                result.IsSuccess = solutionResponse.IsSuccess;
+                result.Message = SolutionsMessages.SolutionFoundMessage;
+                result.Payload.Add(solution);
+
+                return result;
             }
             catch (Exception e)
             {
@@ -114,14 +88,14 @@ namespace SudokuCollective.Data.Services
 
         public async Task<IResult> GetSolutionsAsync(IRequest request)
         {
-            if (request == null) throw new ArgumentNullException(nameof(request));
-
             var result = new Result();
-
-            var response = new RepositoryResponse();
 
             try
             {
+                ArgumentNullException.ThrowIfNull(request, nameof(request));
+
+                var response = new RepositoryResponse();
+
                 var cacheServiceResponse = await _cacheService.GetAllWithCacheAsync<SudokuSolution>(
                     _solutionsRepository,
                     _distributedCache,
@@ -130,58 +104,52 @@ namespace SudokuCollective.Data.Services
                     result);
 
                 response = (RepositoryResponse)cacheServiceResponse.Item1;
+
+                if (!response.IsSuccess)
+                {
+                    result.IsSuccess = response.IsSuccess;
+                    result.Message = response.Exception != null ? 
+                        response.Exception.Message : 
+                        SolutionsMessages.SolutionsNotFoundMessage;
+
+                    return result;
+                }
+
                 result = (Result)cacheServiceResponse.Item2;
 
-                if (response.IsSuccess)
+                if (request.Paginator != null)
                 {
-                    if (request.Paginator != null)
+                    if (DataUtilities.IsPageValid(request.Paginator, response.Objects))
                     {
-                        if (DataUtilities.IsPageValid(request.Paginator, response.Objects))
-                        {
-                            result = PaginatorUtilities.PaginateSolutions(request.Paginator, response, result);
+                        result = PaginatorUtilities.PaginateSolutions(request.Paginator, response, result);
 
-                            if (result.Message.Equals(
-                                ServicesMesages.SortValueNotImplementedMessage))
-                            {
-                                return result;
-                            }
-                        }
-                        else
+                        if (result.Message.Equals(
+                            ServicesMesages.SortValueNotImplementedMessage))
                         {
-                            result.IsSuccess = false;
-                            result.Message = ServicesMesages.PageNotFoundMessage;
-
                             return result;
                         }
                     }
                     else
                     {
-                        result.Payload.AddRange(response
-                            .Objects
-                            .OrderBy(s => ((ISudokuSolution)s).Id)
-                            .ToList()
-                            .ConvertAll(s => (object)s));
+                        result.IsSuccess = false;
+                        result.Message = ServicesMesages.PageNotFoundMessage;
+
+                        return result;
                     }
-
-                    result.IsSuccess = response.IsSuccess;
-                    result.Message = SolutionsMessages.SolutionsFoundMessage;
-
-                    return result;
-                }
-                else if (!response.IsSuccess && response.Exception != null)
-                {
-                    result.IsSuccess = response.IsSuccess;
-                    result.Message = response.Exception.Message;
-
-                    return result;
                 }
                 else
                 {
-                    result.IsSuccess = false;
-                    result.Message = SolutionsMessages.SolutionsNotFoundMessage;
-
-                    return result;
+                    result.Payload.AddRange(response
+                        .Objects
+                        .OrderBy(s => ((ISudokuSolution)s).Id)
+                        .ToList()
+                        .ConvertAll(s => (object)s));
                 }
+
+                result.IsSuccess = response.IsSuccess;
+                result.Message = SolutionsMessages.SolutionsFoundMessage;
+
+                return result;
             }
             catch (Exception e)
             {
@@ -195,13 +163,14 @@ namespace SudokuCollective.Data.Services
 
         public async Task<IResult> SolveAsync(IAnnonymousCheckRequest request)
         {
-            if (request == null) throw new ArgumentNullException(nameof(request));
-
             var result = new Result();
-            var gameResult = new AnnonymousGameResult();
 
             try
             {
+                ArgumentNullException.ThrowIfNull(request, nameof(request));
+
+                var gameResult = new AnnonymousGameResult();
+
                 var intList = new List<int>();
 
                 intList.AddRange(request.FirstRow);
@@ -303,10 +272,11 @@ namespace SudokuCollective.Data.Services
         public async Task<IResult> GenerateAsync()
         {
             var result = new Result();
-            var gameResult = new AnnonymousGameResult();
-            
+
             try
             {
+                var gameResult = new AnnonymousGameResult();
+
                 var game = new Game();
 
                 await game.SudokuMatrix.GenerateSolutionAsync();
@@ -337,9 +307,9 @@ namespace SudokuCollective.Data.Services
 
         public IResult GenerateSolutions(IRequest request)
         {
-            if (request == null) throw new ArgumentNullException(nameof(request));
-
             var result = new Result();
+
+            ArgumentNullException.ThrowIfNull(request, nameof(request));
 
             AddSolutionsPayload payload;
 
@@ -349,10 +319,7 @@ namespace SudokuCollective.Data.Services
             }
             else
             {
-                result.IsSuccess = false;
-                result.Message = ServicesMesages.InvalidRequestMessage;
-
-                return result;
+                throw new ArgumentException(ServicesMesages.InvalidRequestMessage);
             }
 
             if (payload.Limit == 0)

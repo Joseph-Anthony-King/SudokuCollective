@@ -6,13 +6,15 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using SudokuCollective.Core.Interfaces.Services;
-using SudokuCollective.Data.Messages;
-using SudokuCollective.Core.Enums;
-using SudokuCollective.Data.Models.Params;
 using SudokuCollective.Api.Utilities;
+using SudokuCollective.Core.Interfaces.Models.DomainObjects.Payloads;
+using SudokuCollective.Core.Interfaces.Services;
+using SudokuCollective.Core.Enums;
+using SudokuCollective.Data.Extensions;
+using SudokuCollective.Data.Messages;
+using SudokuCollective.Data.Models.Params;
+using SudokuCollective.Data.Models.Payloads;
 using SudokuCollective.Data.Models.Requests;
-using Microsoft.AspNetCore.Hosting;
 using IResult = SudokuCollective.Core.Interfaces.Models.DomainObjects.Params.IResult;
 
 namespace SudokuCollective.Api.V1.Controllers
@@ -21,14 +23,13 @@ namespace SudokuCollective.Api.V1.Controllers
     /// Games Controller Class
     /// </summary>
     /// <remarks>
-    /// Games Controller Constructor
+    /// Games Controller Class
     /// </remarks>
     /// <param name="gamesService"></param>
     /// <param name="appsService"></param>
     /// <param name="requestService"></param>
     /// <param name="httpContextAccessor"></param>
     /// <param name="logger"></param>
-    /// <param name="environment"></param>
     [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
     [Route("api/v1/[controller]")]
     [ApiController]
@@ -37,15 +38,13 @@ namespace SudokuCollective.Api.V1.Controllers
         IAppsService appsService,
         IRequestService requestService,
         IHttpContextAccessor httpContextAccessor,
-        ILogger<GamesController> logger,
-        IWebHostEnvironment environment) : ControllerBase
+        ILogger<GamesController> logger) : ControllerBase
     {
         private readonly IGamesService _gamesService = gamesService;
         private readonly IAppsService _appsService = appsService;
         private readonly IRequestService _requestService = requestService;
         private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
         private readonly ILogger<GamesController> _logger = logger;
-        private readonly IWebHostEnvironment _environment = environment;
 
         /// <summary>
         /// An endpoint to create a game, requires the user role.
@@ -53,12 +52,19 @@ namespace SudokuCollective.Api.V1.Controllers
         /// <param name="request"></param>
         /// <returns>A game.</returns>
         /// <response code="201">Returns a result object with the new game included as the first element in the payload array.</response>
+        /// <response code="202">Returns a result object with the job id for the create game job first element in the payload array.</response>
         /// <response code="400">Returns a result object with the message stating any validation issues with the request.</response>
         /// <response code="403">Returns a result object stating the request is forbidden if the user and app do not match that attached to the token.</response>
         /// <response code="404">Returns a result object with the message stating any issuies processing the request.</response>
         /// <response code="500">Returns a result object with the message stating any errors creating the game.</response>
         /// <remarks>
         /// The Post endpoint requires the user to be logged in. Requires the user role. The request body parameter uses the request model.
+        /// 
+        /// Please note that games created with difficulty levels of Hard or Evil can take more than the 30 seconds alloted for API responses.  As a
+        /// result these requests are off loaded to a job and you will have to poll the Jobs Controller with the job id to obtain the status.  As such, for
+        /// such requests the status code number will be 202 and the first element of the payload array will be the job id for the scheduled job.  You can 
+        /// use this job id to poll the Jobs Controller for the status and to obtain the result when completed.  Once the status is 'Succeeded' you 
+        /// can obtain the results from the Jobs Controller.
         /// 
         /// The payload should be a CreateGamePayload as documented in the schema. The request should be structured as follows:
         /// ```
@@ -68,8 +74,7 @@ namespace SudokuCollective.Api.V1.Controllers
         ///       "appId": integer,       // the app id for the app the requesting user is logged into
         ///       "paginator": paginator, // an object to control list pagination, not applicable here
         ///       "payload": {
-        ///         "userId": integer,        // userId is required, represents the userId of the signed in user
-        ///         "difficultyId": integeer, // difficultyId is required, represents the difficultyId of the requested difficulty for the new game
+        ///         "difficultyLevel": DifficultyLevel, // difficultyLevel is required, please use the difficultyLevel enum for this value
         ///       }
         ///     }     
         /// ```
@@ -90,19 +95,47 @@ namespace SudokuCollective.Api.V1.Controllers
                     request.AppId,
                     request.RequestorId))
                 {
-                    var result = await _gamesService.CreateAsync(request);
+                    CreateGamePayload payload;
+                    Result result = new();
 
-                    if (result.IsSuccess)
+                    if (request.Payload.ConvertToPayloadSuccessful(typeof(CreateGamePayload), out IPayload conversionResult))
                     {
-                        result.Message = ControllerMessages.StatusCode201(result.Message);
-
-                        return StatusCode((int)HttpStatusCode.Created, result);
+                        payload = (CreateGamePayload)conversionResult;
                     }
                     else
                     {
-                        result.Message = ControllerMessages.StatusCode404(result.Message);
+                        result.IsSuccess = false;
+                        result.Message = ControllerMessages.StatusCode400(ServicesMesages.InvalidRequestMessage);
 
-                        return NotFound(result);
+                        return BadRequest(result);
+                    }
+
+                    if (payload.DifficultyLevel != DifficultyLevel.HARD && payload.DifficultyLevel != DifficultyLevel.EVIL)
+                    {
+                        result = (Result)await _gamesService.CreateAsync(request);
+
+                        if (result.IsSuccess)
+                        {
+                            result.Message = ControllerMessages.StatusCode201(result.Message);
+
+                            return StatusCode((int)HttpStatusCode.Created, result);
+                        }
+                        else
+                        {
+                            result.Message = ControllerMessages.StatusCode404(result.Message);
+
+                            return NotFound(result);
+                        }
+                    }
+                    else
+                    {
+                        DifficultyLevel difficultyLevel = payload.DifficultyLevel;
+
+                        result = (Result)_gamesService.ScheduleCreateGame(difficultyLevel, request);
+
+                        result.Message = ControllerMessages.StatusCode202(result.Message);
+
+                        return StatusCode((int)HttpStatusCode.Accepted, result);
                     }
                 }
                 else
@@ -169,7 +202,7 @@ namespace SudokuCollective.Api.V1.Controllers
                     request.RequestorId))
                 {
                     var result = await _gamesService.UpdateAsync(
-                        id, 
+                        id,
                         request);
 
                     if (result.IsSuccess)
@@ -323,7 +356,7 @@ namespace SudokuCollective.Api.V1.Controllers
                     request.RequestorId))
                 {
                     var result = await _gamesService.GetGameAsync(
-                        id, 
+                        id,
                         request.AppId);
 
                     if (result.IsSuccess)
@@ -666,7 +699,7 @@ namespace SudokuCollective.Api.V1.Controllers
                     request.RequestorId))
                 {
                     var result = await _gamesService.UpdateMyGameAsync(
-                        id, 
+                        id,
                         request);
 
                     if (result.IsSuccess)
@@ -860,18 +893,28 @@ namespace SudokuCollective.Api.V1.Controllers
         /// <param name="request"></param>
         /// <returns>An annonymous game.</returns>
         /// <response code="200">Returns a result object with the annonymous game included as the first element in the payload array.</response>
+        /// <response code="202">Returns a result object with the job id for the create game job first element in the payload array.</response>
         /// <response code="400">Returns a result object with the message stating any validation issues with the request.</response>
         /// <response code="500">Returns a result object with the message stating any errors creating the annonymous game.</response>
         /// <remarks>
-        /// The CreateAnnonymous endpoint does not require a logged in user. The request query parameter uses the AnnonymousGameRequest model documented in the schema.
-        /// Please note that 0 represents a difficulty level of null and 1 represents a difficulty level of test and neither value is valid. Requesting a game with
+        /// The CreateAnnonymous endpoint does not require a logged in user.
+        /// 
+        /// 0 represents a difficulty level of null and 1 represents a difficulty level of test and neither value is valid. Requesting a game with
         /// either difficulty level will trigger a code 400 error due to difficulty level validity.
         /// 
-        /// The request should be structured as follows:
+        /// Please note that games created with difficulty levels of Hard or Evil can take more than the 30 seconds alloted for API responses.  As a
+        /// result these requests are off loaded to a job and you will have to poll the Jobs Controller with the job id to obtain the status.  As such, for
+        /// such requests the status code number will be 202 and the first element of the payload array will be the job id for the scheduled job.  You can 
+        /// use this job id to poll the Jobs Controller for the status and to obtain the result when completed.  Once the status is 'Succeeded' you 
+        /// can obtain the results from the Jobs Controller.
+        /// 
+        /// The difficulty level will be included in the request as an integer as a query parameter.  Valid difficulty levels are:
+        /// 
         /// ```
-        ///     {
-        ///       "difficultyLevel": integer, // The id for the requested difficulty level for the new annonymous game
-        ///     }     
+        ///     2 for 'Easy'/'Steady Sloth'
+        ///     3 for 'Medium'/'Leaping Lemur'
+        ///     4 for 'Hard'/'Mighty Mountain Lion'
+        ///     5 for 'Evil'/'Sneaky Shark'
         /// ```
         /// </remarks>
         [AllowAnonymous]
@@ -881,32 +924,46 @@ namespace SudokuCollective.Api.V1.Controllers
             try
             {
                 ArgumentNullException.ThrowIfNull(request);
-                
+
                 IResult result;
 
                 if (request.DifficultyLevel == DifficultyLevel.NULL || request.DifficultyLevel == DifficultyLevel.TEST)
                 {
                     result = new Result
-                    { 
+                    {
                         Message = ControllerMessages.StatusCode400(DifficultiesMessages.DifficultyNotValidMessage)
                     };
-                    
+
                     return BadRequest(result);
                 }
 
-                result = await _gamesService.CreateAnnonymousAsync(request.DifficultyLevel);
-
-                if (result.IsSuccess)
+                if (request.DifficultyLevel != DifficultyLevel.HARD && request.DifficultyLevel != DifficultyLevel.EVIL)
                 {
-                    result.Message = ControllerMessages.StatusCode200(result.Message);
 
-                    return Ok(result);
+                    result = await _gamesService.CreateAnnonymousAsync(request.DifficultyLevel);
+
+                    if (result.IsSuccess)
+                    {
+                        result.Message = ControllerMessages.StatusCode201(result.Message);
+
+                        return StatusCode((int)HttpStatusCode.Created, result);
+                    }
+                    else
+                    {
+                        result.Message = ControllerMessages.StatusCode400(result.Message);
+
+                        return BadRequest(result);
+                    }
                 }
                 else
                 {
-                    result.Message = ControllerMessages.StatusCode400(result.Message);
 
-                    return BadRequest(result);
+                    result = _gamesService.ScheduleCreateGame(request.DifficultyLevel);
+
+                    result.Message = ControllerMessages.StatusCode202(result.Message);
+
+                    return StatusCode((int)HttpStatusCode.Accepted, result);
+
                 }
             }
             catch (Exception e)

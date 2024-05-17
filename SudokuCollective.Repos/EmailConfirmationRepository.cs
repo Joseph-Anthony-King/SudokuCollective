@@ -10,41 +10,27 @@ using SudokuCollective.Repos.Utilities;
 
 namespace SudokuCollective.Repos
 {
-	public class EmailConfirmationsRepository<TEntity> : IEmailConfirmationsRepository<TEntity> where TEntity : EmailConfirmation
+	public class EmailConfirmationsRepository<TEntity>(
+            DatabaseContext context,
+            IRequestService requestService,
+            ILogger<EmailConfirmationsRepository<EmailConfirmation>> logger) : IEmailConfirmationsRepository<TEntity> where TEntity : EmailConfirmation
 	{
 		#region Fields
-		private readonly DatabaseContext _context;
-		private readonly IRequestService _requestService;
-		private readonly ILogger<EmailConfirmationsRepository<EmailConfirmation>> _logger;
-		#endregion
+		private readonly DatabaseContext _context = context;
+		private readonly IRequestService _requestService = requestService;
+		private readonly ILogger<EmailConfirmationsRepository<EmailConfirmation>> _logger = logger;
+        #endregion
 
-		#region Constructor
-		public EmailConfirmationsRepository(
-				DatabaseContext context,
-				IRequestService requestService,
-				ILogger<EmailConfirmationsRepository<EmailConfirmation>> logger)
+        #region Methods
+        public async Task<IRepositoryResponse> CreateAsync(TEntity entity)
 		{
-			_context = context;
-			_requestService = requestService;
-			_logger = logger;
-		}
-		#endregion
-
-		#region Methods
-		public async Task<IRepositoryResponse> CreateAsync(TEntity entity)
-		{
-            ArgumentNullException.ThrowIfNull(entity);
-
             var result = new RepositoryResponse();
 
 			try
-			{
-				if (entity.Id != 0)
-				{
-					result.IsSuccess = false;
+            {
+                ArgumentNullException.ThrowIfNull(entity);
 
-					return result;
-				}
+				ArgumentOutOfRangeException.ThrowIfNotEqual(0, entity.Id, nameof(entity.Id));
 
 				if (await _context.EmailConfirmations
 								.AnyAsync(pu => pu.Token.ToLower().Equals(entity.Token.ToLower())))
@@ -116,15 +102,10 @@ namespace SudokuCollective.Repos
 		{
 			var result = new RepositoryResponse();
 
-			if (string.IsNullOrEmpty(token))
-			{
-				result.IsSuccess = false;
-
-				return result;
-			}
-
 			try
 			{
+				ArgumentException.ThrowIfNullOrEmpty(token, nameof(token));
+
 				var query = await _context
 					.EmailConfirmations
 					.FirstOrDefaultAsync(ec => ec.Token.ToLower().Equals(token.ToLower()));
@@ -186,13 +167,15 @@ namespace SudokuCollective.Repos
 
 		public async Task<IRepositoryResponse> UpdateAsync(TEntity entity)
 		{
-            ArgumentNullException.ThrowIfNull(entity);
-
             var result = new RepositoryResponse();
 
 			try
-			{
-				List<EmailConfirmation> tokenNotUniqueList = await _context.EmailConfirmations
+            {
+                ArgumentNullException.ThrowIfNull(entity);
+
+				ArgumentOutOfRangeException.ThrowIfNegativeOrZero(entity.Id, nameof(entity.Id));
+
+                List<EmailConfirmation> tokenNotUniqueList = await _context.EmailConfirmations
 					.Where(ec => ec.Token.ToLower().Equals(entity.Token.ToLower()) && ec.Id != entity.Id)
 					.ToListAsync();
 
@@ -266,13 +249,15 @@ namespace SudokuCollective.Repos
 
 		public async Task<IRepositoryResponse> DeleteAsync(TEntity entity)
 		{
-            ArgumentNullException.ThrowIfNull(entity);
-
             var result = new RepositoryResponse();
 
 			try
-			{
-				if (await _context.EmailConfirmations.AnyAsync(ec => ec.Id == entity.Id))
+            {
+                ArgumentNullException.ThrowIfNull(entity);
+
+				ArgumentOutOfRangeException.ThrowIfNegativeOrZero(entity.Id, nameof(entity.Id));
+
+                if (await _context.EmailConfirmations.AnyAsync(ec => ec.Id == entity.Id))
 				{
 					_context.Remove(entity);
 
@@ -349,16 +334,17 @@ namespace SudokuCollective.Repos
 		{
 			var result = new RepositoryResponse();
 
-			if (userId == 0 || appid == 0)
-			{
-				result.IsSuccess = false;
-
-				return result;
-			}
-
 			try
 			{
-				var query = await _context
+				ArgumentNullException.ThrowIfNull(userId, nameof(userId));
+
+				ArgumentOutOfRangeException.ThrowIfNegativeOrZero(userId, nameof(userId));
+
+                ArgumentNullException.ThrowIfNull(appid, nameof(appid));
+
+                ArgumentOutOfRangeException.ThrowIfNegativeOrZero(appid, nameof(appid));
+
+                var query = await _context
 					.EmailConfirmations
 					.FirstOrDefaultAsync(ec =>
 							ec.UserId == userId &&

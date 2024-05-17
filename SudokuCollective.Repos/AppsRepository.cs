@@ -11,44 +11,30 @@ using SudokuCollective.Repos.Utilities;
 
 namespace SudokuCollective.Repos
 {
-    public class AppsRepository<TEntity> : IAppsRepository<TEntity> where TEntity : App
+    public class AppsRepository<TEntity>(
+                DatabaseContext context,
+                IRequestService requestService,
+                ILogger<AppsRepository<App>> logger) : IAppsRepository<TEntity> where TEntity : App
 	{
 		#region Fields
-		private readonly DatabaseContext _context;
-		private readonly IRequestService _requestService;
-		private readonly ILogger<AppsRepository<App>> _logger;
-		#endregion
+		private readonly DatabaseContext _context = context;
+		private readonly IRequestService _requestService = requestService;
+		private readonly ILogger<AppsRepository<App>> _logger = logger;
+        #endregion
 
-		#region Constructor
-		public AppsRepository(
-				DatabaseContext context,
-				IRequestService requestService,
-				ILogger<AppsRepository<App>> logger)
-		{
-			_context = context;
-			_requestService = requestService;
-			_logger = logger;
-		}
-		#endregion
-
-		#region Methods
-		public async Task<IRepositoryResponse> AddAsync(TEntity entity)
-		{
-            ArgumentNullException.ThrowIfNull(entity);
-
+        #region Methods
+        public async Task<IRepositoryResponse> AddAsync(TEntity entity)
+        {
             var result = new RepositoryResponse();
 
-			if (entity.Id != 0)
-			{
-				result.IsSuccess = false;
-
-				return result;
-			}
-
 			try
-			{
-				// Add connection between the app and the user
-				var userApp = new UserApp
+            {
+                ArgumentNullException.ThrowIfNull(entity);
+
+				ArgumentOutOfRangeException.ThrowIfNotEqual(0, entity.Id, nameof(entity.Id));
+
+                // Add connection between the app and the user
+                var userApp = new UserApp
 				{
 					UserId = entity.OwnerId,
 					AppId = entity.Id
@@ -224,15 +210,12 @@ namespace SudokuCollective.Repos
 		{
 			var result = new RepositoryResponse();
 
-			if (id == 0)
-			{
-				result.IsSuccess = false;
-
-				return result;
-			}
-
 			try
 			{
+				ArgumentNullException.ThrowIfNull(id, nameof(id));
+
+				ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id, nameof(id));
+
 				var query = await _context
 					.Apps
 					.Include(a => a.SMTPServerSettings)
@@ -299,15 +282,10 @@ namespace SudokuCollective.Repos
 		{
 			var result = new RepositoryResponse();
 
-			if (string.IsNullOrEmpty(license))
-			{
-				result.IsSuccess = false;
-
-				return result;
-			}
-
 			try
             {
+				ArgumentException.ThrowIfNullOrEmpty(license, nameof(license));
+
 				var apps = await _context
 					.Apps
 					.Include(a => a.SMTPServerSettings)
@@ -426,15 +404,12 @@ namespace SudokuCollective.Repos
 		{
 			var result = new RepositoryResponse();
 
-			if (ownerId == 0)
-			{
-				result.IsSuccess = false;
-
-				return result;
-			}
-
 			try
 			{
+				ArgumentNullException.ThrowIfNull(ownerId, nameof(ownerId));
+
+				ArgumentOutOfRangeException.ThrowIfNegativeOrZero(ownerId, nameof(ownerId));
+
 				var query = await _context
 					.Apps
 					.Where(a => a.OwnerId == ownerId)
@@ -493,15 +468,12 @@ namespace SudokuCollective.Repos
 		{
 			var result = new RepositoryResponse();
 
-			if (userId == 0)
-			{
-				result.IsSuccess = false;
-
-				return result;
-			}
-
 			try
 			{
+				ArgumentNullException.ThrowIfNull(userId, nameof(userId));
+
+				ArgumentOutOfRangeException.ThrowIfNegativeOrZero(userId, nameof(userId));
+
 				var query = await _context
 					.Apps
                     .Where(a => a.UserApps.Any(ua => ua.UserId == userId) && a.OwnerId != userId)
@@ -560,16 +532,22 @@ namespace SudokuCollective.Repos
 		{
 			var result = new RepositoryResponse();
 
-			if (id == 0)
-			{
-				result.IsSuccess = false;
-
-				return result;
-			}
-
 			try
 			{
-				var query = new List<User>();
+				ArgumentNullException.ThrowIfNull(id, nameof(id));
+
+				ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id, nameof(id));
+
+                var hasApp = await _context.Apps.AnyAsync(a => a.Id == id);
+
+                if (!hasApp)
+                {
+                    result.IsSuccess = false;
+
+                    return result;
+                }
+
+                var query = new List<User>();
 
 				query = await _context
 					.Users
@@ -648,15 +626,21 @@ namespace SudokuCollective.Repos
 		{
 			var result = new RepositoryResponse();
 
-			if (id == 0 || !await HasEntityAsync(id))
-			{
-				result.IsSuccess = false;
-
-				return result;
-			}
-
 			try
 			{
+				ArgumentNullException.ThrowIfNull(id, nameof(id));
+
+				ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id, nameof(id));
+
+				var hasApp = await _context.Apps.AnyAsync(a => a.Id == id);
+
+				if (!hasApp)
+                {
+                    result.IsSuccess = false;
+
+					return result;
+                }
+
 				var query = new List<User>();
 
 				query = await _context
@@ -709,18 +693,13 @@ namespace SudokuCollective.Repos
 
 		public async Task<IRepositoryResponse> UpdateAsync(TEntity entity)
 		{
-            ArgumentNullException.ThrowIfNull(entity);
-
             var result = new RepositoryResponse();
 
 			try
-			{
-				if (entity.Id == 0)
-				{
-					result.IsSuccess = false;
+            {
+                ArgumentNullException.ThrowIfNull(entity);
 
-					return result;
-				}
+				ArgumentOutOfRangeException.ThrowIfNegativeOrZero(entity.Id, nameof(entity.Id));
 
 				if (await _context.Apps.AnyAsync(a => a.Id == entity.Id))
 				{
@@ -808,23 +787,17 @@ namespace SudokuCollective.Repos
 
 		public async Task<IRepositoryResponse> UpdateRangeAsync(List<TEntity> entities)
 		{
-            ArgumentNullException.ThrowIfNull(entities);
-
             var result = new RepositoryResponse();
 
 			try
-			{
+            {
+                ArgumentNullException.ThrowIfNull(entities);
 
-				var dateUpdated = DateTime.UtcNow;
+                var dateUpdated = DateTime.UtcNow;
 
 				foreach (var entity in entities)
 				{
-					if (entity.Id == 0)
-					{
-						result.IsSuccess = false;
-
-						return result;
-					}
+					ArgumentOutOfRangeException.ThrowIfNegativeOrZero(entity.Id, nameof(entity.Id));
 
 					if (await _context.Apps.AnyAsync(a => a.Id == entity.Id))
 					{
@@ -906,13 +879,15 @@ namespace SudokuCollective.Repos
 
 		public async Task<IRepositoryResponse> DeleteAsync(TEntity entity)
 		{
-            ArgumentNullException.ThrowIfNull(entity);
-
             var result = new RepositoryResponse();
 
 			try
-			{
-				if (await _context.Apps.AnyAsync(a => a.Id == entity.Id))
+            {
+                ArgumentNullException.ThrowIfNull(entity);
+
+				ArgumentOutOfRangeException.ThrowIfNegativeOrZero(entity.Id, nameof(entity.Id));
+
+                if (await _context.Apps.AnyAsync(a => a.Id == entity.Id))
 				{
 					var games = await _context
 						.Games
@@ -1039,21 +1014,17 @@ namespace SudokuCollective.Repos
 
 		public async Task<IRepositoryResponse> DeleteRangeAsync(List<TEntity> entities)
 		{
-            ArgumentNullException.ThrowIfNull(entities);
             var result = new RepositoryResponse();
 
 			try
-			{
-				foreach (var entity in entities)
-				{
-					if (entity.Id == 0)
-					{
-						result.IsSuccess = false;
+            {
+                ArgumentNullException.ThrowIfNull(entities);
 
-						return result;
-					}
+                foreach (var entity in entities)
+                {
+                    ArgumentOutOfRangeException.ThrowIfNegativeOrZero(entity.Id, nameof(entity.Id));
 
-					if (await _context.Apps.AnyAsync(a => a.Id == entity.Id))
+                    if (await _context.Apps.AnyAsync(a => a.Id == entity.Id))
 					{
 						_context.Remove(entity);
 
@@ -1168,20 +1139,15 @@ namespace SudokuCollective.Repos
 
 		public async Task<IRepositoryResponse> ResetAsync(TEntity entity)
 		{
-            ArgumentNullException.ThrowIfNull(entity);
-
             var result = new RepositoryResponse();
 
-			if (entity.Id == 0)
-			{
-				result.IsSuccess = false;
-
-				return result;
-			}
-
 			try
-			{
-				List<Game> games = await _context
+            {
+                ArgumentNullException.ThrowIfNull(entity);
+
+				ArgumentOutOfRangeException.ThrowIfNegativeOrZero(entity.Id, nameof(entity.Id));
+
+                List<Game> games = await _context
 					.Games
 					.Include(g => g.SudokuMatrix)
 					.ThenInclude(g => g.Difficulty)
@@ -1299,15 +1265,14 @@ namespace SudokuCollective.Repos
 		{
 			var result = new RepositoryResponse();
 
-			if (userId == 0 || string.IsNullOrEmpty(license))
-			{
-				result.IsSuccess = false;
-
-				return result;
-			}
-
 			try
 			{
+				ArgumentNullException.ThrowIfNull(userId, nameof(userId));
+
+				ArgumentOutOfRangeException.ThrowIfNegativeOrZero(userId, nameof(userId));
+
+				ArgumentException.ThrowIfNullOrEmpty(license, nameof(license));
+
 				var user = await _context
 					.Users
 					.FirstOrDefaultAsync(u => u.Id == userId);
@@ -1400,18 +1365,17 @@ namespace SudokuCollective.Repos
 		{
 			var result = new RepositoryResponse();
 
-			if (userId == 0 || string.IsNullOrEmpty(license))
-			{
-				result.IsSuccess = false;
-
-				return result;
-			}
-
 			try
-			{
-				/* Since licenses are encrypted we have to pull all apps
+            {
+                ArgumentNullException.ThrowIfNull(userId, nameof(userId));
+
+                ArgumentOutOfRangeException.ThrowIfNegativeOrZero(userId, nameof(userId));
+
+                ArgumentException.ThrowIfNullOrEmpty(license, nameof(license));
+
+                /* Since licenses are encrypted we have to pull all apps
 				 * first and then search by license */
-				var apps = await _context
+                var apps = await _context
 					.Apps
 					.ToListAsync();
 
@@ -1517,15 +1481,12 @@ namespace SudokuCollective.Repos
 		{
 			var result = new RepositoryResponse();
 
-			if (id == 0)
-			{
-				result.IsSuccess = false;
-
-				return result;
-			}
-
 			try
 			{
+				ArgumentNullException.ThrowIfNull(id, nameof(id));
+
+				ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id, nameof(id));
+
 				var app = await _context.Apps.FindAsync(id);
 
 				if (app != null)
@@ -1609,15 +1570,12 @@ namespace SudokuCollective.Repos
 		{
 			var result = new RepositoryResponse();
 
-			if (id == 0)
-			{
-				result.IsSuccess = false;
-
-				return result;
-			}
-
 			try
 			{
+				ArgumentNullException.ThrowIfNull(id, nameof(id));
+
+				ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id, nameof(id));
+
 				var app = await _context.Apps.FindAsync(id);
 
 				if (app != null)
@@ -1702,6 +1660,8 @@ namespace SudokuCollective.Repos
 
 		public async Task<bool> IsAppLicenseValidAsync(string license)
 		{
+			ArgumentException.ThrowIfNullOrEmpty(license, nameof(license));
+
 			/* Since licenses are encrypted we have to pull all apps
 			 * first and then search by license */
 			var apps = await _context
@@ -1716,9 +1676,19 @@ namespace SudokuCollective.Repos
 			string license,
 			int userId)
 		{
-			/* Since licenses are encrypted we have to pull all apps
+			ArgumentNullException.ThrowIfNull(id, nameof(id));
+
+			ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id, nameof(id));
+
+			ArgumentException.ThrowIfNullOrEmpty(license, nameof(license));
+
+            ArgumentNullException.ThrowIfNull(userId, nameof(userId));
+
+            ArgumentOutOfRangeException.ThrowIfNegativeOrZero(userId, nameof(userId));
+
+            /* Since licenses are encrypted we have to pull all apps
 			 * first and then search by license */
-			var apps = await _context
+            var apps = await _context
 				.Apps
 				.ToListAsync();
 
@@ -1732,10 +1702,20 @@ namespace SudokuCollective.Repos
 			int id,
 			string license,
 			int userId)
-		{
-			/* Since licenses are encrypted we have to pull all apps
+        {
+            ArgumentNullException.ThrowIfNull(id, nameof(id));
+
+            ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id, nameof(id));
+
+            ArgumentException.ThrowIfNullOrEmpty(license, nameof(license));
+
+            ArgumentNullException.ThrowIfNull(userId, nameof(userId));
+
+            ArgumentOutOfRangeException.ThrowIfNegativeOrZero(userId, nameof(userId));
+
+            /* Since licenses are encrypted we have to pull all apps
 			 * first and then search by license */
-			var apps = await _context
+            var apps = await _context
 				.Apps
 				.ToListAsync();
 
