@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Web.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using Hangfire.Storage.Monitoring;
 using Hangfire;
 using Hangfire.Storage;
-using Hangfire.Storage.Monitoring;
-using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using SudokuCollective.Api.Utilities;
 using SudokuCollective.Core.Interfaces.Services;
