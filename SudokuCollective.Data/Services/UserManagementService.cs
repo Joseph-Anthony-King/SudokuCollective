@@ -18,60 +18,47 @@ using SudokuCollective.Logs.Utilities;
 
 namespace SudokuCollective.Data.Services
 {
-    public class UserManagementService : IUserManagementService
+    public class UserManagementService(
+        IUsersRepository<User> usersRepository,
+        IRequestService requestService,
+        IDistributedCache distributedCache,
+        ICacheService cacheService,
+        ICacheKeys cacheKeys,
+        ICachingStrategy cachingStrategy,
+        ILogger<UserManagementService> logger) : IUserManagementService
     {
         #region Fields
-        private readonly IUsersRepository<User> _usersRepository;
-        private readonly IRequestService _requestService;
-        private readonly IDistributedCache _distributedCache;
-        private readonly ICacheService _cacheService;
-        private readonly ICacheKeys _cacheKeys;
-        private readonly ICachingStrategy _cachingStrategy;
-        private readonly ILogger<UserManagementService> _logger;
-        #endregion
-
-        #region Constructors
-        public UserManagementService(
-            IUsersRepository<User> usersRepository,
-            IRequestService requestService,
-            IDistributedCache distributedCache,
-            ICacheService cacheService,
-            ICacheKeys cacheKeys,
-            ICachingStrategy cachingStrategy,
-            ILogger<UserManagementService> logger)
-        {
-            _usersRepository = usersRepository;
-            _requestService = requestService;
-            _distributedCache = distributedCache;
-            _cacheService = cacheService;
-            _cacheKeys = cacheKeys;
-            _cachingStrategy = cachingStrategy;
-            _logger = logger;
-        }
+        private readonly IUsersRepository<User> _usersRepository = usersRepository;
+        private readonly IRequestService _requestService = requestService;
+        private readonly IDistributedCache _distributedCache = distributedCache;
+        private readonly ICacheService _cacheService = cacheService;
+        private readonly ICacheKeys _cacheKeys = cacheKeys;
+        private readonly ICachingStrategy _cachingStrategy = cachingStrategy;
+        private readonly ILogger<UserManagementService> _logger = logger;
         #endregion
 
         #region Methods
         public async Task<bool> IsValidUserAsync(string username, string password)
         {
-            if (string.IsNullOrEmpty(username)) throw new ArgumentNullException(nameof(username));
-
-            if (string.IsNullOrEmpty(password)) throw new ArgumentNullException(nameof(password));
-
             try
             {
+                ArgumentException.ThrowIfNullOrEmpty(nameof(username));
+
+                ArgumentException.ThrowIfNullOrEmpty(nameof(password));
+
                 var userResponse = await _usersRepository.GetByUserNameAsync(username);
 
-                if (userResponse.IsSuccess)
+                #region userResponse fails
+                if (!userResponse.IsSuccess)
                 {
-                    if ((IUser)userResponse.Object != null
-                        && BCrypt.Net.BCrypt.Verify(password, ((IUser)userResponse.Object).Password))
-                    {
-                        return true;
-                    }
-                    else
-                    {
-                        return false;
-                    }
+                    return false;
+                }
+                #endregion
+
+                if ((IUser)userResponse.Object != null
+                    && BCrypt.Net.BCrypt.Verify(password, ((IUser)userResponse.Object).Password))
+                {
+                    return true;
                 }
                 else
                 {
@@ -93,12 +80,12 @@ namespace SudokuCollective.Data.Services
 
         public async Task<UserAuthenticationErrorType> ConfirmAuthenticationIssueAsync(string username, string password, string license)
         {
-            if (string.IsNullOrEmpty(username)) throw new ArgumentNullException(nameof(username));
-
-            if (string.IsNullOrEmpty(password)) throw new ArgumentNullException(nameof(password));
-
             try
             {
+                ArgumentException.ThrowIfNullOrEmpty(nameof(username));
+
+                ArgumentException.ThrowIfNullOrEmpty(nameof(password));
+
                 var cachFactoryResponse = await _cacheService.GetByUserNameWithCacheAsync(
                     _usersRepository,
                     _distributedCache,
@@ -145,11 +132,14 @@ namespace SudokuCollective.Data.Services
 
         public async Task<IResult> ConfirmUserNameAsync(string email, string license)
         {
-            if (string.IsNullOrEmpty(email)) throw new ArgumentNullException(nameof(email));
-
             try
             {
+                ArgumentNullException.ThrowIfNull(nameof(email));
+
+                ArgumentNullException.ThrowIfNull(nameof(license));
+
                 var result = new Result();
+
                 var authenticatedUserNameResult = new AuthenticatedUserNameResult();
 
                 var cachFactoryResponse = await _cacheService.GetByEmailWithCacheAsync(
@@ -161,24 +151,27 @@ namespace SudokuCollective.Data.Services
                     result);
 
                 var userResponse = (RepositoryResponse)cachFactoryResponse.Item1;
-                result = (Result)cachFactoryResponse.Item2;
 
-                if (userResponse.IsSuccess)
-                {
-                    authenticatedUserNameResult.UserName = ((User)userResponse.Object).UserName;
-                    result.IsSuccess = true;
-                    result.Message = UsersMessages.UserNameConfirmedMessage;
-                    result.Payload.Add(authenticatedUserNameResult);
-
-                    return result;
-                }
-                else
+                #region userResponse fails
+                if (!userResponse.IsSuccess)
                 {
                     result.IsSuccess = false;
                     result.Message = UsersMessages.NoUserIsUsingThisEmailMessage;
 
                     return result;
                 }
+                #endregion
+
+                result = (Result)cachFactoryResponse.Item2;
+
+                result.IsSuccess = true;
+                result.Message = UsersMessages.UserNameConfirmedMessage;
+
+                authenticatedUserNameResult.UserName = ((User)userResponse.Object).UserName;
+
+                result.Payload.Add(authenticatedUserNameResult);
+
+                return result;
             }
             catch (Exception e)
             {

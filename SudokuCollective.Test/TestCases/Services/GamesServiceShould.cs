@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Hangfire;
@@ -11,6 +12,7 @@ using NUnit.Framework;
 using SudokuCollective.Core.Enums;
 using SudokuCollective.Core.Interfaces.Jobs;
 using SudokuCollective.Core.Interfaces.Models.DomainEntities;
+using SudokuCollective.Core.Interfaces.Models.DomainObjects.Params;
 using SudokuCollective.Core.Interfaces.Services;
 using SudokuCollective.Core.Models;
 using SudokuCollective.Data.Models;
@@ -148,8 +150,9 @@ namespace SudokuCollective.Test.TestCases.Services
             // Arrange
             var payload = new CreateGamePayload()
             {
-                DifficultyId = 4
+                DifficultyLevel = DifficultyLevel.MEDIUM
             };
+
             request.Payload = payload;
 
             // Act
@@ -438,7 +441,7 @@ namespace SudokuCollective.Test.TestCases.Services
 
             // Assert
             Assert.That(result.IsSuccess, Is.False);
-            Assert.That(result.Message, Is.EqualTo("Difficulty not found"));
+            Assert.That(result.Message, Is.EqualTo("Difficulty not valid"));
         }
 
         [Test, Category("Services")]
@@ -485,6 +488,18 @@ namespace SudokuCollective.Test.TestCases.Services
             // Assert
             Assert.That(result.IsSuccess, Is.False);
             Assert.That(result.Message, Is.EqualTo("Game not solved"));
+        }
+
+        [Test, Category("Services")]
+        public void SchedulesCreateGameJobs()
+        {
+            // Arrange and Act
+            var result = sut.ScheduleCreateGame(DifficultyLevel.HARD);
+
+            // Assert
+            Assert.That(result, Is.InstanceOf<IResult>());
+            Assert.That(result.IsSuccess, Is.True);
+            Assert.That(result.Message.Equals("Create game job 5d74fa7b-db93-4213-8e0c-da2f3179ed05 scheduled."), Is.True);
         }
     }
 }

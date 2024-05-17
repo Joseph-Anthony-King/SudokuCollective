@@ -193,12 +193,11 @@ namespace SudokuCollective.Test.TestCases.Repositories
         public async Task ReturnFalseIfGetNonAppUsersByAppFails()
         {
             // Arrange
-            var id = context.Apps.LastOrDefault(a => a.Id == 2).Id;
+            // Add 2 to the last ID retrieved to cause a failure
+            var id = context.Apps.LastOrDefault(a => a.Id == 3).Id + 2;
 
             // Act
-
-            // Add 2 to the last ID retrieved to cause a failure
-            var result = await sut.GetNonAppUsersAsync(id + 2);
+            var result = await sut.GetNonAppUsersAsync(id);
 
             // Assert
             Assert.That(result.IsSuccess, Is.False);

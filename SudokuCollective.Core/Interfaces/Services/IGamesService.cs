@@ -18,7 +18,7 @@ namespace SudokuCollective.Core.Interfaces.Services
         Task<IResult> DeleteMyGameAsync(int id, IRequest request);
         Task<IResult> CheckAsync(int id, IRequest request);
         Task<IResult> CreateAnnonymousAsync(DifficultyLevel difficultyLevel);
-        IResult ScheduleCreateAnnonymous(DifficultyLevel difficultyLevel, int appId);
+        IResult ScheduleCreateGame(DifficultyLevel difficultyLevel, IRequest request = null);
         IResult CheckAnnonymous(List<int> intList);
     }
 }

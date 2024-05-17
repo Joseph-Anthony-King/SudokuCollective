@@ -9,25 +9,20 @@ namespace SudokuCollective.Data.Models.Requests
     {
         [Required, JsonPropertyName("difficultyLevel")]
         public DifficultyLevel DifficultyLevel { get; set; }
-        [Required, JsonPropertyName("appId")]
-        public int AppId { get; set; }
 
         public AnnonymousGameRequest()
         {
             DifficultyLevel = DifficultyLevel.NULL;
-            AppId = 0;
         }
 
-        public AnnonymousGameRequest(int difficultyLevel, int appId)
+        public AnnonymousGameRequest(int difficultyLevel)
         {
             DifficultyLevel = (DifficultyLevel)difficultyLevel;
-            AppId = appId;
         }
 
-        public AnnonymousGameRequest(DifficultyLevel difficultyLevel, int appId)
+        public AnnonymousGameRequest(DifficultyLevel difficultyLevel)
         {
             DifficultyLevel = difficultyLevel;
-            AppId = appId;
         }
     }
 }

@@ -18,114 +18,93 @@ using SudokuCollective.Data.Utilities;
 
 namespace SudokuCollective.Data.Services
 {
-    public class RolesService : IRolesService
+    public class RolesService(
+        IRolesRepository<Role> rolesRepository,
+        IRequestService requestService,
+        IDistributedCache distributedCache,
+        ICacheService cacheService,
+        ICacheKeys cacheKeys,
+        ICachingStrategy cachingStrategy,
+        ILogger<RolesService> logger) : IRolesService
     {
         #region Fields
-        private readonly IRolesRepository<Role> _rolesRepository;
-        private readonly IRequestService _requestService;
-        private readonly IDistributedCache _distributedCache;
-        private readonly ICacheService _cacheService;
-        private readonly ICacheKeys _cacheKeys;
-        private readonly ICachingStrategy _cachingStrategy;
-        private readonly ILogger<RolesService> _logger;
+        private readonly IRolesRepository<Role> _rolesRepository = rolesRepository;
+        private readonly IRequestService _requestService = requestService;
+        private readonly IDistributedCache _distributedCache = distributedCache;
+        private readonly ICacheService _cacheService = cacheService;
+        private readonly ICacheKeys _cacheKeys = cacheKeys;
+        private readonly ICachingStrategy _cachingStrategy = cachingStrategy;
+        private readonly ILogger<RolesService> _logger = logger;
         #endregion
 
-        #region Constructor
-        public RolesService(
-            IRolesRepository<Role> rolesRepository,
-            IRequestService requestService,
-            IDistributedCache distributedCache,
-            ICacheService cacheService,
-            ICacheKeys cacheKeys,
-            ICachingStrategy cachingStrategy,
-            ILogger<RolesService> logger)
-        {
-            _rolesRepository = rolesRepository;
-            _requestService = requestService;
-            _distributedCache = distributedCache;
-            _cacheService = cacheService;
-            _cacheKeys = cacheKeys;
-            _cachingStrategy = cachingStrategy;
-            _logger = logger;
-        }
-        #endregion
-        
         #region Methods
         public async Task<IResult> CreateAsync(IRequest request)
         {
-            if (request == null) throw new ArgumentNullException(nameof(request));
-
             var result = new Result();
-
-            CreateRolePayload payload;
-
-            if (request.Payload.ConvertToPayloadSuccessful(typeof(CreateRolePayload), out IPayload conversionResult))
-            {
-                payload = (CreateRolePayload)conversionResult;
-            }
-            else
-            {
-                result.IsSuccess = false;
-                result.Message = ServicesMesages.InvalidRequestMessage;
-
-                return result;
-            }
-
-            if (string.IsNullOrEmpty(payload.Name)) throw new ArgumentNullException(nameof(payload.Name));
 
             try
             {
-                if (!await _cacheService.HasRoleLevelWithCacheAsync(
+                ArgumentNullException.ThrowIfNull(request, nameof(request));
+
+                CreateRolePayload payload;
+
+                if (request.Payload.ConvertToPayloadSuccessful(typeof(CreateRolePayload), out IPayload conversionResult))
+                {
+                    payload = (CreateRolePayload)conversionResult;
+                }
+                else
+                {
+                    throw new ArgumentException(ServicesMesages.InvalidRequestMessage);
+                }
+
+                ArgumentException.ThrowIfNullOrEmpty(payload.Name, nameof(payload.Name));
+
+                var hasRole = !await _cacheService.HasRoleLevelWithCacheAsync(
                     _rolesRepository,
                     _distributedCache,
                     string.Format(_cacheKeys.GetRoleCacheKey, payload.RoleLevel),
                     _cachingStrategy.Heavy,
-                    payload.RoleLevel))
-                {
-                    var role = new Role()
-                    {
-                        Name = payload.Name,
-                        RoleLevel = payload.RoleLevel
-                    };
+                    payload.RoleLevel);
 
-                    var response = await _cacheService.AddWithCacheAsync(
-                        _rolesRepository,
-                        _distributedCache,
-                        _cacheKeys.GetRoleCacheKey,
-                        _cachingStrategy.Heavy,
-                        _cacheKeys,
-                        role);
-
-                    if (response.IsSuccess)
-                    {
-                        result.IsSuccess = response.IsSuccess;
-                        result.Message = RolesMessages.RoleCreatedMessage;
-                        result.Payload.Add((IRole)response.Object);
-
-                        return result;
-                    }
-                    else if (!response.IsSuccess && response.Exception != null)
-                    {
-                        result.IsSuccess = response.IsSuccess;
-                        result.Message = response.Exception.Message;
-
-                        return result;
-                    }
-                    else
-                    {
-                        result.IsSuccess = false;
-                        result.Message = RolesMessages.RoleNotCreatedMessage;
-
-                        return result;
-                    }
-                }
-                else
+                if(!hasRole)
                 {
                     result.IsSuccess = false;
                     result.Message = RolesMessages.RoleAlreadyExistsMessage;
 
                     return result;
                 }
+
+                var role = new Role()
+                {
+                    Name = payload.Name,
+                    RoleLevel = payload.RoleLevel
+                };
+
+                var response = await _cacheService.AddWithCacheAsync(
+                    _rolesRepository,
+                    _distributedCache,
+                    _cacheKeys.GetRoleCacheKey,
+                    _cachingStrategy.Heavy,
+                    _cacheKeys,
+                    role);
+
+                #region response fails
+                if (!response.IsSuccess)
+                {
+                    result.IsSuccess = response.IsSuccess;
+                    result.Message = response.Exception != null ? 
+                        response.Exception.Message : 
+                        RolesMessages.RoleNotCreatedMessage;
+
+                    return result;
+                }
+                #endregion
+
+                result.IsSuccess = response.IsSuccess;
+                result.Message = RolesMessages.RoleCreatedMessage;
+                result.Payload.Add((IRole)response.Object);
+
+                return result;
             }
             catch (Exception e)
             {
@@ -141,16 +120,12 @@ namespace SudokuCollective.Data.Services
         {
             var result = new Result();
 
-            if (id == 0)
-            {
-                result.IsSuccess = false;
-                result.Message = RolesMessages.RoleNotFoundMessage;
-
-                return result;
-            }
-
             try
             {
+                ArgumentNullException.ThrowIfNull(nameof(id));
+
+                ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id, nameof(id));
+
                 var cacheServiceResponse = await _cacheService.GetWithCacheAsync<Role>(
                     _rolesRepository,
                     _distributedCache,
@@ -160,32 +135,28 @@ namespace SudokuCollective.Data.Services
                     result);
 
                 var response = (RepositoryResponse)cacheServiceResponse.Item1;
+
+                #region response fails
+                if (!response.IsSuccess)
+                {
+                    result.IsSuccess = response.IsSuccess;
+                    result.Message = response.Exception != null ? 
+                        response.Exception.Message : 
+                        RolesMessages.RoleNotFoundMessage;
+
+                    return result;
+                }
+                #endregion
+
                 result = (Result)cacheServiceResponse.Item2;
 
-                if (response.IsSuccess)
-                {
-                    var role = (Role)response.Object;
+                var role = (Role)response.Object;
 
-                    result.IsSuccess = response.IsSuccess;
-                    result.Message = RolesMessages.RoleFoundMessage;
-                    result.Payload.Add(role);
+                result.IsSuccess = response.IsSuccess;
+                result.Message = RolesMessages.RoleFoundMessage;
+                result.Payload.Add(role);
 
-                    return result;
-                }
-                else if (!response.IsSuccess && response.Exception != null)
-                {
-                    result.IsSuccess = response.IsSuccess;
-                    result.Message = response.Exception.Message;
-
-                    return result;
-                }
-                else
-                {
-                    result.IsSuccess = false;
-                    result.Message = RolesMessages.RoleNotFoundMessage;
-
-                    return result;
-                }
+                return result;
             }
             catch (Exception e)
             {
@@ -211,32 +182,28 @@ namespace SudokuCollective.Data.Services
                     result);
 
                 var response = (RepositoryResponse)cacheServiceResponse.Item1;
+
+                #region response fails
+                if (!response.IsSuccess)
+                {
+                    result.IsSuccess = response.IsSuccess;
+                    result.Message = response.Exception != null ? 
+                        response.Exception.Message : 
+                        RolesMessages.RolesNotFoundMessage;
+
+                    return result;
+                }
+                #endregion
+
                 result = (Result)cacheServiceResponse.Item2;
 
-                if (response.IsSuccess)
-                {
-                    var roles = response.Objects.ConvertAll(r => (IRole)r);
+                var roles = response.Objects.ConvertAll(r => (IRole)r);
 
-                    result.IsSuccess = response.IsSuccess;
-                    result.Message = RolesMessages.RolesFoundMessage;
-                    result.Payload.AddRange(roles);
+                result.IsSuccess = response.IsSuccess;
+                result.Message = RolesMessages.RolesFoundMessage;
+                result.Payload.AddRange(roles);
 
-                    return result;
-                }
-                else if (!response.IsSuccess && response.Exception != null)
-                {
-                    result.IsSuccess = response.IsSuccess;
-                    result.Message = response.Exception.Message;
-
-                    return result;
-                }
-                else
-                {
-                    result.IsSuccess = false;
-                    result.Message = RolesMessages.RolesNotFoundMessage;
-
-                    return result;
-                }
+                return result;
             }
             catch (Exception e)
             {
@@ -250,34 +217,27 @@ namespace SudokuCollective.Data.Services
 
         public async Task<IResult> UpdateAsync(int id, IRequest request)
         {
-            if (request == null) throw new ArgumentNullException(nameof(request));
-
             var result = new Result();
-
-            if (id == 0)
-            {
-                result.IsSuccess = false;
-                result.Message = RolesMessages.RoleNotFoundMessage;
-
-                return result;
-            }
-
-            UpdateRolePayload payload;
-
-            if (request.Payload.ConvertToPayloadSuccessful(typeof(UpdateRolePayload), out IPayload conversionResult))
-            {
-                payload = (UpdateRolePayload)conversionResult;
-            }
-            else
-            {
-                result.IsSuccess = false;
-                result.Message = ServicesMesages.InvalidRequestMessage;
-
-                return result;
-            }
 
             try
             {
+                ArgumentNullException.ThrowIfNull(id, nameof(id));
+
+                ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id, nameof(id));
+
+                ArgumentNullException.ThrowIfNull(request, nameof(request));
+
+                UpdateRolePayload payload;
+
+                if (request.Payload.ConvertToPayloadSuccessful(typeof(UpdateRolePayload), out IPayload conversionResult))
+                {
+                    payload = (UpdateRolePayload)conversionResult;
+                }
+                else
+                {
+                    throw new ArgumentException(ServicesMesages.InvalidRequestMessage);
+                }
+
                 var cacheServiceResponse = await _cacheService.GetWithCacheAsync<Role>(
                     _rolesRepository,
                     _distributedCache,
@@ -286,58 +246,48 @@ namespace SudokuCollective.Data.Services
                     id,
                     result);
 
-                var response = (RepositoryResponse)cacheServiceResponse.Item1;
+                var roleResponse = (RepositoryResponse)cacheServiceResponse.Item1;
+
+                #region roleResponse fails
+                if (!roleResponse.IsSuccess)
+                {
+                    result.IsSuccess = roleResponse.IsSuccess;
+                    result.Message = roleResponse.Exception != null ? 
+                        roleResponse.Exception.Message : 
+                        RolesMessages.RoleNotFoundMessage;
+
+                    return result;
+                }
+                #endregion
+
                 result = (Result)cacheServiceResponse.Item2;
 
-                if (response.IsSuccess)
+                var role = (Role)roleResponse.Object;
+
+                role.Name = payload.Name;
+
+                var updateResponse = await _cacheService.UpdateWithCacheAsync(
+                    _rolesRepository,
+                    _distributedCache,
+                    _cacheKeys,
+                    role);
+
+                #region updateResponse fails
+                if (!updateResponse.IsSuccess)
                 {
-                    var role = (Role)response.Object;
-
-                    role.Name = payload.Name;
-
-                    var updateResponse = await _cacheService.UpdateWithCacheAsync(
-                        _rolesRepository,
-                        _distributedCache,
-                        _cacheKeys,
-                        role);
-
-                    if (updateResponse.IsSuccess)
-                    {
-                        result.IsSuccess = updateResponse.IsSuccess;
-                        result.Message = RolesMessages.RoleUpdatedMessage;
-
-                        return result;
-                    }
-                    else if (!updateResponse.IsSuccess && updateResponse.Exception != null)
-                    {
-                        result.IsSuccess = updateResponse.IsSuccess;
-                        result.Message = updateResponse.Exception.Message;
-
-                        return result;
-                    }
-                    else
-                    {
-                        result.IsSuccess = false;
-                        result.Message = RolesMessages.RoleNotUpdatedMessage;
-
-                        return result;
-                    }
-
-                }
-                else if (!response.IsSuccess && response.Exception != null)
-                {
-                    result.IsSuccess = response.IsSuccess;
-                    result.Message = response.Exception.Message;
+                    result.IsSuccess = updateResponse.IsSuccess;
+                    result.Message = updateResponse.Exception != null ? 
+                        updateResponse.Exception.Message : 
+                        RolesMessages.RoleNotUpdatedMessage;
 
                     return result;
                 }
-                else
-                {
-                    result.IsSuccess = false;
-                    result.Message = RolesMessages.RoleNotFoundMessage;
+                #endregion
 
-                    return result;
-                }
+                result.IsSuccess = updateResponse.IsSuccess;
+                result.Message = RolesMessages.RoleUpdatedMessage;
+
+                return result;
             }
             catch (Exception e)
             {
@@ -353,63 +303,48 @@ namespace SudokuCollective.Data.Services
         {
             var result = new Result();
 
-            if (id == 0)
-            {
-                result.IsSuccess = false;
-                result.Message = RolesMessages.RoleNotFoundMessage;
-
-                return result;
-            }
-
             try
             {
-                var response = await _rolesRepository.GetAsync(id);
+                ArgumentNullException.ThrowIfNull(id, nameof(id));
 
-                if (response.IsSuccess)
+                ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id, nameof(id));
+
+                var roleResponse = await _rolesRepository.GetAsync(id);
+
+                #region roleResponse fails
+                if (!roleResponse.IsSuccess)
                 {
-                    var deleteResponse = await _cacheService.DeleteWithCacheAsync(
-                        _rolesRepository,
-                        _distributedCache,
-                        _cacheKeys,
-                        (Role)response.Object);
-
-                    if (deleteResponse.IsSuccess)
-                    {
-                        result.IsSuccess = deleteResponse.IsSuccess;
-                        result.Message = RolesMessages.RoleDeletedMessage;
-
-                        return result;
-                    }
-                    else if (!deleteResponse.IsSuccess && deleteResponse.Exception != null)
-                    {
-                        result.IsSuccess = deleteResponse.IsSuccess;
-                        result.Message = deleteResponse.Exception.Message;
-
-                        return result;
-                    }
-                    else
-                    {
-                        result.IsSuccess = false;
-                        result.Message = RolesMessages.RoleNotDeletedMessage;
-
-                        return result;
-                    }
-
-                }
-                else if (!response.IsSuccess && response.Exception != null)
-                {
-                    result.IsSuccess = response.IsSuccess;
-                    result.Message = response.Exception.Message;
+                    result.IsSuccess = roleResponse.IsSuccess;
+                    result.Message = roleResponse.Exception != null ?
+                        roleResponse.Exception.Message :
+                        RolesMessages.RoleNotFoundMessage;
 
                     return result;
                 }
-                else
+                #endregion
+
+                var deleteResponse = await _cacheService.DeleteWithCacheAsync(
+                    _rolesRepository,
+                    _distributedCache,
+                    _cacheKeys,
+                    (Role)roleResponse.Object);
+
+                #region deleteResponse
+                if (!deleteResponse.IsSuccess)
                 {
-                    result.IsSuccess = false;
-                    result.Message = RolesMessages.RoleNotFoundMessage;
+                    result.IsSuccess = deleteResponse.IsSuccess;
+                    result.Message = deleteResponse.Exception != null ? 
+                        deleteResponse.Exception.Message : 
+                        RolesMessages.RoleNotDeletedMessage;
 
                     return result;
                 }
+                #endregion
+
+                result.IsSuccess = deleteResponse.IsSuccess;
+                result.Message = RolesMessages.RoleDeletedMessage;
+
+                return result;
             }
             catch (Exception e)
             {

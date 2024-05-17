@@ -10,42 +10,35 @@ using SudokuCollective.Repos.Utilities;
 
 namespace SudokuCollective.Repos
 {
-    public class AppAdminsRepository<TEntity> : IAppAdminsRepository<TEntity> where TEntity : AppAdmin
+    public class AppAdminsRepository<TEntity>(
+        DatabaseContext context,
+        IRequestService requestService,
+        ILogger<AppAdminsRepository<AppAdmin>> logger) : IAppAdminsRepository<TEntity> where TEntity : AppAdmin
     {
         #region Fields
-        private readonly DatabaseContext _context;
-        private readonly IRequestService _requestService;
-        private readonly ILogger<AppAdminsRepository<AppAdmin>> _logger;
-        #endregion
-
-        #region Constructor
-        public AppAdminsRepository(
-            DatabaseContext context,
-            IRequestService requestService,
-            ILogger<AppAdminsRepository<AppAdmin>> logger)
-        {
-            _context = context;
-            _requestService = requestService;
-            _logger = logger;
-        }
+        private readonly DatabaseContext _context = context;
+        private readonly IRequestService _requestService = requestService;
+        private readonly ILogger<AppAdminsRepository<AppAdmin>> _logger = logger;
         #endregion
 
         #region Methods
         public async Task<IRepositoryResponse> AddAsync(TEntity entity)
         {
-            ArgumentNullException.ThrowIfNull(entity);
-
             var result = new RepositoryResponse();
-
-            if (await _context.AppAdmins.AnyAsync(aa => aa.Id == entity.Id))
-            {
-                result.IsSuccess = false;
-
-                return result;
-            }
 
             try
             {
+                ArgumentNullException.ThrowIfNull(entity);
+
+                ArgumentOutOfRangeException.ThrowIfNotEqual(0, entity.Id, nameof(entity));
+
+                if (await _context.AppAdmins.AnyAsync(aa => aa.Id == entity.Id))
+                {
+                    result.IsSuccess = false;
+
+                    return result;
+                }
+
                 _context.Attach(entity);
 
                 var trackedEntities = new List<string>();
@@ -110,6 +103,10 @@ namespace SudokuCollective.Repos
 
             try
             {
+                ArgumentNullException.ThrowIfNull(id, nameof(id));
+
+                ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id, nameof(id));
+
                 var query = await _context
                     .AppAdmins
                     .FirstOrDefaultAsync(aa => aa.Id == id);
@@ -172,62 +169,62 @@ namespace SudokuCollective.Repos
 
         public async Task<IRepositoryResponse> UpdateAsync(TEntity entity)
         {
-            ArgumentNullException.ThrowIfNull(entity);
-
             var result = new RepositoryResponse();
 
             try
             {
-                if (await _context.AppAdmins.AnyAsync(d => d.Id == entity.Id))
-                {
-                    _context.Update(entity);
+                ArgumentNullException.ThrowIfNull(entity);
 
-                    var trackedEntities = new List<string>();
+                var isAdmin = await _context.AppAdmins.AnyAsync(d => d.Id == entity.Id);
 
-                    foreach (var entry in _context.ChangeTracker.Entries())
-                    {
-                        var dbEntry = (IDomainEntity)entry.Entity;
-
-                        if (dbEntry is AppAdmin admin)
-                        {
-                            if (dbEntry.Id == entity.Id)
-                            {
-                                entry.State = EntityState.Modified;
-                            }
-                            else
-                            {
-                                entry.State = EntityState.Unchanged;
-                            }
-                        }
-                        else
-                        {
-                            if (dbEntry.Id == 0)
-                            {
-                                entry.State = EntityState.Added;
-                            }
-                            else if (entry.State != EntityState.Deleted || entry.State != EntityState.Modified || entry.State != EntityState.Added)
-                            {
-                                entry.State = EntityState.Detached;
-                            }
-                        }
-
-                        // Note that this entry is tracked for the update
-                        trackedEntities.Add(dbEntry.ToString());
-                    }
-
-                    await _context.SaveChangesAsync();
-
-                    result.IsSuccess = true;
-                    result.Object = entity;
-
-                    return result;
-                }
-                else
+                if (!isAdmin)
                 {
                     result.IsSuccess = false;
 
                     return result;
                 }
+
+                _context.Update(entity);
+
+                var trackedEntities = new List<string>();
+
+                foreach (var entry in _context.ChangeTracker.Entries())
+                {
+                    var dbEntry = (IDomainEntity)entry.Entity;
+
+                    if (dbEntry is AppAdmin admin)
+                    {
+                        if (dbEntry.Id == entity.Id)
+                        {
+                            entry.State = EntityState.Modified;
+                        }
+                        else
+                        {
+                            entry.State = EntityState.Unchanged;
+                        }
+                    }
+                    else
+                    {
+                        if (dbEntry.Id == 0)
+                        {
+                            entry.State = EntityState.Added;
+                        }
+                        else if (entry.State != EntityState.Deleted || entry.State != EntityState.Modified || entry.State != EntityState.Added)
+                        {
+                            entry.State = EntityState.Detached;
+                        }
+                    }
+
+                    // Note that this entry is tracked for the update
+                    trackedEntities.Add(dbEntry.ToString());
+                }
+
+                await _context.SaveChangesAsync();
+
+                result.IsSuccess = true;
+                result.Object = entity;
+
+                return result;
             }
             catch (Exception e)
             {
@@ -241,12 +238,12 @@ namespace SudokuCollective.Repos
 
         public async Task<IRepositoryResponse> UpdateRangeAsync(List<TEntity> entities)
         {
-            ArgumentNullException.ThrowIfNull(entities);
-
             var result = new RepositoryResponse();
 
             try
             {
+                ArgumentNullException.ThrowIfNull(entities);
+
                 foreach (var entity in entities)
                 {
                     if (entity.Id == 0)
@@ -321,68 +318,68 @@ namespace SudokuCollective.Repos
 
         public async Task<IRepositoryResponse> DeleteAsync(TEntity entity)
         {
-            ArgumentNullException.ThrowIfNull(entity);
-
             var result = new RepositoryResponse();
 
             try
             {
-                if (await _context.AppAdmins.AnyAsync(d => d.Id == entity.Id))
-                {
-                    _context.Remove(entity);
+                ArgumentNullException.ThrowIfNull(entity);
 
-                    var trackedEntities = new List<string>();
+                var isAdmin = await _context.AppAdmins.AnyAsync(d => d.Id == entity.Id);
 
-                    foreach (var entry in _context.ChangeTracker.Entries())
-                    {
-                        var dbEntry = (IDomainEntity)entry.Entity;
-
-                        // If the entity is already being tracked for the update... break
-                        if (trackedEntities.Contains(dbEntry.ToString()))
-                        {
-                            break;
-                        }
-
-                        if (dbEntry is AppAdmin admin)
-                        {
-                            if (admin.Id == entity.Id)
-                            {
-                                entry.State = EntityState.Deleted;
-                            }
-                            else
-                            {
-                                entry.State |= EntityState.Unchanged;
-                            }
-                        }
-                        else
-                        {
-                            if (dbEntry.Id == 0)
-                            {
-                                entry.State = EntityState.Added;
-                            }
-                            else if (entry.State != EntityState.Deleted || entry.State != EntityState.Modified || entry.State != EntityState.Added)
-                            {
-                                entry.State = EntityState.Detached;
-                            }
-                        }
-
-                        // Note that this entry is tracked for the update
-                        trackedEntities.Add(dbEntry.ToString());
-                    }
-
-                    await _context.SaveChangesAsync();
-
-                    result.IsSuccess = true;
-                    result.Object = entity;
-
-                    return result;
-                }
-                else
+                if (!isAdmin)
                 {
                     result.IsSuccess = false;
 
                     return result;
                 }
+
+                _context.Remove(entity);
+
+                var trackedEntities = new List<string>();
+
+                foreach (var entry in _context.ChangeTracker.Entries())
+                {
+                    var dbEntry = (IDomainEntity)entry.Entity;
+
+                    // If the entity is already being tracked for the update... break
+                    if (trackedEntities.Contains(dbEntry.ToString()))
+                    {
+                        break;
+                    }
+
+                    if (dbEntry is AppAdmin admin)
+                    {
+                        if (admin.Id == entity.Id)
+                        {
+                            entry.State = EntityState.Deleted;
+                        }
+                        else
+                        {
+                            entry.State |= EntityState.Unchanged;
+                        }
+                    }
+                    else
+                    {
+                        if (dbEntry.Id == 0)
+                        {
+                            entry.State = EntityState.Added;
+                        }
+                        else if (entry.State != EntityState.Deleted || entry.State != EntityState.Modified || entry.State != EntityState.Added)
+                        {
+                            entry.State = EntityState.Detached;
+                        }
+                    }
+
+                    // Note that this entry is tracked for the update
+                    trackedEntities.Add(dbEntry.ToString());
+                }
+
+                await _context.SaveChangesAsync();
+
+                result.IsSuccess = true;
+                result.Object = entity;
+
+                return result;
             }
             catch (Exception e)
             {
@@ -396,12 +393,12 @@ namespace SudokuCollective.Repos
 
         public async Task<IRepositoryResponse> DeleteRangeAsync(List<TEntity> entities)
         {
-            ArgumentNullException.ThrowIfNull(entities);
-
             var result = new RepositoryResponse();
 
             try
             {
+                ArgumentNullException.ThrowIfNull(entities);
+
                 foreach (var entity in entities)
                 {
                     if (entity.Id == 0)
@@ -488,6 +485,14 @@ namespace SudokuCollective.Repos
 
             try
             {
+                ArgumentNullException.ThrowIfNull(appId, nameof(appId));
+
+                ArgumentOutOfRangeException.ThrowIfNegativeOrZero(appId, nameof(appId));
+
+                ArgumentNullException.ThrowIfNull(userId, nameof(userId));
+
+                ArgumentOutOfRangeException.ThrowIfNegativeOrZero(userId, nameof(userId));
+
                 var query = await _context
                     .AppAdmins
                     .FirstOrDefaultAsync(aa => aa.AppId == appId && aa.UserId == userId);

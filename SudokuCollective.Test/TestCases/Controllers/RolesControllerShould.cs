@@ -28,7 +28,6 @@ namespace SudokuCollective.Test.TestCases.Controllers
         private Request request;
         private CreateRolePayload createRolePayload;
         private UpdateRolePayload updateRolePayload;
-        private Mock<IWebHostEnvironment> mockedWebHostEnvironment;
 
 
         [SetUp]
@@ -40,7 +39,6 @@ namespace SudokuCollective.Test.TestCases.Controllers
             mockedRequestService = new MockedRequestService();
             mockedHttpContextAccessor = new Mock<IHttpContextAccessor>();
             mockedLogger = new Mock<ILogger<RolesController>>();
-            mockedWebHostEnvironment = new Mock<IWebHostEnvironment>();
 
             request = TestObjects.GetRequest();
             
@@ -53,16 +51,14 @@ namespace SudokuCollective.Test.TestCases.Controllers
                 mockedAppsService.SuccessfulRequest.Object,
                 mockedRequestService.SuccessfulRequest.Object,
                 mockedHttpContextAccessor.Object,
-                mockedLogger.Object,
-                mockedWebHostEnvironment.Object);
+                mockedLogger.Object);
 
             sutFailure = new RolesController(
                 mockedRolesService.FailedRequest.Object,
                 mockedAppsService.SuccessfulRequest.Object,
                 mockedRequestService.SuccessfulRequest.Object,
                 mockedHttpContextAccessor.Object,
-                mockedLogger.Object,
-                mockedWebHostEnvironment.Object);
+                mockedLogger.Object);
         }
 
         [Test]

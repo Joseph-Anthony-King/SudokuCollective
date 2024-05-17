@@ -13,11 +13,11 @@ namespace SudokuCollective.Data.Messages
         internal const string IdCannotBeZeroMessage = "Id cannot be zero";
         internal const string UserIdCannotBeZeroMessage = "User Id cannot be zero";
 
-        internal static string StatusCode102(string serviceMessage) => string.Format("Status Code 102: {0}", serviceMessage);
-
         internal static string StatusCode200(string serviceMessage) => string.Format("Status Code 200: {0}", serviceMessage);
 
         internal static string StatusCode201(string serviceMessage) => string.Format("Status Code 201: {0}", serviceMessage);
+
+        internal static string StatusCode202(string serviceMessage) => string.Format("Status Code 202: {0}", serviceMessage);
 
         internal static string StatusCode400(string serviceMessage) => string.Format("Status Code 400: {0}", serviceMessage);
 

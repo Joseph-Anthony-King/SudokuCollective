@@ -22,57 +22,42 @@ using SudokuCollective.Data.Models.Params;
 using SudokuCollective.Data.Models.Results;
 using SudokuCollective.Logs;
 using SudokuCollective.Logs.Utilities;
+using Request = SudokuCollective.Logs.Models.Request;
 
 namespace SudokuCollective.Data.Services
 {
-    public class AuthenticateService : IAuthenticateService
+    public class AuthenticateService(
+        IUsersRepository<User> usersRepository,
+        IRolesRepository<Role> rolesRepository,
+        IAppsRepository<App> appsRepository,
+        IAppAdminsRepository<AppAdmin> appsAdminRepository,
+        IUserManagementService userManagementService,
+        IRequestService requestService,
+        ITokenManagement tokenManagement,
+        IDistributedCache distributedCache,
+        ICacheService cacheService,
+        ICacheKeys cacheKeys,
+        ICachingStrategy cachingStrategy,
+        ILogger<AuthenticateService> logger) : IAuthenticateService
     {
-        private readonly IUsersRepository<User> _usersRepository;
-        private readonly IRolesRepository<Role> _rolesRepository;
-        private readonly IAppsRepository<App> _appsRepository;
-        private readonly IAppAdminsRepository<AppAdmin> _appAdminsRepository;
-        private readonly IUserManagementService _userManagementService;
-        private readonly IRequestService _requestService;
-        private readonly ITokenManagement _tokenManagement;
-        private readonly IDistributedCache _distributedCache;
-        private readonly ICacheService _cacheService;
-        private readonly ICacheKeys _cacheKeys;
-        private readonly ICachingStrategy _cachingStrategy;
-        private readonly ILogger<AuthenticateService> _logger;
+        private readonly IUsersRepository<User> _usersRepository = usersRepository;
+        private readonly IRolesRepository<Role> _rolesRepository = rolesRepository;
+        private readonly IAppsRepository<App> _appsRepository = appsRepository;
+        private readonly IAppAdminsRepository<AppAdmin> _appAdminsRepository = appsAdminRepository;
+        private readonly IUserManagementService _userManagementService = userManagementService;
+        private readonly IRequestService _requestService = requestService;
+        private readonly ITokenManagement _tokenManagement = tokenManagement;
+        private readonly IDistributedCache _distributedCache = distributedCache;
+        private readonly ICacheService _cacheService = cacheService;
+        private readonly ICacheKeys _cacheKeys = cacheKeys;
+        private readonly ICachingStrategy _cachingStrategy = cachingStrategy;
+        private readonly ILogger<AuthenticateService> _logger = logger;
 
-        public AuthenticateService(
-            IUsersRepository<User> usersRepository,
-            IRolesRepository<Role> rolesRepository,
-            IAppsRepository<App> appsRepository,
-            IAppAdminsRepository<AppAdmin> appsAdminRepository,
-            IUserManagementService userManagementService,
-            IRequestService requestService,
-            ITokenManagement tokenManagement,
-            IDistributedCache distributedCache,
-            ICacheService cacheService,
-            ICacheKeys cacheKeys,
-            ICachingStrategy cachingStrategy,
-            ILogger<AuthenticateService> logger)
-        {
-            _usersRepository = usersRepository;
-            _rolesRepository = rolesRepository;
-            _appsRepository = appsRepository;
-            _appAdminsRepository = appsAdminRepository;
-            _userManagementService = userManagementService;
-            _requestService = requestService;
-            _tokenManagement = tokenManagement;
-            _distributedCache = distributedCache;
-            _cacheService = cacheService;
-            _cacheKeys = cacheKeys;
-            _cachingStrategy = cachingStrategy;
-            _logger = logger;
-        }
-        
         public async Task<IResult> AuthenticateAsync(ILoginRequest request)
         {
             try
             {
-                if (request == null) throw new ArgumentNullException(nameof(request));
+                ArgumentNullException.ThrowIfNull(request, nameof(request));
 
                 var result = new Result();
 
@@ -97,6 +82,7 @@ namespace SudokuCollective.Data.Services
                     result);
 
                 var user = (User)((RepositoryResponse)userResponse.Item1).Object;
+
                 result = (Result)userResponse.Item2;
 
                 var appResponse = await _cacheService.GetAppByLicenseWithCacheAsync(
@@ -187,9 +173,9 @@ namespace SudokuCollective.Data.Services
 
                 var claim = new List<Claim> {
 
-                    new Claim(ClaimTypes.Name, request.UserName),
-                    new Claim(ClaimTypes.Name, user.Id.ToString()),
-                    new Claim(ClaimTypes.Name, app.Id.ToString()),
+                    new(ClaimTypes.Name, request.UserName),
+                    new(ClaimTypes.Name, user.Id.ToString()),
+                    new(ClaimTypes.Name, app.Id.ToString()),
                 };
 
                 foreach (var role in user.Roles)
@@ -233,7 +219,7 @@ namespace SudokuCollective.Data.Services
                 var jwtToken = new JwtSecurityToken(
                         _tokenManagement.Issuer,
                         _tokenManagement.Audience,
-                        claim.ToArray(),
+                        [.. claim],
                         notBefore: DateTime.UtcNow,
                         expires: expirationDate,
                         signingCredentials: credentials
@@ -255,7 +241,7 @@ namespace SudokuCollective.Data.Services
                     LogsUtilities.GetServiceErrorEventId(), 
                     e.Message,
                     e,
-                    (SudokuCollective.Logs.Models.Request)_requestService.Get());
+                    (Request)_requestService.Get());
 
                 throw;
             }

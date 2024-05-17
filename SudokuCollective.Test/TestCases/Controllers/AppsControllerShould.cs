@@ -26,7 +26,6 @@ namespace SudokuCollective.Test.TestCases.Controllers
         private MockedRequestService mockedRequestService;
         private Mock<IHttpContextAccessor> mockedHttpContextAccessor;
         private Mock<ILogger<AppsController>> mockedLogger;
-        private Mock<IWebHostEnvironment> mockWebHostEnvironment;
         private Request request;
 
         [SetUp]
@@ -37,7 +36,6 @@ namespace SudokuCollective.Test.TestCases.Controllers
             mockedRequestService = new MockedRequestService();
             mockedHttpContextAccessor = new Mock<IHttpContextAccessor>();
             mockedLogger = new Mock<ILogger<AppsController>>();
-            mockWebHostEnvironment = new Mock<IWebHostEnvironment>();
 
             request = new Request();
 
@@ -45,26 +43,22 @@ namespace SudokuCollective.Test.TestCases.Controllers
                 mockAppsService.SuccessfulRequest.Object,
                 mockedRequestService.SuccessfulRequest.Object,
                 mockedHttpContextAccessor.Object,
-                mockedLogger.Object,
-                mockWebHostEnvironment.Object);
+                mockedLogger.Object);
             sutFailure = new AppsController(
                 mockAppsService.FailedRequest.Object,
                 mockedRequestService.SuccessfulRequest.Object,
                 mockedHttpContextAccessor.Object,
-                mockedLogger.Object,
-                mockWebHostEnvironment.Object);
+                mockedLogger.Object);
             sutInvalid = new AppsController(
                 mockAppsService.InvalidRequest.Object,
                 mockedRequestService.SuccessfulRequest.Object,
                 mockedHttpContextAccessor.Object,
-                mockedLogger.Object,
-                mockWebHostEnvironment.Object);
+                mockedLogger.Object);
             sutPromoteUserFailure = new AppsController(
                 mockAppsService.PromoteUserFailsRequest.Object,
                 mockedRequestService.SuccessfulRequest.Object,
                 mockedHttpContextAccessor.Object,
-                mockedLogger.Object,
-                mockWebHostEnvironment.Object);
+                mockedLogger.Object);
         }
 
         [Test, Category("Controllers")]

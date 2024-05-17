@@ -6,7 +6,6 @@ using Hangfire;
 using Microsoft.Extensions.Logging;
 using SudokuCollective.Core.Enums;
 using SudokuCollective.Core.Interfaces.Jobs;
-using SudokuCollective.Core.Interfaces.Models.DomainEntities;
 using SudokuCollective.Core.Interfaces.Models.DomainObjects.Params;
 using SudokuCollective.Core.Interfaces.Models.DomainObjects.Payloads;
 using SudokuCollective.Core.Interfaces.Repositories;
@@ -20,134 +19,110 @@ using SudokuCollective.Data.Models.Results;
 using SudokuCollective.Data.Utilities;
 using SudokuCollective.Logs;
 using SudokuCollective.Logs.Utilities;
+using Request = SudokuCollective.Logs.Models.Request;
 
 namespace SudokuCollective.Data.Services
 {
-    public class GamesService : IGamesService
+    public class GamesService(
+        IGamesRepository<Game> gamesRepsitory,
+        IAppsRepository<App> appsRepository,
+        IUsersRepository<User> usersRepository,
+        IDifficultiesRepository<Difficulty> difficultiesRepository,
+        IRequestService requestService,
+        IBackgroundJobClient jobClient,
+        IDataJobs dataJobs,
+        ILogger<GamesService> logger) : IGamesService
     {
         #region Fields
-        private readonly IGamesRepository<Game> _gamesRepository;
-        private readonly IAppsRepository<App> _appsRepository;
-        private readonly IUsersRepository<User> _usersRepository;
-        private readonly IDifficultiesRepository<Difficulty> _difficultiesRepository;
-        private readonly IRequestService _requestService;
-        private readonly IBackgroundJobClient _jobClient;
-        private readonly IDataJobs _dataJobs;
-        private readonly ISudokuJobs _sudokuJobs;
-        private readonly ILogger<GamesService> _logger;
-        #endregion
-
-        #region Constructor
-        public GamesService(
-            IGamesRepository<Game> gamesRepsitory,
-            IAppsRepository<App> appsRepository,
-            IUsersRepository<User> usersRepository, 
-            IDifficultiesRepository<Difficulty> difficultiesRepository,
-            IRequestService requestService,
-            IBackgroundJobClient jobClient,
-            IDataJobs dataJobs,
-            ISudokuJobs sudokuJobs,
-            ILogger<GamesService> logger)
-        {
-            _gamesRepository = gamesRepsitory;
-            _appsRepository = appsRepository;
-            _usersRepository = usersRepository;
-            _difficultiesRepository = difficultiesRepository;
-            _requestService = requestService;
-            _jobClient = jobClient;
-            _dataJobs = dataJobs;
-            _sudokuJobs = sudokuJobs;
-            _logger = logger;
-        }
+        private readonly IGamesRepository<Game> _gamesRepository = gamesRepsitory;
+        private readonly IAppsRepository<App> _appsRepository = appsRepository;
+        private readonly IUsersRepository<User> _usersRepository = usersRepository;
+        private readonly IDifficultiesRepository<Difficulty> _difficultiesRepository = difficultiesRepository;
+        private readonly IRequestService _requestService = requestService;
+        private readonly IBackgroundJobClient _jobClient = jobClient;
+        private readonly IDataJobs _dataJobs = dataJobs;
+        private readonly ILogger<GamesService> _logger = logger;
         #endregion
 
         #region Methods
         public async Task<IResult> CreateAsync(IRequest request)
         {
-            if (request == null) throw new ArgumentNullException(nameof(request));
-
             var result = new Result();
-
-            CreateGamePayload payload;
-
-            if (request.Payload.ConvertToPayloadSuccessful(typeof(CreateGamePayload), out IPayload conversionResult))
-            {
-                payload = (CreateGamePayload)conversionResult;
-            }
-            else
-            {
-                result.IsSuccess = false;
-                result.Message = ServicesMesages.InvalidRequestMessage;
-
-                return result;
-            }
 
             try
             {
-                var userResponse = await _usersRepository.GetAsync(request.RequestorId);
+                ArgumentNullException.ThrowIfNull(request, nameof(request));
 
-                if (userResponse.IsSuccess)
+                CreateGamePayload payload;
+
+                if (request.Payload.ConvertToPayloadSuccessful(typeof(CreateGamePayload), out IPayload conversionResult))
                 {
-                    var difficultyResponse = await _difficultiesRepository.GetAsync(payload.DifficultyId);
-
-                    if (difficultyResponse.IsSuccess)
-                    {
-                        var user = (User)userResponse.Object;
-                        var difficulty = (Difficulty)difficultyResponse.Object;
-
-                        var game = new Game(
-                            user,
-                            new SudokuMatrix(),
-                            difficulty,
-                            request.AppId);
-
-                        await game.SudokuMatrix.GenerateSolutionAsync();
-
-                        var gameResponse = await _gamesRepository.AddAsync(game);
-
-                        if (gameResponse.IsSuccess)
-                        {
-                            game = (Game)gameResponse.Object;
-
-                            game.User = null;
-                            game.SudokuMatrix.SudokuCells.OrderBy(cell => cell.Index);
-
-                            result.IsSuccess = gameResponse.IsSuccess;
-                            result.Message = GamesMessages.GameCreatedMessage;
-                            result.Payload.Add(game);
-
-                            return result;
-                        }
-                        else if (!gameResponse.IsSuccess && gameResponse.Exception != null)
-                        {
-                            result.IsSuccess = gameResponse.IsSuccess;
-                            result.Message = gameResponse.Exception.Message;
-
-                            return result;
-                        }
-                        else
-                        {
-                            result.IsSuccess = false;
-                            result.Message = GamesMessages.GameNotCreatedMessage;
-
-                            return result;
-                        }
-                    }
-                    else
-                    {
-                        result.IsSuccess = false;
-                        result.Message = DifficultiesMessages.DifficultyDoesNotExistMessage;
-
-                        return result;
-                    }
+                    payload = (CreateGamePayload)conversionResult;
                 }
                 else
+                {
+                    throw new ArgumentException(ServicesMesages.InvalidRequestMessage);
+                }
+
+                var userResponse = await _usersRepository.GetAsync(request.RequestorId);
+
+                #region userResponse fails
+                if (!userResponse.IsSuccess)
                 {
                     result.IsSuccess = false;
                     result.Message = UsersMessages.UserDoesNotExistMessage;
 
                     return result;
                 }
+                #endregion
+
+                var difficultyResponse = await _difficultiesRepository.GetByDifficultyLevelAsync(payload.DifficultyLevel);
+
+                #region difficultyResponse fails
+                if (!difficultyResponse.IsSuccess)
+                {
+                    result.IsSuccess = false;
+                    result.Message = DifficultiesMessages.DifficultyDoesNotExistMessage;
+
+                    return result;
+                }
+                #endregion
+
+                var user = (User)userResponse.Object;
+                var difficulty = (Difficulty)difficultyResponse.Object;
+
+                var game = new Game(
+                    user,
+                    new SudokuMatrix(),
+                    difficulty,
+                    request.AppId);
+
+                await game.SudokuMatrix.GenerateSolutionAsync();
+
+                var gameResponse = await _gamesRepository.AddAsync(game);
+
+                #region gameResponse fails
+                if (!gameResponse.IsSuccess)
+                {
+                    result.IsSuccess = gameResponse.IsSuccess;
+                    result.Message = gameResponse.Exception != null ? 
+                        gameResponse.Exception.Message : 
+                        GamesMessages.GameNotCreatedMessage;
+
+                    return result;
+                }
+                #endregion
+
+                game = (Game)gameResponse.Object;
+
+                game.User = null;
+                _ = game.SudokuMatrix.SudokuCells.OrderBy(cell => cell.Index);
+
+                result.IsSuccess = gameResponse.IsSuccess;
+                result.Message = GamesMessages.GameCreatedMessage;
+                result.Payload.Add(game);
+
+                return result;
             }
             catch (Exception e)
             {
@@ -159,7 +134,7 @@ namespace SudokuCollective.Data.Services
                     LogsUtilities.GetServiceErrorEventId(), 
                     string.Format(LoggerMessages.ErrorThrownMessage, result.Message),
                     e,
-                    (SudokuCollective.Logs.Models.Request)_requestService.Get());
+                    (Request)_requestService.Get());
 
                 return result;
             }
@@ -169,50 +144,47 @@ namespace SudokuCollective.Data.Services
         {
             var result = new Result();
 
-            if (id == 0 || appId == 0)
-            {
-                result.IsSuccess = false;
-                result.Message = GamesMessages.GameNotFoundMessage;
-            }
-
             try
             {
-                if (await _appsRepository.HasEntityAsync(appId))
-                {
-                    var gameResponse = await _gamesRepository.GetAppGameAsync(id, appId);
+                ArgumentNullException.ThrowIfNull(id, nameof(id));
 
-                    if (gameResponse.IsSuccess)
-                    {
-                        var game = (Game)gameResponse.Object;
+                ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id, nameof(id));
 
-                        result.IsSuccess = true;
-                        result.Message = GamesMessages.GameFoundMessage;
-                        result.Payload.Add(game);
+                ArgumentNullException.ThrowIfNull(appId, nameof(appId));
 
-                        return result;
-                    }
-                    else if (!gameResponse.IsSuccess && gameResponse.Exception != null)
-                    {
-                        result.IsSuccess = gameResponse.IsSuccess;
-                        result.Message = gameResponse.Exception.Message;
+                ArgumentOutOfRangeException.ThrowIfNegativeOrZero(appId, nameof(appId));
 
-                        return result;
-                    }
-                    else
-                    {
-                        result.IsSuccess = false;
-                        result.Message = GamesMessages.GameNotFoundMessage;
+                var appExists = await _appsRepository.HasEntityAsync(appId);
 
-                        return result;
-                    }
-                }
-                else
+                if (!appExists)
                 {
                     result.IsSuccess = false;
                     result.Message = AppsMessages.AppNotFoundMessage;
 
                     return result;
                 }
+
+                var getResponse = await _gamesRepository.GetAppGameAsync(id, appId);
+
+                #region getResponse fails
+                if (!getResponse.IsSuccess)
+                {
+                    result.IsSuccess = getResponse.IsSuccess;
+                    result.Message = getResponse.Exception != null ? 
+                        getResponse.Exception.Message : 
+                        GamesMessages.GameNotFoundMessage;
+
+                    return result;
+                }
+                #endregion
+
+                var game = (Game)getResponse.Object;
+
+                result.IsSuccess = true;
+                result.Message = GamesMessages.GameFoundMessage;
+                result.Payload.Add(game);
+
+                return result;
             }
             catch (Exception e)
             {
@@ -226,73 +198,68 @@ namespace SudokuCollective.Data.Services
 
         public async Task<IResult> GetGamesAsync(IRequest request)
         {
-            if (request == null) throw new ArgumentNullException(nameof(request));
-
             var result = new Result();
 
             try
             {
-                if (await _appsRepository.HasEntityAsync(request.AppId))
-                {
-                    var response = await _gamesRepository.GetAppGamesAsync(request.AppId);
+                ArgumentNullException.ThrowIfNull(request, nameof(request));
 
-                    if (response.IsSuccess)
-                    {
-                        if (request.Paginator != null)
-                        {
-                            if (DataUtilities.IsPageValid(request.Paginator, response.Objects))
-                            {
-                                result = PaginatorUtilities.PaginateGames(
-                                    request.Paginator, 
-                                    response, 
-                                    result);
+                var appExists = await _appsRepository.HasEntityAsync(request.AppId);
 
-                                if (result.Message.Equals(
-                                    ServicesMesages.SortValueNotImplementedMessage))
-                                {
-                                    return result;
-                                }
-                            }
-                            else
-                            {
-                                result.IsSuccess = false;
-                                result.Message = ServicesMesages.PageNotFoundMessage;
-
-                                return result;
-                            }
-                        }
-                        else
-                        {
-                            result.Payload.AddRange(response.Objects);
-                        }
-
-                        result.IsSuccess = response.IsSuccess;
-                        result.Message = GamesMessages.GamesFoundMessage;
-
-                        return result;
-                    }
-                    else if (!response.IsSuccess && response.Exception != null)
-                    {
-                        result.IsSuccess = response.IsSuccess;
-                        result.Message = response.Exception.Message;
-
-                        return result;
-                    }
-                    else
-                    {
-                        result.IsSuccess = false;
-                        result.Message = GamesMessages.GamesNotFoundMessage;
-
-                        return result;
-                    }
-                }
-                else
+                if (!appExists)
                 {
                     result.IsSuccess = false;
                     result.Message = AppsMessages.AppNotFoundMessage;
 
                     return result;
                 }
+
+                var response = await _gamesRepository.GetAppGamesAsync(request.AppId);
+
+                #region response fails
+                if (!response.IsSuccess)
+                {
+                    result.IsSuccess = response.IsSuccess;
+                    result.Message = response.Exception != null ? 
+                        response.Exception.Message : 
+                        GamesMessages.GamesNotFoundMessage;
+
+                    return result;
+                }
+                #endregion
+
+                if (request.Paginator != null)
+                {
+                    if (DataUtilities.IsPageValid(request.Paginator, response.Objects))
+                    {
+                        result = PaginatorUtilities.PaginateGames(
+                            request.Paginator, 
+                            response, 
+                            result);
+
+                        if (result.Message.Equals(
+                            ServicesMesages.SortValueNotImplementedMessage))
+                        {
+                            return result;
+                        }
+                    }
+                    else
+                    {
+                        result.IsSuccess = false;
+                        result.Message = ServicesMesages.PageNotFoundMessage;
+
+                        return result;
+                    }
+                }
+                else
+                {
+                    result.Payload.AddRange(response.Objects);
+                }
+
+                result.IsSuccess = response.IsSuccess;
+                result.Message = GamesMessages.GamesFoundMessage;
+
+                return result;
             }
             catch (Exception e)
             {
@@ -306,59 +273,50 @@ namespace SudokuCollective.Data.Services
 
         public async Task<IResult> GetMyGameAsync(int id, IRequest request)
         {
-            if (request == null) throw new ArgumentNullException(nameof(request));
-
             var result = new Result();
-
-            if (id == 0)
-            {
-                result.IsSuccess = false;
-                result.Message = GamesMessages.GameNotFoundMessage;
-
-                return result;
-            }
 
             try
             {
-                if (await _appsRepository.HasEntityAsync(request.AppId))
-                {
-                    var gameResponse = await _gamesRepository.GetMyGameAsync(
-                        request.RequestorId, 
-                        id,
-                        request.AppId);
+                ArgumentNullException.ThrowIfNull(id, nameof(id));
 
-                    if (gameResponse.IsSuccess)
-                    {
-                        var game = (Game)gameResponse.Object;
+                ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id, nameof(id));
 
-                        result.IsSuccess = true;
-                        result.Message = GamesMessages.GameFoundMessage;
-                        result.Payload.Add(game);
+                ArgumentNullException.ThrowIfNull(request, nameof(request));
 
-                        return result;
-                    }
-                    else if (!gameResponse.IsSuccess && gameResponse.Exception != null)
-                    {
-                        result.IsSuccess = gameResponse.IsSuccess;
-                        result.Message = gameResponse.Exception.Message;
+                var appExists = await _appsRepository.HasEntityAsync(request.AppId);
 
-                        return result;
-                    }
-                    else
-                    {
-                        result.IsSuccess = false;
-                        result.Message = GamesMessages.GameNotFoundMessage;
-
-                        return result;
-                    }
-                }
-                else
+                if (!appExists)
                 {
                     result.IsSuccess = false;
                     result.Message = AppsMessages.AppNotFoundMessage;
 
                     return result;
                 }
+
+                var getResponse = await _gamesRepository.GetMyGameAsync(
+                    request.RequestorId, 
+                    id,
+                    request.AppId);
+
+                #region getResponse fails
+                if (!getResponse.IsSuccess)
+                {
+                    result.IsSuccess = getResponse.IsSuccess;
+                    result.Message = getResponse.Exception != null ? 
+                        getResponse.Exception.Message : 
+                        GamesMessages.GameNotFoundMessage;
+
+                    return result;
+                }
+                #endregion
+
+                var game = (Game)getResponse.Object;
+
+                result.IsSuccess = true;
+                result.Message = GamesMessages.GameFoundMessage;
+                result.Payload.Add(game);
+
+                return result;
             }
             catch (Exception e)
             {
@@ -372,89 +330,81 @@ namespace SudokuCollective.Data.Services
 
         public async Task<IResult> GetMyGamesAsync(IRequest request)
         {
-            if (request == null) throw new ArgumentNullException(nameof(request));
-
             var result = new Result();
-
-            GamesPayload payload;
-
-            if (request.Payload.ConvertToPayloadSuccessful(typeof(GamesPayload), out IPayload conversionResult))
-            {
-                payload = (GamesPayload)conversionResult;
-            }
-            else
-            {
-                result.IsSuccess = false;
-                result.Message = ServicesMesages.InvalidRequestMessage;
-
-                return result;
-            }
 
             try
             {
-                if (await _appsRepository.HasEntityAsync(request.AppId))
+                ArgumentNullException.ThrowIfNull(request, nameof(request));
+
+                GamesPayload payload;
+
+                if (request.Payload.ConvertToPayloadSuccessful(typeof(GamesPayload), out IPayload conversionResult))
                 {
-                    var response = await _gamesRepository.GetMyGamesAsync(
-                        payload.UserId,
-                        request.AppId);
-
-                    if (response.IsSuccess)
-                    {
-                        if (request.Paginator != null)
-                        {
-                            if (DataUtilities.IsPageValid(request.Paginator, response.Objects))
-                            {
-                                result = PaginatorUtilities.PaginateGames(
-                                    request.Paginator, 
-                                    response, 
-                                    result);
-
-                                if (result.Message.Equals(
-                                    ServicesMesages.SortValueNotImplementedMessage))
-                                {
-                                    return result;
-                                }
-                            }
-                            else
-                            {
-                                result.IsSuccess = false;
-                                result.Message = ServicesMesages.PageNotFoundMessage;
-
-                                return result;
-                            }
-                        }
-                        else
-                        {
-                            result.Payload.AddRange(response.Objects);
-                        }
-
-                        result.IsSuccess = response.IsSuccess;
-                        result.Message = GamesMessages.GamesFoundMessage;
-
-                        return result;
-                    }
-                    else if (!response.IsSuccess && response.Exception != null)
-                    {
-                        result.IsSuccess = response.IsSuccess;
-                        result.Message = response.Exception.Message;
-
-                        return result;
-                    }
-                    else
-                    {
-                        result.IsSuccess = false;
-                        result.Message = GamesMessages.GamesNotFoundMessage;
-
-                        return result;
-                    }
+                    payload = (GamesPayload)conversionResult;
                 }
                 else
+                {
+                    throw new ArgumentException(ServicesMesages.InvalidRequestMessage);
+                }
+
+                var appExists = await _appsRepository.HasEntityAsync(request.AppId);
+
+                if (!appExists)
                 {
                     result.IsSuccess = false;
                     result.Message = AppsMessages.AppNotFoundMessage;
 
                     return result;
                 }
+
+                var response = await _gamesRepository.GetMyGamesAsync(
+                    payload.UserId,
+                    request.AppId);
+
+                #region response fails
+                if (!response.IsSuccess)
+                {
+                    result.IsSuccess = response.IsSuccess;
+                    result.Message = response.Exception != null ? 
+                        response.Exception.Message : 
+                        GamesMessages.GamesNotFoundMessage;
+
+                    return result;
+                }
+                #endregion
+
+                if (request.Paginator != null)
+                {
+                    if (DataUtilities.IsPageValid(request.Paginator, response.Objects))
+                    {
+                        result = PaginatorUtilities.PaginateGames(
+                            request.Paginator, 
+                            response, 
+                            result);
+
+                        if (result.Message.Equals(
+                            ServicesMesages.SortValueNotImplementedMessage))
+                        {
+                            return result;
+                        }
+                    }
+                    else
+                    {
+                        result.IsSuccess = false;
+                        result.Message = ServicesMesages.PageNotFoundMessage;
+
+                        return result;
+                    }
+                }
+                else
+                {
+                    result.Payload.AddRange(response.Objects);
+                }
+
+                result.IsSuccess = response.IsSuccess;
+                result.Message = GamesMessages.GamesFoundMessage;
+
+                return result; 
             }
             catch (Exception e)
             {
@@ -470,88 +420,81 @@ namespace SudokuCollective.Data.Services
         {
             var result = new Result();
 
-            GamePayload payload;
-
-            if (request.Payload.ConvertToPayloadSuccessful(typeof(GamePayload), out IPayload conversionResult))
-            {
-                payload = (GamePayload)conversionResult;
-            }
-            else
-            {
-                result.IsSuccess = false;
-                result.Message = ServicesMesages.InvalidRequestMessage;
-
-                return result;
-            }
-
             try
             {
-                if (await _gamesRepository.HasEntityAsync(id))
+                ArgumentNullException.ThrowIfNull(id, nameof(id));
+
+                ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id, nameof(id));
+
+                ArgumentNullException.ThrowIfNull(request, nameof(request));
+
+                GamePayload payload;
+
+                if (request.Payload.ConvertToPayloadSuccessful(typeof(GamePayload), out IPayload conversionResult))
                 {
-                    var gameResponse = await _gamesRepository.GetAsync(id);
-
-                    if (gameResponse.IsSuccess)
-                    {
-                        var game = (Game)gameResponse.Object;
-
-                        foreach (var cell in payload.SudokuCells)
-                        {
-                            foreach (var savedCell in (game.SudokuMatrix.SudokuCells))
-                            {
-                                if (savedCell.Id == cell.Id && savedCell.Hidden)
-                                {
-                                    savedCell.DisplayedValue = cell.DisplayedValue;
-                                }
-                            }
-                        }
-
-                        var updateGameResponse = await _gamesRepository.UpdateAsync(game);
-
-                        if (updateGameResponse.IsSuccess)
-                        {
-                            result.IsSuccess = updateGameResponse.IsSuccess;
-                            result.Message = GamesMessages.GameUpdatedMessage;
-                            result.Payload.Add((Game)updateGameResponse.Object);
-
-                            return result;
-                        }
-                        else if (!updateGameResponse.IsSuccess && updateGameResponse.Exception != null)
-                        {
-                            result.IsSuccess = updateGameResponse.IsSuccess;
-                            result.Message = updateGameResponse.Exception.Message;
-
-                            return result;
-                        }
-                        else
-                        {
-                            result.IsSuccess = false;
-                            result.Message = GamesMessages.GameNotUpdatedMessage;
-
-                            return result;
-                        }
-                    }
-                    else if (!gameResponse.IsSuccess && gameResponse.Exception != null)
-                    {
-                        result.IsSuccess = gameResponse.IsSuccess;
-                        result.Message = gameResponse.Exception.Message;
-
-                        return result;
-                    }
-                    else
-                    {
-                        result.IsSuccess = false;
-                        result.Message = GamesMessages.GameNotFoundMessage;
-
-                        return result;
-                    }
+                    payload = (GamePayload)conversionResult;
                 }
                 else
+                {
+                    throw new ArgumentException(ServicesMesages.InvalidRequestMessage);
+                }
+
+                var appExists = await _gamesRepository.HasEntityAsync(id);
+
+                if (!appExists)
                 {
                     result.IsSuccess = false;
                     result.Message = GamesMessages.GameNotFoundMessage;
 
                     return result;
                 }
+
+                var getResponse = await _gamesRepository.GetAsync(id);
+
+                #region getResponse fails
+                if (!getResponse.IsSuccess)
+                {
+                    result.IsSuccess = getResponse.IsSuccess;
+                    result.Message = getResponse.Exception != null ? 
+                        getResponse.Exception.Message : 
+                        GamesMessages.GameNotFoundMessage;
+
+                    return result;
+                }
+                #endregion
+
+                var game = (Game)getResponse.Object;
+
+                foreach (var cell in payload.SudokuCells)
+                {
+                    foreach (var savedCell in (game.SudokuMatrix.SudokuCells))
+                    {
+                        if (savedCell.Id == cell.Id && savedCell.Hidden)
+                        {
+                            savedCell.DisplayedValue = cell.DisplayedValue;
+                        }
+                    }
+                }
+
+                var updateResponse = await _gamesRepository.UpdateAsync(game);
+
+                #region updateResponse fails
+                if (!updateResponse.IsSuccess)
+                {
+                    result.IsSuccess = updateResponse.IsSuccess;
+                    result.Message = updateResponse.Exception != null ? 
+                        updateResponse.Exception.Message : 
+                        GamesMessages.GameNotUpdatedMessage;
+
+                    return result;
+                }
+                #endregion
+
+                result.IsSuccess = updateResponse.IsSuccess;
+                result.Message = GamesMessages.GameUpdatedMessage;
+                result.Payload.Add((Game)updateResponse.Object);
+
+                return result;
             }
             catch (Exception e)
             {
@@ -565,96 +508,86 @@ namespace SudokuCollective.Data.Services
 
         public async Task<IResult> UpdateMyGameAsync(int id, IRequest request)
         {
-            if (request == null) throw new ArgumentNullException(nameof(request));
-
             var result = new Result();
-
-            GamePayload payload;
-
-            if (request.Payload.ConvertToPayloadSuccessful(typeof(GamePayload), out IPayload conversionResult))
-            {
-                payload = (GamePayload)conversionResult;
-            }
-            else
-            {
-                result.IsSuccess = false;
-                result.Message = ServicesMesages.InvalidRequestMessage;
-
-                return result;
-            }
 
             try
             {
-                if (await _appsRepository.HasEntityAsync(request.AppId))
+                ArgumentNullException.ThrowIfNull(id, nameof(id));
+
+                ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id, nameof(id));
+
+                ArgumentNullException.ThrowIfNull(request, nameof(request));
+
+                GamePayload payload;
+
+                if (request.Payload.ConvertToPayloadSuccessful(typeof(GamePayload), out IPayload conversionResult))
                 {
-                    var gameResponse = await _gamesRepository.GetMyGameAsync(
-                        request.RequestorId, 
-                        id,
-                        request.AppId);
-
-                    if (gameResponse.IsSuccess)
-                    {
-                        var game = (Game)gameResponse.Object;
-
-                        foreach (var cell in payload.SudokuCells)
-                        {
-                            foreach (var savedCell in game.SudokuMatrix.SudokuCells)
-                            {
-                                if (savedCell.Id == cell.Id && savedCell.Hidden)
-                                {
-                                    savedCell.DisplayedValue = cell.DisplayedValue;
-                                }
-                            }
-                        }
-
-                        var updateGameResponse = await _gamesRepository.UpdateAsync(game);
-
-                        if (updateGameResponse.IsSuccess)
-                        {
-                            result.IsSuccess = updateGameResponse.IsSuccess;
-                            result.Message = GamesMessages.GameUpdatedMessage;
-                            result.Payload.Add((Game)updateGameResponse.Object);
-
-                            return result;
-                        }
-                        else if (!updateGameResponse.IsSuccess && updateGameResponse.Exception != null)
-                        {
-                            result.IsSuccess = updateGameResponse.IsSuccess;
-                            result.Message = updateGameResponse.Exception.Message;
-
-                            return result;
-                        }
-                        else
-                        {
-                            result.IsSuccess = false;
-                            result.Message = GamesMessages.GameNotUpdatedMessage;
-
-                            return result;
-                        }
-                    }
-                    else if (!gameResponse.IsSuccess && gameResponse.Exception != null)
-                    {
-                        result.IsSuccess = gameResponse.IsSuccess;
-                        result.Message = gameResponse.Exception.Message;
-
-                        return result;
-                    }
-                    else
-                    {
-                        result.IsSuccess = false;
-                        result.Message = GamesMessages.GameNotFoundMessage;
-
-                        return result;
-                    }
-
+                    payload = (GamePayload)conversionResult;
                 }
                 else
+                {
+                    throw new ArgumentException(ServicesMesages.InvalidRequestMessage);
+                }
+
+                var appExists = await _appsRepository.HasEntityAsync(request.AppId);
+
+                if (!appExists)
                 {
                     result.IsSuccess = false;
                     result.Message = AppsMessages.AppNotFoundMessage;
 
                     return result;
                 }
+
+                var getResponse = await _gamesRepository.GetMyGameAsync(
+                    request.RequestorId, 
+                    id,
+                    request.AppId);
+
+                #region getResponse fails
+                if (!getResponse.IsSuccess)
+                {
+                    result.IsSuccess = getResponse.IsSuccess;
+                    result.Message = getResponse.Exception != null ? 
+                        getResponse.Exception.Message : 
+                        GamesMessages.GameNotFoundMessage;
+
+                    return result;
+                }
+                #endregion
+
+                var game = (Game)getResponse.Object;
+
+                foreach (var cell in payload.SudokuCells)
+                {
+                    foreach (var savedCell in game.SudokuMatrix.SudokuCells)
+                    {
+                        if (savedCell.Id == cell.Id && savedCell.Hidden)
+                        {
+                            savedCell.DisplayedValue = cell.DisplayedValue;
+                        }
+                    }
+                }
+
+                var updateResponse = await _gamesRepository.UpdateAsync(game);
+
+                #region updateResponse fails
+                if (!updateResponse.IsSuccess)
+                {
+                    result.IsSuccess = updateResponse.IsSuccess;
+                    result.Message = updateResponse.Exception != null ? 
+                        updateResponse.Exception.Message : 
+                        GamesMessages.GameNotUpdatedMessage;
+
+                    return result;
+                }
+                #endregion
+
+                result.IsSuccess = updateResponse.IsSuccess;
+                result.Message = GamesMessages.GameUpdatedMessage;
+                result.Payload.Add((Game)updateResponse.Object);
+
+                return result;
             }
             catch (Exception e)
             {
@@ -670,58 +603,44 @@ namespace SudokuCollective.Data.Services
         {
             var result = new Result();
 
-            if (id == 0)
-            {
-                result.IsSuccess = false;
-                result.Message = GamesMessages.GameNotFoundMessage;
-
-                return result;
-            }
-
             try
             {
-                var gameResponse = await _gamesRepository.GetAsync(id);
+                ArgumentNullException.ThrowIfNull(id, nameof(id));
 
-                if (gameResponse.IsSuccess)
+                ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id, nameof(id));
+
+                var getResponse = await _gamesRepository.GetAsync(id);
+
+                #region getResponse fails
+                if (!getResponse.IsSuccess)
                 {
-                    var deleteGameResponse = await _gamesRepository.DeleteAsync((Game)gameResponse.Object);
-
-                    if (deleteGameResponse.IsSuccess)
-                    {
-                        result.IsSuccess = deleteGameResponse.IsSuccess;
-                        result.Message = GamesMessages.GameDeletedMessage;
-
-                        return result;
-                    }
-                    else if (!deleteGameResponse.IsSuccess && deleteGameResponse.Exception != null)
-                    {
-                        result.IsSuccess = deleteGameResponse.IsSuccess;
-                        result.Message = deleteGameResponse.Exception.Message;
-
-                        return result;
-                    }
-                    else
-                    {
-                        result.IsSuccess = false;
-                        result.Message = GamesMessages.GameNotDeletedMessage;
-
-                        return result;
-                    }
-                }
-                else if (!gameResponse.IsSuccess && gameResponse.Exception != null)
-                {
-                    result.IsSuccess = gameResponse.IsSuccess;
-                    result.Message = gameResponse.Exception.Message;
+                    result.IsSuccess = getResponse.IsSuccess;
+                    result.Message = getResponse.Exception != null ? 
+                        getResponse.Exception.Message :
+                        GamesMessages.GameNotFoundMessage;
 
                     return result;
                 }
-                else
+                #endregion
+
+                var deleteResponse = await _gamesRepository.DeleteAsync((Game)getResponse.Object);
+
+                #region deleteResponse fails
+                if (!deleteResponse.IsSuccess)
                 {
-                    result.IsSuccess = false;
-                    result.Message = GamesMessages.GameNotFoundMessage;
+                    result.IsSuccess = deleteResponse.IsSuccess;
+                    result.Message = deleteResponse.Exception != null ? 
+                        deleteResponse.Exception.Message : 
+                        GamesMessages.GameNotDeletedMessage;
 
                     return result;
                 }
+                #endregion
+
+                result.IsSuccess = deleteResponse.IsSuccess;
+                result.Message = GamesMessages.GameDeletedMessage;
+
+                return result;
             }
             catch (Exception e)
             {
@@ -735,70 +654,58 @@ namespace SudokuCollective.Data.Services
 
         public async Task<IResult> DeleteMyGameAsync(int id, IRequest request)
         {
-            if (request == null) throw new ArgumentNullException(nameof(request));
-
             var result = new Result();
-
-            if (id == 0)
-            {
-                result.IsSuccess = false;
-                result.Message = GamesMessages.GameNotFoundMessage;
-
-                return result;
-            }
-
-            GamesPayload payload;
-
-            if (request.Payload.ConvertToPayloadSuccessful(typeof(GamesPayload), out IPayload conversionResult))
-            {
-                payload = (GamesPayload)conversionResult;
-            }
-            else
-            {
-                result.IsSuccess = false;
-                result.Message = ServicesMesages.InvalidRequestMessage;
-
-                return result;
-            }
 
             try
             {
-                if (await _appsRepository.HasEntityAsync(request.AppId))
+                ArgumentNullException.ThrowIfNull(id, nameof(id));
+
+                ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id, nameof(id));
+
+                ArgumentNullException.ThrowIfNull(request, nameof(request));
+
+                GamesPayload payload;
+
+                if (request.Payload.ConvertToPayloadSuccessful(typeof(GamesPayload), out IPayload conversionResult))
                 {
-                    var response = await _gamesRepository.DeleteMyGameAsync(
-                        payload.UserId, 
-                        id, 
-                        request.AppId);
-
-                    if (response.IsSuccess)
-                    {
-                        result.IsSuccess = true;
-                        result.Message = GamesMessages.GameDeletedMessage;
-
-                        return result;
-                    }
-                    else if (!response.IsSuccess && response.Exception != null)
-                    {
-                        result.IsSuccess = response.IsSuccess;
-                        result.Message = response.Exception.Message;
-
-                        return result;
-                    }
-                    else
-                    {
-                        result.IsSuccess = false;
-                        result.Message = GamesMessages.GameNotDeletedMessage;
-
-                        return result;
-                    }
+                    payload = (GamesPayload)conversionResult;
                 }
                 else
+                {
+                    throw new ArgumentException(ServicesMesages.InvalidRequestMessage);
+                }
+
+                var appExists = await _appsRepository.HasEntityAsync(request.AppId);
+
+                if (!appExists)
                 {
                     result.IsSuccess = false;
                     result.Message = AppsMessages.AppNotFoundMessage;
 
                     return result;
                 }
+
+                var response = await _gamesRepository.DeleteMyGameAsync(
+                    payload.UserId, 
+                    id, 
+                    request.AppId);
+
+                #region response fails
+                if (!response.IsSuccess)
+                {
+                    result.IsSuccess = response.IsSuccess;
+                    result.Message = response.Exception != null ? 
+                        response.Exception.Message : 
+                        GamesMessages.GameNotDeletedMessage;
+
+                    return result;
+                }
+                #endregion
+
+                result.IsSuccess = true;
+                result.Message = GamesMessages.GameDeletedMessage;
+
+                return result;
             }
             catch (Exception e)
             {
@@ -812,96 +719,79 @@ namespace SudokuCollective.Data.Services
 
         public async Task<IResult> CheckAsync(int id, IRequest request)
         {
-            if (request == null) throw new ArgumentNullException(nameof(request));
-
             var result = new Result();
-
-            if (id == 0)
-            {
-                result.IsSuccess = false;
-                result.Message = GamesMessages.GameNotFoundMessage;
-
-                return result;
-            }
-
-            GamePayload payload;
-
-            if (request.Payload.ConvertToPayloadSuccessful(typeof(GamePayload), out IPayload conversionResult))
-            {
-                payload = (GamePayload)conversionResult;
-            }
-            else
-            {
-                result.IsSuccess = false;
-                result.Message = ServicesMesages.InvalidRequestMessage;
-
-                return result;
-            }
 
             try
             {
-                var gameResponse = await _gamesRepository.GetAsync(id);
+                ArgumentNullException.ThrowIfNull(id, nameof(id));
 
-                if (gameResponse.IsSuccess)
+                ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id, nameof(id));
+
+                ArgumentNullException.ThrowIfNull(request, nameof(request));
+
+                GamePayload payload;
+
+                if (request.Payload.ConvertToPayloadSuccessful(typeof(GamePayload), out IPayload conversionResult))
                 {
-                    foreach (var cell in payload.SudokuCells)
-                    {
-                        foreach (var savedCell in ((Game)gameResponse.Object).SudokuMatrix.SudokuCells)
-                        {
-                            if (savedCell.Id == cell.Id && savedCell.Hidden)
-                            {
-                                savedCell.DisplayedValue = cell.DisplayedValue;
-                            }
-                        }
-                    }
-
-                    if (((Game)gameResponse.Object).IsSolved())
-                    {
-                        result.Message = GamesMessages.GameSolvedMessage;
-                    }
-                    else
-                    {
-                        result.Message = GamesMessages.GameNotSolvedMessage;
-                    }
-
-                    var updateGameResponse = await _gamesRepository.UpdateAsync((Game)gameResponse.Object);
-
-                    if (updateGameResponse.IsSuccess)
-                    {
-                        result.IsSuccess = updateGameResponse.IsSuccess;
-                        result.Payload.Add((Game)updateGameResponse.Object);
-
-                        return result;
-                    }
-                    else if (!updateGameResponse.IsSuccess && updateGameResponse.Exception != null)
-                    {
-                        result.IsSuccess = updateGameResponse.IsSuccess;
-                        result.Message = updateGameResponse.Exception.Message;
-
-                        return result;
-                    }
-                    else
-                    {
-                        result.IsSuccess = false;
-                        result.Message = GamesMessages.GameNotUpdatedMessage;
-
-                        return result;
-                    }
-                }
-                else if (!gameResponse.IsSuccess && gameResponse.Exception != null)
-                {
-                    result.IsSuccess = gameResponse.IsSuccess;
-                    result.Message = gameResponse.Exception.Message;
-
-                    return result;
+                    payload = (GamePayload)conversionResult;
                 }
                 else
                 {
-                    result.IsSuccess = false;
-                    result.Message = GamesMessages.GameNotFoundMessage;
+                    throw new ArgumentException(ServicesMesages.InvalidRequestMessage);
+                }
+
+                var getResponse = await _gamesRepository.GetAsync(id);
+
+                #region getResponse fails
+                if (!getResponse.IsSuccess)
+                {
+                    result.IsSuccess = getResponse.IsSuccess;
+                    result.Message = getResponse.Exception != null ? 
+                        getResponse.Exception.Message : 
+                        GamesMessages.GameNotFoundMessage;
 
                     return result;
                 }
+                #endregion
+
+                foreach (var cell in payload.SudokuCells)
+                {
+                    foreach (var savedCell in ((Game)getResponse.Object).SudokuMatrix.SudokuCells)
+                    {
+                        if (savedCell.Id == cell.Id && savedCell.Hidden)
+                        {
+                            savedCell.DisplayedValue = cell.DisplayedValue;
+                        }
+                    }
+                }
+
+                if (((Game)getResponse.Object).IsSolved())
+                {
+                    result.Message = GamesMessages.GameSolvedMessage;
+                }
+                else
+                {
+                    result.Message = GamesMessages.GameNotSolvedMessage;
+                }
+
+                var updateResponse = await _gamesRepository.UpdateAsync((Game)getResponse.Object);
+
+                #region updateResponse fails
+                if (!updateResponse.IsSuccess)
+                {
+                    result.IsSuccess = updateResponse.IsSuccess;
+                    result.Message = updateResponse.Exception != null ? 
+                        updateResponse.Exception.Message : 
+                        GamesMessages.GameNotUpdatedMessage;
+
+                    return result;
+                }
+                #endregion
+
+                result.IsSuccess = updateResponse.IsSuccess;
+                result.Payload.Add((Game)updateResponse.Object);
+
+                return result;
             }
             catch (Exception e)
             {
@@ -916,76 +806,42 @@ namespace SudokuCollective.Data.Services
         public async Task<IResult> CreateAnnonymousAsync(DifficultyLevel difficultyLevel)
         {
             var result = new Result();
-            var gameResult = new AnnonymousGameResult();
 
             try
             {
+                ArgumentNullException.ThrowIfNull(nameof(difficultyLevel));
+
                 if (difficultyLevel == DifficultyLevel.NULL || difficultyLevel == DifficultyLevel.TEST)
                 {
-                    result.IsSuccess = false;
-                    result.Message = DifficultiesMessages.DifficultyNotValidMessage;
+                    throw new ArgumentException(DifficultiesMessages.DifficultyNotValidMessage);
                 }
 
-                if (await _difficultiesRepository.HasDifficultyLevelAsync(difficultyLevel))
-                {
-                    var repositoryResponse = await _difficultiesRepository.GetByDifficultyLevelAsync(difficultyLevel);
+                var appExists = await _difficultiesRepository.HasDifficultyLevelAsync(difficultyLevel);
 
-                    var game = new Game((Difficulty)repositoryResponse.Object);
-                    
-                    await game.SudokuMatrix.GenerateSolutionAsync();
-
-                    for (var i = 0; i < 73; i += 9)
-                    {
-                        gameResult.SudokuMatrix.Add(game.SudokuMatrix.ToDisplayedIntList().GetRange(i, 9));
-                    }
-
-                    result.IsSuccess = true;
-                    result.Message = GamesMessages.GameCreatedMessage;
-                    result.Payload.Add(gameResult);
-                }
-                else
+                if (!appExists)
                 {
                     result.IsSuccess = false;
                     result.Message = DifficultiesMessages.DifficultyNotFoundMessage;
+
+                    return result;
                 }
 
-                return result;
-            }
-            catch (Exception e)
-            {
-                return DataUtilities.ProcessException<GamesService>(
-                    _requestService,
-                    _logger,
-                    result,
-                    e);
-            }
-        }
+                var repositoryResponse = await _difficultiesRepository.GetByDifficultyLevelAsync(difficultyLevel);
 
-        public IResult ScheduleCreateAnnonymous(DifficultyLevel difficultyLevel, int appId)
-        {
-            var result = new Result();
+                var game = new Game((Difficulty)repositoryResponse.Object);
 
-            try
-            {
-                if (difficultyLevel == DifficultyLevel.NULL || difficultyLevel == DifficultyLevel.TEST)
+                await game.SudokuMatrix.GenerateSolutionAsync();
+
+                var gameResult = new AnnonymousGameResult();
+
+                for (var i = 0; i < 73; i += 9)
                 {
-                    result.IsSuccess = false;
-                    result.Message = DifficultiesMessages.DifficultyNotValidMessage;
+                    gameResult.SudokuMatrix.Add(game.SudokuMatrix.ToDisplayedIntList().GetRange(i, 9));
                 }
-
-                if (appId == 0)
-                {
-                    result.IsSuccess = false;
-                    result.Message = AppsMessages.AppsNotFoundMessage;
-                }
-
-                var jobId = _jobClient.Schedule(() => 
-                    _sudokuJobs.CreateGameJobAsync(difficultyLevel, appId), 
-                    TimeSpan.FromSeconds(1));
 
                 result.IsSuccess = true;
-                result.Message = string.Format("Create game job {0) scheduled", jobId);
-                result.Payload.Add(new { jobId });
+                result.Message = GamesMessages.GameCreatedMessage;
+                result.Payload.Add(gameResult);
 
                 return result;
             }
@@ -997,12 +853,11 @@ namespace SudokuCollective.Data.Services
                     result,
                     e);
             }
-
         }
 
         public IResult CheckAnnonymous(List<int> intList)
         {
-            if (intList == null) throw new ArgumentNullException(nameof(intList));
+            ArgumentNullException.ThrowIfNull(intList, nameof(intList));
 
             try
             {
@@ -1051,6 +906,51 @@ namespace SudokuCollective.Data.Services
 
                 throw;
             }
+        }
+
+        public IResult ScheduleCreateGame(DifficultyLevel difficultyLevel, IRequest request = null)
+        {
+            var result = new Result();
+
+            try
+            {
+                if (difficultyLevel == DifficultyLevel.NULL || difficultyLevel == DifficultyLevel.TEST)
+                {
+                    throw new ArgumentException(DifficultiesMessages.DifficultyNotValidMessage);
+                }
+
+                string jobId;
+
+                if (request == null)
+                {
+                    jobId = _jobClient.Schedule(() => CreateAnnonymousAsync(difficultyLevel),
+                        TimeSpan.FromMicroseconds(500));
+                }
+                else
+                {
+                    jobId = _jobClient.Schedule(() => CreateAsync(request),
+                        TimeSpan.FromMicroseconds(500));
+                }
+
+                result.IsSuccess = true;
+                result.Message = string.Format(
+                    "Create game job {0} scheduled.", 
+                    !string.IsNullOrEmpty(jobId) ? 
+                        jobId : 
+                        "5d74fa7b-db93-4213-8e0c-da2f3179ed05");
+                result.Payload.Add(new { jobId });
+
+                return result;
+            }
+            catch (Exception e)
+            {
+                return DataUtilities.ProcessException<GamesService>(
+                    _requestService,
+                    _logger,
+                    result,
+                    e);
+            }
+
         }
         #endregion
     }

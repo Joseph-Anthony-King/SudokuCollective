@@ -27,7 +27,6 @@ namespace SudokuCollective.Test.TestCases.Controllers
         private MockedRequestService mockedRequestService;
         private Mock<IHttpContextAccessor> mockedHttpContextAccessor;
         private Mock<ILogger<GamesController>> mockedLogger;
-        private Mock<IWebHostEnvironment> mockedWebHostEnvironment;
         private Request request;
         private CreateGamePayload createGamePayload;
         private GamePayload updateGamePayload;
@@ -41,7 +40,6 @@ namespace SudokuCollective.Test.TestCases.Controllers
             mockedRequestService = new MockedRequestService();
             mockedHttpContextAccessor = new Mock<IHttpContextAccessor>();
             mockedLogger = new Mock<ILogger<GamesController>>();
-            mockedWebHostEnvironment = new Mock<IWebHostEnvironment>();
 
             request = new Request();
 
@@ -54,16 +52,14 @@ namespace SudokuCollective.Test.TestCases.Controllers
                 mockAppsService.SuccessfulRequest.Object,
                 mockedRequestService.SuccessfulRequest.Object,
                 mockedHttpContextAccessor.Object,
-                mockedLogger.Object,
-                mockedWebHostEnvironment.Object);
+                mockedLogger.Object);
 
             sutFailure = new GamesController(
                 mockGamesService.FailedRequest.Object,
                 mockAppsService.FailedRequest.Object,
                 mockedRequestService.SuccessfulRequest.Object,
                 mockedHttpContextAccessor.Object,
-                mockedLogger.Object,
-                mockedWebHostEnvironment.Object);
+                mockedLogger.Object);
         }
 
         [Test]
@@ -244,6 +240,50 @@ namespace SudokuCollective.Test.TestCases.Controllers
             Assert.That(message, Is.EqualTo("Status Code 201: Game created"));
             Assert.That(statusCode, Is.EqualTo(201));
             Assert.That(game, Is.InstanceOf<Game>());
+        }
+
+        [Test]
+        [Category("Controllers")]
+        public async Task SuccessfullyScheduleAGameJobForHardGames()
+        {
+            // Arrange
+            request.Payload = new CreateGamePayload { DifficultyLevel = DifficultyLevel.HARD };
+
+            // Act
+            var actionResult = await sutSuccess.PostAsync(request);
+            var result = (Result)((ObjectResult)actionResult.Result).Value;
+            var message = result.Message;
+            var jobId = (result.Payload[0].GetType()).GetProperty("jobId").GetValue(result.Payload[0]);
+            var statusCode = ((ObjectResult)actionResult.Result).StatusCode;
+
+            // Assert
+            Assert.That(actionResult, Is.InstanceOf<ActionResult<Result>>());
+            Assert.That(result, Is.InstanceOf<Result>());
+            Assert.That(message, Is.EqualTo("Status Code 202: Create game job 5d74fa7b-db93-4213-8e0c-da2f3179ed05 scheduled."));
+            Assert.That(statusCode, Is.EqualTo(202));
+            Assert.That(jobId.Equals("5d74fa7b-db93-4213-8e0c-da2f3179ed05"), Is.True);
+        }
+
+        [Test]
+        [Category("Controllers")]
+        public async Task SuccessfullyScheduleAGameJobForEvilGames()
+        {
+            // Arrange
+            request.Payload = new CreateGamePayload { DifficultyLevel = DifficultyLevel.EVIL };
+
+            // Act
+            var actionResult = await sutSuccess.PostAsync(request);
+            var result = (Result)((ObjectResult)actionResult.Result).Value;
+            var message = result.Message;
+            var jobId = (result.Payload[0].GetType()).GetProperty("jobId").GetValue(result.Payload[0]);
+            var statusCode = ((ObjectResult)actionResult.Result).StatusCode;
+
+            // Assert
+            Assert.That(actionResult, Is.InstanceOf<ActionResult<Result>>());
+            Assert.That(result, Is.InstanceOf<Result>());
+            Assert.That(message, Is.EqualTo("Status Code 202: Create game job 5d74fa7b-db93-4213-8e0c-da2f3179ed05 scheduled."));
+            Assert.That(statusCode, Is.EqualTo(202));
+            Assert.That(jobId.Equals("5d74fa7b-db93-4213-8e0c-da2f3179ed05"), Is.True);
         }
 
         [Test]
@@ -485,15 +525,64 @@ namespace SudokuCollective.Test.TestCases.Controllers
                 new AnnonymousGameRequest { 
                     DifficultyLevel = DifficultyLevel.EASY 
                 });
-            var result = (Result)((OkObjectResult)actionResult.Result).Value;
+            var result = (Result)((ObjectResult)actionResult.Result).Value;
             var message = result.Message;
-            var statusCode = ((OkObjectResult)actionResult.Result).StatusCode;
+            var statusCode = ((ObjectResult)actionResult.Result).StatusCode;
 
             // Assert
             Assert.That(actionResult, Is.InstanceOf<ActionResult<Result>>());
             Assert.That(result, Is.InstanceOf<Result>());
-            Assert.That(message, Is.EqualTo("Status Code 200: Game created"));
-            Assert.That(statusCode, Is.EqualTo(200));
+            Assert.That(message, Is.EqualTo("Status Code 201: Game created"));
+            Assert.That(statusCode, Is.EqualTo(201));
+        }
+
+        [Test]
+        [Category("Controllers")]
+        public async Task SuccessfullyScheduleAGameJobForHardAnnonymousGames()
+        {
+            // Arrange
+
+            // Act
+            var actionResult = await sutSuccess.CreateAnnonymousAsync(
+                new AnnonymousGameRequest
+                {
+                    DifficultyLevel = DifficultyLevel.HARD
+                });
+            var result = (Result)((ObjectResult)actionResult.Result).Value;
+            var message = result.Message;
+            var jobId = (result.Payload[0].GetType()).GetProperty("jobId").GetValue(result.Payload[0]);
+            var statusCode = ((ObjectResult)actionResult.Result).StatusCode;
+
+            // Assert
+            Assert.That(actionResult, Is.InstanceOf<ActionResult<Result>>());
+            Assert.That(result, Is.InstanceOf<Result>());
+            Assert.That(message, Is.EqualTo("Status Code 202: Create game job 5d74fa7b-db93-4213-8e0c-da2f3179ed05 scheduled."));
+            Assert.That(statusCode, Is.EqualTo(202));
+            Assert.That(jobId.Equals("5d74fa7b-db93-4213-8e0c-da2f3179ed05"), Is.True);
+        }
+        [Test]
+        [Category("Controllers")]
+        public async Task SuccessfullyScheduleAGameJobForEvilAnnonymousGames()
+        {
+            // Arrange
+
+            // Act
+            var actionResult = await sutSuccess.CreateAnnonymousAsync(
+                new AnnonymousGameRequest
+                {
+                    DifficultyLevel = DifficultyLevel.EVIL
+                });
+            var result = (Result)((ObjectResult)actionResult.Result).Value;
+            var message = result.Message;
+            var jobId = (result.Payload[0].GetType()).GetProperty("jobId").GetValue(result.Payload[0]);
+            var statusCode = ((ObjectResult)actionResult.Result).StatusCode;
+
+            // Assert
+            Assert.That(actionResult, Is.InstanceOf<ActionResult<Result>>());
+            Assert.That(result, Is.InstanceOf<Result>());
+            Assert.That(message, Is.EqualTo("Status Code 202: Create game job 5d74fa7b-db93-4213-8e0c-da2f3179ed05 scheduled."));
+            Assert.That(statusCode, Is.EqualTo(202));
+            Assert.That(jobId.Equals("5d74fa7b-db93-4213-8e0c-da2f3179ed05"), Is.True);
         }
 
         [Test]
