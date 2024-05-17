@@ -1,4 +1,5 @@
 using NUnit.Framework;
+using SudokuCollective.Core.Enums;
 using SudokuCollective.Core.Interfaces.Models.DomainObjects.Payloads;
 using SudokuCollective.Data.Models.Payloads;
 
@@ -20,7 +21,7 @@ namespace SudokuCollective.Test.TestCases.Payloads
             // Arrange and Act
             
             // Assert
-            Assert.That(sut.DifficultyId, Is.InstanceOf<int>());
+            Assert.That(sut.DifficultyLevel, Is.InstanceOf<DifficultyLevel>());
         }
 
         [Test, Category("Payloads")]
@@ -37,7 +38,7 @@ namespace SudokuCollective.Test.TestCases.Payloads
         public void HasAConstructorThatAcceptsParams()
         {
             // Arrange and Act
-            sut = new CreateGamePayload(2);
+            sut = new CreateGamePayload(DifficultyLevel.TEST);
 
             // Assert
             Assert.That(sut, Is.InstanceOf<CreateGamePayload>());

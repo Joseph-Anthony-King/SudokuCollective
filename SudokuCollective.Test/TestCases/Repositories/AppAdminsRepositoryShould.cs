@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -7,6 +8,7 @@ using NUnit.Framework;
 using SudokuCollective.Core.Interfaces.Repositories;
 using SudokuCollective.Core.Models;
 using SudokuCollective.Data.Models;
+using SudokuCollective.Data.Models.Params;
 using SudokuCollective.Repos;
 using SudokuCollective.Test.Services;
 using SudokuCollective.Test.TestData;

@@ -10,43 +10,29 @@ using SudokuCollective.Repos.Utilities;
 
 namespace SudokuCollective.Repos
 {
-	public class PasswordResetsRepository<TEntity> : IPasswordResetsRepository<TEntity> where TEntity : PasswordReset
+	public class PasswordResetsRepository<TEntity>(
+            DatabaseContext context,
+            IRequestService requestService,
+            ILogger<PasswordResetsRepository<PasswordReset>> logger) : IPasswordResetsRepository<TEntity> where TEntity : PasswordReset
 	{
 		#region Fields
-		private readonly DatabaseContext _context;
-		private readonly IRequestService _requestService;
-		private readonly ILogger<PasswordResetsRepository<PasswordReset>> _logger;
-		#endregion
+		private readonly DatabaseContext _context = context;
+		private readonly IRequestService _requestService = requestService;
+		private readonly ILogger<PasswordResetsRepository<PasswordReset>> _logger = logger;
+        #endregion
 
-		#region Constructor
-		public PasswordResetsRepository(
-				DatabaseContext context,
-				IRequestService requestService,
-				ILogger<PasswordResetsRepository<PasswordReset>> logger)
+        #region Methods
+        public async Task<IRepositoryResponse> CreateAsync(TEntity entity)
 		{
-			_context = context;
-			_requestService = requestService;
-			_logger = logger;
-		}
-		#endregion
-
-		#region Methods
-		public async Task<IRepositoryResponse> CreateAsync(TEntity entity)
-		{
-            ArgumentNullException.ThrowIfNull(entity);
-
             var result = new RepositoryResponse();
 
-			if (entity.Id != 0)
-			{
-				result.IsSuccess = false;
-
-				return result;
-			}
-
 			try
-			{
-				if (await _context.PasswordResets
+            {
+                ArgumentNullException.ThrowIfNull(entity);
+
+				ArgumentOutOfRangeException.ThrowIfNotEqual(0, entity.Id, nameof(entity.Id));
+
+                if (await _context.PasswordResets
 					.AnyAsync(pu => pu.Token.ToLower().Equals(entity.Token.ToLower())))
 				{
 					result.IsSuccess = false;
@@ -114,12 +100,12 @@ namespace SudokuCollective.Repos
 
 		public async Task<IRepositoryResponse> GetAsync(string token)
 		{
-			if (string.IsNullOrEmpty(token)) throw new ArgumentNullException(nameof(token));
-
 			var result = new RepositoryResponse();
 
 			try
 			{
+				ArgumentException.ThrowIfNullOrEmpty(token, nameof(token));
+
 				var query = await _context
 					.PasswordResets
 					.ToListAsync();
@@ -183,20 +169,15 @@ namespace SudokuCollective.Repos
 
 		public async Task<IRepositoryResponse> UpdateAsync(TEntity entity)
 		{
-            ArgumentNullException.ThrowIfNull(entity);
-
             var result = new RepositoryResponse();
 
-			if (entity.Id == 0)
-			{
-				result.IsSuccess = false;
-
-				return result;
-			}
-
 			try
-			{
-				if (await _context.PasswordResets.AnyAsync(a => a.Id == entity.Id))
+            {
+                ArgumentNullException.ThrowIfNull(entity);
+
+				ArgumentOutOfRangeException.ThrowIfNegativeOrZero(entity.Id, nameof(entity.Id));
+
+                if (await _context.PasswordResets.AnyAsync(a => a.Id == entity.Id))
 				{
 					_context.Attach(entity);
 
@@ -265,20 +246,15 @@ namespace SudokuCollective.Repos
 
 		public async Task<IRepositoryResponse> DeleteAsync(TEntity entity)
 		{
-            ArgumentNullException.ThrowIfNull(entity);
-
             var result = new RepositoryResponse();
 
-			if (entity.Id == 0)
-			{
-				result.IsSuccess = false;
-
-				return result;
-			}
-
 			try
-			{
-				if (await _context.PasswordResets.AnyAsync(pu => pu.Id == entity.Id))
+            {
+                ArgumentNullException.ThrowIfNull(entity);
+
+				ArgumentOutOfRangeException.ThrowIfNegativeOrZero(entity.Id, nameof(entity.Id));
+
+                if (await _context.PasswordResets.AnyAsync(pu => pu.Id == entity.Id))
 				{
 					_context.Remove(entity);
 
@@ -357,16 +333,17 @@ namespace SudokuCollective.Repos
 		{
 			var result = new RepositoryResponse();
 
-			if (userId == 0 || appid == 0)
-			{
-				result.IsSuccess = false;
-
-				return result;
-			}
-
 			try
 			{
-				var query = await _context
+				ArgumentNullException.ThrowIfNull(userId, nameof(userId));
+
+				ArgumentOutOfRangeException.ThrowIfNegativeOrZero(userId, nameof(userId));
+
+                ArgumentNullException.ThrowIfNull(appid, nameof(appid));
+
+                ArgumentOutOfRangeException.ThrowIfNegativeOrZero(appid, nameof(appid));
+
+                var query = await _context
 					.PasswordResets
 					.FirstOrDefaultAsync(pw =>
 						pw.UserId == userId &&
