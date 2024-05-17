@@ -18,37 +18,24 @@ using SudokuCollective.Data.Utilities;
 
 namespace SudokuCollective.Data.Services
 {
-    public class ValuesService : IValuesService
+    public class ValuesService(
+        IDifficultiesRepository<Difficulty> difficultiesRepository,
+        IAppsRepository<App> appsRepository,
+        IDistributedCache distributedCache,
+        ICacheService cacheService,
+        ICacheKeys cacheKeys,
+        ICachingStrategy cachingStrategy) : IValuesService
     {
-        private IDifficultiesRepository<Difficulty> _difficultiesRepository;
-        private IAppsRepository<App> _appsRepository;
-        private readonly IDistributedCache _distributedCache;
-        private readonly ICacheService _cacheService;
-        private readonly ICacheKeys _cacheKeys;
-        private readonly ICachingStrategy _cachingStrategy;
-
-        public ValuesService(
-            IDifficultiesRepository<Difficulty> difficultiesRepository,
-            IAppsRepository<App> appsRepository,
-            IDistributedCache distributedCache,
-            ICacheService cacheService,
-            ICacheKeys cacheKeys,
-            ICachingStrategy cachingStrategy)
-        {
-            _difficultiesRepository = difficultiesRepository;
-            _appsRepository = appsRepository;
-            _distributedCache = distributedCache;
-            _cacheService = cacheService;
-            _cacheKeys = cacheKeys;
-            _cachingStrategy = cachingStrategy;
-        }
+        private IDifficultiesRepository<Difficulty> _difficultiesRepository = difficultiesRepository;
+        private IAppsRepository<App> _appsRepository = appsRepository;
+        private readonly IDistributedCache _distributedCache = distributedCache;
+        private readonly ICacheService _cacheService = cacheService;
+        private readonly ICacheKeys _cacheKeys = cacheKeys;
+        private readonly ICachingStrategy _cachingStrategy = cachingStrategy;
 
         public async Task<IResult> GetAsync(IPaginator paginator = null)
         {
-            if (paginator == null)
-            {
-                paginator = new Paginator();
-            }
+            paginator ??= new Paginator();
 
             var result = new Result();
 

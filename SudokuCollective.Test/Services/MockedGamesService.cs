@@ -242,6 +242,15 @@ namespace SudokuCollective.Test.Services
                         IsSuccess = true,
                         Message = GamesMessages.GameSolvedMessage
                     } as IResult);
+
+            SuccessfulRequest.Setup(Service =>
+                Service.ScheduleCreateGame(It.IsAny<DifficultyLevel>(), It.IsAny<IRequest>()))
+                .Returns(new Result()
+                {
+                    IsSuccess = true,
+                    Message = "Create game job 5d74fa7b-db93-4213-8e0c-da2f3179ed05 scheduled.",
+                    Payload = [new { jobId = "5d74fa7b-db93-4213-8e0c-da2f3179ed05" }],
+                } as IResult);
             #endregion
 
             #region FailedRequest
@@ -390,6 +399,14 @@ namespace SudokuCollective.Test.Services
                         IsSuccess = false,
                         Message = GamesMessages.GameNotSolvedMessage
                     } as IResult);
+
+            FailedRequest.Setup(Service =>
+                Service.ScheduleCreateGame(It.IsAny<DifficultyLevel>(), It.IsAny<IRequest>()))
+                .Returns(new Result()
+                {
+                    IsSuccess = false,
+                    Message = DifficultiesMessages.DifficultyNotValidMessage,
+                } as IResult);
             #endregion
         }
     }

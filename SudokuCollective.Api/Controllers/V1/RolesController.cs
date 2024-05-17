@@ -2,7 +2,6 @@ using System;
 using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -24,7 +23,6 @@ namespace SudokuCollective.Api.Controllers.V1
     /// <param name="requestService"></param>
     /// <param name="httpContextAccessor"></param>
     /// <param name="logger"></param>
-    /// <param name="environment"></param>
     [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
     [Route("api/v1/[controller]")]
     [ApiController]
@@ -33,15 +31,13 @@ namespace SudokuCollective.Api.Controllers.V1
         IAppsService appsService,
         IRequestService requestService,
         IHttpContextAccessor httpContextAccessor,
-        ILogger<RolesController> logger,
-        IWebHostEnvironment environment) : ControllerBase
+        ILogger<RolesController> logger) : ControllerBase
     {
         private readonly IRolesService _rolesService = rolesService;
         private readonly IAppsService _appsService = appsService;
         private readonly IRequestService _requestService = requestService;
         private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
         private readonly ILogger<RolesController> _logger = logger;
-        private readonly IWebHostEnvironment _environment = environment;
 
         /// <summary>
         /// An endpoint to get a role, does not require a login.

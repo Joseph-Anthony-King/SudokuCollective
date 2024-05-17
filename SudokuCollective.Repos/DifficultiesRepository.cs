@@ -11,35 +11,28 @@ using SudokuCollective.Repos.Utilities;
 
 namespace SudokuCollective.Repos
 {
-    public class DifficultiesRepository<TEntity> : IDifficultiesRepository<TEntity> where TEntity : Difficulty
+    public class DifficultiesRepository<TEntity>(
+        DatabaseContext context,
+        IRequestService requestService,
+        ILogger<DifficultiesRepository<Difficulty>> logger) : IDifficultiesRepository<TEntity> where TEntity : Difficulty
     {
         #region Fields
-        private readonly DatabaseContext _context;
-        private readonly IRequestService _requestService;
-        private readonly ILogger<DifficultiesRepository<Difficulty>> _logger;
-        #endregion
-
-        #region Constructor
-        public DifficultiesRepository(
-            DatabaseContext context,
-            IRequestService requestService,
-            ILogger<DifficultiesRepository<Difficulty>> logger)
-        {
-            _context = context;
-            _requestService = requestService;
-            _logger = logger;
-        }
+        private readonly DatabaseContext _context = context;
+        private readonly IRequestService _requestService = requestService;
+        private readonly ILogger<DifficultiesRepository<Difficulty>> _logger = logger;
         #endregion
 
         #region Methods
         public async Task<IRepositoryResponse> AddAsync(TEntity entity)
         {
-            ArgumentNullException.ThrowIfNull(entity);
-
             var result = new RepositoryResponse();
 
             try
             {
+                ArgumentNullException.ThrowIfNull(entity);
+
+                ArgumentOutOfRangeException.ThrowIfNotEqual(0, entity.Id, nameof(entity.Id));
+
                 if (await _context.Difficulties.AnyAsync(d => d.DifficultyLevel == entity.DifficultyLevel))
                 {
                     result.IsSuccess = false;
@@ -109,15 +102,12 @@ namespace SudokuCollective.Repos
         {
             var result = new RepositoryResponse();
 
-            if (id == 0)
-            {
-                result.IsSuccess = false;
-
-                return result;
-            }
-
             try
             {
+                ArgumentNullException.ThrowIfNull(id, nameof(id));
+
+                ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id, nameof(id));
+
                 var query = new Difficulty();
 
                 query = await _context
@@ -133,7 +123,6 @@ namespace SudokuCollective.Repos
                     result.IsSuccess = true;
                     result.Object = query;
                 }
-
 
                 return result;
             }
@@ -153,6 +142,8 @@ namespace SudokuCollective.Repos
 
             try
             {
+                ArgumentNullException.ThrowIfNull(difficultyLevel, nameof(difficultyLevel));
+
                 var query = new Difficulty();
 
                 query = await _context
@@ -169,7 +160,6 @@ namespace SudokuCollective.Repos
                     result.Object = query;
                 }
 
-
                 return result;
             }
             catch (Exception e)
@@ -185,10 +175,11 @@ namespace SudokuCollective.Repos
         public async Task<IRepositoryResponse> GetAllAsync()
         {
             var result = new RepositoryResponse();
-            var query = new List<Difficulty>();
 
             try
             {
+                var query = new List<Difficulty>();
+
                 query = await _context
                     .Difficulties
                     .Where(d =>
@@ -221,69 +212,71 @@ namespace SudokuCollective.Repos
 
         public async Task<IRepositoryResponse> UpdateAsync(TEntity entity)
         {
-            ArgumentNullException.ThrowIfNull(entity);
-
             var result = new RepositoryResponse();
 
             try
             {
-                if (await _context.Difficulties.AnyAsync(d => d.Id == entity.Id))
-                {
-                    _context.Update(entity);
+                ArgumentNullException.ThrowIfNull(entity);
 
-                    var trackedEntities = new List<string>();
+                ArgumentOutOfRangeException.ThrowIfNegativeOrZero(entity.Id, nameof(entity.Id));
 
-                    foreach (var entry in _context.ChangeTracker.Entries())
-                    {
-                        var dbEntry = (IDomainEntity)entry.Entity;
+                var difficultyExists = await _context.Difficulties.AnyAsync(d => d.Id == entity.Id);
 
-                        // If the entity is already being tracked for the update... break
-                        if (trackedEntities.Contains(dbEntry.ToString()))
-                        {
-                            break;
-                        }
-
-
-                        if (dbEntry is Difficulty)
-                        {
-                            if (dbEntry.Id == entity.Id)
-                            {
-                                entry.State = EntityState.Modified;
-                            }
-                            else
-                            {
-                                entry.State = EntityState.Unchanged;
-                            }
-                        }
-                        else
-                        {
-                            if (dbEntry.Id == 0)
-                            {
-                                entry.State = EntityState.Added;
-                            }
-                            else if (entry.State != EntityState.Deleted || entry.State != EntityState.Modified || entry.State != EntityState.Added)
-                            {
-                                entry.State = EntityState.Detached;
-                            }
-                        }
-
-                        // Note that this entry is tracked for the update
-                        trackedEntities.Add(dbEntry.ToString());
-                    }
-
-                    await _context.SaveChangesAsync();
-
-                    result.IsSuccess = true;
-                    result.Object = entity;
-
-                    return result;
-                }
-                else
+                if (!difficultyExists)
                 {
                     result.IsSuccess = false;
 
                     return result;
                 }
+
+                _context.Update(entity);
+
+                var trackedEntities = new List<string>();
+
+                foreach (var entry in _context.ChangeTracker.Entries())
+                {
+                    var dbEntry = (IDomainEntity)entry.Entity;
+
+                    // If the entity is already being tracked for the update... break
+                    if (trackedEntities.Contains(dbEntry.ToString()))
+                    {
+                        break;
+                    }
+
+
+                    if (dbEntry is Difficulty)
+                    {
+                        if (dbEntry.Id == entity.Id)
+                        {
+                            entry.State = EntityState.Modified;
+                        }
+                        else
+                        {
+                            entry.State = EntityState.Unchanged;
+                        }
+                    }
+                    else
+                    {
+                        if (dbEntry.Id == 0)
+                        {
+                            entry.State = EntityState.Added;
+                        }
+                        else if (entry.State != EntityState.Deleted || entry.State != EntityState.Modified || entry.State != EntityState.Added)
+                        {
+                            entry.State = EntityState.Detached;
+                        }
+                    }
+
+                    // Note that this entry is tracked for the update
+                    trackedEntities.Add(dbEntry.ToString());
+                }
+
+                await _context.SaveChangesAsync();
+
+                result.IsSuccess = true;
+                result.Object = entity;
+
+                return result;
             }
             catch (Exception e)
             {
@@ -297,20 +290,15 @@ namespace SudokuCollective.Repos
 
         public async Task<IRepositoryResponse> UpdateRangeAsync(List<TEntity> entities)
         {
-            ArgumentNullException.ThrowIfNull(entities);
-
             var result = new RepositoryResponse();
 
             try
             {
+                ArgumentNullException.ThrowIfNull(entities);
+
                 foreach (var entity in entities)
                 {
-                    if (entity.Id == 0)
-                    {
-                        result.IsSuccess = false;
-
-                        return result;
-                    }
+                    ArgumentOutOfRangeException.ThrowIfNegativeOrZero(entity.Id, nameof(entity.Id));
 
                     if (await _context.Difficulties.AnyAsync(d => d.Id == entity.Id))
                     {
@@ -385,122 +373,124 @@ namespace SudokuCollective.Repos
 
         public async Task<IRepositoryResponse> DeleteAsync(TEntity entity)
         {
-            ArgumentNullException.ThrowIfNull(entity);
-
             var result = new RepositoryResponse();
 
             try
             {
-                if (await _context.Difficulties.AnyAsync(d => d.Id == entity.Id))
-                {
-                    _context.Remove(entity);
+                ArgumentNullException.ThrowIfNull(entity);
 
-                    if (entity.Matrices.Count == 0)
-                    {
-                        var games = await _context
-                            .Games
-                            .Include(g => g.SudokuMatrix)
-                            .ThenInclude(m => m.SudokuCells)
-                            .ToListAsync();
+                ArgumentOutOfRangeException.ThrowIfNegativeOrZero(entity.Id, nameof(entity.Id));
 
-                        foreach (var game in games)
-                        {
-                            if (game.SudokuMatrix.DifficultyId == entity.Id)
-                            {
-                                _context.Remove(game);
-                            }
-                        }
-                    }
+                var difficultyExists = await _context.Difficulties.AnyAsync(d => d.Id == entity.Id);
 
-                    var trackedEntities = new List<string>();
-
-                    foreach (var entry in _context.ChangeTracker.Entries())
-                    {
-                        var dbEntry = (IDomainEntity)entry.Entity;
-
-                        // If the entity is already being tracked for the update... break
-                        if (trackedEntities.Contains(dbEntry.ToString()))
-                        {
-                            break;
-                        }
-
-                        if (dbEntry is Difficulty)
-                        {
-                            if (dbEntry.Id == entity.Id)
-                            {
-                                entry.State = EntityState.Deleted;
-                            }
-                            else
-                            {
-                                entry.State = EntityState.Unchanged;
-                            }
-                        }
-                        else if (dbEntry is Game game)
-                        {
-                            if (game.SudokuMatrix.DifficultyId == entity.Id)
-                            {
-                                entry.State = EntityState.Deleted;
-                            }
-                            else
-                            {
-                                entry.State = EntityState.Unchanged;
-                            }
-                        }
-                        else if (dbEntry is SudokuMatrix matrix)
-                        {
-                            if (matrix.DifficultyId == entity.Id)
-                            {
-                                entry.State = EntityState.Deleted;
-                            }
-                            else
-                            {
-                                entry.State = EntityState.Unchanged;
-                            }
-                        }
-                        else if (dbEntry is SudokuCell cell)
-                        {
-                            if (cell.SudokuMatrix.DifficultyId == entity.Id)
-                            {
-                                entry.State = EntityState.Deleted;
-                            }
-                            else
-                            {
-                                entry.State = EntityState.Unchanged;
-                            }
-                        }
-                        else if (dbEntry is SudokuSolution)
-                        {
-                            entry.State = EntityState.Modified;
-                        }
-                        else
-                        {
-                            if (dbEntry.Id == 0)
-                            {
-                                entry.State = EntityState.Added;
-                            }
-                            else if (entry.State != EntityState.Deleted || entry.State != EntityState.Modified || entry.State != EntityState.Added)
-                            {
-                                entry.State = EntityState.Detached;
-                            }
-                        }
-
-                        // Note that this entry is tracked for the update
-                        trackedEntities.Add(dbEntry.ToString());
-                    }
-
-                    await _context.SaveChangesAsync();
-
-                    result.IsSuccess = true;
-                    result.Object = entity;
-
-                    return result;
-                }
-                else
+                if (!difficultyExists)
                 {
                     result.IsSuccess = false;
 
                     return result;
                 }
+
+                _context.Remove(entity);
+
+                if (entity.Matrices.Count == 0)
+                {
+                    var games = await _context
+                        .Games
+                        .Include(g => g.SudokuMatrix)
+                        .ThenInclude(m => m.SudokuCells)
+                        .ToListAsync();
+
+                    foreach (var game in games)
+                    {
+                        if (game.SudokuMatrix.DifficultyId == entity.Id)
+                        {
+                            _context.Remove(game);
+                        }
+                    }
+                }
+
+                var trackedEntities = new List<string>();
+
+                foreach (var entry in _context.ChangeTracker.Entries())
+                {
+                    var dbEntry = (IDomainEntity)entry.Entity;
+
+                    // If the entity is already being tracked for the update... break
+                    if (trackedEntities.Contains(dbEntry.ToString()))
+                    {
+                        break;
+                    }
+
+                    if (dbEntry is Difficulty)
+                    {
+                        if (dbEntry.Id == entity.Id)
+                        {
+                            entry.State = EntityState.Deleted;
+                        }
+                        else
+                        {
+                            entry.State = EntityState.Unchanged;
+                        }
+                    }
+                    else if (dbEntry is Game game)
+                    {
+                        if (game.SudokuMatrix.DifficultyId == entity.Id)
+                        {
+                            entry.State = EntityState.Deleted;
+                        }
+                        else
+                        {
+                            entry.State = EntityState.Unchanged;
+                        }
+                    }
+                    else if (dbEntry is SudokuMatrix matrix)
+                    {
+                        if (matrix.DifficultyId == entity.Id)
+                        {
+                            entry.State = EntityState.Deleted;
+                        }
+                        else
+                        {
+                            entry.State = EntityState.Unchanged;
+                        }
+                    }
+                    else if (dbEntry is SudokuCell cell)
+                    {
+                        if (cell.SudokuMatrix.DifficultyId == entity.Id)
+                        {
+                            entry.State = EntityState.Deleted;
+                        }
+                        else
+                        {
+                            entry.State = EntityState.Unchanged;
+                        }
+                    }
+                    else if (dbEntry is SudokuSolution)
+                    {
+                        entry.State = EntityState.Modified;
+                    }
+                    else
+                    {
+                        if (dbEntry.Id == 0)
+                        {
+                            entry.State = EntityState.Added;
+                        }
+                        else if (entry.State != EntityState.Deleted || entry.State != EntityState.Modified || entry.State != EntityState.Added)
+                        {
+                            entry.State = EntityState.Detached;
+                        }
+                    }
+
+                    // Note that this entry is tracked for the update
+                    trackedEntities.Add(dbEntry.ToString());
+                }
+
+                await _context.SaveChangesAsync();
+
+                result.IsSuccess = true;
+                result.Object = entity;
+
+                return result;
             }
             catch (Exception e)
             {
@@ -514,20 +504,15 @@ namespace SudokuCollective.Repos
 
         public async Task<IRepositoryResponse> DeleteRangeAsync(List<TEntity> entities)
         {
-            ArgumentNullException.ThrowIfNull(entities);
-
             var result = new RepositoryResponse();
 
             try
             {
+                ArgumentNullException.ThrowIfNull(entities);
+
                 foreach (var entity in entities)
                 {
-                    if (entity.Id == 0)
-                    {
-                        result.IsSuccess = false;
-
-                        return result;
-                    }
+                    ArgumentOutOfRangeException.ThrowIfNegativeOrZero(entity.Id, nameof(entity.Id));
 
                     if (await _context.Difficulties.AnyAsync(d => d.Id == entity.Id))
                     {

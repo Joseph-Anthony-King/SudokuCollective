@@ -11,43 +11,29 @@ using SudokuCollective.Core.Interfaces.Services;
 
 namespace SudokuCollective.Repos
 {
-	public class SolutionsRepository<TEntity> : ISolutionsRepository<TEntity> where TEntity : SudokuSolution
+	public class SolutionsRepository<TEntity>(
+            DatabaseContext context,
+            IRequestService requestService,
+            ILogger<SolutionsRepository<SudokuSolution>> logger) : ISolutionsRepository<TEntity> where TEntity : SudokuSolution
 	{
 		#region Fields
-		private readonly DatabaseContext _context;
-		private readonly IRequestService _requestService;
-		private readonly ILogger<SolutionsRepository<SudokuSolution>> _logger;
-		#endregion
+		private readonly DatabaseContext _context = context;
+		private readonly IRequestService _requestService = requestService;
+		private readonly ILogger<SolutionsRepository<SudokuSolution>> _logger = logger;
+        #endregion
 
-		#region Constructor
-		public SolutionsRepository(
-				DatabaseContext context,
-				IRequestService requestService,
-				ILogger<SolutionsRepository<SudokuSolution>> logger)
+        #region Methods
+        public async Task<IRepositoryResponse> AddAsync(TEntity entity)
 		{
-			_context = context;
-			_requestService = requestService;
-			_logger = logger;
-		}
-		#endregion
-
-		#region Methods
-		public async Task<IRepositoryResponse> AddAsync(TEntity entity)
-		{
-            ArgumentNullException.ThrowIfNull(entity);
-
             var result = new RepositoryResponse();
 
-			if (entity.Id != 0)
-			{
-				result.IsSuccess = false;
-
-				return result;
-			}
-
 			try
-			{
-				_context.Attach(entity);
+            {
+                ArgumentNullException.ThrowIfNull(entity);
+
+				ArgumentOutOfRangeException.ThrowIfNotEqual(0, entity.Id, nameof(entity.Id));
+
+                _context.Attach(entity);
 
                 var trackedEntities = new List<string>();
 
@@ -105,20 +91,16 @@ namespace SudokuCollective.Repos
 			}
 		}
 
-
 		public async Task<IRepositoryResponse> GetAsync(int id)
 		{
 			var result = new RepositoryResponse();
 
-			if (id == 0)
-			{
-				result.IsSuccess = false;
-
-				return result;
-			}
-
 			try
 			{
+				ArgumentNullException.ThrowIfNull(id, nameof(id));
+
+				ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id, nameof(id));
+
 				var query = await _context
 					.SudokuSolutions
 					.FirstOrDefaultAsync(s => s.Id == id);
@@ -267,20 +249,15 @@ namespace SudokuCollective.Repos
 
 		public async Task<IRepositoryResponse> UpdateAsync(TEntity entity)
 		{
-            ArgumentNullException.ThrowIfNull(entity);
-
             var result = new RepositoryResponse();
 
-			if (entity.Id == 0)
-			{
-				result.IsSuccess = false;
-
-				return result;
-			}
-
 			try
-			{
-				if (await _context.SudokuSolutions.AnyAsync(r => r.Id == entity.Id))
+            {
+                ArgumentNullException.ThrowIfNull(entity);
+
+				ArgumentOutOfRangeException.ThrowIfNegativeOrZero(entity.Id, nameof(entity.Id));
+
+                if (await _context.SudokuSolutions.AnyAsync(r => r.Id == entity.Id))
 				{
 					_context.Update(entity);
 
@@ -357,12 +334,7 @@ namespace SudokuCollective.Repos
 			{
 				foreach (var entity in entities)
 				{
-					if (entity.Id == 0)
-					{
-						result.IsSuccess = false;
-
-						return result;
-					}
+					ArgumentOutOfRangeException.ThrowIfNegativeOrZero(entity.Id, nameof(entity.Id));
 
 					if (await _context.SudokuSolutions.AnyAsync(d => d.Id == entity.Id))
 					{
@@ -433,20 +405,15 @@ namespace SudokuCollective.Repos
 
 		public async Task<IRepositoryResponse> DeleteAsync(TEntity entity)
 		{
-            ArgumentNullException.ThrowIfNull(entity);
-
             var result = new RepositoryResponse();
 
-			if (entity.Id == 0)
-			{
-				result.IsSuccess = false;
-
-				return result;
-			}
-
 			try
-			{
-				if (await _context.SudokuSolutions.AnyAsync(d => d.Id == entity.Id))
+            {
+                ArgumentNullException.ThrowIfNull(entity);
+
+				ArgumentOutOfRangeException.ThrowIfNegativeOrZero(entity.Id, nameof(entity.Id));
+
+                if (await _context.SudokuSolutions.AnyAsync(d => d.Id == entity.Id))
 				{
 					_context.Remove(entity);
 
@@ -515,22 +482,17 @@ namespace SudokuCollective.Repos
 
 		public async Task<IRepositoryResponse> DeleteRangeAsync(List<TEntity> entities)
 		{
-            ArgumentNullException.ThrowIfNull(entities);
-
             var result = new RepositoryResponse();
 
 			try
-			{
-				var roleIds = new List<int>();
+            {
+                ArgumentNullException.ThrowIfNull(entities);
+
+                var roleIds = new List<int>();
 
 				foreach (var entity in entities)
 				{
-					if (entity.Id == 0)
-					{
-						result.IsSuccess = false;
-
-						return result;
-					}
+					ArgumentOutOfRangeException.ThrowIfNegativeOrZero(entity.Id, nameof(entity.Id));
 
 					if (await _context.SudokuSolutions.AnyAsync(d => d.Id == entity.Id))
 					{

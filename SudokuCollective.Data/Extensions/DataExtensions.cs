@@ -137,7 +137,7 @@ namespace SudokuCollective.Data.Extensions
                 {
                     result = new CreateGamePayload()
                     {
-                        DifficultyId = Convert.ToInt32(element.GetProperty("difficultyId").ToString())
+                        DifficultyLevel = (DifficultyLevel)Convert.ToInt32(element.GetProperty("difficultyLevel").ToString())
                     };
 
                     return true;

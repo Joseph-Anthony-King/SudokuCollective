@@ -2,7 +2,6 @@ using System;
 using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -23,7 +22,6 @@ namespace SudokuCollective.Api.Controllers.V1
     /// <param name="requestService"></param>
     /// <param name="httpContextAccessor"></param>
     /// <param name="logger"></param>
-    /// <param name="environment"></param>
     [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
     [Route("api/v1/[controller]")]
     [ApiController]
@@ -31,14 +29,12 @@ namespace SudokuCollective.Api.Controllers.V1
         IAppsService appsService,
         IRequestService requestService,
         IHttpContextAccessor httpContextAccessor,
-        ILogger<AppsController> logger,
-        IWebHostEnvironment environment) : ControllerBase
+        ILogger<AppsController> logger) : ControllerBase
     {
         private readonly IAppsService _appsService = appsService;
         private readonly IRequestService _requestService = requestService;
         private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
         private readonly ILogger<AppsController> _logger = logger;
-        private readonly IWebHostEnvironment _environment = environment;
 
         /// <summary>
         /// An endpoint which gets an app, requires the user role.
@@ -341,7 +337,7 @@ namespace SudokuCollective.Api.Controllers.V1
 
                 var licenseRegex = ControllerUtilities.GuidRegex();
 
-                if (!licenseRegex.IsMatch(license)) throw new ArgumentException(nameof(license));
+                if (!licenseRegex.IsMatch(license)) throw new ArgumentException(null, nameof(license));
 
                 ArgumentNullException.ThrowIfNull(request);
 
