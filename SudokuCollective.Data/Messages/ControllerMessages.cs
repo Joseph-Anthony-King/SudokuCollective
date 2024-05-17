@@ -17,6 +17,8 @@ namespace SudokuCollective.Data.Messages
 
         internal static string StatusCode201(string serviceMessage) => string.Format("Status Code 201: {0}", serviceMessage);
 
+        internal static string StatusCode202(string serviceMessage) => string.Format("Status Code 202: {0}", serviceMessage);
+
         internal static string StatusCode400(string serviceMessage) => string.Format("Status Code 400: {0}", serviceMessage);
 
         internal static string StatusCode404(string serviceMessage) => string.Format("Status Code 404: {0}", serviceMessage);

@@ -117,15 +117,8 @@ namespace SudokuCollective.HerokuIntegration
 
                 var deleteResponse = await httpClient.SendAsync(deleteMessage);
 
-                if (deleteResponse.IsSuccessStatusCode)
-                {
-
-                    result.IsSuccessful = deleteResponse.IsSuccessStatusCode;
-                    result.Message = "It was not possible to connect to the redis server, the redis server connections have been reset. Please resubmit your request.";
-
-                    return result;
-                }
-                else
+                // return false if delete request fails
+                if (deleteResponse.IsSuccessStatusCode == false)
                 {
                     var response = await deleteResponse.Content.ReadFromJsonAsync<FailedResponse>();
                     var message = response!.Message + (response!.Url != null ? " For more info please check: " + response!.Url : "");
@@ -139,6 +132,11 @@ namespace SudokuCollective.HerokuIntegration
 
                     return result;
                 }
+
+                result.IsSuccessful = deleteResponse.IsSuccessStatusCode;
+                result.Message = "It was not possible to connect to the redis server, the redis server connections have been reset. Please resubmit your request.";
+
+                return result;
                 #endregion
             }
             catch (Exception ex) 

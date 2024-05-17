@@ -12,43 +12,29 @@ using SudokuCollective.Core.Interfaces.Services;
 
 namespace SudokuCollective.Repos
 {
-	public class UsersRepository<TEntity> : IUsersRepository<TEntity> where TEntity : User
+	public class UsersRepository<TEntity>(
+                DatabaseContext context,
+                IRequestService requestService,
+                ILogger<UsersRepository<User>> logger) : IUsersRepository<TEntity> where TEntity : User
 	{
 		#region Fields
-		private readonly DatabaseContext _context;
-		private readonly IRequestService _requestService;
-		private readonly ILogger<UsersRepository<User>> _logger;
+		private readonly DatabaseContext _context = context;
+		private readonly IRequestService _requestService = requestService;
+		private readonly ILogger<UsersRepository<User>> _logger = logger;
         #endregion
 
-        #region Constructors
-        public UsersRepository(
-				DatabaseContext context,
-				IRequestService requestService,
-				ILogger<UsersRepository<User>> logger)
+        #region Methods
+        public async Task<IRepositoryResponse> AddAsync(TEntity entity)
 		{
-			_context = context;
-			_requestService = requestService;
-			_logger = logger;
-		}
-		#endregion
-
-		#region Methods
-		public async Task<IRepositoryResponse> AddAsync(TEntity entity)
-		{
-            ArgumentNullException.ThrowIfNull(entity);
-
             var result = new RepositoryResponse();
 
-			if (entity.Id != 0)
-			{
-				result.IsSuccess = false;
-
-				return result;
-			}
-
 			try
-			{
-				_context.Users.Add(entity);
+            {
+                ArgumentNullException.ThrowIfNull(entity);
+
+                ArgumentOutOfRangeException.ThrowIfNotEqual(0, entity.Id, nameof(entity.Id));
+
+                _context.Users.Add(entity);
 
                 foreach (var userApp in entity.Apps)
                 {
@@ -180,14 +166,12 @@ namespace SudokuCollective.Repos
 		{
 			var result = new RepositoryResponse();
 
-			if (id == 0)
-			{
-				result.IsSuccess = false;
-				return result;
-			}
-
 			try
 			{
+                ArgumentNullException.ThrowIfNull(id, nameof(id));
+
+                ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id, nameof(id));
+
 				var query = await _context
 					.Users
 					.Include(u => u.Apps)
@@ -224,12 +208,12 @@ namespace SudokuCollective.Repos
 
 		public async Task<IRepositoryResponse> GetByUserNameAsync(string username)
 		{
-			if (string.IsNullOrEmpty(username)) throw new ArgumentNullException(nameof(username));
-
 			var result = new RepositoryResponse();
 
 			try
 			{
+                ArgumentException.ThrowIfNullOrEmpty(username, nameof(username));
+
 				var query = await _context
 					.Users
 					.Include(u => u.Apps)
@@ -266,12 +250,12 @@ namespace SudokuCollective.Repos
 
 		public async Task<IRepositoryResponse> GetByEmailAsync(string email)
 		{
-			if (string.IsNullOrEmpty(email)) throw new ArgumentNullException(nameof(email));
-
 			var result = new RepositoryResponse();
 
 			try
 			{
+                ArgumentException.ThrowIfNullOrEmpty(email, nameof(email));
+
 				/* Since emails are encrypted we have to pull all users
 				 * first and then search by email */
 				var users = await _context
@@ -361,15 +345,12 @@ namespace SudokuCollective.Repos
 		{
 			var result = new RepositoryResponse();
 
-			if (id == 0)
-			{
-				result.IsSuccess = false;
-
-				return result;
-			}
-
 			try
 			{
+                ArgumentNullException.ThrowIfNull(id, nameof(id));
+
+                ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id, nameof(id));
+
 				var query = new List<App>();
 
 				query = await _context
@@ -427,20 +408,15 @@ namespace SudokuCollective.Repos
 
 		public async Task<IRepositoryResponse> UpdateAsync(TEntity entity)
 		{
-            ArgumentNullException.ThrowIfNull(entity);
-
             var result = new RepositoryResponse();
 
-			if (entity.Id == 0)
-			{
-				result.IsSuccess = false;
-
-				return result;
-			}
-
 			try
-			{
-				entity.DateUpdated = DateTime.UtcNow;
+            {
+                ArgumentNullException.ThrowIfNull(entity);
+
+                ArgumentOutOfRangeException.ThrowIfNegativeOrZero(entity.Id, nameof(entity.Id));
+
+                entity.DateUpdated = DateTime.UtcNow;
 				
 				_context.Update(entity);
 
@@ -562,22 +538,17 @@ namespace SudokuCollective.Repos
 
 		public async Task<IRepositoryResponse> UpdateRangeAsync(List<TEntity> entities)
 		{
-            ArgumentNullException.ThrowIfNull(entities);
-
             var result = new RepositoryResponse();
 
 			try
-			{
-				var dateUpdated = DateTime.UtcNow;
+            {
+                ArgumentNullException.ThrowIfNull(entities);
+
+                var dateUpdated = DateTime.UtcNow;
 
 				foreach (var entity in entities)
 				{
-					if (entity.Id == 0)
-					{
-						result.IsSuccess = false;
-
-						return result;
-					}
+                    ArgumentOutOfRangeException.ThrowIfNegativeOrZero(entity.Id, nameof(entity.Id));
 
 					if (await _context.Users.AnyAsync(u => u.Id == entity.Id))
 					{
@@ -711,20 +682,15 @@ namespace SudokuCollective.Repos
 
 		public async Task<IRepositoryResponse> DeleteAsync(TEntity entity)
 		{
-            ArgumentNullException.ThrowIfNull(entity);
-
             var result = new RepositoryResponse();
 
-			if (entity.Id == 0 || entity.Id == 1 || entity.IsSuperUser)
-			{
-				result.IsSuccess = false;
-
-				return result;
-			}
-
 			try
-			{
-				if (await _context.Users.AnyAsync(u => u.Id == entity.Id))
+            {
+                ArgumentNullException.ThrowIfNull(entity);
+
+                ArgumentOutOfRangeException.ThrowIfNegativeOrZero(entity.Id, nameof(entity.Id));
+
+                if (await _context.Users.AnyAsync(u => u.Id == entity.Id))
 				{
 					_context.Users.Remove(entity);
 
@@ -912,20 +878,15 @@ namespace SudokuCollective.Repos
 
 		public async Task<IRepositoryResponse> DeleteRangeAsync(List<TEntity> entities)
 		{
-            ArgumentNullException.ThrowIfNull(entities);
-
             var result = new RepositoryResponse();
 
 			try
-			{
-				foreach (var entity in entities)
-				{
-					if (entity.Id == 0)
-					{
-						result.IsSuccess = false;
+            {
+                ArgumentNullException.ThrowIfNull(entities);
 
-						return result;
-					}
+                foreach (var entity in entities)
+				{
+                    ArgumentOutOfRangeException.ThrowIfNegativeOrZero(entity.Id, nameof(entity.Id));
 
 					if (await _context.Users.AnyAsync(u => u.Id == entity.Id))
 					{
@@ -1073,128 +1034,125 @@ namespace SudokuCollective.Repos
 
         public async Task<bool> ActivateAsync(int id)
 		{
-			if (id == 0)
-			{
-				return false;
-			}
-
 			try
             {
+                ArgumentNullException.ThrowIfNull(id, nameof(id));
+
+                ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id, nameof(id));
+
                 var user = await _context.Users.Include(u => u.Roles).Include(u => u.Apps).FirstOrDefaultAsync(u => u.Id == id);
 
-                if (user != null)
+                if (user == null)
+                {
+                    return false;
+                }
+
+				user.ActivateUser();
+
+				_context.Attach(user);
+
+                var trackedEntities = new List<string>();
+
+                foreach (var entry in _context.ChangeTracker.Entries())
 				{
-					user.ActivateUser();
+					var dbEntry = (IDomainEntity)entry.Entity;
 
-					_context.Attach(user);
+                    // If the entity is already being tracked for the update... break
+                    if (trackedEntities.Contains(dbEntry.ToString()))
+                    {
+                        break;
+                    }
 
-                    var trackedEntities = new List<string>();
-
-                    foreach (var entry in _context.ChangeTracker.Entries())
-					{
-						var dbEntry = (IDomainEntity)entry.Entity;
-
-                        // If the entity is already being tracked for the update... break
-                        if (trackedEntities.Contains(dbEntry.ToString()))
+                    if (dbEntry is User)
+                    {
+                        if (dbEntry.Id == id)
                         {
-                            break;
-                        }
-
-                        if (dbEntry is User)
-                        {
-                            if (dbEntry.Id == id)
-                            {
-                                entry.State = EntityState.Modified;
-                            }
-                            else
-                            {
-                                entry.State = EntityState.Unchanged;
-                            }
-                        }
-                        else if (dbEntry is App app)
-                        {
-                            if (app.Users.Any(u => u.Id == id))
-                            {
-                                entry.State = EntityState.Modified;
-                            }
-                            else
-                            {
-                                entry.State = EntityState.Unchanged;
-                            }
-                        }
-                        else if (dbEntry is UserApp userApp)
-                        {
-                            if (userApp.UserId == id)
-                            {
-                                entry.State = EntityState.Modified;
-                            }
-                            else
-                            {
-                                entry.State = EntityState.Unchanged;
-                            }
-                        }
-                        else if (dbEntry is Role role)
-                        {
-                            if (user.Roles.Any(r => r.RoleId == role.Id))
-                            {
-                                entry.State = EntityState.Modified;
-                            }
-                            else
-                            {
-                                entry.State = EntityState.Unchanged;
-                            }
-                        }
-                        else if (dbEntry is UserRole userRole)
-                        {
-							userRole.Role ??= await _context
-                                .Roles
-                                .FirstOrDefaultAsync(r => r.Id == userRole.RoleId);
-
-                            if (user.Roles.Any(ur => ur.Id == userRole.Id))
-                            {
-                                entry.State = EntityState.Modified;
-                            }
-                            else
-                            {
-                                entry.State = EntityState.Unchanged;
-                            }
-                        }
-                        else if (dbEntry is AppAdmin userAdmin)
-                        {
-                            if (userAdmin.AppId == user.Apps.FirstOrDefault().AppId
-                                    && userAdmin.UserId == id)
-                            {
-                                entry.State = EntityState.Modified;
-                            }
-                            else
-                            {
-                                entry.State = EntityState.Unchanged;
-                            }
+                            entry.State = EntityState.Modified;
                         }
                         else
                         {
-                            if (dbEntry.Id == 0)
-                            {
-                                entry.State = EntityState.Added;
-                            }
-                            else if (entry.State != EntityState.Deleted || entry.State != EntityState.Modified || entry.State != EntityState.Added)
-                            {
-                                entry.State = EntityState.Detached;
-                            }
+                            entry.State = EntityState.Unchanged;
                         }
+                    }
+                    else if (dbEntry is App app)
+                    {
+                        if (app.Users.Any(u => u.Id == id))
+                        {
+                            entry.State = EntityState.Modified;
+                        }
+                        else
+                        {
+                            entry.State = EntityState.Unchanged;
+                        }
+                    }
+                    else if (dbEntry is UserApp userApp)
+                    {
+                        if (userApp.UserId == id)
+                        {
+                            entry.State = EntityState.Modified;
+                        }
+                        else
+                        {
+                            entry.State = EntityState.Unchanged;
+                        }
+                    }
+                    else if (dbEntry is Role role)
+                    {
+                        if (user.Roles.Any(r => r.RoleId == role.Id))
+                        {
+                            entry.State = EntityState.Modified;
+                        }
+                        else
+                        {
+                            entry.State = EntityState.Unchanged;
+                        }
+                    }
+                    else if (dbEntry is UserRole userRole)
+                    {
+						userRole.Role ??= await _context
+                            .Roles
+                            .FirstOrDefaultAsync(r => r.Id == userRole.RoleId);
 
-                        // Note that this entry is tracked for the update
-                        trackedEntities.Add(dbEntry.ToString());
+                        if (user.Roles.Any(ur => ur.Id == userRole.Id))
+                        {
+                            entry.State = EntityState.Modified;
+                        }
+                        else
+                        {
+                            entry.State = EntityState.Unchanged;
+                        }
+                    }
+                    else if (dbEntry is AppAdmin userAdmin)
+                    {
+                        if (userAdmin.AppId == user.Apps.FirstOrDefault().AppId
+                                && userAdmin.UserId == id)
+                        {
+                            entry.State = EntityState.Modified;
+                        }
+                        else
+                        {
+                            entry.State = EntityState.Unchanged;
+                        }
+                    }
+                    else
+                    {
+                        if (dbEntry.Id == 0)
+                        {
+                            entry.State = EntityState.Added;
+                        }
+                        else if (entry.State != EntityState.Deleted || entry.State != EntityState.Modified || entry.State != EntityState.Added)
+                        {
+                            entry.State = EntityState.Detached;
+                        }
                     }
 
-					await _context.SaveChangesAsync();
+                    // Note that this entry is tracked for the update
+                    trackedEntities.Add(dbEntry.ToString());
+                }
 
-					return true;
-				}
-				else
-				{
-					return false;
-				}
+				await _context.SaveChangesAsync();
+
+				return true;
 			}
 			catch (Exception)
 			{
@@ -1204,128 +1162,125 @@ namespace SudokuCollective.Repos
 
 		public async Task<bool> DeactivateAsync(int id)
 		{
-			if (id == 0)
-			{
-				return false;
-			}
-
 			try
             {
+                ArgumentNullException.ThrowIfNull(id, nameof(id));
+
+                ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id, nameof(id));
+
                 var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
 
-                if (user != null)
+                if (user == null)
+                {
+                    return false;
+                }
+
+				user.DeactiveUser();
+
+				_context.Attach(user);
+
+                var trackedEntities = new List<string>();
+
+                foreach (var entry in _context.ChangeTracker.Entries())
 				{
-					user.DeactiveUser();
+					var dbEntry = (IDomainEntity)entry.Entity;
 
-					_context.Attach(user);
+                    // If the entity is already being tracked for the update... break
+                    if (trackedEntities.Contains(dbEntry.ToString()))
+                    {
+                        break;
+                    }
 
-                    var trackedEntities = new List<string>();
-
-                    foreach (var entry in _context.ChangeTracker.Entries())
-					{
-						var dbEntry = (IDomainEntity)entry.Entity;
-
-                        // If the entity is already being tracked for the update... break
-                        if (trackedEntities.Contains(dbEntry.ToString()))
+                    if (dbEntry is User)
+                    {
+                        if (dbEntry.Id == id)
                         {
-                            break;
-                        }
-
-                        if (dbEntry is User)
-                        {
-                            if (dbEntry.Id == id)
-                            {
-                                entry.State = EntityState.Modified;
-                            }
-                            else
-                            {
-                                entry.State = EntityState.Unchanged;
-                            }
-                        }
-                        else if (dbEntry is App app)
-                        {
-                            if (app.Users.Any(u => u.Id == id))
-                            {
-                                entry.State = EntityState.Modified;
-                            }
-                            else
-                            {
-                                entry.State = EntityState.Unchanged;
-                            }
-                        }
-                        else if (dbEntry is UserApp userApp)
-                        {
-                            if (userApp.UserId == id)
-                            {
-                                entry.State = EntityState.Modified;
-                            }
-                            else
-                            {
-                                entry.State = EntityState.Unchanged;
-                            }
-                        }
-                        else if (dbEntry is Role role)
-                        {
-                            if (user.Roles.Any(r => r.RoleId == role.Id))
-                            {
-                                entry.State = EntityState.Modified;
-                            }
-                            else
-                            {
-                                entry.State = EntityState.Unchanged;
-                            }
-                        }
-                        else if (dbEntry is UserRole userRole)
-                        {
-                            userRole.Role ??= await _context
-                                .Roles
-                                .FirstOrDefaultAsync(r => r.Id == userRole.RoleId);
-
-                            if (user.Roles.Any(ur => ur.Id == userRole.Id))
-                            {
-                                entry.State = EntityState.Modified;
-                            }
-                            else
-                            {
-                                entry.State = EntityState.Unchanged;
-                            }
-                        }
-                        else if (dbEntry is AppAdmin userAdmin)
-                        {
-                            if (userAdmin.AppId == user.Apps.FirstOrDefault().AppId
-                                    && userAdmin.UserId == id)
-                            {
-                                entry.State = EntityState.Modified;
-                            }
-                            else
-                            {
-                                entry.State = EntityState.Unchanged;
-                            }
+                            entry.State = EntityState.Modified;
                         }
                         else
                         {
-                            if (dbEntry.Id == 0)
-                            {
-                                entry.State = EntityState.Added;
-                            }
-                            else if (entry.State != EntityState.Deleted || entry.State != EntityState.Modified || entry.State != EntityState.Added)
-                            {
-                                entry.State = EntityState.Detached;
-                            }
+                            entry.State = EntityState.Unchanged;
                         }
+                    }
+                    else if (dbEntry is App app)
+                    {
+                        if (app.Users.Any(u => u.Id == id))
+                        {
+                            entry.State = EntityState.Modified;
+                        }
+                        else
+                        {
+                            entry.State = EntityState.Unchanged;
+                        }
+                    }
+                    else if (dbEntry is UserApp userApp)
+                    {
+                        if (userApp.UserId == id)
+                        {
+                            entry.State = EntityState.Modified;
+                        }
+                        else
+                        {
+                            entry.State = EntityState.Unchanged;
+                        }
+                    }
+                    else if (dbEntry is Role role)
+                    {
+                        if (user.Roles.Any(r => r.RoleId == role.Id))
+                        {
+                            entry.State = EntityState.Modified;
+                        }
+                        else
+                        {
+                            entry.State = EntityState.Unchanged;
+                        }
+                    }
+                    else if (dbEntry is UserRole userRole)
+                    {
+                        userRole.Role ??= await _context
+                            .Roles
+                            .FirstOrDefaultAsync(r => r.Id == userRole.RoleId);
 
-                        // Note that this entry is tracked for the update
-                        trackedEntities.Add(dbEntry.ToString());
+                        if (user.Roles.Any(ur => ur.Id == userRole.Id))
+                        {
+                            entry.State = EntityState.Modified;
+                        }
+                        else
+                        {
+                            entry.State = EntityState.Unchanged;
+                        }
+                    }
+                    else if (dbEntry is AppAdmin userAdmin)
+                    {
+                        if (userAdmin.AppId == user.Apps.FirstOrDefault().AppId
+                                && userAdmin.UserId == id)
+                        {
+                            entry.State = EntityState.Modified;
+                        }
+                        else
+                        {
+                            entry.State = EntityState.Unchanged;
+                        }
+                    }
+                    else
+                    {
+                        if (dbEntry.Id == 0)
+                        {
+                            entry.State = EntityState.Added;
+                        }
+                        else if (entry.State != EntityState.Deleted || entry.State != EntityState.Modified || entry.State != EntityState.Added)
+                        {
+                            entry.State = EntityState.Detached;
+                        }
                     }
 
-					await _context.SaveChangesAsync();
+                    // Note that this entry is tracked for the update
+                    trackedEntities.Add(dbEntry.ToString());
+                }
 
-					return true;
-				}
-				else
-				{
-					return false;
-				}
+				await _context.SaveChangesAsync();
+
+				return true;
 			}
 			catch (Exception)
 			{
@@ -1349,15 +1304,16 @@ namespace SudokuCollective.Repos
 		{
 			var result = new RepositoryResponse();
 
-			if (userId == 0 || roleId == 0)
-			{
-				result.IsSuccess = false;
-
-				return result;
-			}
-
 			try
             {
+                ArgumentNullException.ThrowIfNull(userId, nameof(userId));
+
+                ArgumentOutOfRangeException.ThrowIfNegativeOrZero(userId, nameof(userId));
+
+                ArgumentNullException.ThrowIfNull(roleId, nameof(roleId));
+
+                ArgumentOutOfRangeException.ThrowIfNegativeOrZero(roleId, nameof(roleId));
+
                 if (await _context.Users.AnyAsync(u => u.Id == userId) && await _context.Roles.AnyAsync(r => r.Id == roleId) &&
                         await _context.Users.AnyAsync(u => u.Id == userId && !u.Roles.Any(ur => ur.RoleId == roleId)))
                 {
@@ -1459,19 +1415,17 @@ namespace SudokuCollective.Repos
 
 		public async Task<IRepositoryResponse> AddRolesAsync(int userId, List<int> roleIds)
 		{
-            ArgumentNullException.ThrowIfNull(roleIds);
-
             var result = new RepositoryResponse();
 
-			if (userId == 0)
-			{
-				result.IsSuccess = false;
-				return result;
-			}
-
 			try
-			{
-				var user = await _context
+            {
+                ArgumentNullException.ThrowIfNull(userId, nameof(userId));
+
+                ArgumentOutOfRangeException.ThrowIfNegativeOrZero(userId, nameof(userId));
+
+                ArgumentNullException.ThrowIfNull(roleIds);
+
+                var user = await _context
 					.Users
 					.FirstOrDefaultAsync(u => u.Id == userId);
 
@@ -1481,6 +1435,8 @@ namespace SudokuCollective.Repos
 
 					foreach (var roleId in roleIds)
                     {
+                        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(roleId, nameof(roleId));
+
                         if (await _context.Roles.AnyAsync(r => r.Id == roleId) && !user.Roles.Any(ur => ur.RoleId == roleId))
                         {
                             var role = await _context.Roles.FirstOrDefaultAsync(r => r.Id == roleId);
@@ -1580,16 +1536,17 @@ namespace SudokuCollective.Repos
 		{
 			var result = new RepositoryResponse();
 
-			if (userId == 0 || roleId == 0)
-			{
-				result.IsSuccess = false;
-
-				return result;
-			}
-
 			try
 			{
-				var userRole = await _context
+                ArgumentNullException.ThrowIfNull(userId, nameof(userId));
+
+                ArgumentOutOfRangeException.ThrowIfNegativeOrZero(userId, nameof(userId));
+
+                ArgumentNullException.ThrowIfNull(roleId, nameof(roleId));
+
+                ArgumentOutOfRangeException.ThrowIfNegativeOrZero(roleId, nameof(roleId));
+
+                var userRole = await _context
 					.UsersRoles
 					.FirstOrDefaultAsync(ur => ur.UserId == userId && ur.RoleId == roleId);
 
@@ -1670,23 +1627,22 @@ namespace SudokuCollective.Repos
 
 		public async Task<IRepositoryResponse> RemoveRolesAsync(int userId, List<int> roleIds)
 		{
-            ArgumentNullException.ThrowIfNull(roleIds);
-
             var result = new RepositoryResponse();
-
-			if (userId == 0)
-			{
-				result.IsSuccess = false;
-
-				return result;
-			}
 
 			try
             {
+                ArgumentNullException.ThrowIfNull(userId, nameof(userId));
+
+                ArgumentOutOfRangeException.ThrowIfNegativeOrZero(userId, nameof(userId));
+
+                ArgumentNullException.ThrowIfNull(roleIds);
+
                 if (await _context.Users.AnyAsync(u => u.Id == userId))
                 {
 					foreach (var roleId in roleIds)
 					{
+                        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(roleId, nameof(roleId));
+
 						if (await _context
 							.UsersRoles
 							.AnyAsync(ur => ur.UserId == userId && ur.RoleId == roleId) == false)
@@ -1772,13 +1728,12 @@ namespace SudokuCollective.Repos
 
 		public async Task<bool> PromoteToAdminAsync(int id)
 		{
-			if (id == 0)
-			{
-				return false;
-			}
-
 			try
 			{
+                ArgumentNullException.ThrowIfNull(id, nameof(id));
+
+                ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id, nameof(id));
+
 				var user = await _context
 					.Users
 					.FirstOrDefaultAsync(u => u.Id == id);
@@ -1862,13 +1817,15 @@ namespace SudokuCollective.Repos
 
 		public async Task<IRepositoryResponse> ConfirmEmailAsync(IEmailConfirmation emailConfirmation)
 		{
-            ArgumentNullException.ThrowIfNull(emailConfirmation);
-
             var result = new RepositoryResponse();
 
 			try
-			{
-				if (await _context
+            {
+                ArgumentNullException.ThrowIfNull(emailConfirmation);
+
+                ArgumentOutOfRangeException.ThrowIfNegativeOrZero(emailConfirmation.Id, nameof(emailConfirmation.Id));
+
+                if (await _context
 					.EmailConfirmations
 					.AnyAsync(ec => ec.Id == emailConfirmation.Id))
 				{
@@ -2014,13 +1971,15 @@ namespace SudokuCollective.Repos
 
 		public async Task<IRepositoryResponse> UpdateEmailAsync(IEmailConfirmation emailConfirmation)
 		{
-            ArgumentNullException.ThrowIfNull(emailConfirmation);
-
             var result = new RepositoryResponse();
 
 			try
-			{
-				if (await _context
+            {
+                ArgumentNullException.ThrowIfNull(emailConfirmation);
+
+                ArgumentOutOfRangeException.ThrowIfNegativeOrZero(emailConfirmation.Id, nameof(emailConfirmation.Id));
+
+                if (await _context
 						.EmailConfirmations
 						.AnyAsync(ec => ec.Id == emailConfirmation.Id))
 				{
@@ -2176,7 +2135,7 @@ namespace SudokuCollective.Repos
 
 		public async Task<bool> IsEmailUniqueAsync(string email)
 		{
-			if (string.IsNullOrEmpty(email)) throw new ArgumentNullException(nameof(email));
+            ArgumentException.ThrowIfNullOrEmpty(email, nameof(email));
 
 			List<string> emails = await _context.Users.Select(u => u.Email).ToListAsync();
 
@@ -2202,12 +2161,11 @@ namespace SudokuCollective.Repos
 
 		public async Task<bool> IsUpdatedEmailUniqueAsync(int userId, string email)
 		{
-			if (string.IsNullOrEmpty(email)) throw new ArgumentNullException(nameof(email));
+            ArgumentNullException.ThrowIfNull(userId, nameof(userId));
 
-			if (userId == 0)
-			{
-				return false;
-			}
+            ArgumentOutOfRangeException.ThrowIfNegative(userId, nameof(userId));
+
+            ArgumentException.ThrowIfNullOrEmpty(email, nameof(email));
 
 			List<string> emails = await _context
 					.Users
@@ -2237,7 +2195,7 @@ namespace SudokuCollective.Repos
 
 		public async Task<bool> IsUserNameUniqueAsync(string username)
 		{
-			if (string.IsNullOrEmpty(username)) throw new ArgumentNullException(nameof(username));
+            ArgumentException.ThrowIfNullOrEmpty(username, nameof(username));
 
 			List<string> names = await _context.Users.Select(u => u.UserName).ToListAsync();
 
@@ -2262,15 +2220,14 @@ namespace SudokuCollective.Repos
 		}
 
 		public async Task<bool> IsUpdatedUserNameUniqueAsync(int userId, string username)
-		{
-			if (string.IsNullOrEmpty(username)) throw new ArgumentNullException(nameof(username));
+        {
+            ArgumentNullException.ThrowIfNull(userId, nameof(userId));
 
-			if (userId == 0)
-			{
-				return false;
-			}
+            ArgumentOutOfRangeException.ThrowIfNegative(userId, nameof(userId));
 
-			List<string> names = await _context
+            ArgumentException.ThrowIfNullOrEmpty(username, nameof(username));
+
+            List<string> names = await _context
 				.Users
 				.Where(u => u.Id != userId)
 				.Select(u => u.UserName)

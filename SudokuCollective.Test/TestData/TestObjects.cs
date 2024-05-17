@@ -542,7 +542,7 @@ namespace SudokuCollective.Test.TestData
         public static CreateGamePayload GetCreateGamePayload() =>
             new()
             {
-                DifficultyId = 4
+                DifficultyLevel = DifficultyLevel.MEDIUM
             };
 
         public static GamePayload GetGamePayload(int updatedValue) =>
