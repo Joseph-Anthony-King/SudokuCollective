@@ -4,7 +4,7 @@ Sudoku Collective is an open source Web API that is used to learn frontend clien
 
 ## Requirements
 
-- [.Net 7.0](https://dotnet.microsoft.com/download/dotnet/7.0)
+- [.Net 8.0](https://dotnet.microsoft.com/download/dotnet/8.0)
 - [PostgreSQL 14](https://www.postgresql.org/download/)
 - [Redis Server - version 6.2.7](https://redis.io/download)
 

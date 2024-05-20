@@ -78,7 +78,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             // Assert
             Assert.That(actionResult, Is.InstanceOf<ActionResult<Result>>());
             Assert.That(result, Is.InstanceOf<Result>());
-            Assert.That(message, Is.EqualTo("Status Code 200: Role found"));
+            Assert.That(message, Is.EqualTo("Status Code 200: Role was found."));
             Assert.That(statusCode, Is.EqualTo(200));
             Assert.That(role, Is.InstanceOf<Role>());
         }
@@ -99,7 +99,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             // Assert
             Assert.That(actionResult, Is.InstanceOf<ActionResult<Result>>());
             Assert.That(result, Is.InstanceOf<Result>());
-            Assert.That(message, Is.EqualTo("Status Code 404: Role not found"));
+            Assert.That(message, Is.EqualTo("Status Code 404: Role was not found."));
             Assert.That(statusCode, Is.EqualTo(404));
         }
 
@@ -118,7 +118,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             // Assert
             Assert.That(actionResult, Is.InstanceOf<ActionResult<Result>>());
             Assert.That(result, Is.InstanceOf<Result>());
-            Assert.That(message, Is.EqualTo("Status Code 200: Roles found"));
+            Assert.That(message, Is.EqualTo("Status Code 200: Roles were found."));
             Assert.That(statusCode, Is.EqualTo(200));
         }
 
@@ -137,7 +137,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             // Assert
             Assert.That(actionResult, Is.InstanceOf<ActionResult<Result>>());
             Assert.That(result, Is.InstanceOf<Result>());
-            Assert.That(message, Is.EqualTo("Status Code 404: Roles not found"));
+            Assert.That(message, Is.EqualTo("Status Code 404: Roles were not found."));
             Assert.That(statusCode, Is.EqualTo(404));
         }
 
@@ -157,7 +157,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             // Assert
             Assert.That(actionResult, Is.InstanceOf<ActionResult<Result>>());
             Assert.That(result, Is.InstanceOf<Result>());
-            Assert.That(message, Is.EqualTo("Status Code 200: Role updated"));
+            Assert.That(message, Is.EqualTo("Status Code 200: Role was updated."));
             Assert.That(statusCode, Is.EqualTo(200));
         }
 
@@ -177,7 +177,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             // Assert
             Assert.That(actionResult, Is.InstanceOf<ActionResult<Result>>());
             Assert.That(result, Is.InstanceOf<Result>());
-            Assert.That(message, Is.EqualTo("Status Code 404: Role not updated"));
+            Assert.That(message, Is.EqualTo("Status Code 404: Role was not updated."));
             Assert.That(statusCode, Is.EqualTo(404));
         }
 
@@ -197,7 +197,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             // Assert
             Assert.That(actionResult, Is.InstanceOf<ActionResult<Result>>());
             Assert.That(result, Is.InstanceOf<Result>());
-            Assert.That(message, Is.EqualTo("Status Code 201: Role created"));
+            Assert.That(message, Is.EqualTo("Status Code 201: Role was created."));
             Assert.That(statusCode, Is.EqualTo(201));
         }
 
@@ -217,7 +217,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             // Assert
             Assert.That(actionResult, Is.InstanceOf<ActionResult<Result>>());
             Assert.That(result, Is.InstanceOf<Result>());
-            Assert.That(message, Is.EqualTo("Status Code 400: Role not created"));
+            Assert.That(message, Is.EqualTo("Status Code 400: Role was not created."));
             Assert.That(statusCode, Is.EqualTo(400));
         }
 
@@ -237,7 +237,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             // Assert
             Assert.That(actionResult, Is.InstanceOf<ActionResult<Result>>());
             Assert.That(result, Is.InstanceOf<Result>());
-            Assert.That(message, Is.EqualTo("Status Code 200: Role deleted"));
+            Assert.That(message, Is.EqualTo("Status Code 200: Role was deleted."));
             Assert.That(statusCode, Is.EqualTo(200));
         }
 
@@ -257,7 +257,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             // Assert
             Assert.That(actionResult, Is.InstanceOf<ActionResult<Result>>());
             Assert.That(result, Is.InstanceOf<Result>());
-            Assert.That(message, Is.EqualTo("Status Code 404: Role not deleted"));
+            Assert.That(message, Is.EqualTo("Status Code 404: Role was not deleted."));
             Assert.That(statusCode, Is.EqualTo(404));
         }
     }

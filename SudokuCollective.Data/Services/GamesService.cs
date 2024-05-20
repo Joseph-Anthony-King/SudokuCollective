@@ -45,7 +45,11 @@ namespace SudokuCollective.Data.Services
         #endregion
 
         #region Methods
-        public async Task<IResult> CreateAsync(IRequest request)
+        /* This method is used by Hangfire which is unable to translate JsonElements as required by System.Text.Json.Serialization.  
+         * Therefore, when this method is fed into Hangfire the difficultyLevel is pulled out of the request parameter and entered 
+         * as it's own parameter so that it can be serialized and used by Hangfire.  In all other circumstances the difficultyLevel 
+         * parameter is null. */
+        public async Task<IResult> CreateAsync(IRequest request, DifficultyLevel? difficultyLevel = null)
         {
             var result = new Result();
 
@@ -53,15 +57,20 @@ namespace SudokuCollective.Data.Services
             {
                 ArgumentNullException.ThrowIfNull(request, nameof(request));
 
-                CreateGamePayload payload;
+                if (difficultyLevel == null)
+                {
+                    CreateGamePayload payload;
 
-                if (request.Payload.ConvertToPayloadSuccessful(typeof(CreateGamePayload), out IPayload conversionResult))
-                {
-                    payload = (CreateGamePayload)conversionResult;
-                }
-                else
-                {
-                    throw new ArgumentException(ServicesMesages.InvalidRequestMessage);
+                    if (request.Payload.ConvertToPayloadSuccessful(typeof(CreateGamePayload), out IPayload conversionResult))
+                    {
+                        payload = (CreateGamePayload)conversionResult;
+                    }
+                    else
+                    {
+                        throw new ArgumentException(ServicesMesages.InvalidRequestMessage);
+                    }
+
+                    difficultyLevel = payload.DifficultyLevel;
                 }
 
                 var userResponse = await _usersRepository.GetAsync(request.RequestorId);
@@ -76,7 +85,7 @@ namespace SudokuCollective.Data.Services
                 }
                 #endregion
 
-                var difficultyResponse = await _difficultiesRepository.GetByDifficultyLevelAsync(payload.DifficultyLevel);
+                var difficultyResponse = await _difficultiesRepository.GetByDifficultyLevelAsync((DifficultyLevel)difficultyLevel);
 
                 #region difficultyResponse fails
                 if (!difficultyResponse.IsSuccess)
@@ -902,7 +911,7 @@ namespace SudokuCollective.Data.Services
                     LogsUtilities.GetServiceErrorEventId(), 
                     string.Format(LoggerMessages.ErrorThrownMessage, e.Message),
                     e,
-                    (SudokuCollective.Logs.Models.Request)_requestService.Get());
+                    (Request)_requestService.Get());
 
                 throw;
             }
@@ -923,18 +932,21 @@ namespace SudokuCollective.Data.Services
 
                 if (request == null)
                 {
-                    jobId = _jobClient.Schedule(() => CreateAnnonymousAsync(difficultyLevel),
-                        TimeSpan.FromMicroseconds(500));
+                    jobId = _jobClient.Schedule(
+                        () => CreateAnnonymousAsync(difficultyLevel),
+                        TimeSpan.FromMicroseconds(100));
                 }
                 else
                 {
-                    jobId = _jobClient.Schedule(() => CreateAsync(request),
-                        TimeSpan.FromMicroseconds(500));
+                    jobId = _jobClient.Schedule(
+                        () => CreateAsync(request, difficultyLevel),
+                        TimeSpan.FromMicroseconds(100));
                 }
 
+                // In unit tests jobId is null
                 result.IsSuccess = true;
                 result.Message = string.Format(
-                    "Create game job {0} scheduled.", 
+                    GamesMessages.CreateGameJobScheduled, 
                     !string.IsNullOrEmpty(jobId) ? 
                         jobId : 
                         "5d74fa7b-db93-4213-8e0c-da2f3179ed05");

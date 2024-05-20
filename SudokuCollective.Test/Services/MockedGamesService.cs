@@ -29,7 +29,7 @@ namespace SudokuCollective.Test.Services
 
             #region SuccessfulRequest
             SuccessfulRequest.Setup(Service =>
-                Service.CreateAsync(It.IsAny<IRequest>()))
+                Service.CreateAsync(It.IsAny<IRequest>(), It.IsAny<DifficultyLevel?>()))
                 .Returns(Task.FromResult(new Result()
                     {
                         IsSuccess = MockedGamesRepository
@@ -255,7 +255,7 @@ namespace SudokuCollective.Test.Services
 
             #region FailedRequest
             FailedRequest.Setup(Service =>
-                Service.CreateAsync(It.IsAny<IRequest>()))
+                Service.CreateAsync(It.IsAny<IRequest>(), It.IsAny<DifficultyLevel?>()))
                 .Returns(Task.FromResult(new Result()
                     {
                         IsSuccess = MockedGamesRepository
