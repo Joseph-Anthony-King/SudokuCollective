@@ -1121,7 +1121,7 @@ namespace SudokuCollective.Data.Services
                     result.IsSuccess = response.IsSuccess;
                     result.Message = response.Exception != null ? 
                         response.Exception.Message : 
-                        UsersMessages.NoOutstandingRequestToResetPassworMessage;
+                        UsersMessages.NoOutstandingRequestToResetPasswordMessage;
 
                     return result;
                 }
@@ -2368,7 +2368,7 @@ namespace SudokuCollective.Data.Services
                         result.IsSuccess = response.IsSuccess;
                         result.Message = string.IsNullOrEmpty(result.Message) ?
                             UsersMessages.PasswordResetRequestCancelledMessage :
-                            string.Format("{0} and {1}", result.Message, UsersMessages.PasswordResetRequestCancelledMessage);
+                            string.Format("{0} and {1}", result.Message.TrimEnd('.'), UsersMessages.PasswordResetRequestCancelledMessage.ToLower());
                     }
                     else if (response.IsSuccess == false && response.Exception != null)
                     {
@@ -2489,7 +2489,7 @@ namespace SudokuCollective.Data.Services
                 if (!user.ReceivedRequestToUpdatePassword)
                 {
                     result.IsSuccess = false;
-                    result.Message = UsersMessages.NoOutstandingRequestToResetPassworMessage;
+                    result.Message = UsersMessages.NoOutstandingRequestToResetPasswordMessage;
 
                     return result;
                 }
@@ -2578,7 +2578,7 @@ namespace SudokuCollective.Data.Services
                 if (!user.ReceivedRequestToUpdatePassword)
                 {
                     result.IsSuccess = false;
-                    result.Message = UsersMessages.NoOutstandingRequestToResetPassworMessage;
+                    result.Message = UsersMessages.NoOutstandingRequestToResetPasswordMessage;
 
                     return result;
                 }
@@ -2586,7 +2586,7 @@ namespace SudokuCollective.Data.Services
                 if (!await _passwordResetsRepository.HasOutstandingPasswordResetAsync(userId, appId))
                 {
                     result.IsSuccess = false;
-                    result.Message = UsersMessages.NoOutstandingRequestToResetPassworMessage;
+                    result.Message = UsersMessages.NoOutstandingRequestToResetPasswordMessage;
 
                     return result;
                 }
@@ -2910,7 +2910,7 @@ namespace SudokuCollective.Data.Services
                 if (!user.ReceivedRequestToUpdatePassword)
                 {
                     result.IsSuccess = false;
-                    result.Message = UsersMessages.NoOutstandingRequestToResetPassworMessage;
+                    result.Message = UsersMessages.NoOutstandingRequestToResetPasswordMessage;
 
                     return result;
                 }

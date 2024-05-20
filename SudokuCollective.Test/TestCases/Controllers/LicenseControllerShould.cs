@@ -70,7 +70,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             // Assert
             Assert.That(actionResult, Is.InstanceOf<ActionResult<Result>>());
             Assert.That(result, Is.InstanceOf<LicenseResult>());
-            Assert.That(message, Is.EqualTo("Status Code 200: App found"));
+            Assert.That(message, Is.EqualTo("Status Code 200: App was found."));
             Assert.That(statusCode, Is.EqualTo(200));
             Assert.That(license, Is.InstanceOf<string>());
         }
@@ -91,7 +91,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             // Assert
             Assert.That(actionResult, Is.InstanceOf<ActionResult<Result>>());
             Assert.That(result, Is.InstanceOf<LicenseResult>());
-            Assert.That(message, Is.EqualTo("Status Code 404: App not found"));
+            Assert.That(message, Is.EqualTo("Status Code 404: App was not found."));
             Assert.That(statusCode, Is.EqualTo(404));
         }
 
@@ -112,7 +112,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             // Assert
             Assert.That(actionResult, Is.InstanceOf<ActionResult<Result>>());
             Assert.That(result, Is.InstanceOf<Result>());
-            Assert.That(message, Is.EqualTo("Status Code 201: App created"));
+            Assert.That(message, Is.EqualTo("Status Code 201: App was created."));
             Assert.That(statusCode, Is.EqualTo(201));
             Assert.That(app, Is.InstanceOf<App>());
         }
@@ -133,7 +133,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             // Assert
             Assert.That(actionResult, Is.InstanceOf<ActionResult<Result>>());
             Assert.That(result, Is.InstanceOf<Result>());
-            Assert.That(message, Is.EqualTo("Status Code 400: App not created"));
+            Assert.That(message, Is.EqualTo("Status Code 400: App was not created."));
             Assert.That(statusCode, Is.EqualTo(400));
 
         }

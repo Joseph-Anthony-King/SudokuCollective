@@ -74,7 +74,7 @@ namespace SudokuCollective.Test.TestCases.Services
 
             // Assert
             Assert.That(result.IsSuccess, Is.True);
-            Assert.That(result.Message, Is.EqualTo("Role found"));
+            Assert.That(result.Message, Is.EqualTo("Role was found."));
             Assert.That((Role)result.Payload[0], Is.TypeOf<Role>());
         }
 
@@ -88,7 +88,7 @@ namespace SudokuCollective.Test.TestCases.Services
 
             // Assert
             Assert.That(result.IsSuccess, Is.False);
-            Assert.That(result.Message, Is.EqualTo("Role not found"));
+            Assert.That(result.Message, Is.EqualTo("Role was not found."));
         }
 
         [Test, Category("Services")]
@@ -101,7 +101,7 @@ namespace SudokuCollective.Test.TestCases.Services
 
             // Assert
             Assert.That(result.IsSuccess, Is.True);
-            Assert.That(result.Message, Is.EqualTo("Roles found"));
+            Assert.That(result.Message, Is.EqualTo("Roles were found."));
             Assert.That(result.Payload.ConvertAll(r => (IRole)r), Is.TypeOf<List<IRole>>());
         }
 
@@ -115,7 +115,7 @@ namespace SudokuCollective.Test.TestCases.Services
 
             // Assert
             Assert.That(result.IsSuccess, Is.False);
-            Assert.That(result.Message, Is.EqualTo("Roles not found"));
+            Assert.That(result.Message, Is.EqualTo("Roles were not found."));
         }
 
         [Test, Category("Services")]
@@ -133,7 +133,7 @@ namespace SudokuCollective.Test.TestCases.Services
 
             // Assert
             Assert.That(result.IsSuccess, Is.True);
-            Assert.That(result.Message, Is.EqualTo("Roles found"));
+            Assert.That(result.Message, Is.EqualTo("Roles were found."));
             Assert.That(nullAndSuperUserRoleLevelsBlocked, Is.False);
         }
 
@@ -152,7 +152,7 @@ namespace SudokuCollective.Test.TestCases.Services
 
             // Assert
             Assert.That(result.IsSuccess, Is.True);
-            Assert.That(result.Message, Is.EqualTo("Role updated"));
+            Assert.That(result.Message, Is.EqualTo("Role was updated."));
         }
 
         [Test, Category("Services")]
@@ -168,7 +168,7 @@ namespace SudokuCollective.Test.TestCases.Services
 
         // Assert
         Assert.That(result.IsSuccess, Is.False);
-            Assert.That(result.Message, Is.EqualTo("Role not found"));
+            Assert.That(result.Message, Is.EqualTo("Role was not found."));
         }
 
         [Test, Category("Services")]
@@ -181,7 +181,7 @@ namespace SudokuCollective.Test.TestCases.Services
 
             // Assert
             Assert.That(result.IsSuccess, Is.True);
-            Assert.That(result.Message, Is.EqualTo("Role deleted"));
+            Assert.That(result.Message, Is.EqualTo("Role was deleted."));
         }
 
         [Test, Category("Services")]
@@ -194,7 +194,7 @@ namespace SudokuCollective.Test.TestCases.Services
 
             // Assert
             Assert.That(result.IsSuccess, Is.False);
-            Assert.That(result.Message, Is.EqualTo("Role not found"));
+            Assert.That(result.Message, Is.EqualTo("Role was not found."));
         }
     }
 }

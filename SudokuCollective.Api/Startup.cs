@@ -20,6 +20,7 @@ using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Hangfire;
+using Newtonsoft.Json;
 using StackExchange.Redis;
 using Swashbuckle.AspNetCore.SwaggerUI;
 using SudokuCollective.Api.Filters;
@@ -230,8 +231,13 @@ namespace SudokuCollective.Api
             services.AddHangfire(configuration => configuration
                 .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
                 .UseSimpleAssemblyNameTypeSerializer()
-                .UseRecommendedSerializerSettings()
-                .UseInMemoryStorage());
+                .UseInMemoryStorage()
+                .UseSerializerSettings(new JsonSerializerSettings
+                {
+                    TypeNameHandling = TypeNameHandling.All,
+                    MetadataPropertyHandling = MetadataPropertyHandling.ReadAhead,
+                    ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+                }));
 
             // Add the processing server as IHostedService
             services.AddHangfireServer();
