@@ -89,7 +89,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             Assert.That(actionResult, Is.InstanceOf<ActionResult<Result>>());
             Assert.That(result, Is.InstanceOf<Result>());
             Assert.That(difficulty, Is.InstanceOf<Difficulty>());
-            Assert.That(message, Is.EqualTo("Status Code 200: Difficulty found"));
+            Assert.That(message, Is.EqualTo("Status Code 200: Difficulty was found."));
             Assert.That(statusCode, Is.EqualTo(200));
         }
 
@@ -109,7 +109,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             // Assert
             Assert.That(actionResult, Is.InstanceOf<ActionResult<Result>>());
             Assert.That(result, Is.InstanceOf<Result>());
-            Assert.That(message, Is.EqualTo("Status Code 404: Difficulty not found"));
+            Assert.That(message, Is.EqualTo("Status Code 404: Difficulty was not found."));
             Assert.That(statusCode, Is.EqualTo(404));
         }
 
@@ -129,7 +129,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             // Assert
             Assert.That(actionResult, Is.InstanceOf<ActionResult<Result>>());
             Assert.That(result, Is.InstanceOf<Result>());
-            Assert.That(message, Is.EqualTo("Status Code 200: Difficulties found"));
+            Assert.That(message, Is.EqualTo("Status Code 200: Difficulties were found."));
             Assert.That(statusCode, Is.EqualTo(200));
             Assert.That(difficulties.Count, Is.EqualTo(4));
         }
@@ -149,7 +149,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             // Assert
             Assert.That(actionResult, Is.InstanceOf<ActionResult<Result>>());
             Assert.That(result, Is.InstanceOf<Result>());
-            Assert.That(message, Is.EqualTo("Status Code 404: Difficulties not found"));
+            Assert.That(message, Is.EqualTo("Status Code 404: Difficulties were not found."));
             Assert.That(statusCode, Is.EqualTo(404));
         }
 
@@ -169,7 +169,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             // Assert
             Assert.That(actionResult, Is.InstanceOf<ActionResult<Result>>());
             Assert.That(result, Is.InstanceOf<Result>());
-            Assert.That(message, Is.EqualTo("Status Code 200: Difficulty updated"));
+            Assert.That(message, Is.EqualTo("Status Code 200: Difficulty was updated."));
             Assert.That(statusCode, Is.EqualTo(200));
         }
 
@@ -189,7 +189,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             // Assert
             Assert.That(actionResult, Is.InstanceOf<ActionResult<Result>>());
             Assert.That(result, Is.InstanceOf<Result>());
-            Assert.That(message, Is.EqualTo("Status Code 404: Difficulty not updated"));
+            Assert.That(message, Is.EqualTo("Status Code 404: Difficulty was not updated."));
             Assert.That(statusCode, Is.EqualTo(404));
         }
 
@@ -210,7 +210,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             // Assert
             Assert.That(actionResult, Is.InstanceOf<ActionResult<Result>>());
             Assert.That(result, Is.InstanceOf<Result>());
-            Assert.That(message, Is.EqualTo("Status Code 201: Difficulty created"));
+            Assert.That(message, Is.EqualTo("Status Code 201: Difficulty was created."));
             Assert.That(statusCode, Is.EqualTo(201));
             Assert.That(difficulty, Is.InstanceOf<Difficulty>());
         }
@@ -231,7 +231,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             // Assert
             Assert.That(actionResult, Is.InstanceOf<ActionResult<Result>>());
             Assert.That(result, Is.InstanceOf<Result>());
-            Assert.That(message, Is.EqualTo("Status Code 400: Difficulty not created"));
+            Assert.That(message, Is.EqualTo("Status Code 400: Difficulty was not created."));
             Assert.That(statusCode, Is.EqualTo(400));
         }
 
@@ -251,7 +251,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             // Assert
             Assert.That(actionResult, Is.InstanceOf<ActionResult<Result>>());
             Assert.That(result, Is.InstanceOf<Result>());
-            Assert.That(message, Is.EqualTo("Status Code 200: Difficulty deleted"));
+            Assert.That(message, Is.EqualTo("Status Code 200: Difficulty was deleted."));
             Assert.That(statusCode, Is.EqualTo(200));
         }
 
@@ -271,7 +271,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             // Assert
             Assert.That(actionResult, Is.InstanceOf<ActionResult<Result>>());
             Assert.That(result, Is.InstanceOf<Result>());
-            Assert.That(message, Is.EqualTo("Status Code 404: Difficulty not deleted"));
+            Assert.That(message, Is.EqualTo("Status Code 404: Difficulty was not deleted."));
             Assert.That(statusCode, Is.EqualTo(404));
         }
     }

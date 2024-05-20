@@ -94,12 +94,12 @@ namespace SudokuCollective.Api.Controllers.V1
 
                     if (confirmAuthenticationIssueResponse == UserAuthenticationErrorType.USERNAMEINVALID)
                     {
-                        result.Message = ControllerMessages.StatusCode404("No user is using this user name");
+                        result.Message = ControllerMessages.StatusCode404("No user is using this user name.");
                         return NotFound(result);
                     }
                     else if (confirmAuthenticationIssueResponse == UserAuthenticationErrorType.PASSWORDINVALID)
                     {
-                        result.Message = ControllerMessages.StatusCode404("Password is incorrect");
+                        result.Message = ControllerMessages.StatusCode404("Password is incorrect.");
                         return NotFound(result);
                     }
                     else

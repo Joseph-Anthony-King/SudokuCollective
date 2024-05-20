@@ -94,7 +94,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             // Assert
             Assert.That(actionResult, Is.TypeOf<ActionResult<Result>>());
             Assert.That(result, Is.TypeOf<Result>());
-            Assert.That(message, Is.EqualTo("Status Code 200: User found"));
+            Assert.That(message, Is.EqualTo("Status Code 200: User was found."));
             Assert.That(statusCode, Is.EqualTo(200));
         }
 
@@ -112,7 +112,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             // Assert
             Assert.That(actionResult, Is.TypeOf<ActionResult<Result>>());
             Assert.That(result, Is.TypeOf<Result>());
-            Assert.That(message, Is.EqualTo("Status Code 404: No user is using this user name"));
+            Assert.That(message, Is.EqualTo("Status Code 404: No user is using this user name."));
             Assert.That(statusCode, Is.EqualTo(404));
         }
 
@@ -130,7 +130,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             // Assert
             Assert.That(actionResult, Is.TypeOf<ActionResult<Result>>());
             Assert.That(result, Is.TypeOf<Result>());
-            Assert.That(message, Is.EqualTo("Status Code 404: Password is incorrect"));
+            Assert.That(message, Is.EqualTo("Status Code 404: Password is incorrect."));
             Assert.That(statusCode, Is.EqualTo(404));
         }
 
@@ -148,7 +148,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             // Assert
             Assert.That(actionResult, Is.TypeOf<ActionResult<Result>>());
             Assert.That(result, Is.TypeOf<Result>());
-            Assert.That(message, Is.EqualTo("Status Code 404: User not found"));
+            Assert.That(message, Is.EqualTo("Status Code 404: User was not found."));
             Assert.That(statusCode, Is.EqualTo(404));
         }
 
@@ -171,7 +171,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             // Assert
             Assert.That(actionResult, Is.TypeOf<ActionResult<Result>>());
             Assert.That(result, Is.TypeOf<Result>());
-            Assert.That(message, Is.EqualTo("Status Code 200: User name confirmed"));
+            Assert.That(message, Is.EqualTo("Status Code 200: User name was confirmed."));
             Assert.That(username, Is.EqualTo(userName));
         }
 
@@ -193,7 +193,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             // Assert
             Assert.That(actionResult, Is.TypeOf<ActionResult<Result>>());
             Assert.That(result, Is.TypeOf<Result>());
-            Assert.That(message, Is.EqualTo("Status Code 404: No user is using this email"));
+            Assert.That(message, Is.EqualTo("Status Code 404: No user is using this email."));
         }
     }
 }

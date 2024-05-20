@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net;
 using System.Web.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -7,6 +8,7 @@ using Hangfire;
 using Hangfire.Storage;
 using Newtonsoft.Json;
 using SudokuCollective.Api.Utilities;
+using SudokuCollective.Core.Interfaces.Models;
 using SudokuCollective.Core.Interfaces.Services;
 using SudokuCollective.Data.Messages;
 using SudokuCollective.Data.Models.Params;
@@ -25,13 +27,11 @@ namespace SudokuCollective.Api.Controllers.V1
     [Route("api/[controller]")]
     [ApiController]
     public class JobsController(
-        IBackgroundJobClient jobClient,
         IRequestService requestService,
         ILogger<JobsController> logger,
         IMonitoringApi monitoringApi = null,
         IStorageConnection storageConnection = null) : ControllerBase
     {
-        private readonly IBackgroundJobClient _jobClient = jobClient;
         private readonly IRequestService _requestService = requestService;
         private readonly ILogger<JobsController> _logger = logger;
         private IMonitoringApi _monitoringApi = monitoringApi;
@@ -59,7 +59,9 @@ namespace SudokuCollective.Api.Controllers.V1
 
                 _monitoringApi ??= JobStorage.Current.GetMonitoringApi();
 
-                JobDetailsDto job = _monitoringApi.JobDetails(jobId) ?? throw new ArgumentException(string.Format("Job id {0} is invalid.", jobId));
+                JobDetailsDto job = 
+                    _monitoringApi.JobDetails(jobId) ?? 
+                    throw new ArgumentException(string.Format(JobsMessages.JobIdIsInvalid, jobId));
 
                 if (job.History[0].StateName.Equals("Succeeded"))
                 {
@@ -68,16 +70,24 @@ namespace SudokuCollective.Api.Controllers.V1
                     result = JsonConvert.DeserializeObject<Result>(jobResult, new JsonSerializerSettings
                     {
                         TypeNameHandling = TypeNameHandling.All,
-                        MetadataPropertyHandling = MetadataPropertyHandling.ReadAhead
+                        MetadataPropertyHandling = MetadataPropertyHandling.ReadAhead,
+                        ReferenceLoopHandling = ReferenceLoopHandling.Ignore
                     });
-
-                    _jobClient.Delete(jobId);
 
                     if (result.IsSuccess)
                     {
-                        result.Message = ControllerMessages.StatusCode200(result.Message);
+                        if (result.Message.Contains("was created") && result.Payload[0] is IDomainEntity)
+                        {
+                            result.Message = ControllerMessages.StatusCode201(result.Message);
 
-                        return Ok(result);
+                            return StatusCode((int)HttpStatusCode.Created, result);
+                        }
+                        else
+                        {
+                            result.Message = ControllerMessages.StatusCode200(result.Message);
+
+                            return Ok(result);
+                        }
                     }
                     else
                     {
@@ -93,7 +103,7 @@ namespace SudokuCollective.Api.Controllers.V1
                         IsSuccess = false,
                         Message = ControllerMessages.StatusCode400(
                             string.Format(
-                                "Job retrieval for job {0} failed due to job state {1}.",
+                                JobsMessages.JobRetrievalFailedDueToJobState,
                                 jobId,
                                 job.History[0].StateName.ToLower()))
                     };
@@ -134,13 +144,13 @@ namespace SudokuCollective.Api.Controllers.V1
 
                 _connection ??= JobStorage.Current.GetConnection();
 
-                var jobData = _connection.GetJobData(jobId) ?? throw new ArgumentException(string.Format("Job id {0} is invalid.", jobId));
+                var jobData = _connection.GetJobData(jobId) ?? throw new ArgumentException(string.Format(JobsMessages.JobIdIsInvalid, jobId));
 
                 if (jobData.State.Equals("Succeeded"))
                 {
                     result.IsSuccess = true;
                     result.Message = ControllerMessages.StatusCode200(
-                        string.Format("Job {0} is completed with status {1}.",
+                        string.Format(JobsMessages.JobIsCompletedWithStatus,
                         jobId,
                         jobData.State.ToLower()));
 
@@ -150,7 +160,7 @@ namespace SudokuCollective.Api.Controllers.V1
                 {
                     result.IsSuccess = false;
                     result.Message = ControllerMessages.StatusCode404(string.Format(
-                        "Job {0} is not completed with status {1}.",
+                        JobsMessages.JobIsNotCompletedWithStatus,
                         jobId,
                         jobData.State.ToLower()));
 
