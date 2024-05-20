@@ -169,7 +169,7 @@ namespace SudokuCollective.Test.TestCases.Services
 
             // Assert
             Assert.That(success, Is.False);
-            Assert.That(message, Is.EqualTo("No user is using this email"));
+            Assert.That(message, Is.EqualTo("No user is using this email."));
         }
     }
 }

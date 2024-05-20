@@ -108,7 +108,7 @@ namespace SudokuCollective.Test.TestCases.Services
 
             // Assert
             Assert.That(result.IsSuccess, Is.True);
-            Assert.That(result.Message, Is.EqualTo("User found"));
+            Assert.That(result.Message, Is.EqualTo("User was found."));
             Assert.That(result.Payload[0], Is.Not.Null);
             Assert.That(userName, Is.EqualTo(((AuthenticationResult)result.Payload[0]).User.UserName));
         }
@@ -128,7 +128,7 @@ namespace SudokuCollective.Test.TestCases.Services
 
             // Assert
             Assert.That(result.IsSuccess, Is.False);
-            Assert.That(result.Message, Is.EqualTo("User not found"));
+            Assert.That(result.Message, Is.EqualTo("User was not found."));
         }
     }
 }

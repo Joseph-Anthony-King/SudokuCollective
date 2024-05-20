@@ -7,7 +7,7 @@ namespace SudokuCollective.Core.Interfaces.Services
 {
     public interface IGamesService : IService
     {
-        Task<IResult> CreateAsync(IRequest request);
+        Task<IResult> CreateAsync(IRequest request, DifficultyLevel? difficultyLevel = null);
         Task<IResult> UpdateAsync(int id, IRequest request);
         Task<IResult> DeleteAsync(int id);
         Task<IResult> GetGameAsync(int id, int appId);

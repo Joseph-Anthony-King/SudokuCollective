@@ -81,7 +81,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             // Assert
             Assert.That(actionResult, Is.InstanceOf<ActionResult<Result>>());
             Assert.That(result, Is.InstanceOf<Result>());
-            Assert.That(message, Is.EqualTo("Status Code 201: User created"));
+            Assert.That(message, Is.EqualTo("Status Code 201: User was created."));
             Assert.That(statusCode, Is.EqualTo(201));
             Assert.That(user, Is.InstanceOf<UserDTO>());
         }
@@ -100,7 +100,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             // Assert
             Assert.That(actionResult, Is.InstanceOf<ActionResult<Result>>());
             Assert.That(result, Is.InstanceOf<Result>());
-            Assert.That(errorMessage, Is.EqualTo("Status Code 404: User not created"));
+            Assert.That(errorMessage, Is.EqualTo("Status Code 404: User was not created."));
             Assert.That(statusCode, Is.EqualTo(404));
         }
 
@@ -119,7 +119,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             // Assert
             Assert.That(actionResult, Is.InstanceOf<ActionResult<Result>>());
             Assert.That(result, Is.InstanceOf<Result>());
-            Assert.That(message, Is.EqualTo("Status Code 200: Email confirmation email resent"));
+            Assert.That(message, Is.EqualTo("Status Code 200: Email confirmation email was resent."));
             Assert.That(statusCode, Is.EqualTo(200));
             Assert.That(emailResent, Is.True);
         }
@@ -138,7 +138,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             // Assert
             Assert.That(actionResult, Is.InstanceOf<ActionResult<Result>>());
             Assert.That(result, Is.InstanceOf<Result>());
-            Assert.That(message, Is.EqualTo("Status Code 404: Email confirmation email not resent"));
+            Assert.That(message, Is.EqualTo("Status Code 404: Email confirmation email was not resent."));
             Assert.That(statusCode, Is.EqualTo(404));
         }
     }
