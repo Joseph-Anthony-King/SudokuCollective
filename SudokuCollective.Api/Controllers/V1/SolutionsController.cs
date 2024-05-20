@@ -1,4 +1,5 @@
 using System;
+using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -190,7 +191,8 @@ namespace SudokuCollective.Api.V1.Controllers
         /// </summary>
         /// <param name="request"></param>
         /// <returns>If solvable, a solved sudoku puzzle.</returns>
-        /// <response code="200">Returns a result object with the a solved sudoku puzzle included as the first element in the payload array.</response>
+        /// <response code="200">Returns a result object that is successful but does not contain a solution.</response>
+        /// <response code="201">Returns a result object with the a solved sudoku puzzle included as the first element in the payload array.</response>
         /// <response code="400">Returns a result object with the message stating any validation errors for the request.</response>
         /// <response code="500">Returns a result object with the message stating any errors solving the sudoku puzzle.</response>
         /// <remarks>
@@ -225,9 +227,9 @@ namespace SudokuCollective.Api.V1.Controllers
                 {
                     if (result.Payload.Count > 0)
                     {
-                        result.Message = ControllerMessages.StatusCode200(result.Message);
+                        result.Message = ControllerMessages.StatusCode201(result.Message);
 
-                        return Ok(result);
+                        return StatusCode((int)HttpStatusCode.Created, result);
                     }
                     else
                     {

@@ -366,8 +366,8 @@ namespace SudokuCollective.Test.Services
                     {
                         IsSuccess = true,
                         Message = string.Format("{0} and {1}",
-                            UsersMessages.EmailConfirmationRequestCancelledMessage,
-                            UsersMessages.PasswordResetRequestCancelledMessage),
+                            UsersMessages.EmailConfirmationRequestCancelledMessage.TrimEnd('.'),
+                            UsersMessages.PasswordResetRequestCancelledMessage.ToLower()),
                         Payload =
                             [
                                 TestObjects.GetUserResult()
@@ -979,8 +979,8 @@ namespace SudokuCollective.Test.Services
                     {
                         IsSuccess = true,
                         Message = string.Format("{0} and {1}",
-                            UsersMessages.EmailConfirmationRequestCancelledMessage,
-                            UsersMessages.PasswordResetRequestCancelledMessage),
+                            UsersMessages.EmailConfirmationRequestCancelledMessage.TrimEnd('.'),
+                            UsersMessages.PasswordResetRequestCancelledMessage.ToLower()),
                         Payload =
                             [
                                 TestObjects.GetUserResult()

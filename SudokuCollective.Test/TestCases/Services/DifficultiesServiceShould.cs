@@ -75,7 +75,7 @@ namespace SudokuCollective.Test.TestCases.Services
 
             // Assert
             Assert.That(result.IsSuccess, Is.True);
-            Assert.That(result.Message, Is.EqualTo("Difficulty found"));
+            Assert.That(result.Message, Is.EqualTo("Difficulty was found."));
             Assert.That((Difficulty)result.Payload[0], Is.TypeOf<Difficulty>());
         }
 
@@ -91,8 +91,8 @@ namespace SudokuCollective.Test.TestCases.Services
             // Assert
             Assert.That(resultOne.IsSuccess, Is.False);
             Assert.That(resultTwo.IsSuccess, Is.False);
-            Assert.That(resultOne.Message, Is.EqualTo("Null and test difficulties are not available through the api"));
-            Assert.That(resultTwo.Message, Is.EqualTo("Null and test difficulties are not available through the api"));
+            Assert.That(resultOne.Message, Is.EqualTo("Null and test difficulties are not available through the api."));
+            Assert.That(resultTwo.Message, Is.EqualTo("Null and test difficulties are not available through the api."));
         }
 
         [Test, Category("Services")]
@@ -105,7 +105,7 @@ namespace SudokuCollective.Test.TestCases.Services
 
             // Assert
             Assert.That(result.IsSuccess, Is.True);
-            Assert.That(result.Message, Is.EqualTo("Difficulties found"));
+            Assert.That(result.Message, Is.EqualTo("Difficulties were found."));
             Assert.That(result.Payload.Count, Is.EqualTo(4));
         }
 
@@ -124,7 +124,7 @@ namespace SudokuCollective.Test.TestCases.Services
 
             // Assert
             Assert.That(result.IsSuccess, Is.True);
-            Assert.That(result.Message, Is.EqualTo("Difficulties found"));
+            Assert.That(result.Message, Is.EqualTo("Difficulties were found."));
             Assert.That(nullAndTestDifficultyLevelsBlocked, Is.False);
         }
 
@@ -149,7 +149,7 @@ namespace SudokuCollective.Test.TestCases.Services
 
             // Assert
             Assert.That(result.IsSuccess, Is.True);
-            Assert.That(result.Message, Is.EqualTo("Difficulty updated"));
+            Assert.That(result.Message, Is.EqualTo("Difficulty was updated."));
             Assert.That(((Difficulty)result.Payload[0]).Name, Is.EqualTo("Medium UPDATED!"));
         }
 
@@ -163,7 +163,7 @@ namespace SudokuCollective.Test.TestCases.Services
 
             // Assert
             Assert.That(result.IsSuccess, Is.True);
-            Assert.That(result.Message, Is.EqualTo("Difficulty deleted"));
+            Assert.That(result.Message, Is.EqualTo("Difficulty was deleted."));
         }
 
         [Test, Category("Services")]
@@ -188,7 +188,7 @@ namespace SudokuCollective.Test.TestCases.Services
 
             // Assert
             Assert.That(result.IsSuccess, Is.True);
-            Assert.That(result.Message, Is.EqualTo("Difficulty created"));
+            Assert.That(result.Message, Is.EqualTo("Difficulty was created."));
             Assert.That((Difficulty)result.Payload[0], Is.InstanceOf<Difficulty>());
         }
     }

@@ -944,9 +944,9 @@ namespace SudokuCollective.Api.V1.Controllers
 
                     if (result.IsSuccess)
                     {
-                        result.Message = ControllerMessages.StatusCode201(result.Message);
+                        result.Message = ControllerMessages.StatusCode200(result.Message);
 
-                        return StatusCode((int)HttpStatusCode.Created, result);
+                        return Ok(result);
                     }
                     else
                     {

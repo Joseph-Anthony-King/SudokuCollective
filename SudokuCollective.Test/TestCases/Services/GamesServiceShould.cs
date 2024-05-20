@@ -140,7 +140,7 @@ namespace SudokuCollective.Test.TestCases.Services
 
             // Assert
             Assert.That(result.IsSuccess, Is.True);
-            Assert.That(result.Message, Is.EqualTo("Game created"));
+            Assert.That(result.Message, Is.EqualTo("Game was created."));
             Assert.That((Game)result.Payload[0], Is.TypeOf<Game>());
         }
 
@@ -160,7 +160,7 @@ namespace SudokuCollective.Test.TestCases.Services
 
             // Assert
             Assert.That(result.IsSuccess, Is.False);
-            Assert.That(result.Message, Is.EqualTo("Game not created"));
+            Assert.That(result.Message, Is.EqualTo("Game was not created."));
         }
 
         [Test, Category("Services")]
@@ -184,7 +184,7 @@ namespace SudokuCollective.Test.TestCases.Services
 
             // Assert
             Assert.That(result.IsSuccess, Is.True);
-            Assert.That(result.Message, Is.EqualTo("Game updated"));
+            Assert.That(result.Message, Is.EqualTo("Game was updated."));
             Assert.That((Game)result.Payload[0], Is.TypeOf<Game>());
             Assert.That(checkValue, Is.EqualTo(updatedValue));
         }
@@ -206,7 +206,7 @@ namespace SudokuCollective.Test.TestCases.Services
 
             // Assert
             Assert.That(result.IsSuccess, Is.False);
-            Assert.That(result.Message, Is.EqualTo("Game not updated"));
+            Assert.That(result.Message, Is.EqualTo("Game was not updated."));
         }
 
         [Test, Category("Services")]
@@ -220,7 +220,7 @@ namespace SudokuCollective.Test.TestCases.Services
 
             // Assert
             Assert.That(result.IsSuccess, Is.True);
-            Assert.That(result.Message, Is.EqualTo("Game deleted"));
+            Assert.That(result.Message, Is.EqualTo("Game was deleted."));
         }
 
         [Test, Category("Services")]
@@ -234,7 +234,7 @@ namespace SudokuCollective.Test.TestCases.Services
 
             // Assert
             Assert.That(result.IsSuccess, Is.False);
-            Assert.That(result.Message, Is.EqualTo("Game not found"));
+            Assert.That(result.Message, Is.EqualTo("Game was not found."));
         }
 
         [Test, Category("Services")]
@@ -249,7 +249,7 @@ namespace SudokuCollective.Test.TestCases.Services
 
             // Assert
             Assert.That(result.IsSuccess, Is.True);
-            Assert.That(result.Message, Is.EqualTo("Game found"));
+            Assert.That(result.Message, Is.EqualTo("Game was found."));
             Assert.That((Game)result.Payload[0], Is.TypeOf<Game>());
         }
 
@@ -265,7 +265,7 @@ namespace SudokuCollective.Test.TestCases.Services
 
             // Assert
             Assert.That(result.IsSuccess, Is.False);
-            Assert.That(result.Message, Is.EqualTo("Game not found"));
+            Assert.That(result.Message, Is.EqualTo("Game was not found."));
         }
 
         [Test, Category("Services")]
@@ -279,7 +279,7 @@ namespace SudokuCollective.Test.TestCases.Services
 
             // Assert
             Assert.That(result.IsSuccess, Is.True);
-            Assert.That(result.Message, Is.EqualTo("Games found"));
+            Assert.That(result.Message, Is.EqualTo("Games were found."));
             Assert.That(result.Payload.ConvertAll(g => (IGame)g), Is.TypeOf<List<IGame>>());
         }
 
@@ -295,7 +295,7 @@ namespace SudokuCollective.Test.TestCases.Services
 
             // Assert
             Assert.That(result.IsSuccess, Is.True);
-            Assert.That(result.Message, Is.EqualTo("Game found"));
+            Assert.That(result.Message, Is.EqualTo("Game was found."));
             Assert.That((Game)result.Payload[0], Is.TypeOf<Game>());
         }
 
@@ -310,7 +310,7 @@ namespace SudokuCollective.Test.TestCases.Services
 
             // Assert
             Assert.That(result.IsSuccess, Is.True);
-            Assert.That(result.Message, Is.EqualTo("Games found"));
+            Assert.That(result.Message, Is.EqualTo("Games were found."));
             Assert.That(result.Payload.ConvertAll(g => (IGame)g), Is.TypeOf<List<IGame>>());
         }
 
@@ -328,7 +328,7 @@ namespace SudokuCollective.Test.TestCases.Services
 
             // Assert
             Assert.That(result.IsSuccess, Is.True);
-            Assert.That(result.Message, Is.EqualTo("Game updated"));
+            Assert.That(result.Message, Is.EqualTo("Game was updated."));
         }
 
         [Test, Category("Services")]
@@ -343,7 +343,7 @@ namespace SudokuCollective.Test.TestCases.Services
 
             // Assert
             Assert.That(result.IsSuccess, Is.True);
-            Assert.That(result.Message, Is.EqualTo("Game deleted"));
+            Assert.That(result.Message, Is.EqualTo("Game was deleted."));
         }
 
         [Test, Category("Services")]
@@ -368,7 +368,7 @@ namespace SudokuCollective.Test.TestCases.Services
 
             // Assert
             Assert.That(result.IsSuccess, Is.True);
-            Assert.That(result.Message, Is.EqualTo("Game not solved"));
+            Assert.That(result.Message, Is.EqualTo("Game was not solved."));
             Assert.That((Game)result.Payload[0], Is.TypeOf<Game>());
             Assert.That(checkValue, Is.EqualTo(updatedValue));
         }
@@ -391,7 +391,7 @@ namespace SudokuCollective.Test.TestCases.Services
 
             // Assert
             Assert.That(result.IsSuccess, Is.True);
-            Assert.That(result.Message, Is.EqualTo("Game solved"));
+            Assert.That(result.Message, Is.EqualTo("Game was solved."));
             Assert.That((Game)result.Payload[0], Is.TypeOf<Game>());
             Assert.That(game.IsSolved(), Is.True);
         }
@@ -409,7 +409,7 @@ namespace SudokuCollective.Test.TestCases.Services
 
             // Assert
             Assert.That(result.IsSuccess, Is.False);
-            Assert.That(result.Message, Is.EqualTo("Game not found"));
+            Assert.That(result.Message, Is.EqualTo("Game was not found."));
         }
 
         [Test, Category("Services")]
@@ -422,7 +422,7 @@ namespace SudokuCollective.Test.TestCases.Services
 
             // Assert
             Assert.That(result.IsSuccess, Is.True);
-            Assert.That(result.Message, Is.EqualTo("Game created"));
+            Assert.That(result.Message, Is.EqualTo("Game was created."));
             Assert.That(((AnnonymousGameResult)result.Payload[0]).SudokuMatrix, Is.TypeOf<List<List<int>>>());
         }
 
@@ -441,7 +441,7 @@ namespace SudokuCollective.Test.TestCases.Services
 
             // Assert
             Assert.That(result.IsSuccess, Is.False);
-            Assert.That(result.Message, Is.EqualTo("Difficulty not valid"));
+            Assert.That(result.Message, Is.EqualTo("Difficulty was not valid."));
         }
 
         [Test, Category("Services")]
@@ -464,7 +464,7 @@ namespace SudokuCollective.Test.TestCases.Services
 
             // Assert
             Assert.That(result.IsSuccess, Is.True);
-            Assert.That(result.Message, Is.EqualTo("Game solved"));
+            Assert.That(result.Message, Is.EqualTo("Game was solved."));
         }
 
         [Test, Category("Services")]
@@ -487,7 +487,7 @@ namespace SudokuCollective.Test.TestCases.Services
 
             // Assert
             Assert.That(result.IsSuccess, Is.False);
-            Assert.That(result.Message, Is.EqualTo("Game not solved"));
+            Assert.That(result.Message, Is.EqualTo("Game was not solved."));
         }
 
         [Test, Category("Services")]

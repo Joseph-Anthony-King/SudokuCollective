@@ -13,7 +13,6 @@ namespace SudokuCollective.Test.TestCases.Controllers
     internal class JobsControllerShould
     {
         private JobsController sut;
-        private Mock<IBackgroundJobClient> mockedJobClient;
         private MockedRequestService mockedRequestService;
         private Mock<ILogger<JobsController>> mockedLogger;
         private Mock<IMonitoringApi> mockedMonitoringApi;
@@ -22,14 +21,12 @@ namespace SudokuCollective.Test.TestCases.Controllers
         [SetUp]
         public void Setup()
         {
-            mockedJobClient = new Mock<IBackgroundJobClient>();
             mockedRequestService = new MockedRequestService();
             mockedLogger = new Mock<ILogger<JobsController>>();
             mockedMonitoringApi = new Mock<IMonitoringApi>();
             mockedStorageConnection = new Mock<IStorageConnection>();
 
             sut = new JobsController(
-                mockedJobClient.Object,
                 mockedRequestService.SuccessfulRequest.Object,
                 mockedLogger.Object,
                 mockedMonitoringApi.Object,
