@@ -911,7 +911,7 @@ namespace SudokuCollective.Data.Services
                     LogsUtilities.GetServiceErrorEventId(), 
                     string.Format(LoggerMessages.ErrorThrownMessage, e.Message),
                     e,
-                    (SudokuCollective.Logs.Models.Request)_requestService.Get());
+                    (Request)_requestService.Get());
 
                 throw;
             }
@@ -932,13 +932,15 @@ namespace SudokuCollective.Data.Services
 
                 if (request == null)
                 {
-                    jobId = _jobClient.Schedule(() => CreateAnnonymousAsync(difficultyLevel),
-                        TimeSpan.FromMicroseconds(500));
+                    jobId = _jobClient.Schedule(
+                        () => CreateAnnonymousAsync(difficultyLevel),
+                        TimeSpan.FromMicroseconds(100));
                 }
                 else
                 {
-                    jobId = _jobClient.Schedule(() => CreateAsync(request, difficultyLevel),
-                        TimeSpan.FromMicroseconds(500));
+                    jobId = _jobClient.Schedule(
+                        () => CreateAsync(request, difficultyLevel),
+                        TimeSpan.FromMicroseconds(100));
                 }
 
                 // In unit tests jobId is null
