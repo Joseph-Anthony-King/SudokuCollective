@@ -230,8 +230,8 @@ namespace SudokuCollective.Api
             // Add Hangfire services.
             services.AddHangfire(configuration => configuration
                 .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
-                .UseSimpleAssemblyNameTypeSerializer()
                 .UseInMemoryStorage()
+                .UseSimpleAssemblyNameTypeSerializer()
                 .UseSerializerSettings(new JsonSerializerSettings
                 {
                     TypeNameHandling = TypeNameHandling.All,
