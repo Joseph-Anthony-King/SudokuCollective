@@ -24,7 +24,7 @@ namespace SudokuCollective.Api.Controllers.V1
     /// Jobs Controller Class
     /// </remarks>
     [AllowAnonymous]
-    [Route("api/[controller]")]
+    [Route("api/v1/[controller]")]
     [ApiController]
     public class JobsController(
         IRequestService requestService,
@@ -126,8 +126,7 @@ namespace SudokuCollective.Api.Controllers.V1
         /// </summary>
         /// <param name="jobId"></param>
         /// <returns>The status of the indicated job.</returns>
-        /// <response code="200">Returns a result object indicating success with a 'Succeeded' job status.</response>
-        /// <response code="400">Returns a result object indicating the job is not 'Succeeded' and provides the current status.</response>
+        /// <response code="200">Returns a result object indicating a job status of 'scheduled', 'processing' or 'succeeded'.</response>
         /// <remarks>
         /// This endpoint is used to poll the job client for the status of the indicated job.  Please provide the jobId as a query parameter.
         /// The result will provide an updated status along with the message describing the current job status.
@@ -159,12 +158,12 @@ namespace SudokuCollective.Api.Controllers.V1
                 else
                 {
                     result.IsSuccess = false;
-                    result.Message = ControllerMessages.StatusCode404(string.Format(
+                    result.Message = ControllerMessages.StatusCode200(string.Format(
                         JobsMessages.JobIsNotCompletedWithStatus,
                         jobId,
                         jobData.State.ToLower()));
 
-                    return NotFound(result);
+                    return Ok(result);
                 }
             }
             catch (Exception e)

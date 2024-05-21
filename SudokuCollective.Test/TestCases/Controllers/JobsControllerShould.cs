@@ -55,8 +55,8 @@ namespace SudokuCollective.Test.TestCases.Controllers
             Assert.That(actionResult, Is.TypeOf<ActionResult<Result>>());
             Assert.That(result, Is.TypeOf<Result>());
             Assert.That(success, Is.False);
-            Assert.That(message, Is.EqualTo("Status Code 404: Job 5d74fa7b-db93-4213-8e0c-da2f3179ed05 is not completed with status processing."));
-            Assert.That(statusCode, Is.EqualTo(404));
+            Assert.That(message, Is.EqualTo("Status Code 200: Job 5d74fa7b-db93-4213-8e0c-da2f3179ed05 is not completed with status processing."));
+            Assert.That(statusCode, Is.EqualTo(200));
         }
 
         [Test, Category("Controllers")]
