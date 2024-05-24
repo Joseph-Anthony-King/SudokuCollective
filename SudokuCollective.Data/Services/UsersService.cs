@@ -293,10 +293,10 @@ namespace SudokuCollective.Data.Services
                                 app.CustomEmailConfirmationAction,
                                 emailConfirmation.Token);
                         }
-                        else if (app.Environment == ReleaseEnvironment.QA)
+                        else if (app.Environment == ReleaseEnvironment.TEST)
                         {
                             EmailConfirmationAction = string.Format("{0}/{1}/{2}",
-                                app.QaUrl,
+                                app.TestUrl,
                                 app.CustomEmailConfirmationAction,
                                 emailConfirmation.Token);
                         }
@@ -327,9 +327,9 @@ namespace SudokuCollective.Data.Services
                     {
                         url = app.StagingUrl;
                     }
-                    else if (app.Environment == ReleaseEnvironment.QA)
+                    else if (app.Environment == ReleaseEnvironment.TEST)
                     {
-                        url = app.QaUrl;
+                        url = app.TestUrl;
                     }
                     else
                     {
@@ -688,10 +688,10 @@ namespace SudokuCollective.Data.Services
                                     app.CustomEmailConfirmationAction,
                                     emailConfirmation.Token);
                             }
-                            else if (app.Environment == ReleaseEnvironment.QA)
+                            else if (app.Environment == ReleaseEnvironment.TEST)
                             {
                                 EmailConfirmationAction = string.Format("{0}/{1}/{2}",
-                                    app.QaUrl,
+                                    app.TestUrl,
                                     app.CustomEmailConfirmationAction,
                                     emailConfirmation.Token);
                             }
@@ -722,9 +722,9 @@ namespace SudokuCollective.Data.Services
                         {
                             url = app.StagingUrl;
                         }
-                        else if (app.Environment == ReleaseEnvironment.QA)
+                        else if (app.Environment == ReleaseEnvironment.TEST)
                         {
-                            url = app.QaUrl;
+                            url = app.TestUrl;
                         }
                         else
                         {
@@ -1660,10 +1660,10 @@ namespace SudokuCollective.Data.Services
                             app.CustomEmailConfirmationAction,
                             emailConfirmation.Token);
                     }
-                    else if (app.Environment == ReleaseEnvironment.QA)
+                    else if (app.Environment == ReleaseEnvironment.TEST)
                     {
                         EmailConfirmationAction = string.Format("{0}/{1}/{2}",
-                            app.QaUrl,
+                            app.TestUrl,
                             app.CustomEmailConfirmationAction,
                             emailConfirmation.Token);
                     }
@@ -1694,9 +1694,9 @@ namespace SudokuCollective.Data.Services
                 {
                     url = app.StagingUrl;
                 }
-                else if (app.Environment == ReleaseEnvironment.QA)
+                else if (app.Environment == ReleaseEnvironment.TEST)
                 {
-                    url = app.QaUrl;
+                    url = app.TestUrl;
                 }
                 else
                 {
@@ -1863,13 +1863,13 @@ namespace SudokuCollective.Data.Services
                     else if (user
                         .Apps
                         .Where(ua => ua.AppId == emailConfirmation.AppId)
-                        .Select(ua => ua.App.Environment == ReleaseEnvironment.QA)
+                        .Select(ua => ua.App.Environment == ReleaseEnvironment.TEST)
                         .FirstOrDefault())
                     {
                         emailConfirmResult.AppUrl = user
                             .Apps
                             .Where(ua => ua.AppId == emailConfirmation.AppId)
-                            .Select(ua => ua.App.QaUrl)
+                            .Select(ua => ua.App.TestUrl)
                             .FirstOrDefault();
                     }
                     else
@@ -1954,9 +1954,9 @@ namespace SudokuCollective.Data.Services
                     {
                         url = app.StagingUrl;
                     }
-                    else if (app.Environment == ReleaseEnvironment.QA)
+                    else if (app.Environment == ReleaseEnvironment.TEST)
                     {
-                        url = app.QaUrl;
+                        url = app.TestUrl;
                     }
                     else
                     {
@@ -2082,13 +2082,13 @@ namespace SudokuCollective.Data.Services
                     else if (user
                         .Apps
                         .Where(ua => ua.AppId == emailConfirmation.AppId)
-                        .Select(ua => ua.App.Environment == ReleaseEnvironment.QA)
+                        .Select(ua => ua.App.Environment == ReleaseEnvironment.TEST)
                         .FirstOrDefault())
                     {
                         emailConfirmResult.AppUrl = user
                             .Apps
                             .Where(ua => ua.AppId == emailConfirmation.AppId)
-                            .Select(ua => ua.App.QaUrl)
+                            .Select(ua => ua.App.TestUrl)
                             .FirstOrDefault();
                     }
                     else
@@ -2612,10 +2612,10 @@ namespace SudokuCollective.Data.Services
                             app.CustomPasswordResetAction,
                             passwordReset.Token);
                     }
-                    else if (app.Environment == ReleaseEnvironment.QA)
+                    else if (app.Environment == ReleaseEnvironment.TEST)
                     {
                         EmailConfirmationAction = string.Format("{0}/{1}/{2}",
-                            app.QaUrl,
+                            app.TestUrl,
                             app.CustomPasswordResetAction,
                             passwordReset.Token);
                     }
@@ -2646,9 +2646,9 @@ namespace SudokuCollective.Data.Services
                 {
                     url = app.StagingUrl;
                 }
-                else if (app.Environment == ReleaseEnvironment.QA)
+                else if (app.Environment == ReleaseEnvironment.TEST)
                 {
-                    url = app.QaUrl;
+                    url = app.TestUrl;
                 }
                 else
                 {
@@ -3246,9 +3246,9 @@ namespace SudokuCollective.Data.Services
                     {
                         emailUrl = app.StagingUrl;
                     }
-                    else if (app.Environment == ReleaseEnvironment.QA)
+                    else if (app.Environment == ReleaseEnvironment.TEST)
                     {
-                        emailUrl = app.QaUrl;
+                        emailUrl = app.TestUrl;
                     }
                     else
                     {
@@ -3279,9 +3279,9 @@ namespace SudokuCollective.Data.Services
                 {
                     url = app.StagingUrl;
                 }
-                else if (app.Environment == ReleaseEnvironment.QA)
+                else if (app.Environment == ReleaseEnvironment.TEST)
                 {
-                    url = app.QaUrl;
+                    url = app.TestUrl;
                 }
                 else
                 {

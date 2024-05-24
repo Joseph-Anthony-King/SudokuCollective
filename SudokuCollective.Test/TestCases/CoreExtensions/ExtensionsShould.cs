@@ -83,7 +83,7 @@ namespace SudokuCollective.Test.TestCases.Extensions
                 {
                     LocalUrl = "LocalUrl",
                     StagingUrl = "StagingUrl",
-                    QaUrl = "QaUrl",
+                    TestUrl = "TestUrl",
                     ProdUrl = "PodUrl",
                     IsActive = true,
                     Environment = ReleaseEnvironment.LOCAL,
