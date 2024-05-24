@@ -46,9 +46,9 @@ namespace SudokuCollective.Data.Extensions
                         ((AppPayload)result).StagingUrl = element.GetProperty("stagingUrl").ToString();
                     }
 
-                    if (!string.IsNullOrEmpty(element.GetProperty("qaUrl").ToString()))
+                    if (!string.IsNullOrEmpty(element.GetProperty("TestUrl").ToString()))
                     {
-                        ((AppPayload)result).QaUrl = element.GetProperty("qaUrl").ToString();
+                        ((AppPayload)result).TestUrl = element.GetProperty("TestUrl").ToString();
                     }
 
                     if (!string.IsNullOrEmpty(element.GetProperty("prodUrl").ToString()))
@@ -451,7 +451,7 @@ namespace SudokuCollective.Data.Extensions
                         OwnerId = Convert.ToInt32(element.GetProperty("ownerId").ToString()),
                         LocalUrl = element.GetProperty("localUrl").ToString(),
                         StagingUrl = element.GetProperty("stagingUrl").ToString(),
-                        QaUrl = element.GetProperty("qaUrl").ToString(),
+                        TestUrl = element.GetProperty("TestUrl").ToString(),
                         ProdUrl = element.GetProperty("prodUrl").ToString()
                     };
 

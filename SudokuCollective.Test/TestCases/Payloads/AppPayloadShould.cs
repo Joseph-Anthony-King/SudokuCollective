@@ -24,7 +24,7 @@ namespace SudokuCollective.Test.TestCases.Payloads
             Assert.That(sut.Name, Is.InstanceOf<string>());
             Assert.That(sut.LocalUrl, Is.InstanceOf<string>());
             Assert.That(sut.StagingUrl, Is.InstanceOf<string>());
-            Assert.That(sut.QaUrl, Is.InstanceOf<string>());
+            Assert.That(sut.TestUrl, Is.InstanceOf<string>());
             Assert.That(sut.ProdUrl, Is.InstanceOf<string>());
             Assert.That(sut.IsActive, Is.InstanceOf<bool>());
             Assert.That(sut.Environment, Is.InstanceOf<ReleaseEnvironment>());
@@ -56,7 +56,7 @@ namespace SudokuCollective.Test.TestCases.Payloads
                 "name",
                 "http://localhost:5173",
                 "https://example-dev.com",
-                "https://example-qa.com",
+                "https://example-test.com",
                 "https://www.example.com",
                 string.Empty,
                 true,
@@ -83,7 +83,7 @@ namespace SudokuCollective.Test.TestCases.Payloads
                 "name",
                 "http://localhost:5173",
                 "https://example-dev.com",
-                "https://example-qa.com",
+                "https://example-test.com",
                 "https://www.example.com",
                 string.Empty,
                 true,

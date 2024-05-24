@@ -741,7 +741,7 @@ namespace SudokuCollective.Test.TestData
                 Name = "Test App 1 UPDATED!",
                 LocalUrl = "https://localhost:4200",
                 StagingUrl = "https://testapp.dev.com",
-                QaUrl = "https://testapp.qa.com",
+                TestUrl = "https://testapp.test.com",
                 ProdUrl = "https://testapp.com",
                 IsActive = true,
                 Environment = ReleaseEnvironment.LOCAL,
@@ -760,7 +760,7 @@ namespace SudokuCollective.Test.TestData
                 Name = string.Empty,
                 LocalUrl = "https://localhost:4200",
                 StagingUrl = "https://testapp.dev.com",
-                QaUrl = "https://testapp.qa.com",
+                TestUrl = "https://testapp.test.com",
                 ProdUrl = "https://testapp.com",
                 IsActive = true,
                 Environment = ReleaseEnvironment.LOCAL,
@@ -778,8 +778,8 @@ namespace SudokuCollective.Test.TestData
             {
                 Name = "Test App 4",
                 LocalUrl = "https://localhost:4200",
+                TestUrl = "https://testapp3.test.com",
                 StagingUrl = "https://testapp3.dev.com",
-                QaUrl = "https://testapp3.qa.com",
                 ProdUrl = "https://testapp3.com"
             };
 
@@ -808,7 +808,7 @@ namespace SudokuCollective.Test.TestData
                             AppliesTo = releaseEnvironment },
                         new EnumListItem { 
                             Label = "Quality Assurance", 
-                            Value = (int)ReleaseEnvironment.QA,
+                            Value = (int)ReleaseEnvironment.TEST,
                             AppliesTo = releaseEnvironment },
                         new EnumListItem { 
                             Label = "Production", 

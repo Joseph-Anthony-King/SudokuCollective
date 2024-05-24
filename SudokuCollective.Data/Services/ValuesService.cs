@@ -107,8 +107,8 @@ namespace SudokuCollective.Data.Services
                         Value = (int)ReleaseEnvironment.LOCAL,
                         AppliesTo = releaseEnvironment },
                     new EnumListItem { 
-                        Label = "Quality Assurance", 
-                        Value = (int)ReleaseEnvironment.QA,
+                        Label = "Test", 
+                        Value = (int)ReleaseEnvironment.TEST,
                         AppliesTo = releaseEnvironment },
                     new EnumListItem {
                         Label = "Staging",
