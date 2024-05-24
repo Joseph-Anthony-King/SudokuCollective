@@ -12,8 +12,8 @@ using SudokuCollective.Data.Models;
 namespace SudokuCollective.Api.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20240510201656_DBNoEncryptionInitialMigration")]
-    partial class DBNoEncryptionInitialMigration
+    [Migration("20240524174911_InitialMigration")]
+    partial class InitialMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
