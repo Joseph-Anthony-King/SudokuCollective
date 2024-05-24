@@ -82,7 +82,7 @@ namespace SudokuCollective.Api.Controllers
                     AppTitle = ((InitiatePasswordResetResult)result.Payload[0]).App.Name,
                     AppId = ((InitiatePasswordResetResult)result.Payload[0]).App.Id,
                     AppUrl = ((InitiatePasswordResetResult)result.Payload[0]).App.Environment == ReleaseEnvironment.LOCAL ? ((InitiatePasswordResetResult)result.Payload[0]).App.LocalUrl : 
-                        ((InitiatePasswordResetResult)result.Payload[0]).App.Environment == ReleaseEnvironment.QA ? ((InitiatePasswordResetResult)result.Payload[0]).App.QaUrl :
+                        ((InitiatePasswordResetResult)result.Payload[0]).App.Environment == ReleaseEnvironment.TEST ? ((InitiatePasswordResetResult)result.Payload[0]).App.TestUrl :
                         ((InitiatePasswordResetResult)result.Payload[0]).App.Environment == ReleaseEnvironment.STAGING ? ((InitiatePasswordResetResult)result.Payload[0]).App.StagingUrl :
                         ((InitiatePasswordResetResult)result.Payload[0]).App.ProdUrl
                 };

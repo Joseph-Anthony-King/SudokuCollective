@@ -59,8 +59,8 @@ namespace SudokuCollective.Api.Controllers.V1
         ///         "name": string,        // name is required, represents the apps name
         ///         "ownerId": integer     // ownerId is required, represents the signed in users id
         ///         "localUrl": string,    // localUrl is not required, an example is https://localhost:8081; regex documented in app schema below
+        ///         "TestUrl": string,     // TestUrl is not required, an exampled is https://example-test.herokuapp.com; regex documented in app schema below
         ///         "stagingUrl": string,  // stagingUrl is not required, an exampled is https://example-app.herokuapp.com; regex documented in app schema below
-        ///         "qaUrl": string,       // qaUrl is not required, an exampled is https://example-qa.herokuapp.com; regex documented in app schema below
         ///         "prodUrl": string,     // prodUrl is not required, an exampled is https://example-app.com; regex documented in app schema below
         ///       },
         ///     }     

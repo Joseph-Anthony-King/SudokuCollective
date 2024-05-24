@@ -11,7 +11,7 @@ namespace SudokuCollective.Data.Models.Payloads
     public class LicensePayload : ILicensePayload
     {
         private string _localUrl = string.Empty;
-        private string _qaUrl = string.Empty;
+        private string _TestUrl = string.Empty;
         private string _stagingUrl = string.Empty;
         private string _prodUrl = string.Empty;
         private string _sourceCodeUrl = string.Empty;
@@ -44,18 +44,18 @@ namespace SudokuCollective.Data.Models.Payloads
                 }
             }
         }
-        [JsonPropertyName("qaUrl")]
-        public string QaUrl
+        [JsonPropertyName("TestUrl")]
+        public string TestUrl
         {
             get
             {
-                return _qaUrl;
+                return _TestUrl;
             }
             set
             {
                 if (!string.IsNullOrEmpty(value) && _urlValidator.IsValid(value))
                 {
-                    _qaUrl = value;
+                    _TestUrl = value;
                 }
                 else if (string.IsNullOrEmpty(value))
                 {
@@ -142,8 +142,8 @@ namespace SudokuCollective.Data.Models.Payloads
             Name = string.Empty;
             OwnerId = 0;
             LocalUrl = string.Empty;
+            TestUrl = string.Empty;
             StagingUrl = string.Empty;
-            QaUrl = string.Empty;
             ProdUrl = string.Empty;
             SourceCodeUrl = string.Empty;
         }
@@ -152,16 +152,16 @@ namespace SudokuCollective.Data.Models.Payloads
             string name,
             int ownerId,
             string localUrl,
+            string testUrl,
             string stagingUrl,
-            string qaUrl,
             string prodUrl,
             string sourceCodeUrl)
         {
             Name = name;
             OwnerId = ownerId;
             LocalUrl = localUrl;
+            TestUrl = testUrl;
             StagingUrl = stagingUrl;
-            QaUrl = qaUrl;
             ProdUrl = prodUrl;
             SourceCodeUrl = sourceCodeUrl;
         }

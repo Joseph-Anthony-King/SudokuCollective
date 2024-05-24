@@ -19,8 +19,8 @@ namespace SudokuCollective.Core.Models
         #region Fields
         private string _license = string.Empty;
         private string _localUrl = string.Empty;
+        private string _testUrl = string.Empty;
         private string _stagingUrl = string.Empty;
-        private string _qaUrl = string.Empty;
         private string _prodUrl = string.Empty;
         private string _sourceCodeUrl = string.Empty;
         private TimeFrame _timeFrame = TimeFrame.NULL;
@@ -62,11 +62,11 @@ namespace SudokuCollective.Core.Models
                 _urlValidator,
                 AttributeMessages.InvalidUrl);
         }
-        [JsonPropertyName("qaUrl"), UrlValidated(ErrorMessage = AttributeMessages.InvalidUrl)]
-        public string QaUrl
+        [JsonPropertyName("TestUrl"), UrlValidated(ErrorMessage = AttributeMessages.InvalidUrl)]
+        public string TestUrl
         {
-            get => _qaUrl;
-            set => _qaUrl = CoreUtilities.SetNullableField(
+            get => _testUrl;
+            set => _testUrl = CoreUtilities.SetNullableField(
                 value,
                 _urlValidator,
                 AttributeMessages.InvalidUrl);
@@ -206,7 +206,7 @@ namespace SudokuCollective.Core.Models
                 int ownerId,
                 string ownerUserName,
                 string localUrl,
-                string qaUrl,
+                string testUrl,
                 string stagingUrl,
                 string prodUrl,
                 string sourceCodeUrl,
@@ -223,7 +223,7 @@ namespace SudokuCollective.Core.Models
             CreatedBy = ownerUserName;
             DateCreated = DateTime.UtcNow;
             LocalUrl = localUrl;
-            QaUrl = qaUrl;
+            TestUrl = testUrl;
             StagingUrl = stagingUrl;
             ProdUrl = prodUrl;
             SourceCodeUrl = sourceCodeUrl;
@@ -257,7 +257,7 @@ namespace SudokuCollective.Core.Models
             int ownerId,
             string createdBy,
             string localUrl,
-            string qaUrl,
+            string TestUrl,
             string stagingUrl,
             string prodUrl,
             string sourceCodeUrl,
@@ -282,7 +282,7 @@ namespace SudokuCollective.Core.Models
             OwnerId = ownerId;
             CreatedBy = createdBy;
             LocalUrl = localUrl;
-            QaUrl = qaUrl;
+            TestUrl = TestUrl;
             StagingUrl = stagingUrl;
             ProdUrl = prodUrl;
             SourceCodeUrl = sourceCodeUrl;
@@ -357,8 +357,8 @@ namespace SudokuCollective.Core.Models
                         LocalUrl :
                         Environment == ReleaseEnvironment.STAGING ?
                             StagingUrl :
-                            Environment == ReleaseEnvironment.QA ?
-                                QaUrl :
+                            Environment == ReleaseEnvironment.TEST ?
+                                TestUrl :
                                 Environment == ReleaseEnvironment.PROD ?
                                     ProdUrl :
                                     null,
@@ -395,9 +395,9 @@ namespace SudokuCollective.Core.Models
                 return true;
             }
             else if (
-                Environment == ReleaseEnvironment.QA
+                Environment == ReleaseEnvironment.TEST
                 && !DisableCustomUrls
-                && !string.IsNullOrEmpty(QaUrl)
+                && !string.IsNullOrEmpty(TestUrl)
                 && !string.IsNullOrEmpty(CustomEmailConfirmationAction)
             )
             {
@@ -439,9 +439,9 @@ namespace SudokuCollective.Core.Models
                 return true;
             }
             else if (
-                Environment == ReleaseEnvironment.QA
+                Environment == ReleaseEnvironment.TEST
                 && !DisableCustomUrls
-                && !string.IsNullOrEmpty(QaUrl)
+                && !string.IsNullOrEmpty(TestUrl)
                 && !string.IsNullOrEmpty(CustomPasswordResetAction)
             )
             {

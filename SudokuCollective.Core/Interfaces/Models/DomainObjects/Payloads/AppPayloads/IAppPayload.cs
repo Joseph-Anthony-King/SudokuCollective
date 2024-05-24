@@ -7,8 +7,8 @@ namespace SudokuCollective.Core.Interfaces.Models.DomainObjects.Payloads
     {
         string Name { get; set; }
         string LocalUrl { get; set; }
+        string TestUrl { get; set; }
         string StagingUrl { get; set; }
-        string QaUrl { get; set; }
         string ProdUrl { get; set; }
         string SourceCodeUrl { get; set; }
         bool IsActive { get; set; }
