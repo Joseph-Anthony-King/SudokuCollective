@@ -172,8 +172,8 @@ namespace SudokuCollective.Api.Models
                                 config.GetValue<string>("DefaultAdminApp:LocalUrl") : 
                                 Environment.GetEnvironmentVariable("ADMIN_APP:LOCAL_URL"),
                             env.IsDevelopment() ?
-                                config.GetValue<string>("DefaultAdminApp:QaUrl") :
-                                Environment.GetEnvironmentVariable("ADMIN_APP:QA_URL"),
+                                config.GetValue<string>("DefaultAdminApp:TestUrl") :
+                                Environment.GetEnvironmentVariable("ADMIN_APP:TEST_URL"),
                             env.IsDevelopment() ? 
                                 config.GetValue<string>("DefaultAdminApp:StagingUrl") : 
                                 Environment.GetEnvironmentVariable("ADMIN_APP:STAGING_URL"),
@@ -231,8 +231,8 @@ namespace SudokuCollective.Api.Models
                                 config.GetValue<string>("DefaultClientApp:LocalUrl") : 
                                 Environment.GetEnvironmentVariable("CLIENT_APP:LOCAL_URL"),
                             env.IsDevelopment() ? 
-                                config.GetValue<string>("DefaultClientApp:QaUrl") : 
-                                Environment.GetEnvironmentVariable("CLIENT_APP:QA_URL"),
+                                config.GetValue<string>("DefaultClientApp:TestUrl") : 
+                                Environment.GetEnvironmentVariable("CLIENT_APP:TEST_URL"),
                             env.IsDevelopment() ?
                                 config.GetValue<string>("DefaultClientApp:StagingUrl") :
                                 Environment.GetEnvironmentVariable("CLIENT_APP:STAGING_URL"),
@@ -287,8 +287,8 @@ namespace SudokuCollective.Api.Models
                                 config.GetValue<string>("DefaultSandboxApp:LocalUrl") : 
                                 Environment.GetEnvironmentVariable("SANDBOX_APP:LOCAL_URL"),
                             env.IsDevelopment() ? 
-                                config.GetValue<string>("DefaultSandboxApp:QaUrl") : 
-                                Environment.GetEnvironmentVariable("SANDBOX_APP:QA_URL"),
+                                config.GetValue<string>("DefaultSandboxApp:TestUrl") : 
+                                Environment.GetEnvironmentVariable("SANDBOX_APP:TEST_URL"),
                             env.IsDevelopment() ?
                                 config.GetValue<string>("DefaultSandboxApp:StagingUrl") :
                                 Environment.GetEnvironmentVariable("SANDBOX_APP:STAGING_URL"),

@@ -98,10 +98,6 @@ namespace SudokuCollective.Api.Migrations
                         .HasColumnType("text")
                         .HasAnnotation("Relational:JsonPropertyName", "prodUrl");
 
-                    b.Property<string>("QaUrl")
-                        .HasColumnType("text")
-                        .HasAnnotation("Relational:JsonPropertyName", "qaUrl");
-
                     b.Property<string>("SourceCodeUrl")
                         .HasColumnType("text")
                         .HasAnnotation("Relational:JsonPropertyName", "sourceCodeUrl");
@@ -109,6 +105,10 @@ namespace SudokuCollective.Api.Migrations
                     b.Property<string>("StagingUrl")
                         .HasColumnType("text")
                         .HasAnnotation("Relational:JsonPropertyName", "stagingUrl");
+
+                    b.Property<string>("TestUrl")
+                        .HasColumnType("text")
+                        .HasAnnotation("Relational:JsonPropertyName", "TestUrl");
 
                     b.Property<int>("TimeFrame")
                         .HasColumnType("integer")

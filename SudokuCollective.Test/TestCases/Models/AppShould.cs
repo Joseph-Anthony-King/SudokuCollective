@@ -51,7 +51,7 @@ namespace SudokuCollective.Test.TestCases.Models
             Assert.That(sut.CreatedBy, Is.TypeOf<string>());
             Assert.That(sut.LocalUrl, Is.TypeOf<string>());
             Assert.That(sut.StagingUrl, Is.TypeOf<string>());
-            Assert.That(sut.QaUrl, Is.TypeOf<string>());
+            Assert.That(sut.TestUrl, Is.TypeOf<string>());
             Assert.That(sut.ProdUrl, Is.TypeOf<string>());
             Assert.That(sut.SourceCodeUrl, Is.TypeOf<string>());
             Assert.That(sut.IsActive, Is.TypeOf<bool>());
@@ -216,7 +216,7 @@ namespace SudokuCollective.Test.TestCases.Models
             int ownerId = 0;
             string ownerUserName = "CreatedBy";
             string localUrl = "http://localhost:5173";
-            string qaUrl = "";
+            string TestUrl = "";
             string stagingUrl = "https://example-dev.com";
             string liveUrl = "https://www.example.com";
 
@@ -227,7 +227,7 @@ namespace SudokuCollective.Test.TestCases.Models
                 ownerId, 
                 ownerUserName, 
                 localUrl,
-                qaUrl,
+                TestUrl,
                 stagingUrl, 
                 liveUrl,
                 string.Empty);
@@ -250,7 +250,7 @@ namespace SudokuCollective.Test.TestCases.Models
                 string.Empty,
                 "http://localhost:5173",
                 "https://example-dev.com",
-                "https://example-qa.com",
+                "https://example-test.com",
                 "https://www.example.com",
                 string.Empty,
                 true,

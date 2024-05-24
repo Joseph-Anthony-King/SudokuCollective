@@ -14,8 +14,8 @@ namespace SudokuCollective.Data.Models.Payloads
     public class AppPayload : IAppPayload
     {
         private string _localUrl = string.Empty;
+        private string _TestUrl = string.Empty;
         private string _stagingUrl = string.Empty;
-        private string _qaUrl = string.Empty;
         private string _prodUrl = string.Empty;
         private string _sourceCodeUrl = string.Empty;
         private readonly UrlValidatedAttribute _urlValidator = new();
@@ -45,6 +45,29 @@ namespace SudokuCollective.Data.Models.Payloads
                 }
             }
         }
+        [Required, JsonPropertyName("TestUrl"), GuidValidated(ErrorMessage = AttributeMessages.InvalidUrl)]
+        public string TestUrl
+        {
+            get
+            {
+                return _TestUrl;
+            }
+            set
+            {
+                if (!string.IsNullOrEmpty(value) && _urlValidator.IsValid(value))
+                {
+                    _TestUrl = value;
+                }
+                else if (string.IsNullOrEmpty(value))
+                {
+                    // do nothing...
+                }
+                else
+                {
+                    throw new ArgumentException(AttributeMessages.InvalidUrl);
+                }
+            }
+        }
         [Required, JsonPropertyName("stagingUrl"), GuidValidated(ErrorMessage = AttributeMessages.InvalidUrl)]
         public string StagingUrl
         {
@@ -57,29 +80,6 @@ namespace SudokuCollective.Data.Models.Payloads
                 if (!string.IsNullOrEmpty(value) && _urlValidator.IsValid(value))
                 {
                     _stagingUrl = value;
-                }
-                else if (string.IsNullOrEmpty(value))
-                {
-                    // do nothing...
-                }
-                else
-                {
-                    throw new ArgumentException(AttributeMessages.InvalidUrl);
-                }
-            }
-        }
-        [Required, JsonPropertyName("qaUrl"), GuidValidated(ErrorMessage = AttributeMessages.InvalidUrl)]
-        public string QaUrl
-        {
-            get
-            {
-                return _qaUrl;
-            }
-            set
-            {
-                if (!string.IsNullOrEmpty(value) && _urlValidator.IsValid(value))
-                {
-                    _qaUrl = value;
                 }
                 else if (string.IsNullOrEmpty(value))
                 {
@@ -187,9 +187,9 @@ namespace SudokuCollective.Data.Models.Payloads
 
         public AppPayload(
             string name, 
-            string localUrl, 
-            string stagingUrl, 
-            string qaUrl, 
+            string localUrl,
+            string testUrl,
+            string stagingUrl,  
             string prodUrl, 
             string sourceCodeUrl,
             bool isActive, 
@@ -207,8 +207,8 @@ namespace SudokuCollective.Data.Models.Payloads
         {
             Name = name;
             LocalUrl = localUrl;
+            TestUrl = testUrl;
             StagingUrl = stagingUrl;
-            QaUrl = qaUrl;
             ProdUrl = prodUrl;
             SourceCodeUrl = sourceCodeUrl;
             IsActive = isActive;
@@ -235,9 +235,9 @@ namespace SudokuCollective.Data.Models.Payloads
 
         public AppPayload(
             string name, 
-            string localUrl, 
-            string stagingUrl, 
-            string qaUrl, 
+            string localUrl,
+            string testUrl,
+            string stagingUrl,  
             string prodUrl, 
             string sourceCodeUrl,
             bool isActive, 
@@ -255,8 +255,8 @@ namespace SudokuCollective.Data.Models.Payloads
         {
             Name = name;
             LocalUrl = localUrl;
+            TestUrl = testUrl;
             StagingUrl = stagingUrl;
-            QaUrl = qaUrl;
             ProdUrl = prodUrl;
             SourceCodeUrl = sourceCodeUrl;
             IsActive = isActive;
