@@ -834,6 +834,88 @@ namespace SudokuCollective.Api.Controllers.V1
         }
 
         /// <summary>
+        /// An endpoint to request that a password reset email; does not require a login.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns>A boolean indicating if the password reset email was sent.</returns>
+        /// <response code="200">Returns a result object with the message and isSuccess value indicating if the password reset email was sent.</response>
+        /// <response code="400">Returns a result object with the message stating any validation errors for the request.</response>
+        /// <response code="404">Returns a result object with the message stating the user was not found. </response>
+        /// <response code="500">Returns a result object with the message stating any errors processing the request.</response>
+        /// <remarks>
+        /// The RequestPasswordReset endpoint does not require a login. It sends password reset emails. The request body parameter uses the custom RequestPasswordResetRequest 
+        /// model documented in the schema.
+        /// 
+        /// The request should be structured as follows:
+        /// ```
+        ///     {                                 
+        ///       "license": string, // the app license must be valid using the applicable regex pattern as documented in the RequestPasswordResetRequest model
+        ///       "email": string,   // email is required, the applicable regex pattern is documented in the RequestPasswordResetRequest model
+        ///     }     
+        /// ```
+        /// </remarks>
+        /// 
+        /// A copy of the updated user record will be included in the payload data.
+        [AllowAnonymous]
+        [HttpPost("RequestPasswordReset")]
+        public async Task<ActionResult<Result>> RequestPasswordResetAsync([FromBody] RequestPasswordResetRequest request)
+        {
+            try
+            {
+                ArgumentNullException.ThrowIfNull(request);
+
+                string baseUrl;
+
+                if (Request != null)
+                {
+                    baseUrl = Request.Host.ToString();
+                }
+                else
+                {
+                    baseUrl = "https://SudokuCollective.com";
+                }
+
+                string emailtTemplatePath;
+
+                if (!string.IsNullOrEmpty(_environment.WebRootPath))
+                {
+                    emailtTemplatePath = Path.Combine(_environment.WebRootPath, "/Content/EmailTemplates/password-reset-requested-inlined.html");
+
+                    var currentDirectory = string.Format("{0}{1}", AppContext.BaseDirectory, "{0}");
+
+                    emailtTemplatePath = string.Format(currentDirectory, emailtTemplatePath);
+                }
+                else
+                {
+                    emailtTemplatePath = "../../Content/EmailTemplates/password-reset-requested-inlined.html";
+                }
+
+                var result = await _usersService.RequestPasswordResetAsync(request, baseUrl, emailtTemplatePath);
+
+                if (result.IsSuccess)
+                {
+                    result.Message = ControllerMessages.StatusCode200(result.Message);
+
+                    return Ok(result);
+                }
+                else
+                {
+                    result.Message = ControllerMessages.StatusCode404(result.Message);
+
+                    return NotFound(result);
+                }
+            }
+            catch (Exception e)
+            {
+                return ControllerUtilities.ProcessException<UsersController>(
+                    this,
+                    _requestService,
+                    _logger,
+                    e);
+            }
+        }
+
+        /// <summary>
         /// An endpoint to reset user password, your custom password action will plug into this endpoint; does not require a login.
         /// </summary>
         /// <param name="request"></param>
@@ -896,88 +978,6 @@ namespace SudokuCollective.Api.Controllers.V1
                 };
 
                 result = await _usersService.UpdatePasswordAsync(updatePasswordRequest);
-
-                if (result.IsSuccess)
-                {
-                    result.Message = ControllerMessages.StatusCode200(result.Message);
-
-                    return Ok(result);
-                }
-                else
-                {
-                    result.Message = ControllerMessages.StatusCode404(result.Message);
-
-                    return NotFound(result);
-                }
-            }
-            catch (Exception e)
-            {
-                return ControllerUtilities.ProcessException<UsersController>(
-                    this,
-                    _requestService,
-                    _logger,
-                    e);
-            }
-        }
-
-        /// <summary>
-        /// An endpoint to request that a password reset email; does not require a login.
-        /// </summary>
-        /// <param name="request"></param>
-        /// <returns>A boolean indicating if the password reset email was sent.</returns>
-        /// <response code="200">Returns a result object with the message and isSuccess value indicating if the password reset email was sent.</response>
-        /// <response code="400">Returns a result object with the message stating any validation errors for the request.</response>
-        /// <response code="404">Returns a result object with the message stating the user was not found. </response>
-        /// <response code="500">Returns a result object with the message stating any errors processing the request.</response>
-        /// <remarks>
-        /// The RequestPasswordReset endpoint does not require a login. It sends password reset emails. The request body parameter uses the custom RequestPasswordResetRequest 
-        /// model documented in the schema.
-        /// 
-        /// The request should be structured as follows:
-        /// ```
-        ///     {                                 
-        ///       "license": string, // the app license must be valid using the applicable regex pattern as documented in the RequestPasswordResetRequest model
-        ///       "email": string,   // email is required, the applicable regex pattern is documented in the RequestPasswordResetRequest model
-        ///     }     
-        /// ```
-        /// </remarks>
-        /// 
-        /// A copy of the updated user record will be included in the payload data.
-        [AllowAnonymous]
-        [HttpPost("RequestPasswordReset")]
-        public async Task<ActionResult<Result>> RequestPasswordResetAsync([FromBody] RequestPasswordResetRequest request)
-        {
-            try
-            {
-                ArgumentNullException.ThrowIfNull(request);
-
-                string baseUrl;
-
-                if (Request != null)
-                {
-                    baseUrl = Request.Host.ToString();
-                }
-                else
-                {
-                    baseUrl = "https://SudokuCollective.com";
-                }
-
-                string emailtTemplatePath;
-
-                if (!string.IsNullOrEmpty(_environment.WebRootPath))
-                {
-                    emailtTemplatePath = Path.Combine(_environment.WebRootPath, "/Content/EmailTemplates/password-reset-requested-inlined.html");
-
-                    var currentDirectory = string.Format("{0}{1}", AppContext.BaseDirectory, "{0}");
-
-                    emailtTemplatePath = string.Format(currentDirectory, emailtTemplatePath);
-                }
-                else
-                {
-                    emailtTemplatePath = "../../Content/EmailTemplates/password-reset-requested-inlined.html";
-                }
-
-                var result = await _usersService.RequestPasswordResetAsync(request, baseUrl, emailtTemplatePath);
 
                 if (result.IsSuccess)
                 {
