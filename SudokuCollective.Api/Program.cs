@@ -42,7 +42,7 @@ namespace SudokuCollective.Api
             }
             catch (Exception ex)
             {
-                _logger.LogCritical(message: ex.Message);
+                _logger.LogCritical(message: string.Format("{0} - Stack Trace: {1}", ex.Message, ex.StackTrace));
             }
         }
 
