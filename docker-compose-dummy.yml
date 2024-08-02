@@ -3,14 +3,21 @@ version: '3.4'
 services:
   sudokucollective.api:
     image: ${DOCKER_REGISTRY-}sudokucollectiveapi
-    depends_on:
-      - redis_server
-      - postgres_server
     build:
       context: .
       dockerfile: SudokuCollective.Api/Dockerfile
+    depends_on:
+      - redis_server
+      - postgres_server
     ports:
-      - 80
+      - 5000:5000
+      - 5001:5001
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_HTTP_PORTS=5000
+      - ASPNETCORE_HTTPs_PORTS=5001
+      - ConnectionStrings_DatabaseConnection=[Your value here];
+      - ConnectionStrings_CacheConnection=[Your value here];
     networks:
       - sudokuCollectiveNetwork
   redis_server:
@@ -27,8 +34,9 @@ services:
     container_name: postgres_server
     restart: always
     environment:
-      - POSTGRES_USER=[Your value here]
-      - POSTGRES_PASSWORD=[Your value here]
+      POSTGRES_USER: [Your value here]
+      POSTGRES_PASSWORD: [Your value here]
+      POSTGRES_DB: [Your value here]
     ports:
       - 5432:5432
     volumes:
