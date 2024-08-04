@@ -137,7 +137,7 @@ namespace SudokuCollective.Data.Services
                     payload.OwnerId,
                     user.UserName,
                     payload.LocalUrl,
-                    payload.QaUrl,
+                    payload.TestUrl,
                     payload.StagingUrl,
                     payload.ProdUrl,
                     payload.SourceCodeUrl);
@@ -740,7 +740,7 @@ namespace SudokuCollective.Data.Services
 
                 app.Name = payload.Name;
                 app.LocalUrl = payload.LocalUrl;
-                app.QaUrl = payload.QaUrl;
+                app.TestUrl = payload.TestUrl;
                 app.StagingUrl = payload.StagingUrl;
                 app.ProdUrl = payload.ProdUrl;
                 app.SourceCodeUrl = payload.SourceCodeUrl;

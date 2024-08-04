@@ -102,7 +102,7 @@ namespace SudokuCollective.Api.Controllers.V1
         /// <response code="400">Returns a result object with the message stating why the request could not be fulfilled.</response>
         /// <remarks>
         /// The GetReleaseEnvironments endpoint returns a list of release environments. Your app can be in
-        /// one of the following active environments: local, staging, QA and production.  These states
+        /// one of the following active environments: local, test, staging, and production.  These states
         /// represent the URL routes the API will direct email links to. So for example, users will 
         /// receive an email when they sign up. This value determines which URL the email will link them 
         /// too. If the app is in production and your prodUrl is https://example-app.com then the sign up
@@ -126,7 +126,7 @@ namespace SudokuCollective.Api.Controllers.V1
         ///     ]
         ///   },
         ///   {
-        ///     "label": "Quality Assurance",
+        ///     "label": "Test",
         ///     "value": 2,
         ///     "appliesTo": [ 
         ///       "releaseEnvironment"

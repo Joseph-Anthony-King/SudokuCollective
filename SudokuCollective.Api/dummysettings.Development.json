@@ -49,7 +49,7 @@
     "License": "[Your value here]",
     "LocalUrl": "[Your value here]",
     "StagingUrl": "[Your value here]",
-    "QaUrl": "[Your value here]",
+    "TestUrl": "[Your value here]",
     "ProdUrl": "[Your value here]",
     "ReleaseEnvironment": "[Your value here]",
     "DisableCustomUrls": "[Your value here]",
@@ -64,7 +64,7 @@
     "License": "[Your value here]",
     "LocalUrl": "[Your value here]",
     "StagingUrl": "[Your value here]",
-    "QaUrl": "[Your value here]",
+    "TestUrl": "[Your value here]",
     "ProdUrl": "[Your value here]",
     "ReleaseEnvironment": "[Your value here]",
     "DisableCustomUrls": "[Your value here]",
@@ -78,7 +78,7 @@
     "License": "[Your value here]",
     "LocalUrl": "[Your value here]",
     "StagingUrl": "[Your value here]",
-    "QaUrl": "[Your value here]",
+    "TestUrl": "[Your value here]",
     "ProdUrl": "[Your value here]"
   }
 }
