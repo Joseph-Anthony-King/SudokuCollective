@@ -15,9 +15,9 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_HTTP_PORTS=5000
-      - ASPNETCORE_HTTPs_PORTS=5001
-      - ConnectionStrings_DatabaseConnection=[Your value here];
-      - ConnectionStrings_CacheConnection=[Your value here];
+      - ASPNETCORE_HTTPS_PORTS=5001
+      - ConnectionStrings__DatabaseConnection=User ID=[Your value here];Password=[Your value here];Server=postgres_server;Port=5432;Database=sudokuCollectiveDB;Pooling=true;
+      - ConnectionStrings__CacheConnection=redis_server:6379,DefaultDatabase=0
     networks:
       - sudokuCollectiveNetwork
   redis_server:
@@ -36,7 +36,7 @@ services:
     environment:
       POSTGRES_USER: [Your value here]
       POSTGRES_PASSWORD: [Your value here]
-      POSTGRES_DB: [Your value here]
+      POSTGRES_DB: sudokuCollectiveDB
     ports:
       - 5432:5432
     volumes:
