@@ -13,14 +13,14 @@ using SudokuCollective.Core.Interfaces.Services;
 namespace SudokuCollective.Repos
 {
 	public class UsersRepository<TEntity>(
-                DatabaseContext context,
+                IDatabaseContext context,
                 IRequestService requestService,
-                ILogger<UsersRepository<User>> logger) : IUsersRepository<TEntity> where TEntity : User
+                ILogger<UsersRepository<TEntity>> logger) : IUsersRepository<TEntity> where TEntity : User
 	{
 		#region Fields
-		private readonly DatabaseContext _context = context;
+		private readonly DatabaseContext _context = (DatabaseContext)context;
 		private readonly IRequestService _requestService = requestService;
-		private readonly ILogger<UsersRepository<User>> _logger = logger;
+		private readonly ILogger<UsersRepository<TEntity>> _logger = logger;
         #endregion
 
         #region Methods
@@ -34,7 +34,7 @@ namespace SudokuCollective.Repos
 
                 ArgumentOutOfRangeException.ThrowIfNotEqual(0, entity.Id, nameof(entity.Id));
 
-                _context.Users.Add(entity);
+                _context.Attach(entity);
 
                 foreach (var userApp in entity.Apps)
                 {
@@ -46,105 +46,6 @@ namespace SudokuCollective.Repos
 					_context.UsersRoles.Add(userRole);
 				}
 
-                var trackedEntities = new List<string>();
-
-                foreach (var entry in _context.ChangeTracker.Entries())
-				{
-					var dbEntry = (IDomainEntity)entry.Entity;
-
-                    // If the entity is already being tracked for the update... break
-                    if (trackedEntities.Contains(dbEntry.ToString()))
-                    {
-                        break;
-                    }
-
-                    if (dbEntry is User user)
-                    {
-                        if (user.Id == entity.Id)
-                        {
-                            entry.State = EntityState.Added;
-                        }
-                        else
-                        {
-                            entry.State = EntityState.Unchanged;
-                        }
-                    }
-                    else if (dbEntry is App app)
-                    {
-                        if (app.Users.Any(u => u.Id == entity.Id))
-                        {
-                            entry.State = EntityState.Modified;
-                        }
-                        else
-                        {
-                            entry.State = EntityState.Unchanged;
-                        }
-                    }
-                    else if (dbEntry is UserApp userApp)
-					{
-						if (userApp.UserId == entity.Id)
-						{
-							entry.State = EntityState.Added;
-						}
-						else
-						{
-							entry.State = EntityState.Unchanged;
-						}
-                    }
-                    else if (dbEntry is Role role)
-                    {
-                        if (entity.Roles.Any(r => r.RoleId == role.Id))
-                        {
-                            entry.State = EntityState.Modified;
-                        }
-                        else
-                        {
-                            entry.State = EntityState.Unchanged;
-                        }
-                    }
-                    else if (dbEntry is UserRole userRole)
-					{
-						userRole.Role ??= await _context
-							.Roles
-							.FirstOrDefaultAsync(r => r.Id == userRole.RoleId);
-
-						if (entity.Roles.Any(ur => ur.Id == userRole.Id))
-						{
-							entry.State = EntityState.Added;
-						}
-						else
-						{
-							entry.State = EntityState.Unchanged;
-						}
-					}
-					else if (dbEntry is AppAdmin userAdmin)
-					{
-						if (userAdmin.AppId == entity.Apps.FirstOrDefault().AppId
-								&& userAdmin.UserId == entity.Id)
-						{
-							entry.State = EntityState.Added;
-						}
-						else
-						{
-							entry.State = EntityState.Unchanged;
-						}
-					}
-					else
-                    {
-                        if (dbEntry.Id == 0)
-                        {
-                            entry.State = EntityState.Added;
-                        }
-                        else if (entry.State != EntityState.Deleted || entry.State != EntityState.Modified || entry.State != EntityState.Added)
-						{
-							entry.State = EntityState.Detached;
-                        }
-                    }
-
-                    // Note that this entry is tracked for the update
-                    trackedEntities.Add(dbEntry.ToString());
-                }
-
 				await _context.SaveChangesAsync();
 
 				result.IsSuccess = true;
@@ -154,7 +55,7 @@ namespace SudokuCollective.Repos
 			}
 			catch (Exception e)
 			{
-				return ReposUtilities.ProcessException<UsersRepository<User>>(
+				return ReposUtilities.ProcessException<UsersRepository<TEntity>>(
 					_requestService,
 					_logger,
 					result,
@@ -198,7 +99,7 @@ namespace SudokuCollective.Repos
 			}
 			catch (Exception e)
 			{
-				return ReposUtilities.ProcessException<UsersRepository<User>>(
+				return ReposUtilities.ProcessException<UsersRepository<TEntity>>(
 						_requestService,
 						_logger,
 						result,
@@ -240,7 +141,7 @@ namespace SudokuCollective.Repos
 			}
 			catch (Exception e)
 			{
-				return ReposUtilities.ProcessException<UsersRepository<User>>(
+				return ReposUtilities.ProcessException<UsersRepository<TEntity>>(
 						_requestService,
 						_logger,
 						result,
@@ -291,7 +192,7 @@ namespace SudokuCollective.Repos
 			}
 			catch (Exception e)
 			{
-				return ReposUtilities.ProcessException<UsersRepository<User>>(
+				return ReposUtilities.ProcessException<UsersRepository<TEntity>>(
 						_requestService,
 						_logger,
 						result,
@@ -333,7 +234,7 @@ namespace SudokuCollective.Repos
 			}
 			catch (Exception e)
 			{
-				return ReposUtilities.ProcessException<UsersRepository<User>>(
+				return ReposUtilities.ProcessException<UsersRepository<TEntity>>(
 						_requestService,
 						_logger,
 						result,
@@ -398,7 +299,7 @@ namespace SudokuCollective.Repos
 			}
 			catch (Exception e)
 			{
-				return ReposUtilities.ProcessException<UsersRepository<User>>(
+				return ReposUtilities.ProcessException<UsersRepository<TEntity>>(
 						_requestService,
 						_logger,
 						result,
@@ -420,105 +321,6 @@ namespace SudokuCollective.Repos
 				
 				_context.Update(entity);
 
-				var trackedEntities = new List<string>();
-
-                foreach (var entry in _context.ChangeTracker.Entries())
-				{
-					var dbEntry = (IDomainEntity)entry.Entity;
-
-					// If the entity is already being tracked for the update... break
-					if (trackedEntities.Contains(dbEntry.ToString()))
-					{
-						break;
-					}
-
-                    if (dbEntry is User user)
-                    {
-                        if (user.Id == entity.Id)
-                        {
-                            entry.State = EntityState.Modified;
-                        }
-                        else
-                        {
-                            entry.State = EntityState.Unchanged;
-                        }
-                    }
-                    else if (dbEntry is App app)
-                    {
-                        if (app.Users.Any(u => u.Id == entity.Id))
-                        {
-                            entry.State = EntityState.Modified;
-                        }
-                        else
-                        {
-                            entry.State = EntityState.Unchanged;
-                        }
-                    }
-                    else if (dbEntry is UserApp userApp)
-					{
-						if (userApp.UserId == entity.Id)
-						{
-							entry.State = EntityState.Modified;
-						}
-						else
-						{
-							entry.State = EntityState.Unchanged;
-						}
-                    }
-                    else if (dbEntry is Role role)
-                    {
-                        if (entity.Roles.Any(r => r.RoleId == role.Id))
-                        {
-                            entry.State = EntityState.Modified;
-                        }
-                        else
-                        {
-                            entry.State = EntityState.Unchanged;
-                        }
-                    }
-                    else if (dbEntry is UserRole userRole)
-					{
-						userRole.Role ??= await _context
-							.Roles
-							.FirstOrDefaultAsync(r => r.Id == userRole.RoleId);
-
-						if (entity.Roles.Any(ur => ur.Id == userRole.Id))
-						{
-							entry.State = EntityState.Modified;
-						}
-						else
-						{
-							entry.State = EntityState.Unchanged;
-						}
-					}
-					else if (dbEntry is AppAdmin userAdmin)
-					{
-						if (userAdmin.AppId == entity.Apps.FirstOrDefault().AppId
-								&& userAdmin.UserId == entity.Id)
-						{
-							entry.State = EntityState.Modified;
-						}
-						else
-						{
-							entry.State = EntityState.Unchanged;
-						}
-					}
-					else
-                    {
-                        if (dbEntry.Id == 0)
-                        {
-                            entry.State = EntityState.Added;
-                        }
-                        else if (entry.State != EntityState.Deleted || entry.State != EntityState.Modified || entry.State != EntityState.Added)
-                        {
-                            entry.State = EntityState.Detached;
-                        }
-                    }
-
-					// Note that this entry is tracked for the update
-					trackedEntities.Add(dbEntry.ToString());
-				}
-
 				await _context.SaveChangesAsync();
 
 				result.IsSuccess = true;
@@ -528,7 +330,7 @@ namespace SudokuCollective.Repos
 			}
 			catch (Exception e)
 			{
-				return ReposUtilities.ProcessException<UsersRepository<User>>(
+				return ReposUtilities.ProcessException<UsersRepository<TEntity>>(
 						_requestService,
 						_logger,
 						result,
@@ -562,105 +364,6 @@ namespace SudokuCollective.Repos
 
 						return result;
                     }
-
-                    var trackedEntities = new List<string>();
-
-                    foreach (var entry in _context.ChangeTracker.Entries())
-                    {
-                        var dbEntry = (IDomainEntity)entry.Entity;
-
-                        // If the entity is already being tracked for the update... break
-                        if (trackedEntities.Contains(dbEntry.ToString()))
-                        {
-                            break;
-                        }
-
-                        if (dbEntry is User user)
-                        {
-                            if (user.Id == entity.Id)
-                            {
-                                entry.State = EntityState.Modified;
-                            }
-                            else
-                            {
-                                entry.State = EntityState.Unchanged;
-                            }
-                        }
-                        else if (dbEntry is App app)
-                        {
-                            if (app.Users.Any(u => u.Id == entity.Id))
-                            {
-                                entry.State = EntityState.Modified;
-                            }
-                            else
-                            {
-                                entry.State = EntityState.Unchanged;
-                            }
-                        }
-                        else if (dbEntry is UserApp userApp)
-                        {
-                            if (userApp.UserId == entity.Id)
-                            {
-                                entry.State = EntityState.Modified;
-                            }
-                            else
-                            {
-                                entry.State = EntityState.Unchanged;
-                            }
-                        }
-                        else if (dbEntry is Role role)
-                        {
-                            if (entity.Roles.Any(r => r.RoleId == role.Id))
-                            {
-                                entry.State = EntityState.Modified;
-                            }
-                            else
-                            {
-                                entry.State = EntityState.Unchanged;
-                            }
-                        }
-                        else if (dbEntry is UserRole userRole)
-                        {
-							userRole.Role ??= await _context
-                                .Roles
-                                .FirstOrDefaultAsync(r => r.Id == userRole.RoleId);
-
-                            if (entity.Roles.Any(ur => ur.Id == userRole.Id))
-                            {
-                                entry.State = EntityState.Modified;
-                            }
-                            else
-                            {
-                                entry.State = EntityState.Unchanged;
-                            }
-                        }
-                        else if (dbEntry is AppAdmin userAdmin)
-                        {
-                            if (userAdmin.AppId == entity.Apps.FirstOrDefault().AppId
-                                    && userAdmin.UserId == entity.Id)
-                            {
-                                entry.State = EntityState.Modified;
-                            }
-                            else
-                            {
-                                entry.State = EntityState.Unchanged;
-                            }
-                        }
-                        else
-                        {
-                            if (dbEntry.Id == 0)
-                            {
-                                entry.State = EntityState.Added;
-                            }
-                            else if (entry.State != EntityState.Deleted || entry.State != EntityState.Modified || entry.State != EntityState.Added)
-                            {
-                                entry.State = EntityState.Detached;
-                            }
-                        }
-
-                        // Note that this entry is tracked for the update
-                        trackedEntities.Add(dbEntry.ToString());
-                    }
                 }
 
 				await _context.SaveChangesAsync();
@@ -672,7 +375,7 @@ namespace SudokuCollective.Repos
 			}
 			catch (Exception e)
 			{
-				return ReposUtilities.ProcessException<UsersRepository<User>>(
+				return ReposUtilities.ProcessException<UsersRepository<TEntity>>(
 						_requestService,
 						_logger,
 						result,
@@ -707,151 +410,8 @@ namespace SudokuCollective.Repos
 						.Where(a => a.OwnerId == entity.Id)
 						.ToListAsync();
 
-					_context.RemoveRange(games);
-					_context.RemoveRange(apps);
-
-                    var trackedEntities = new List<string>();
-
-                    foreach (var entry in _context.ChangeTracker.Entries())
-					{
-						var dbEntry = (IDomainEntity)entry.Entity;
-
-                        // If the entity is already being tracked for the update... break
-                        if (trackedEntities.Contains(dbEntry.ToString()))
-                        {
-                            break;
-                        }
-
-                        if (dbEntry is User user)
-                        {
-                            if (user.Id == entity.Id)
-                            {
-                                entry.State = EntityState.Deleted;
-                            }
-                            else
-                            {
-                                entry.State = EntityState.Unchanged;
-                            }
-                        }
-                        else if (dbEntry is App app)
-                        {
-                            if (app.Users.Any(u => u.Id == entity.Id))
-                            {
-                                entry.State = EntityState.Modified;
-                            }
-                            else
-                            {
-                                entry.State = EntityState.Unchanged;
-                            }
-                        }
-                        else if (dbEntry is UserApp userApp)
-                        {
-                            if (userApp.UserId == entity.Id)
-                            {
-                                entry.State = EntityState.Deleted;
-                            }
-                            else
-                            {
-                                entry.State = EntityState.Unchanged;
-                            }
-                        }
-                        else if (dbEntry is Role role)
-                        {
-                            if (entity.Roles.Any(r => r.RoleId == role.Id))
-                            {
-                                entry.State = EntityState.Modified;
-                            }
-                            else
-                            {
-                                entry.State = EntityState.Unchanged;
-                            }
-                        }
-                        else if (dbEntry is UserRole userRole)
-                        {
-							userRole.Role ??= await _context
-                                .Roles
-                                .FirstOrDefaultAsync(r => r.Id == userRole.RoleId);
-
-                            if (entity.Roles.Any(ur => ur.Id == userRole.Id))
-                            {
-                                entry.State = EntityState.Deleted;
-                            }
-                            else
-                            {
-                                entry.State = EntityState.Unchanged;
-                            }
-                        }
-                        else if (dbEntry is AppAdmin userAdmin)
-                        {
-                            if (userAdmin.AppId == entity.Apps.FirstOrDefault().AppId
-                                    && userAdmin.UserId == entity.Id)
-                            {
-                                entry.State = EntityState.Deleted;
-                            }
-                            else
-                            {
-                                entry.State = EntityState.Unchanged;
-                            }
-                        }
-						else if (dbEntry is Game game)
-						{
-							if (game.User.Id == entity.Id)
-							{
-								entry.State= EntityState.Deleted;
-							}
-							else
-                            {
-                                entry.State = EntityState.Unchanged;
-                            }
-                        }
-                        else if (dbEntry is SudokuMatrix matrix)
-                        {
-                            if (matrix.Game.User.Id == entity.Id)
-                            {
-                                entry.State = EntityState.Deleted;
-                            }
-                            else
-                            {
-                                entry.State = EntityState.Unchanged;
-                            }
-                        }
-                        else if (dbEntry is SudokuCell cell)
-                        {
-                            if (cell.SudokuMatrix.Game.User.Id == entity.Id)
-                            {
-                                entry.State = EntityState.Deleted;
-                            }
-                            else
-                            {
-                                entry.State = EntityState.Unchanged;
-                            }
-                        }
-                        else if (dbEntry is SudokuSolution solution)
-                        {
-                            if (solution.Game.User.Id == entity.Id)
-                            {
-                                entry.State = EntityState.Modified;
-                            }
-                            else
-                            {
-                                entry.State = EntityState.Unchanged;
-                            }
-                        }
-                        else
-                        {
-                            if (dbEntry.Id == 0)
-                            {
-                                entry.State = EntityState.Added;
-                            }
-                            else if (entry.State != EntityState.Deleted || entry.State != EntityState.Modified || entry.State != EntityState.Added)
-                            {
-                                entry.State = EntityState.Detached;
-                            }
-                        }
-
-                        // Note that this entry is tracked for the update
-                        trackedEntities.Add(dbEntry.ToString());
-                    }
+					_context.Games.RemoveRange(games);
+					_context.Apps.RemoveRange(apps);
 
 					await _context.SaveChangesAsync();
 
@@ -868,7 +428,7 @@ namespace SudokuCollective.Repos
 			}
 			catch (Exception e)
 			{
-				return ReposUtilities.ProcessException<UsersRepository<User>>(
+				return ReposUtilities.ProcessException<UsersRepository<TEntity>>(
 						_requestService,
 						_logger,
 						result,
@@ -897,119 +457,19 @@ namespace SudokuCollective.Repos
 							.Where(g => g.UserId == entity.Id)
 							.ToListAsync();
 
-						_context.RemoveRange(games);
+                        var apps = await _context
+                            .Apps
+                            .Where(a => a.OwnerId == entity.Id)
+                            .ToListAsync();
+
+                        _context.RemoveRange(games);
+						_context.RemoveRange(apps);
 					}
 					else
 					{
 						result.IsSuccess = false;
 
 						return result;
-                    }
-
-                    var trackedEntities = new List<string>();
-
-                    foreach (var entry in _context.ChangeTracker.Entries())
-                    {
-                        var dbEntry = (IDomainEntity)entry.Entity;
-
-                        // If the entity is already being tracked for the update... break
-                        if (trackedEntities.Contains(dbEntry.ToString()))
-                        {
-                            break;
-                        }
-
-                        if (dbEntry is User user)
-                        {
-                            if (user.Id == entity.Id)
-                            {
-                                entry.State = EntityState.Deleted;
-                            }
-                            else
-                            {
-                                entry.State = EntityState.Unchanged;
-                            }
-                        }
-                        else if (dbEntry is App app)
-                        {
-                            if (app.Users.Any(u => u.Id == entity.Id))
-                            {
-                                entry.State = EntityState.Modified;
-                            }
-                            else
-                            {
-                                entry.State = EntityState.Unchanged;
-                            }
-                        }
-                        else if (dbEntry is UserApp userApp)
-                        {
-                            if (userApp.UserId == entity.Id)
-                            {
-                                entry.State = EntityState.Deleted;
-                            }
-                            else
-                            {
-                                entry.State = EntityState.Unchanged;
-                            }
-                        }
-                        else if (dbEntry is Role role)
-                        {
-                            if (entity.Roles.Any(r => r.RoleId == role.Id))
-                            {
-                                entry.State = EntityState.Modified;
-                            }
-                            else
-                            {
-                                entry.State = EntityState.Unchanged;
-                            }
-                        }
-                        else if (dbEntry is UserRole userRole)
-                        {
-							userRole.Role ??= await _context
-                                .Roles
-                                .FirstOrDefaultAsync(r => r.Id == userRole.RoleId);
-
-                            if (entity.Roles.Any(ur => ur.Id == userRole.Id))
-                            {
-                                entry.State = EntityState.Deleted;
-                            }
-                            else
-                            {
-                                entry.State = EntityState.Unchanged;
-                            }
-                        }
-                        else if (dbEntry is AppAdmin userAdmin)
-                        {
-                            if (userAdmin.AppId == entity.Apps.FirstOrDefault().AppId
-                                    && userAdmin.UserId == entity.Id)
-                            {
-                                entry.State = EntityState.Deleted;
-                            }
-                            else
-                            {
-                                entry.State = EntityState.Unchanged;
-                            }
-                        }
-                        else
-                        {
-                            if (dbEntry.Id == 0)
-                            {
-                                entry.State = EntityState.Added;
-                            }
-                            else
-                            {
-                                if (dbEntry.Id == 0)
-                                {
-                                    entry.State = EntityState.Added;
-                                }
-                                else if (entry.State != EntityState.Deleted || entry.State != EntityState.Modified || entry.State != EntityState.Added)
-                                {
-                                    entry.State = EntityState.Detached;
-                                }
-                            }
-                        }
-
-                        // Note that this entry is tracked for the update
-                        trackedEntities.Add(dbEntry.ToString());
                     }
 
 					await _context.SaveChangesAsync();
@@ -1021,7 +481,7 @@ namespace SudokuCollective.Repos
 			}
 			catch (Exception e)
 			{
-				return ReposUtilities.ProcessException<UsersRepository<User>>(
+				return ReposUtilities.ProcessException<UsersRepository<TEntity>>(
 						_requestService,
 						_logger,
 						result,
@@ -1040,7 +500,10 @@ namespace SudokuCollective.Repos
 
                 ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id, nameof(id));
 
-                var user = await _context.Users.Include(u => u.Roles).Include(u => u.Apps).FirstOrDefaultAsync(u => u.Id == id);
+                var user = await _context.Users
+					.Include(u => u.Roles)
+					.Include(u => u.Apps)
+					.FirstOrDefaultAsync(u => u.Id == id);
 
                 if (user == null)
                 {
@@ -1050,105 +513,6 @@ namespace SudokuCollective.Repos
 				user.ActivateUser();
 
 				_context.Attach(user);
-
-                var trackedEntities = new List<string>();
-
-                foreach (var entry in _context.ChangeTracker.Entries())
-				{
-					var dbEntry = (IDomainEntity)entry.Entity;
-
-                    // If the entity is already being tracked for the update... break
-                    if (trackedEntities.Contains(dbEntry.ToString()))
-                    {
-                        break;
-                    }
-
-                    if (dbEntry is User)
-                    {
-                        if (dbEntry.Id == id)
-                        {
-                            entry.State = EntityState.Modified;
-                        }
-                        else
-                        {
-                            entry.State = EntityState.Unchanged;
-                        }
-                    }
-                    else if (dbEntry is App app)
-                    {
-                        if (app.Users.Any(u => u.Id == id))
-                        {
-                            entry.State = EntityState.Modified;
-                        }
-                        else
-                        {
-                            entry.State = EntityState.Unchanged;
-                        }
-                    }
-                    else if (dbEntry is UserApp userApp)
-                    {
-                        if (userApp.UserId == id)
-                        {
-                            entry.State = EntityState.Modified;
-                        }
-                        else
-                        {
-                            entry.State = EntityState.Unchanged;
-                        }
-                    }
-                    else if (dbEntry is Role role)
-                    {
-                        if (user.Roles.Any(r => r.RoleId == role.Id))
-                        {
-                            entry.State = EntityState.Modified;
-                        }
-                        else
-                        {
-                            entry.State = EntityState.Unchanged;
-                        }
-                    }
-                    else if (dbEntry is UserRole userRole)
-                    {
-						userRole.Role ??= await _context
-                            .Roles
-                            .FirstOrDefaultAsync(r => r.Id == userRole.RoleId);
-
-                        if (user.Roles.Any(ur => ur.Id == userRole.Id))
-                        {
-                            entry.State = EntityState.Modified;
-                        }
-                        else
-                        {
-                            entry.State = EntityState.Unchanged;
-                        }
-                    }
-                    else if (dbEntry is AppAdmin userAdmin)
-                    {
-                        if (userAdmin.AppId == user.Apps.FirstOrDefault().AppId
-                                && userAdmin.UserId == id)
-                        {
-                            entry.State = EntityState.Modified;
-                        }
-                        else
-                        {
-                            entry.State = EntityState.Unchanged;
-                        }
-                    }
-                    else
-                    {
-                        if (dbEntry.Id == 0)
-                        {
-                            entry.State = EntityState.Added;
-                        }
-                        else if (entry.State != EntityState.Deleted || entry.State != EntityState.Modified || entry.State != EntityState.Added)
-                        {
-                            entry.State = EntityState.Detached;
-                        }
-                    }
-
-                    // Note that this entry is tracked for the update
-                    trackedEntities.Add(dbEntry.ToString());
-                }
 
 				await _context.SaveChangesAsync();
 
@@ -1168,7 +532,10 @@ namespace SudokuCollective.Repos
 
                 ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id, nameof(id));
 
-                var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
+                var user = await _context.Users
+                    .Include(u => u.Roles)
+                    .Include(u => u.Apps)
+                    .FirstOrDefaultAsync(u => u.Id == id);
 
                 if (user == null)
                 {
@@ -1178,105 +545,6 @@ namespace SudokuCollective.Repos
 				user.DeactiveUser();
 
 				_context.Attach(user);
-
-                var trackedEntities = new List<string>();
-
-                foreach (var entry in _context.ChangeTracker.Entries())
-				{
-					var dbEntry = (IDomainEntity)entry.Entity;
-
-                    // If the entity is already being tracked for the update... break
-                    if (trackedEntities.Contains(dbEntry.ToString()))
-                    {
-                        break;
-                    }
-
-                    if (dbEntry is User)
-                    {
-                        if (dbEntry.Id == id)
-                        {
-                            entry.State = EntityState.Modified;
-                        }
-                        else
-                        {
-                            entry.State = EntityState.Unchanged;
-                        }
-                    }
-                    else if (dbEntry is App app)
-                    {
-                        if (app.Users.Any(u => u.Id == id))
-                        {
-                            entry.State = EntityState.Modified;
-                        }
-                        else
-                        {
-                            entry.State = EntityState.Unchanged;
-                        }
-                    }
-                    else if (dbEntry is UserApp userApp)
-                    {
-                        if (userApp.UserId == id)
-                        {
-                            entry.State = EntityState.Modified;
-                        }
-                        else
-                        {
-                            entry.State = EntityState.Unchanged;
-                        }
-                    }
-                    else if (dbEntry is Role role)
-                    {
-                        if (user.Roles.Any(r => r.RoleId == role.Id))
-                        {
-                            entry.State = EntityState.Modified;
-                        }
-                        else
-                        {
-                            entry.State = EntityState.Unchanged;
-                        }
-                    }
-                    else if (dbEntry is UserRole userRole)
-                    {
-                        userRole.Role ??= await _context
-                            .Roles
-                            .FirstOrDefaultAsync(r => r.Id == userRole.RoleId);
-
-                        if (user.Roles.Any(ur => ur.Id == userRole.Id))
-                        {
-                            entry.State = EntityState.Modified;
-                        }
-                        else
-                        {
-                            entry.State = EntityState.Unchanged;
-                        }
-                    }
-                    else if (dbEntry is AppAdmin userAdmin)
-                    {
-                        if (userAdmin.AppId == user.Apps.FirstOrDefault().AppId
-                                && userAdmin.UserId == id)
-                        {
-                            entry.State = EntityState.Modified;
-                        }
-                        else
-                        {
-                            entry.State = EntityState.Unchanged;
-                        }
-                    }
-                    else
-                    {
-                        if (dbEntry.Id == 0)
-                        {
-                            entry.State = EntityState.Added;
-                        }
-                        else if (entry.State != EntityState.Deleted || entry.State != EntityState.Modified || entry.State != EntityState.Added)
-                        {
-                            entry.State = EntityState.Detached;
-                        }
-                    }
-
-                    // Note that this entry is tracked for the update
-                    trackedEntities.Add(dbEntry.ToString());
-                }
 
 				await _context.SaveChangesAsync();
 
@@ -1339,56 +607,6 @@ namespace SudokuCollective.Repos
 
 					_context.Attach(userRole);
 
-                    var trackedEntities = new List<string>();
-
-                    foreach (var entry in _context.ChangeTracker.Entries())
-					{
-						var dbEntry = (IDomainEntity)entry.Entity;
-
-                        // If the entity is already being tracked for the update... break
-                        if (trackedEntities.Contains(dbEntry.ToString()))
-                        {
-                            break;
-                        }
-
-                        if (dbEntry is UserRole ur)
-                        {
-                            if (ur.UserId == userId)
-                            {
-                                entry.State = EntityState.Added;
-                            }
-                            else
-                            {
-                                entry.State = EntityState.Modified;
-                            }
-                        }
-                        else if (dbEntry is User u)
-                        {
-                            if (u.Id == userId)
-                            {
-                                entry.State = EntityState.Modified;
-                            }
-                            else
-                            {
-                                entry.State = EntityState.Unchanged;
-                            }
-                        }
-                        else
-                        {
-                            if (dbEntry.Id == 0)
-                            {
-                                entry.State = EntityState.Added;
-                            }
-                            else if (entry.State != EntityState.Deleted || entry.State != EntityState.Modified || entry.State != EntityState.Added)
-                            {
-                                entry.State = EntityState.Detached;
-                            }
-                        }
-
-                        // Note that this entry is tracked for the update
-                        trackedEntities.Add(dbEntry.ToString());
-                    }
-
 					await _context.SaveChangesAsync();
 
 					result.IsSuccess = true;
@@ -1405,7 +623,7 @@ namespace SudokuCollective.Repos
 			}
 			catch (Exception e)
 			{
-				return ReposUtilities.ProcessException<UsersRepository<User>>(
+				return ReposUtilities.ProcessException<UsersRepository<TEntity>>(
 						_requestService,
 						_logger,
 						result,
@@ -1461,52 +679,6 @@ namespace SudokuCollective.Repos
 
 							return result;
                         }
-
-                        var trackedEntities = new List<string>();
-
-                        foreach (var entry in _context.ChangeTracker.Entries())
-                        {
-                            var dbEntry = (IDomainEntity)entry.Entity;
-
-                            // If the entity is already being tracked for the update... break
-                            if (trackedEntities.Contains(dbEntry.ToString()))
-                            {
-                                break;
-                            }
-
-                            if (dbEntry is UserRole ur)
-                            {
-                                if (ur.UserId == userId)
-                                {
-                                    entry.State = EntityState.Added;
-                                }
-                            }
-							else if (dbEntry is User u)
-							{
-								if (u.Id == userId)
-								{
-									entry.State = EntityState.Modified;
-								}
-								else
-								{
-									entry.State = EntityState.Unchanged;
-								}
-							}
-                            else
-                            {
-                                if (dbEntry.Id == 0)
-                                {
-                                    entry.State = EntityState.Added;
-                                }
-                                else if (entry.State != EntityState.Deleted || entry.State != EntityState.Modified || entry.State != EntityState.Added)
-                                {
-                                    entry.State = EntityState.Detached;
-                                }
-                            }
-
-                            // Note that this entry is tracked for the update
-                            trackedEntities.Add(dbEntry.ToString());
-                        }
                     }
 
 					await _context.SaveChangesAsync();
@@ -1524,7 +696,7 @@ namespace SudokuCollective.Repos
 			}
 			catch (Exception e)
 			{
-				return ReposUtilities.ProcessException<UsersRepository<User>>(
+				return ReposUtilities.ProcessException<UsersRepository<TEntity>>(
 						_requestService,
 						_logger,
 						result,
@@ -1552,55 +724,7 @@ namespace SudokuCollective.Repos
 
 				if (userRole != null)
                 {
-                    var trackedEntities = new List<string>();
-
-                    foreach (var entry in _context.ChangeTracker.Entries())
-					{
-						var dbEntry = (IDomainEntity)entry.Entity;
-
-                        // If the entity is already being tracked for the update... break
-                        if (trackedEntities.Contains(dbEntry.ToString()))
-                        {
-                            break;
-                        }
-
-                        if (dbEntry is UserRole ur)
-						{
-							if (ur.UserId == userId)
-							{
-								entry.State = EntityState.Deleted;
-							}
-							else
-							{
-								entry.State = EntityState.Modified;
-							}
-                        }
-                        else if (dbEntry is User u)
-                        {
-                            if (u.Id == userId)
-                            {
-                                entry.State = EntityState.Modified;
-                            }
-                            else
-                            {
-                                entry.State = EntityState.Unchanged;
-                            }
-                        }
-                        else
-                        {
-                            if (dbEntry.Id == 0)
-                            {
-                                entry.State = EntityState.Added;
-                            }
-                            else if (entry.State != EntityState.Deleted || entry.State != EntityState.Modified || entry.State != EntityState.Added)
-                            {
-                                entry.State = EntityState.Detached;
-                            }
-                        }
-
-                        // Note that this entry is tracked for the update
-                        trackedEntities.Add(dbEntry.ToString());
-                    }
+					_context.UsersRoles.Remove(userRole);
 
 					await _context.SaveChangesAsync();
 
@@ -1617,7 +741,7 @@ namespace SudokuCollective.Repos
 			}
 			catch (Exception e)
 			{
-				return ReposUtilities.ProcessException<UsersRepository<User>>(
+				return ReposUtilities.ProcessException<UsersRepository<TEntity>>(
 						_requestService,
 						_logger,
 						result,
@@ -1652,55 +776,11 @@ namespace SudokuCollective.Repos
 							return result;
                         }
 
-                        var trackedEntities = new List<string>();
+						var userRole = await _context
+							.UsersRoles
+							.FirstOrDefaultAsync(ur => ur.RoleId == roleId && ur.UserId == userId);
 
-                        foreach (var entry in _context.ChangeTracker.Entries())
-                        {
-                            var dbEntry = (IDomainEntity)entry.Entity;
-
-                            // If the entity is already being tracked for the update... break
-                            if (trackedEntities.Contains(dbEntry.ToString()))
-                            {
-                                break;
-                            }
-
-                            if (dbEntry is UserRole ur)
-                            {
-                                if (ur.UserId == userId)
-                                {
-                                    entry.State = EntityState.Deleted;
-                                }
-                                else
-                                {
-                                    entry.State = EntityState.Modified;
-                                }
-                            }
-                            else if (dbEntry is User u)
-                            {
-                                if (u.Id == userId)
-                                {
-                                    entry.State = EntityState.Modified;
-                                }
-                                else
-                                {
-                                    entry.State = EntityState.Unchanged;
-                                }
-                            }
-                            else
-                            {
-                                if (dbEntry.Id == 0)
-                                {
-                                    entry.State = EntityState.Added;
-                                }
-                                else if (entry.State != EntityState.Deleted || entry.State != EntityState.Modified || entry.State != EntityState.Added)
-                                {
-                                    entry.State = EntityState.Detached;
-                                }
-                            }
-
-                            // Note that this entry is tracked for the update
-                            trackedEntities.Add(dbEntry.ToString());
-                        }
+						_context.UsersRoles.Remove(userRole);
                     }
 
                     await _context.SaveChangesAsync();
@@ -1718,7 +798,7 @@ namespace SudokuCollective.Repos
 			}
 			catch (Exception e)
 			{
-				return ReposUtilities.ProcessException<UsersRepository<User>>(
+				return ReposUtilities.ProcessException<UsersRepository<TEntity>>(
 						_requestService,
 						_logger,
 						result,
@@ -1753,45 +833,6 @@ namespace SudokuCollective.Repos
 					};
 
 					_context.Attach(userRole);
-
-                    var trackedEntities = new List<string>();
-
-                    foreach (var entry in _context.ChangeTracker.Entries())
-					{
-						var dbEntry = (IDomainEntity)entry.Entity;
-
-                        // If the entity is already being tracked for the update... break
-                        if (trackedEntities.Contains(dbEntry.ToString()))
-                        {
-                            break;
-                        }
-
-                        if (dbEntry is UserRole ur)
-						{
-							if (ur.Id == userRole.Id)
-							{
-								entry.State = EntityState.Added;
-							}
-							else
-							{
-								entry.State = EntityState.Modified;
-							}
-						}
-						else
-                        {
-                            if (dbEntry.Id == 0)
-                            {
-                                entry.State = EntityState.Added;
-                            }
-                            else if (entry.State != EntityState.Deleted || entry.State != EntityState.Modified || entry.State != EntityState.Added)
-                            {
-                                entry.State = EntityState.Detached;
-                            }
-                        }
-
-                        // Note that this entry is tracked for the update
-                        trackedEntities.Add(dbEntry.ToString());
-                    }
 
 					await _context.SaveChangesAsync();
 
@@ -1848,95 +889,7 @@ namespace SudokuCollective.Repos
 						user.DateUpdated = DateTime.UtcNow;
 						user.IsEmailConfirmed = true;
 
-						_context.Attach(user);
-
-                        var trackedEntities = new List<string>();
-
-                        foreach (var entry in _context.ChangeTracker.Entries())
-                        {
-                            var dbEntry = (IDomainEntity)entry.Entity;
-
-                            // If the entity is already being tracked for the update... break
-                            if (trackedEntities.Contains(dbEntry.ToString()))
-                            {
-                                break;
-                            }
-
-                            if (dbEntry is User u)
-                            {
-                                if (u.Id == user.Id)
-                                {
-                                    entry.State = EntityState.Modified;
-                                }
-                                else
-                                {
-                                    entry.State = EntityState.Unchanged;
-                                }
-                            }
-                            else if (dbEntry is App app)
-                            {
-                                if (app.Users.Any(u => u.Id == user.Id))
-                                {
-                                    entry.State = EntityState.Modified;
-                                }
-                                else
-                                {
-                                    entry.State = EntityState.Unchanged;
-                                }
-                            }
-                            else if (dbEntry is UserApp userApp)
-                            {
-                                if (userApp.UserId == user.Id)
-                                {
-                                    entry.State = EntityState.Modified;
-                                }
-                                else
-                                {
-                                    entry.State = EntityState.Unchanged;
-                                }
-                            }
-                            else if (dbEntry is UserRole userRole)
-                            {
-                                userRole.Role ??= await _context
-                                    .Roles
-                                    .FirstOrDefaultAsync(r => r.Id == userRole.RoleId);
-
-                                if (user.Roles.Any(ur => ur.Id == userRole.Id))
-                                {
-                                    entry.State = EntityState.Modified;
-                                }
-                                else
-                                {
-                                    entry.State = EntityState.Unchanged;
-                                }
-                            }
-                            else if (dbEntry is AppAdmin userAdmin)
-                            {
-                                if (userAdmin.AppId == user.Apps.FirstOrDefault().AppId
-                                        && userAdmin.UserId == user.Id)
-                                {
-                                    entry.State = EntityState.Modified;
-                                }
-                                else
-                                {
-                                    entry.State = EntityState.Unchanged;
-                                }
-                            }
-                            else
-                            {
-                                if (dbEntry.Id == 0)
-                                {
-                                    entry.State = EntityState.Added;
-                                }
-                                else if (entry.State != EntityState.Deleted || entry.State != EntityState.Modified || entry.State != EntityState.Added)
-                                {
-                                    entry.State = EntityState.Detached;
-                                }
-                            }
-
-                            // Note that this entry is tracked for the update
-                            trackedEntities.Add(dbEntry.ToString());
-                        }
+						_context.Update(user);
 
                         await _context.SaveChangesAsync();
 
@@ -1961,7 +914,7 @@ namespace SudokuCollective.Repos
 			}
 			catch (Exception e)
 			{
-				return ReposUtilities.ProcessException<UsersRepository<User>>(
+				return ReposUtilities.ProcessException<UsersRepository<TEntity>>(
 						_requestService,
 						_logger,
 						result,
@@ -2011,96 +964,8 @@ namespace SudokuCollective.Repos
 
 						user.DateUpdated = DateTime.UtcNow;
 
-						_context.Attach(user);
+						_context.Update(user);
 						_context.Update(emailConfirmation);
-
-                        var trackedEntities = new List<string>();
-
-                        foreach (var entry in _context.ChangeTracker.Entries())
-                        {
-                            var dbEntry = (IDomainEntity)entry.Entity;
-
-                            // If the entity is already being tracked for the update... break
-                            if (trackedEntities.Contains(dbEntry.ToString()))
-                            {
-                                break;
-                            }
-
-                            if (dbEntry is User u)
-                            {
-                                if (u.Id == user.Id)
-                                {
-                                    entry.State = EntityState.Modified;
-                                }
-                                else
-                                {
-                                    entry.State = EntityState.Unchanged;
-                                }
-                            }
-                            else if (dbEntry is App app)
-                            {
-                                if (app.Users.Any(u => u.Id == user.Id))
-                                {
-                                    entry.State = EntityState.Modified;
-                                }
-                                else
-                                {
-                                    entry.State = EntityState.Unchanged;
-                                }
-                            }
-                            else if (dbEntry is UserApp userApp)
-                            {
-                                if (userApp.UserId == user.Id)
-                                {
-                                    entry.State = EntityState.Modified;
-                                }
-                                else
-                                {
-                                    entry.State = EntityState.Unchanged;
-                                }
-                            }
-                            else if (dbEntry is UserRole userRole)
-                            {
-                                userRole.Role ??= await _context
-                                    .Roles
-                                    .FirstOrDefaultAsync(r => r.Id == userRole.RoleId);
-
-                                if (user.Roles.Any(ur => ur.Id == userRole.Id))
-                                {
-                                    entry.State = EntityState.Modified;
-                                }
-                                else
-                                {
-                                    entry.State = EntityState.Unchanged;
-                                }
-                            }
-                            else if (dbEntry is AppAdmin userAdmin)
-                            {
-                                if (userAdmin.AppId == user.Apps.FirstOrDefault().AppId
-                                        && userAdmin.UserId == user.Id)
-                                {
-                                    entry.State = EntityState.Modified;
-                                }
-                                else
-                                {
-                                    entry.State = EntityState.Unchanged;
-                                }
-                            }
-                            else
-                            {
-                                if (dbEntry.Id == 0)
-                                {
-                                    entry.State = EntityState.Added;
-                                }
-                                else if (entry.State != EntityState.Deleted || entry.State != EntityState.Modified || entry.State != EntityState.Added)
-                                {
-                                    entry.State = EntityState.Detached;
-                                }
-                            }
-
-                            // Note that this entry is tracked for the update
-                            trackedEntities.Add(dbEntry.ToString());
-                        }
 
                         await _context.SaveChangesAsync();
 
@@ -2125,7 +990,7 @@ namespace SudokuCollective.Repos
 			}
 			catch (Exception e)
 			{
-				return ReposUtilities.ProcessException<UsersRepository<User>>(
+				return ReposUtilities.ProcessException<UsersRepository<TEntity>>(
 						_requestService,
 						_logger,
 						result,
