@@ -12,14 +12,14 @@ using SudokuCollective.Core.Interfaces.Services;
 namespace SudokuCollective.Repos
 {
     public class RolesRepository<TEntity>(
-        DatabaseContext context,
+        IDatabaseContext context,
         IRequestService requestService,
-        ILogger<RolesRepository<Role>> logger) : IRolesRepository<TEntity> where TEntity : Role
+        ILogger<RolesRepository<TEntity>> logger) : IRolesRepository<TEntity> where TEntity : Role
     {
         #region Fields
-        private readonly DatabaseContext _context = context;
+        private readonly DatabaseContext _context = (DatabaseContext)context;
         private readonly IRequestService _requestService = requestService;
-        private readonly ILogger<RolesRepository<Role>> _logger = logger;
+        private readonly ILogger<RolesRepository<TEntity>> _logger = logger;
         #endregion
 
         #region Methods
@@ -42,45 +42,6 @@ namespace SudokuCollective.Repos
 
                 _context.Attach(entity);
 
-                var trackedEntities = new List<string>();
-
-                foreach (var entry in _context.ChangeTracker.Entries())
-                {
-                    var dbEntry = (IDomainEntity)entry.Entity;
-
-                    // If the entity is already being tracked for the update... break
-                    if (trackedEntities.Contains(dbEntry.ToString()))
-                    {
-                        break;
-                    }
-
-                    if (dbEntry is Role)
-                    {
-                        if (dbEntry.Id == entity.Id)
-                        {
-                            entry.State = EntityState.Added;
-                        }
-                        else
-                        {
-                            entry.State = EntityState.Unchanged;
-                        }
-                    }
-                    else
-                    {
-                        if (dbEntry.Id == 0)
-                        {
-                            entry.State = EntityState.Added;
-                        }
-                        else if (entry.State != EntityState.Deleted || entry.State != EntityState.Modified || entry.State != EntityState.Added)
-                        {
-                            entry.State = EntityState.Detached;
-                        }
-                    }
-
-                    // Note that this entry is tracked for the update
-                    trackedEntities.Add(dbEntry.ToString());
-                }
-
                 await _context.SaveChangesAsync();
 
                 result.IsSuccess = true;
@@ -90,7 +51,7 @@ namespace SudokuCollective.Repos
             }
             catch (Exception e)
             {
-                return ReposUtilities.ProcessException<RolesRepository<Role>>(
+                return ReposUtilities.ProcessException<RolesRepository<TEntity>>(
                     _requestService, 
                     _logger, 
                     result, 
@@ -128,7 +89,7 @@ namespace SudokuCollective.Repos
             }
             catch (Exception e)
             {
-                return ReposUtilities.ProcessException<RolesRepository<Role>>(
+                return ReposUtilities.ProcessException<RolesRepository<TEntity>>(
                     _requestService, 
                     _logger, 
                     result, 
@@ -164,7 +125,7 @@ namespace SudokuCollective.Repos
             }
             catch (Exception e)
             {
-                return ReposUtilities.ProcessException<RolesRepository<Role>>(
+                return ReposUtilities.ProcessException<RolesRepository<TEntity>>(
                     _requestService, 
                     _logger, 
                     result, 
@@ -186,45 +147,6 @@ namespace SudokuCollective.Repos
                 {
                     _context.Update(entity);
 
-                    var trackedEntities = new List<string>();
-
-                    foreach (var entry in _context.ChangeTracker.Entries())
-                    {
-                        var dbEntry = (IDomainEntity)entry.Entity;
-
-                        // If the entity is already being tracked for the update... break
-                        if (trackedEntities.Contains(dbEntry.ToString()))
-                        {
-                            break;
-                        }
-
-                        if (dbEntry is Role)
-                        {
-                            if (dbEntry.Id == entity.Id)
-                            {
-                                entry.State = EntityState.Modified;
-                            }
-                            else
-                            {
-                                entry.State = EntityState.Unchanged;
-                            }
-                        }
-                        else
-                        {
-                            if (dbEntry.Id == 0)
-                            {
-                                entry.State = EntityState.Added;
-                            }
-                            else if (entry.State != EntityState.Deleted || entry.State != EntityState.Modified || entry.State != EntityState.Added)
-                            {
-                                entry.State = EntityState.Detached;
-                            }
-                        }
-
-                        // Note that this entry is tracked for the update
-                        trackedEntities.Add(dbEntry.ToString());
-                    }
-
                     await _context.SaveChangesAsync();
 
                     result.IsSuccess = true;
@@ -241,7 +163,7 @@ namespace SudokuCollective.Repos
             }
             catch (Exception e)
             {
-                return ReposUtilities.ProcessException<RolesRepository<Role>>(
+                return ReposUtilities.ProcessException<RolesRepository<TEntity>>(
                     _requestService, 
                     _logger, 
                     result, 
@@ -263,52 +185,13 @@ namespace SudokuCollective.Repos
 
                     if (await _context.Roles.AnyAsync(d => d.Id == entity.Id))
                     {
-                        _context.Attach(entity);
+                        _context.Update(entity);
                     }
                     else
                     {
                         result.IsSuccess = false;
 
                         return result;
-                    }
-
-                    var trackedEntities = new List<string>();
-
-                    foreach (var entry in _context.ChangeTracker.Entries())
-                    {
-                        var dbEntry = (IDomainEntity)entry.Entity;
-
-                        // If the entity is already being tracked for the update... break
-                        if (trackedEntities.Contains(dbEntry.ToString()))
-                        {
-                            break;
-                        }
-
-                        if (dbEntry is Role)
-                        {
-                            if (dbEntry.Id == entity.Id)
-                            {
-                                entry.State = EntityState.Modified;
-                            }
-                            else
-                            {
-                                entry.State = EntityState.Unchanged;
-                            }
-                        }
-                        else
-                        {
-                            if (dbEntry.Id == 0)
-                            {
-                                entry.State = EntityState.Added;
-                            }
-                            else if (entry.State != EntityState.Deleted || entry.State != EntityState.Modified || entry.State != EntityState.Added)
-                            {
-                                entry.State = EntityState.Detached;
-                            }
-                        }
-
-                        // Note that this entry is tracked for the update
-                        trackedEntities.Add(dbEntry.ToString());
                     }
                 }
 
@@ -320,7 +203,7 @@ namespace SudokuCollective.Repos
             }
             catch (Exception e)
             {
-                return ReposUtilities.ProcessException<RolesRepository<Role>>(
+                return ReposUtilities.ProcessException<RolesRepository<TEntity>>(
                     _requestService, 
                     _logger, 
                     result, 
@@ -342,45 +225,6 @@ namespace SudokuCollective.Repos
                 {
                     _context.Remove(entity);
 
-                    var trackedEntities = new List<string>();
-
-                    foreach (var entry in _context.ChangeTracker.Entries())
-                    {
-                        var dbEntry = (IDomainEntity)entry.Entity;
-
-                        // If the entity is already being tracked for the update... break
-                        if (trackedEntities.Contains(dbEntry.ToString()))
-                        {
-                            break;
-                        }
-
-                        if (dbEntry is Role)
-                        {
-                            if (dbEntry.Id == entity.Id)
-                            {
-                                entry.State = EntityState.Deleted;
-                            }
-                            else
-                            {
-                                entry.State = EntityState.Unchanged;
-                            }
-                        }
-                        else
-                        {
-                            if (dbEntry.Id == 0)
-                            {
-                                entry.State = EntityState.Added;
-                            }
-                            else if (entry.State != EntityState.Deleted || entry.State != EntityState.Modified || entry.State != EntityState.Added)
-                            {
-                                entry.State = EntityState.Detached;
-                            }
-                        }
-
-                        // Note that this entry is tracked for the update
-                        trackedEntities.Add(dbEntry.ToString());
-                    }
-
                     await _context.SaveChangesAsync();
 
                     result.IsSuccess = true;
@@ -397,7 +241,7 @@ namespace SudokuCollective.Repos
             }
             catch (Exception e)
             {
-                return ReposUtilities.ProcessException<RolesRepository<Role>>(
+                return ReposUtilities.ProcessException<RolesRepository<TEntity>>(
                     _requestService, 
                     _logger, 
                     result, 
@@ -430,45 +274,6 @@ namespace SudokuCollective.Repos
 
                         return result;
                     }
-
-                    var trackedEntities = new List<string>();
-
-                    foreach (var entry in _context.ChangeTracker.Entries())
-                    {
-                        var dbEntry = (IDomainEntity)entry.Entity;
-
-                        // If the entity is already being tracked for the update... break
-                        if (trackedEntities.Contains(dbEntry.ToString()))
-                        {
-                            break;
-                        }
-
-                        if (dbEntry is Role)
-                        {
-                            if (dbEntry.Id == entity.Id)
-                            {
-                                entry.State = EntityState.Deleted;
-                            }
-                            else
-                            {
-                                entry.State = EntityState.Unchanged;
-                            }
-                        }
-                        else
-                        {
-                            if (dbEntry.Id == 0)
-                            {
-                                entry.State = EntityState.Added;
-                            }
-                            else if (entry.State != EntityState.Deleted || entry.State != EntityState.Modified || entry.State != EntityState.Added)
-                            {
-                                entry.State = EntityState.Detached;
-                            }
-                        }
-
-                        // Note that this entry is tracked for the update
-                        trackedEntities.Add(dbEntry.ToString());
-                    }
                 }
 
                 await _context.SaveChangesAsync();
@@ -479,7 +284,7 @@ namespace SudokuCollective.Repos
             }
             catch (Exception e)
             {
-                return ReposUtilities.ProcessException<RolesRepository<Role>>(
+                return ReposUtilities.ProcessException<RolesRepository<TEntity>>(
                     _requestService, 
                     _logger, 
                     result, 
