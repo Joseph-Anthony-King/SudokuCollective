@@ -8,31 +8,31 @@ using Microsoft.Extensions.Logging;
 using SudokuCollective.Core.Interfaces.Models;
 using SudokuCollective.Core.Interfaces.Models.DomainEntities;
 using SudokuCollective.Core.Interfaces.Models.DomainObjects.Params;
+using SudokuCollective.Core.Interfaces.ServiceModels;
 using SudokuCollective.Core.Interfaces.Services;
 using SudokuCollective.Core.Models;
 using SudokuCollective.Data.Messages;
-using SudokuCollective.Data.Models;
 using SudokuCollective.Logs;
 using SudokuCollective.Logs.Utilities;
 
-[assembly:InternalsVisibleTo("SudokuCollective.Test")]
+[assembly: InternalsVisibleTo("SudokuCollective.Test")]
 namespace SudokuCollective.Data.Utilities
 {
     internal static class DataUtilities
     {
         internal async static Task AttachSudokuCells(
             this ISudokuMatrix matrix,
-            DatabaseContext context)
+            IDatabaseContext context)
         {
 
             var cells = await context.SudokuCells
                 .Where(cell => cell.SudokuMatrixId == matrix.Id)
                 .ToListAsync();
 
-            ((SudokuMatrix)matrix).SudokuCells = cells.ConvertAll(cell => cell);
+            ((SudokuMatrix)matrix).SudokuCells = cells.ConvertAll(cell => (SudokuCell)cell);
         }
 
-        internal async static Task<bool> IsGameInActiveApp(this IGame game, DatabaseContext context)
+        internal async static Task<bool> IsGameInActiveApp(this IGame game, IDatabaseContext context)
         {
             var app = await context.Apps.FirstOrDefaultAsync(a => a.Id == game.AppId);
 
