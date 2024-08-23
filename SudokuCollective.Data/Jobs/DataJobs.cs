@@ -6,22 +6,17 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using SudokuCollective.Core.Extensions;
 using SudokuCollective.Core.Interfaces.Jobs;
+using SudokuCollective.Core.Interfaces.ServiceModels;
 using SudokuCollective.Core.Models;
 using SudokuCollective.Data.Models;
 using SudokuCollective.Logs.Utilities;
 
 namespace SudokuCollective.Data.Jobs
 {
-    public class DataJobs : IDataJobs
+    public class DataJobs(IDatabaseContext context, ILogger<DataJobs> logger) : IDataJobs
     {
-        private readonly DatabaseContext _context;
-        private readonly ILogger<DataJobs> _logger;
-
-        public DataJobs(DatabaseContext context, ILogger<DataJobs> logger)
-        {
-            _context = context;
-            _logger = logger;
-        }
+        private readonly IDatabaseContext _context = context;
+        private readonly ILogger<DataJobs> _logger = logger;
 
         public async Task AddSolutionJobAsync(List<int> intList)
         {
@@ -47,8 +42,8 @@ namespace SudokuCollective.Data.Jobs
 
                 if (!solutionInDB)
                 {
-                    _context.Add(sudokuSolution);
-                    await _context.SaveChangesAsync();
+                    _context.SudokuSolutions.Add(sudokuSolution);
+                    await ((DatabaseContext)_context).SaveChangesAsync();
                 }
             }
             catch (Exception e)
@@ -108,7 +103,7 @@ namespace SudokuCollective.Data.Jobs
                 
                 await _context.SudokuSolutions.AddRangeAsync(newSolutions);
                 
-                await _context.SaveChangesAsync();
+                await ((DatabaseContext)_context).SaveChangesAsync();
             }
             catch (Exception e)
             {

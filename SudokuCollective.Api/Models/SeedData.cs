@@ -7,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SudokuCollective.Core.Enums;
+using SudokuCollective.Core.Interfaces.ServiceModels;
 using SudokuCollective.Core.Models;
 using SudokuCollective.Data.Models;
 
@@ -29,7 +30,7 @@ namespace SudokuCollective.Api.Models
             {
                 var createdDate = DateTime.UtcNow;
 
-                DatabaseContext context = servicesScope.ServiceProvider.GetRequiredService<DatabaseContext>();
+                DatabaseContext context = (DatabaseContext)servicesScope.ServiceProvider.GetRequiredService<IDatabaseContext>();
                 context.Database.Migrate();
 
                 if (!context.Roles.Any())

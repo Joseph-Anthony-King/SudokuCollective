@@ -70,7 +70,7 @@ namespace SudokuCollective.Api
         /// <param name="services"></param>
         public void ConfigureServices(IServiceCollection services)
         {
-            // Add logger to ConfigureServices to aid in debugging remote hosts...
+            #region Configure logging
             using var loggerFactory = LoggerFactory.Create(builder =>
             {
                 builder.SetMinimumLevel(LogLevel.Information);
@@ -81,17 +81,9 @@ namespace SudokuCollective.Api
             _logger = loggerFactory.CreateLogger<Startup>();
 
             _logger.LogInformation(message: string.Format("Initiating service configuration in {0} environment...", _environment.EnvironmentName));
+            #endregion
 
-            services.AddDbContext<DatabaseContext>(options =>
-            {
-                options.UseNpgsql(
-                    _environment.IsDevelopment() ?
-                        Configuration.GetConnectionString("DatabaseConnection") :
-                        HerokuConfiguration.ConfigureHerokuPostgresConnection(),
-                    b => b.MigrationsAssembly("SudokuCollective.Api"));
-                options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
-            });
-
+            #region Configure Swagger
             var swaggerDescription = _environment.IsDevelopment() ?
                 Configuration.GetSection("MissionStatement").Value :
                 Environment.GetEnvironmentVariable("MISSIONSTATEMENT");
@@ -189,8 +181,9 @@ namespace SudokuCollective.Api
                 var filePath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 swagger.IncludeXmlComments(filePath);
             });
+            #endregion
 
-            // Add redis cache
+            #region Configure Redis Cache
             ConfigurationOptions options;
 
             string cacheConnectionString = "";
@@ -226,8 +219,9 @@ namespace SudokuCollective.Api
                     return Task.FromResult(connection.Value);
                 };
             });
+            #endregion
 
-            // Add Hangfire services.
+            #region Configure Hangfire
             services.AddHangfire(configuration => configuration
                 .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
                 .UseInMemoryStorage()
@@ -239,10 +233,10 @@ namespace SudokuCollective.Api
                     ReferenceLoopHandling = ReferenceLoopHandling.Ignore
                 }));
 
-            // Add the processing server as IHostedService
             services.AddHangfireServer();
+            #endregion
 
-            // Add JWT Token authentication
+            #region Configure JWT Token authentication
             var tokenManagement = _environment.IsDevelopment() ?
                     Configuration.GetSection("tokenManagement").Get<TokenManagement>() :
                     new TokenManagement
@@ -291,6 +285,7 @@ namespace SudokuCollective.Api
                     }
                 };
             });
+            #endregion
 
             services.AddCors(options => options.AddPolicy(
                 "ClientsCorsPolicy",
@@ -314,9 +309,22 @@ namespace SudokuCollective.Api
                         x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
                     });
 
+            #region Configure Database DBContext
+            services
+                .AddScoped<IDatabaseContext, DatabaseContext>()
+                .AddDbContext<IDatabaseContext, DatabaseContext>(options =>
+                {
+                    options.UseNpgsql(
+                        _environment.IsDevelopment() ?
+                            Configuration.GetConnectionString("DatabaseConnection") :
+                            HerokuConfiguration.ConfigureHerokuPostgresConnection(),
+                        b => b.MigrationsAssembly("SudokuCollective.Api"));
+                    options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
+                });
+            #endregion
+
             services.AddSingleton<ICacheKeys, CacheKeys>();
             services.AddSingleton<ICachingStrategy, CachingStrategy>();
-
             services.AddScoped<IDataJobs, DataJobs>();
             services.AddScoped<IAppsRepository<App>, AppsRepository<App>>();
             services.AddScoped<IUsersRepository<User>, UsersRepository<User>>();
@@ -340,6 +348,7 @@ namespace SudokuCollective.Api
             services.AddScoped<IRequestService, RequestService>();
             services.AddScoped<IValuesService, ValuesService>();
 
+            #region Configure SMTP Email Server Configuration
             var emailMetaData = _environment.IsDevelopment() ?
                     Configuration.GetSection("emailMetaData").Get<EmailMetaData>() :
                     new EmailMetaData
@@ -352,6 +361,7 @@ namespace SudokuCollective.Api
                     };
 
             services.AddSingleton<IEmailMetaData>(emailMetaData);
+            #endregion
 
             services.AddHttpContextAccessor();
         }
