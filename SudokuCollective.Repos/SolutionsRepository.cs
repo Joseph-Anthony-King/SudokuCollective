@@ -128,7 +128,7 @@ namespace SudokuCollective.Repos
 
 			try
 			{
-				_context.AddRange(solutions.ConvertAll(s => (SudokuSolution)s));
+				_context.SudokuSolutions.AddRange(solutions.ConvertAll(s => (SudokuSolution)s));
 
 				await _context.SaveChangesAsync();
 
@@ -184,8 +184,6 @@ namespace SudokuCollective.Repos
 
                 if (await _context.SudokuSolutions.AnyAsync(r => r.Id == entity.Id))
 				{
-					_context.Update(entity);
-
 					await _context.SaveChangesAsync();
 
 					result.IsSuccess = true;
@@ -222,11 +220,7 @@ namespace SudokuCollective.Repos
 				{
 					ArgumentOutOfRangeException.ThrowIfNegativeOrZero(entity.Id, nameof(entity.Id));
 
-					if (await _context.SudokuSolutions.AnyAsync(d => d.Id == entity.Id))
-					{
-						_context.Update(entity);
-					}
-					else
+					if (!await _context.SudokuSolutions.AnyAsync(d => d.Id == entity.Id))
 					{
 						result.IsSuccess = false;
 
@@ -262,7 +256,9 @@ namespace SudokuCollective.Repos
 
                 if (await _context.SudokuSolutions.AnyAsync(d => d.Id == entity.Id))
 				{
-					_context.Remove(entity);
+					_context.SudokuSolutions.Remove(
+						await _context.SudokuSolutions
+							.FirstOrDefaultAsync(solution => solution.Id == entity.Id));
 
 					await _context.SaveChangesAsync();
 
@@ -296,17 +292,16 @@ namespace SudokuCollective.Repos
             {
                 ArgumentNullException.ThrowIfNull(entities);
 
-                var roleIds = new List<int>();
-
 				foreach (var entity in entities)
 				{
 					ArgumentOutOfRangeException.ThrowIfNegativeOrZero(entity.Id, nameof(entity.Id));
 
 					if (await _context.SudokuSolutions.AnyAsync(d => d.Id == entity.Id))
-					{
-						_context.Remove(entity);
-						roleIds.Add(entity.Id);
-					}
+                    {
+                        _context.SudokuSolutions.Remove(
+                            await _context.SudokuSolutions
+                                .FirstOrDefaultAsync(solution => solution.Id == entity.Id));
+                    }
 					else
 					{
 						result.IsSuccess = false;

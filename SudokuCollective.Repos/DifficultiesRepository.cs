@@ -190,8 +190,6 @@ namespace SudokuCollective.Repos
                     return result;
                 }
 
-                _context.Update(entity);
-
                 await _context.SaveChangesAsync();
 
                 result.IsSuccess = true;
@@ -221,11 +219,7 @@ namespace SudokuCollective.Repos
                 {
                     ArgumentOutOfRangeException.ThrowIfNegativeOrZero(entity.Id, nameof(entity.Id));
 
-                    if (await _context.Difficulties.AnyAsync(d => d.Id == entity.Id))
-                    {
-                        _context.Update(entity);
-                    }
-                    else
+                    if (!await _context.Difficulties.AnyAsync(d => d.Id == entity.Id))
                     {
                         result.IsSuccess = false;
 
@@ -268,8 +262,6 @@ namespace SudokuCollective.Repos
                     return result;
                 }
 
-                _context.Remove(entity);
-
                 if (entity.Matrices.Count == 0)
                 {
                     var games = await _context
@@ -286,6 +278,11 @@ namespace SudokuCollective.Repos
                         }
                     }
                 }
+
+                _context.Difficulties.Remove(
+                    await _context
+                        .Difficulties
+                        .FirstOrDefaultAsync(difficulty => difficulty.Id == entity.Id));
 
                 await _context.SaveChangesAsync();
 
@@ -335,7 +332,10 @@ namespace SudokuCollective.Repos
                             }
                         }
 
-                        _context.Remove(entity);
+                        _context.Difficulties.Remove(
+                            await _context
+                                .Difficulties
+                                .FirstOrDefaultAsync(difficulty => difficulty.Id == entity.Id));
                     }
                     else
                     {

@@ -145,8 +145,6 @@ namespace SudokuCollective.Repos
 
                 if (await _context.Roles.AnyAsync(r => r.Id == entity.Id))
                 {
-                    _context.Update(entity);
-
                     await _context.SaveChangesAsync();
 
                     result.IsSuccess = true;
@@ -183,11 +181,7 @@ namespace SudokuCollective.Repos
                 {
                     ArgumentOutOfRangeException.ThrowIfNegativeOrZero(entity.Id, nameof(entity.Id));
 
-                    if (await _context.Roles.AnyAsync(d => d.Id == entity.Id))
-                    {
-                        _context.Update(entity);
-                    }
-                    else
+                    if (!await _context.Roles.AnyAsync(d => d.Id == entity.Id))
                     {
                         result.IsSuccess = false;
 
@@ -223,7 +217,9 @@ namespace SudokuCollective.Repos
 
                 if (await _context.Roles.AnyAsync(d => d.Id == entity.Id))
                 {
-                    _context.Remove(entity);
+                    _context.Roles.Remove(
+                        await _context.Roles
+                            .FirstOrDefaultAsync(role => role.Id == entity.Id));
 
                     await _context.SaveChangesAsync();
 
@@ -257,16 +253,15 @@ namespace SudokuCollective.Repos
             {
                 ArgumentNullException.ThrowIfNull(entities);
 
-                var roleIds = new List<int>();
-
                 foreach (var entity in entities)
                 {
                     ArgumentOutOfRangeException.ThrowIfNegativeOrZero(entity.Id, nameof(entity.Id));
 
                     if (await _context.Roles.AnyAsync(d => d.Id == entity.Id))
                     {
-                        _context.Remove(entity);
-                        roleIds.Add(entity.Id);
+                        _context.Remove(
+                            await _context.Roles
+                                .FirstOrDefaultAsync(role => role.Id == entity.Id));
                     }
                     else
                     {
