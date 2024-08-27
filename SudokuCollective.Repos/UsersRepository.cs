@@ -318,8 +318,6 @@ namespace SudokuCollective.Repos
                 ArgumentOutOfRangeException.ThrowIfNegativeOrZero(entity.Id, nameof(entity.Id));
 
                 entity.DateUpdated = DateTime.UtcNow;
-				
-				_context.Update(entity);
 
 				await _context.SaveChangesAsync();
 
@@ -355,8 +353,6 @@ namespace SudokuCollective.Repos
 					if (await _context.Users.AnyAsync(u => u.Id == entity.Id))
 					{
 						entity.DateUpdated = dateUpdated;
-
-						_context.Attach(entity);
 					}
 					else
 					{
@@ -395,25 +391,25 @@ namespace SudokuCollective.Repos
 
                 if (await _context.Users.AnyAsync(u => u.Id == entity.Id))
 				{
-					_context.Users.Remove(entity);
+					_context.Games.RemoveRange(
+						await _context
+							.Games
+							.Include(g => g.SudokuMatrix)
+							.ThenInclude(m => m.SudokuCells)
+							.Include(g => g.SudokuSolution)
+							.Where(g => g.UserId == entity.Id)
+							.ToListAsync());
+					_context.Apps.RemoveRange(
+						await _context
+							.Apps
+							.Where(a => a.OwnerId == entity.Id)
+							.ToListAsync());
+                    _context.Users.Remove(
+						await _context
+							.Users
+							.FirstOrDefaultAsync(user => user.Id == entity.Id));
 
-					var games = await _context
-						.Games
-						.Include(g => g.SudokuMatrix)
-						.ThenInclude(m => m.SudokuCells)
-						.Include(g => g.SudokuSolution)
-						.Where(g => g.UserId == entity.Id)
-						.ToListAsync();
-
-					var apps = await _context
-						.Apps
-						.Where(a => a.OwnerId == entity.Id)
-						.ToListAsync();
-
-					_context.Games.RemoveRange(games);
-					_context.Apps.RemoveRange(apps);
-
-					await _context.SaveChangesAsync();
+                    await _context.SaveChangesAsync();
 
 					result.IsSuccess = true;
 
@@ -450,22 +446,22 @@ namespace SudokuCollective.Repos
 
 					if (await _context.Users.AnyAsync(u => u.Id == entity.Id))
 					{
-						_context.Remove(entity);
-
-						var games = await _context
-							.Games
-							.Where(g => g.UserId == entity.Id)
-							.ToListAsync();
-
-                        var apps = await _context
-                            .Apps
-                            .Where(a => a.OwnerId == entity.Id)
-                            .ToListAsync();
-
-                        _context.RemoveRange(games);
-						_context.RemoveRange(apps);
-					}
-					else
+                        _context.RemoveRange(
+							await _context
+								.Games
+								.Where(g => g.UserId == entity.Id)
+								.ToListAsync());
+						_context.RemoveRange(
+							await _context
+								.Apps
+								.Where(a => a.OwnerId == entity.Id)
+								.ToListAsync());
+                        _context.Users.Remove(
+                            await _context
+                                .Users
+                                .FirstOrDefaultAsync(user => user.Id == entity.Id));
+                    }
+                    else
 					{
 						result.IsSuccess = false;
 
@@ -512,8 +508,6 @@ namespace SudokuCollective.Repos
 
 				user.ActivateUser();
 
-				_context.Attach(user);
-
 				await _context.SaveChangesAsync();
 
 				return true;
@@ -543,8 +537,6 @@ namespace SudokuCollective.Repos
                 }
 
 				user.DeactiveUser();
-
-				_context.Attach(user);
 
 				await _context.SaveChangesAsync();
 
@@ -605,9 +597,9 @@ namespace SudokuCollective.Repos
 						RoleId = role.Id
 					};
 
-					_context.Attach(userRole);
+                    _context.UsersRoles.Add(userRole);
 
-					await _context.SaveChangesAsync();
+                    await _context.SaveChangesAsync();
 
 					result.IsSuccess = true;
 					result.Object = userRole;
@@ -667,7 +659,7 @@ namespace SudokuCollective.Repos
 								Role = role
 							};
 
-							_context.Attach(userRole);
+							_context.UsersRoles.Add(userRole);
 
 							result.Objects.Add(userRole);
 
@@ -832,7 +824,7 @@ namespace SudokuCollective.Repos
 						Role = role
 					};
 
-					_context.Attach(userRole);
+					_context.UsersRoles.Add(userRole);
 
 					await _context.SaveChangesAsync();
 
@@ -888,8 +880,6 @@ namespace SudokuCollective.Repos
 					{
 						user.DateUpdated = DateTime.UtcNow;
 						user.IsEmailConfirmed = true;
-
-						_context.Update(user);
 
                         await _context.SaveChangesAsync();
 
@@ -963,9 +953,6 @@ namespace SudokuCollective.Repos
                         }
 
 						user.DateUpdated = DateTime.UtcNow;
-
-						_context.Update(user);
-						_context.Update(emailConfirmation);
 
                         await _context.SaveChangesAsync();
 

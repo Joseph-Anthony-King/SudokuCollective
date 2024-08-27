@@ -143,8 +143,6 @@ namespace SudokuCollective.Repos
 				if (await _context.EmailConfirmations
 						.AnyAsync(ec => ec.Id == entity.Id) && tokenNotUniqueList.Count == 0)
 				{
-					_context.Update(entity);
-
 					await _context.SaveChangesAsync();
 
 					result.IsSuccess = true;
@@ -181,7 +179,9 @@ namespace SudokuCollective.Repos
 
                 if (await _context.EmailConfirmations.AnyAsync(ec => ec.Id == entity.Id))
 				{
-					_context.Remove(entity);
+					_context.EmailConfirmations.Remove(
+						await _context.EmailConfirmations
+							.FirstOrDefaultAsync(emailConfirmation => emailConfirmation.Id == entity.Id));
 
 					await _context.SaveChangesAsync();
 

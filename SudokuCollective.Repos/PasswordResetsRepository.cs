@@ -10,7 +10,7 @@ using SudokuCollective.Repos.Utilities;
 
 namespace SudokuCollective.Repos
 {
-	public class PasswordResetsRepository<TEntity>(
+    public class PasswordResetsRepository<TEntity>(
             IDatabaseContext context,
             IRequestService requestService,
             ILogger<PasswordResetsRepository<TEntity>> logger) : IPasswordResetsRepository<TEntity> where TEntity : PasswordReset
@@ -140,8 +140,6 @@ namespace SudokuCollective.Repos
 
                 if (await _context.PasswordResets.AnyAsync(a => a.Id == entity.Id))
 				{
-					_context.Update(entity);
-
 					await _context.SaveChangesAsync();
 
 					result.IsSuccess = true;
@@ -178,7 +176,9 @@ namespace SudokuCollective.Repos
 
                 if (await _context.PasswordResets.AnyAsync(pu => pu.Id == entity.Id))
 				{
-					_context.Remove(entity);
+					_context.PasswordResets.Remove(
+						await _context.PasswordResets
+							.FirstOrDefaultAsync(pw => pw.Id == entity.Id));
 
 					await _context.SaveChangesAsync();
 
