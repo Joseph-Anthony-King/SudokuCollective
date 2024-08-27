@@ -356,8 +356,6 @@ namespace SudokuCollective.Repos
                 }
 
                 entity.DateUpdated = DateTime.UtcNow;
-                    
-                _context.Update(entity);
 
                 await _context.SaveChangesAsync();
 
@@ -393,8 +391,6 @@ namespace SudokuCollective.Repos
                     if (await _context.Games.AnyAsync(g => g.Id == entity.Id))
                     {
                         entity.DateUpdated = dateUpdated;
-
-                        _context.Update(entity);
                     }
                     else
                     {
@@ -432,7 +428,9 @@ namespace SudokuCollective.Repos
 
                 if (await _context.Games.AnyAsync(g => g.Id == entity.Id))
                 {
-                    _context.Remove(entity);
+                    _context.Games.Remove(
+                        await _context.Games
+                            .FirstOrDefaultAsync(game => game.Id == entity.Id));
 
                     await _context.SaveChangesAsync();
 
@@ -471,7 +469,9 @@ namespace SudokuCollective.Repos
 
                     if (await _context.Games.AnyAsync(g => g.Id == entity.Id))
                     {
-                        _context.Remove(entity);
+                        _context.Games.Remove(
+                            await _context.Games
+                                .FirstOrDefaultAsync(game => game.Id == entity.Id));
                     }
                     else
                     {
@@ -526,20 +526,17 @@ namespace SudokuCollective.Repos
                     return result;
                 }
 
-                var query = new Game();
-
-                query = await _context
-                    .Games
-                    .Include(g => g.SudokuMatrix)
-                    .ThenInclude(g => g.Difficulty)
-                    .Include(g => g.SudokuMatrix)
-                    .ThenInclude(g => g.SudokuCells)
-                    .FirstOrDefaultAsync(predicate:
-                    g => g.Id == gameid
-                    && g.AppId == appid
-                    && g.UserId == userid);
-
-                _context.Remove(query);
+                _context.Games.Remove(
+                    await _context
+                        .Games
+                        .Include(g => g.SudokuMatrix)
+                        .ThenInclude(g => g.Difficulty)
+                        .Include(g => g.SudokuMatrix)
+                        .ThenInclude(g => g.SudokuCells)
+                        .FirstOrDefaultAsync(predicate:
+                        g => g.Id == gameid
+                        && g.AppId == appid
+                        && g.UserId == userid));
 
                 await _context.SaveChangesAsync();
 

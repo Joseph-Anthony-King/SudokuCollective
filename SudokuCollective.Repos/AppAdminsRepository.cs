@@ -145,8 +145,6 @@ namespace SudokuCollective.Repos
                     return result;
                 }
 
-                _context.Update(entity);
-
                 await _context.SaveChangesAsync();
 
                 result.IsSuccess = true;
@@ -181,11 +179,7 @@ namespace SudokuCollective.Repos
                         return result;
                     }
 
-                    if (await _context.AppAdmins.AnyAsync(d => d.Id == entity.Id))
-                    {
-                        _context.Update(entity);
-                    }
-                    else
+                    if (!await _context.AppAdmins.AnyAsync(d => d.Id == entity.Id))
                     {
                         result.IsSuccess = false;
 
@@ -226,7 +220,9 @@ namespace SudokuCollective.Repos
                     return result;
                 }
 
-                _context.Remove(entity);
+                _context.AppAdmins.Remove(
+                    await _context.AppAdmins
+                        .FirstOrDefaultAsync(appAdmin => appAdmin.Id == entity.Id));
 
                 await _context.SaveChangesAsync();
 
@@ -264,7 +260,9 @@ namespace SudokuCollective.Repos
 
                     if (await _context.AppAdmins.AnyAsync(d => d.Id == entity.Id))
                     {
-                        _context.Remove(entity);
+                        _context.AppAdmins.Remove(
+                            await _context.AppAdmins
+                                .FirstOrDefaultAsync(appAdmin => appAdmin.Id == entity.Id));
                     }
                     else
                     {

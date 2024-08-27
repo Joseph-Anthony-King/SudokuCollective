@@ -603,8 +603,6 @@ namespace SudokuCollective.Repos
 				if (await _context.Apps.AnyAsync(a => a.Id == entity.Id))
 				{
 					entity.DateUpdated = DateTime.UtcNow;
-					
-					_context.Update(entity);
 
                     await _context.SaveChangesAsync();
 
@@ -656,8 +654,6 @@ namespace SudokuCollective.Repos
                     }
                 }
 
-				_context.UpdateRange(entities);
-
                 await _context.SaveChangesAsync();
 
                 result.IsSuccess = true;
@@ -686,18 +682,19 @@ namespace SudokuCollective.Repos
 
                 if (await _context.Apps.AnyAsync(a => a.Id == entity.Id))
 				{
-					var games = await _context
-						.Games
-						.Include(g => g.SudokuMatrix)
-						.ThenInclude(g => g.Difficulty)
-						.Include(g => g.SudokuMatrix)
-						.ThenInclude(m => m.SudokuCells)
-						.Where(g => g.AppId == entity.Id)
-						.ToListAsync();
+					_context.Games.RemoveRange(
+						await _context
+							.Games
+							.Include(g => g.SudokuMatrix)
+							.ThenInclude(g => g.Difficulty)
+							.Include(g => g.SudokuMatrix)
+							.ThenInclude(m => m.SudokuCells)
+							.Where(g => g.AppId == entity.Id)
+							.ToListAsync());
 
-					_context.Games.RemoveRange(games);
-
-					_context.Remove(entity);
+					_context.Remove(
+						await _context
+							.Apps.FirstOrDefaultAsync(app => app.Id == entity.Id));
 
                     await _context.SaveChangesAsync();
 
@@ -736,17 +733,20 @@ namespace SudokuCollective.Repos
 
                     if (await _context.Apps.AnyAsync(a => a.Id == entity.Id))
 					{
-						var games = await _context
-							.Games
-							.Include(g => g.SudokuMatrix)
-							.ThenInclude(g => g.Difficulty)
-							.Include(g => g.SudokuMatrix)
-							.ThenInclude(m => m.SudokuCells)
-							.Where(g => g.AppId == entity.Id)
-							.ToListAsync();
+						_context.Games.RemoveRange(
+							await _context
+								.Games
+								.Include(g => g.SudokuMatrix)
+								.ThenInclude(g => g.Difficulty)
+								.Include(g => g.SudokuMatrix)
+								.ThenInclude(m => m.SudokuCells)
+								.Where(g => g.AppId == entity.Id)
+								.ToListAsync());
 
-						_context.Games.RemoveRange(games);
-					}
+                        _context.Remove(
+                            await _context
+                                .Apps.FirstOrDefaultAsync(app => app.Id == entity.Id));
+                    }
 					else
 					{
 						result.IsSuccess = false;
@@ -754,8 +754,6 @@ namespace SudokuCollective.Repos
 						return result;
 					}
                 }
-
-				_context.RemoveRange(entities);
 
                 await _context.SaveChangesAsync();
 
@@ -783,21 +781,17 @@ namespace SudokuCollective.Repos
 
 				ArgumentOutOfRangeException.ThrowIfNegativeOrZero(entity.Id, nameof(entity.Id));
 
-                List<Game> games = await _context
-					.Games
-					.Include(g => g.SudokuMatrix)
-					.ThenInclude(g => g.Difficulty)
-					.Include(g => g.SudokuMatrix)
-					.ThenInclude(m => m.SudokuCells)
-					.Where(g => g.AppId == entity.Id)
-					.ToListAsync();
+				_context.Games.RemoveRange(
+					await _context
+						.Games
+						.Include(g => g.SudokuMatrix)
+						.ThenInclude(g => g.Difficulty)
+						.Include(g => g.SudokuMatrix)
+						.ThenInclude(m => m.SudokuCells)
+						.Where(g => g.AppId == entity.Id)
+						.ToListAsync());
 
-				if (games.Count > 0)
-				{
-					_context.Games.RemoveRange(games);
-
-                    await _context.SaveChangesAsync();
-                }
+                await _context.SaveChangesAsync();
 
 				result.IsSuccess = true;
 				result.Object = await _context
@@ -974,8 +968,6 @@ namespace SudokuCollective.Repos
 					{
 						app.ActivateApp();
 
-						_context.Apps.Update(app);
-
                         await _context.SaveChangesAsync();
                     }
 
@@ -1016,8 +1008,6 @@ namespace SudokuCollective.Repos
 					if (app.IsActive)
 					{
 						app.DeactivateApp();
-
-						_context.Apps.Update(app);
 
                         await _context.SaveChangesAsync();
                     }

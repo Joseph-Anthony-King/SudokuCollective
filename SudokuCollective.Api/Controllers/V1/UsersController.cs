@@ -788,7 +788,7 @@ namespace SudokuCollective.Api.Controllers.V1
         /// A copy of the updated user record will be included in the payload data.
         /// </remarks>
         [Authorize(Roles = "USER")]
-        [HttpPut, Route("cancelEmailConfirmation")]
+        [HttpPut, Route("CancelEmailConfirmation")]
         public async Task<ActionResult<Result>> CancelEmailConfirmationAsync([FromBody] Request request)
         {
             try
@@ -1113,7 +1113,7 @@ namespace SudokuCollective.Api.Controllers.V1
         /// 
         /// A copy of the updated user record will be included in the payload data.
         [Authorize(Roles = "USER")]
-        [HttpPut("cancelPasswordReset")]
+        [HttpPut("CancelPasswordReset")]
         public async Task<ActionResult<Result>> CancelPasswordResetAsync([FromBody] Request request)
         {
             try
@@ -1185,7 +1185,7 @@ namespace SudokuCollective.Api.Controllers.V1
         /// 
         /// A copy of the updated user record will be included in the payload data.
         [Authorize(Roles = "USER")]
-        [HttpPut("cancelAllEmailRequests")]
+        [HttpPut("CancelAllEmailRequests")]
         public async Task<ActionResult<Result>> CancelAllEmailRequestsAsync([FromBody] Request request)
         {
             try
