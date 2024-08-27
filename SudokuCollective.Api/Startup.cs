@@ -311,7 +311,6 @@ namespace SudokuCollective.Api
 
             #region Configure Database DBContext
             services
-                .AddScoped<IDatabaseContext, DatabaseContext>()
                 .AddDbContext<IDatabaseContext, DatabaseContext>(options =>
                 {
                     options.UseNpgsql(
@@ -319,7 +318,7 @@ namespace SudokuCollective.Api
                             Configuration.GetConnectionString("DatabaseConnection") :
                             HerokuConfiguration.ConfigureHerokuPostgresConnection(),
                         b => b.MigrationsAssembly("SudokuCollective.Api"));
-                    options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
+                    options.EnableSensitiveDataLogging(_environment.IsDevelopment());
                 });
             #endregion
 

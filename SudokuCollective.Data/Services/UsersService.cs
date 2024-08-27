@@ -2553,7 +2553,7 @@ namespace SudokuCollective.Data.Services
                     return result;
                 }
 
-                var app = (App)((await _appsRepository.GetAsync(appId)).Object);
+                var app = (App)(await _appsRepository.GetAsync(appId)).Object;
                 app.License = await _appsRepository.GetLicenseAsync(app.Id);
 
                 cacheServiceResponse = await _cacheService.GetWithCacheAsync(
@@ -3149,11 +3149,11 @@ namespace SudokuCollective.Data.Services
 
                 if (passwordResetResponse.IsSuccess)
                 {
-                    bool tokenUnique;
+                    bool tokenUnique = false;
 
                     var passwordResets = passwordResetResponse
                         .Objects
-                        .ConvertAll(pu => (PasswordReset)pu);
+                        .ConvertAll(pw => (PasswordReset)pw);
 
                     do
                     {
@@ -3177,8 +3177,6 @@ namespace SudokuCollective.Data.Services
                         }
                         else
                         {
-                            passwordReset.Token = Guid.NewGuid().ToString();
-
                             tokenUnique = true;
                         }
 
