@@ -7,23 +7,17 @@ namespace SudokuCollective.HerokuIntegration.Models.Requests
 {
     internal class HerokuRedisConnectionStrings
     {
-        [JsonPropertyName("REDIS:TLS_URL")]
-        public string RedisTlsUrl { get; set; }
         [JsonPropertyName("REDIS:URL")]
         public string RedisUrl { get; set; }
 
         internal HerokuRedisConnectionStrings()
         {
-            RedisTlsUrl = string.Empty;
             RedisUrl = string.Empty;
         }
 
         [JsonConstructor]
-        internal HerokuRedisConnectionStrings(
-            string redisTlsUrl,
-            string redisUrl)
+        internal HerokuRedisConnectionStrings(string redisUrl) : base ()
         {
-            RedisTlsUrl = redisTlsUrl;
             RedisUrl = redisUrl;
         }
     }
