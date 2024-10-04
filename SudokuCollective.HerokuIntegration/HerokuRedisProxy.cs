@@ -60,13 +60,12 @@ namespace SudokuCollective.HerokuIntegration
                 #endregion
 
                 #region Get Redis Connection Values
-                string redis_tls_url, redis_url = string.Empty;
+                var redis_url = string.Empty;
                 var redisConfigs = await getResponse.Content.ReadFromJsonAsync<List<ConfigVar>>();
 
                 if (redisConfigs is not null)
                 {
-                    redis_tls_url = redisConfigs.FirstOrDefault(config => config.Name.Equals("TLS_URL")).Value;
-                    redis_url = redis_tls_url.Replace("rediss", "redis");
+                    redis_url = redisConfigs.FirstOrDefault(config => config.Name.Equals("TLS_URL"))!.Value;
                 }
                 else
                 {
@@ -83,7 +82,6 @@ namespace SudokuCollective.HerokuIntegration
                     JsonSerializer.Serialize<HerokuRedisConnectionStrings>(
                         new HerokuRedisConnectionStrings
                         {
-                            RedisTlsUrl = redis_tls_url,
                             RedisUrl = redis_url,
                         }),
                     Encoding.UTF8,

@@ -19,7 +19,6 @@ namespace SudokuCollective.Test.TestCases.HerokuIntegration
             // Arrange and Act
 
             // Assert
-            Assert.That(sut.RedisTlsUrl, Is.TypeOf<string>());
             Assert.That(sut.RedisUrl, Is.TypeOf<string>());
         }
     }
