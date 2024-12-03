@@ -12,7 +12,6 @@ using SudokuCollective.Data.Models;
 using SudokuCollective.Test.Services;
 using SudokuCollective.Data.Models.Params;
 using SudokuCollective.Data.Models.Requests;
-using Microsoft.AspNetCore.Hosting;
 
 namespace SudokuCollective.Test.TestCases.Controllers
 {

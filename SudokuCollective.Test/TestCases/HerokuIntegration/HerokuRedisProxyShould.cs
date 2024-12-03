@@ -12,10 +12,6 @@ using Microsoft.Extensions.Logging;
 using Moq.Protected;
 using Moq;
 using NUnit.Framework;
-using static Org.BouncyCastle.Crypto.Engines.SM2Engine;
-using static System.Net.WebRequestMethods;
-using SudokuCollective.Core.Models;
-using System.Security.Principal;
 
 namespace SudokuCollective.Test.TestCases.HerokuIntegration
 {

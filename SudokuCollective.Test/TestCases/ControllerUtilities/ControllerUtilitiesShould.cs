@@ -11,17 +11,7 @@ using SudokuCollective.Api.Controllers.V1;
 using SudokuCollective.Test.Services;
 using SudokuCollective.Api.Utilities;
 using SudokuCollective.Data.Models;
-using SudokuCollective.Data.Models.Params;
-using IResult = SudokuCollective.Core.Interfaces.Models.DomainObjects.Params.IResult;
-using System.Net.Http;
-using Moq.Protected;
-using System.Net;
-using System.Threading;
-using System.Text.Json;
-using System.Collections.Generic;
 using System.Text.Json.Serialization;
-using System.Text;
-using SudokuCollective.Data.Models.Results;
 
 namespace SudokuCollective.Test.TestCases.ControllerUtilitiesShould
 {
