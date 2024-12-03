@@ -1,10 +1,7 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using Moq;
 using NUnit.Framework;
 using SudokuCollective.Api.Controllers;
 using SudokuCollective.Data.Models;

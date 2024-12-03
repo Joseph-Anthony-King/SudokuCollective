@@ -1,5 +1,4 @@
-﻿using Hangfire;
-using Hangfire.Storage;
+﻿using Hangfire.Storage;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
