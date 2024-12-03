@@ -10,7 +10,6 @@ using SudokuCollective.Data.Models.Authentication;
 using SudokuCollective.Data.Models.Params;
 using SudokuCollective.Data.Models.Requests;
 using SudokuCollective.Data.Models.Results;
-using Microsoft.AspNetCore.Hosting;
 
 namespace SudokuCollective.Test.TestCases.Controllers
 {
