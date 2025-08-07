@@ -43,10 +43,28 @@ services:
       - postgres_volume:/var/lib/postgresql/data
     networks:
       - sudokuCollectiveNetwork
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: pgadmin
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: [Your value here]
+      PGADMIN_DEFAULT_PASSWORD: [Your value here]
+      PGADMIN_LISTEN_PORT: 80
+    ports:
+      - 8080:80
+    volumes:
+      - pgadmin_volume:/var/lib/pgadmin
+    depends_on:
+      - postgres_server
+    networks:
+      - sudokuCollectiveNetwork
 volumes:
   redis_volume:
     driver: local
   postgres_volume:
+    driver: local
+  pgadmin_volume:
     driver: local
 networks:
   sudokuCollectiveNetwork:
