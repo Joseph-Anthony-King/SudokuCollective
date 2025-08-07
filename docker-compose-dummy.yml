@@ -13,7 +13,7 @@ services:
       - 5000:5000
       - 5001:5001
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_ENVIRONMENT=Staging
       - ASPNETCORE_HTTP_PORTS=5000
       - ASPNETCORE_HTTPS_PORTS=5001
       - ConnectionStrings__DatabaseConnection=User ID=[Your value here];Password=[Your value here];Server=postgres_server;Port=5432;Database=sudokuCollectiveDB;Pooling=true;
