@@ -257,7 +257,7 @@ namespace SudokuCollective.Core.Models
             int ownerId,
             string createdBy,
             string localUrl,
-            string TestUrl,
+            string testUrl,
             string stagingUrl,
             string prodUrl,
             string sourceCodeUrl,
@@ -282,7 +282,7 @@ namespace SudokuCollective.Core.Models
             OwnerId = ownerId;
             CreatedBy = createdBy;
             LocalUrl = localUrl;
-            TestUrl = TestUrl;
+            TestUrl = testUrl;
             StagingUrl = stagingUrl;
             ProdUrl = prodUrl;
             SourceCodeUrl = sourceCodeUrl;
