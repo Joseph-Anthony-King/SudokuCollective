@@ -129,6 +129,8 @@ namespace SudokuCollective.Repos
                         .ThenInclude(r => r.Role)
                         .ToListAsync();
 
+                    query.Users = [];
+
                     foreach (var userApp in query.UserApps)
 					{
 						userApp.User = await _context.Users
@@ -203,6 +205,8 @@ namespace SudokuCollective.Repos
 						.ThenInclude(r => r.Role)
                         .ToListAsync();
 
+                    query.Users = [];
+
                     foreach (var userApp in query.UserApps)
 					{
 						userApp.User.Games = [];
@@ -261,6 +265,8 @@ namespace SudokuCollective.Repos
 					// Filter games by app
 					foreach (var app in query)
 					{
+						app.Users = [];
+
 						foreach (var userApp in app.UserApps)
 						{
 							userApp.User.Games = [];
@@ -325,6 +331,8 @@ namespace SudokuCollective.Repos
 					// Filter games by app
 					foreach (var app in query)
 					{
+						app.Users = [];
+
 						foreach (var userApp in app.UserApps)
 						{
 							userApp.User.Games = [];
@@ -384,11 +392,13 @@ namespace SudokuCollective.Repos
                     .OrderBy(a => a.Id)
                     .ToListAsync();
 
-				if (query.Count != 0)
+			if (query.Count != 0)
 				{
 					// Filter games by app
 					foreach (var app in query)
 					{
+						app.Users = [];
+
 						foreach (var userApp in app.UserApps)
 						{
 							userApp.User.Games = [];
