@@ -1,0 +1,14 @@
+{
+  "Servers": {
+    "1": {
+      "Name": "SudokuCollective PostgreSQL",
+      "Group": "Servers",
+      "Host": "postgres_server",
+      "Port": 5432,
+      "MaintenanceDB": "sudokuCollectiveDB",
+      "Username": "sudokucollectivedbo",
+      "SSLMode": "prefer",
+      "PassFile": "/pgadmin4/pgpass"
+    }
+  }
+}

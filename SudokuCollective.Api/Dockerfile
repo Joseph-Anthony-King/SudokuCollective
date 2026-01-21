@@ -19,4 +19,4 @@ RUN dotnet publish "SudokuCollective.Api/SudokuCollective.Api.csproj" -c Release
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-CMD ASPNETCORE_URLS=http://*:$PORT dotnet SudokuCollective.Api.dll --environment Production
+ENTRYPOINT ["dotnet", "SudokuCollective.Api.dll"]
