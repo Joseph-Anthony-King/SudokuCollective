@@ -1,0 +1,2 @@
+postgres_server:5432:sudokuCollectiveDB:sudokucollectivedbo:P@ssw0rd
+postgres_server:5432:*:sudokucollectivedbo:P@ssw0rd
