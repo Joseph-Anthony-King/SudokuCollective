@@ -223,10 +223,12 @@ namespace SudokuCollective.Test.TestCases.Controllers
         public async Task SuccessfullyGetAppUsers()
         {
             // Arrange
+            var retrieveAppUsers = true;
 
             // Act
             var actionResult = await sutSuccess.GetAppUsersAsync(
                 1,
+                retrieveAppUsers,
                 request);
             var result = (Result)((OkObjectResult)actionResult.Result).Value;
             var users = result.Payload.ConvertAll(u => (User)u);
@@ -245,9 +247,99 @@ namespace SudokuCollective.Test.TestCases.Controllers
         public async Task IssueErrorAndMessageShouldSuccessfullyGetAppUsersFail()
         {
             // Arrange
+            var retrieveAppUsers = true;
 
             // Act
             var actionResult = await sutFailure.GetAppUsersAsync(
+                1,
+                retrieveAppUsers,
+                request);
+            var result = (Result)((NotFoundObjectResult)actionResult.Result).Value;
+            var message = result.Message;
+            var statusCode = ((NotFoundObjectResult)actionResult.Result).StatusCode;
+
+            // Assert
+            Assert.That(actionResult, Is.InstanceOf<ActionResult<Result>>());
+            Assert.That(result, Is.InstanceOf<Result>());
+            Assert.That(message, Is.EqualTo("Status Code 404: Users were not found."));
+            Assert.That(statusCode, Is.EqualTo(404));
+        }
+
+        [Test, Category("Controllers")]
+        public async Task SuccessfullyGetNonAppUsers()
+        {
+            // Arrange
+            var retrieveAppUsers = false;
+
+            // Act
+            var actionResult = await sutSuccess.GetAppUsersAsync(
+                1,
+                retrieveAppUsers,
+                request);
+            var result = (Result)((OkObjectResult)actionResult.Result).Value;
+            var users = result.Payload.ConvertAll(u => (User)u);
+            var message = result.Message;
+            var statusCode = ((OkObjectResult)actionResult.Result).StatusCode;
+
+            // Assert
+            Assert.That(actionResult, Is.InstanceOf<ActionResult<Result>>());
+            Assert.That(result, Is.InstanceOf<Result>());
+            Assert.That(message, Is.EqualTo("Status Code 200: Users were found."));
+            Assert.That(statusCode, Is.EqualTo(200));
+            Assert.That(users, Is.InstanceOf<List<User>>());
+        }
+
+        [Test, Category("Controllers")]
+        public async Task IssueErrorAndMessageShouldSuccessfullyGetNonAppUsersFail()
+        {
+            // Arrange
+            var retrieveAppUsers = false;
+
+            // Act
+            var actionResult = await sutFailure.GetAppUsersAsync(
+                1,
+                retrieveAppUsers,
+                request);
+            var result = (Result)((NotFoundObjectResult)actionResult.Result).Value;
+            var message = result.Message;
+            var statusCode = ((NotFoundObjectResult)actionResult.Result).StatusCode;
+
+            // Assert
+            Assert.That(actionResult, Is.InstanceOf<ActionResult<Result>>());
+            Assert.That(result, Is.InstanceOf<Result>());
+            Assert.That(message, Is.EqualTo("Status Code 404: Users were not found."));
+            Assert.That(statusCode, Is.EqualTo(404));
+        }
+
+        [Test, Category("Controllers")]
+        public async Task SuccessfullyGetNonAppUsersUsingEndpoint()
+        {
+            // Arrange
+
+            // Act
+            var actionResult = await sutSuccess.GetNonAppUsersAsync(
+                1,
+                request);
+            var result = (Result)((OkObjectResult)actionResult.Result).Value;
+            var users = result.Payload.ConvertAll(u => (User)u);
+            var message = result.Message;
+            var statusCode = ((OkObjectResult)actionResult.Result).StatusCode;
+
+            // Assert
+            Assert.That(actionResult, Is.InstanceOf<ActionResult<Result>>());
+            Assert.That(result, Is.InstanceOf<Result>());
+            Assert.That(message, Is.EqualTo("Status Code 200: Users were found."));
+            Assert.That(statusCode, Is.EqualTo(200));
+            Assert.That(users, Is.InstanceOf<List<User>>());
+        }
+
+        [Test, Category("Controllers")]
+        public async Task IssueErrorAndMessageShouldSuccessfullyGetNonAppUsersUsingEndpointFail()
+        {
+            // Arrange
+
+            // Act
+            var actionResult = await sutFailure.GetNonAppUsersAsync(
                 1,
                 request);
             var result = (Result)((NotFoundObjectResult)actionResult.Result).Value;
@@ -441,7 +533,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             var messageThree = resultThree.Message;
             var statusCodeThree = ((ObjectResult)actionResultThree.Result).StatusCode;
 
-            var actionResultFour = await sutInvalid.GetAppUsersAsync(1, request);
+            var actionResultFour = await sutInvalid.GetAppUsersAsync(1, true, request);
             var resultFour = (Result)
                 ((ObjectResult)actionResultFour.Result)
                     .Value;

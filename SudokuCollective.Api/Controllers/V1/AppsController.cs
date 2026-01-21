@@ -678,9 +678,10 @@ namespace SudokuCollective.Api.Controllers.V1
         }
 
         /// <summary>
-        /// An endpoint to get a list of all users registered to an app, requires the superuser or admin role.
+        /// An endpoint to get a list of all users registered or non registered to an app, requires the superuser or admin role; retrieveAppUsers indicates if you want registered users (true) or non registered users (false).
         /// </summary>
         /// <param name="id"></param>
+        /// <param name="retrieveAppUsers"></param>
         /// <param name="request"></param>
         /// <returns>A list of all users registered to an app.</returns>
         /// <response code="200">Returns a result object with an apps registered users included as the payload array.</response>
@@ -731,9 +732,10 @@ namespace SudokuCollective.Api.Controllers.V1
         /// ```
         /// </remarks>
         [Authorize(Roles = "SUPERUSER, ADMIN")]
-        [HttpPost, Route("{id}/GetAppUsers")]
+        [HttpPost, Route("{id}/GetAppUsers/{retrieveAppUsers}")]
         public async Task<ActionResult<Result>> GetAppUsersAsync(
             int id,
+            bool retrieveAppUsers,
             [FromBody] Request request)
         {
             try
@@ -755,7 +757,7 @@ namespace SudokuCollective.Api.Controllers.V1
                             id,
                             request.RequestorId,
                             request.Paginator,
-                            true);
+                            retrieveAppUsers);
 
                     if (result.IsSuccess)
                     {
