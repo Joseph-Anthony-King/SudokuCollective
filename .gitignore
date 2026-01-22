@@ -279,3 +279,7 @@ __pycache__/
 # docker compose
 docker-compose.yml
 docker-compose.override.yml
+# pgAdmin sensitive configuration files
+add_server.py
+pgadmin-servers.json
+pgadmin-pgpass
