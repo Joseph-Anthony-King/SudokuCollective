@@ -1005,7 +1005,7 @@ namespace SudokuCollective.Data.Services
                 if (requestor != null && !requestor.IsSuperUser)
                 {
                     // Filter out user emails from the frontend...
-                    foreach (var user in result.Payload)
+                    foreach (var user in appResponse.Objects)
                     {
                         var emailConfirmed = ((IUser)user).IsEmailConfirmed;
                         ((IUser)user).NullifyEmail();
@@ -1013,12 +1013,18 @@ namespace SudokuCollective.Data.Services
                         var u = (UserDTO)((User)user).Cast<UserDTO>();
                         users.Add(u);
                     }
+                } else {
+
+                    foreach (var user in appResponse.Objects)
+                    {
+                        var u = (UserDTO)((User)user).Cast<UserDTO>();
+                        users.Add(u);
+                    }
                 }
-
-                result.Payload = users.ConvertAll(u => (object)u);
-
+                
                 result.IsSuccess = appResponse.IsSuccess;
                 result.Message = UsersMessages.UsersFoundMessage;
+                result.Payload = users.ConvertAll(u => (object)u);
 
                 return result;
             }
