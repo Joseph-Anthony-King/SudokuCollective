@@ -9,11 +9,15 @@
     <DockerServiceName>sudokucollective.api</DockerServiceName>
   </PropertyGroup>
   <ItemGroup>
+    <None Include="add_server.py" />
     <None Include="docker-compose.override.yml">
       <DependentUpon>docker-compose.yml</DependentUpon>
     </None>
     <None Include="docker-compose.yml" />
     <None Include=".dockerignore" />
+    <None Include="dummy_add_server.py" />
+    <None Include="dummy_pgadmin-pgpass" />
     <None Include="pgadmin-pgpass" />
+    <None Include="README_PGADMIN.md" />
   </ItemGroup>
 </Project>

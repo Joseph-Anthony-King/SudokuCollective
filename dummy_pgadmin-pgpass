@@ -1,0 +1,7 @@
+# DUMMY FILE - DO NOT USE IN PRODUCTION
+# Copy this file to 'pgadmin-pgpass' and update with your actual credentials
+# Format: hostname:port:database:username:password
+# For more info: https://www.postgresql.org/docs/current/libpq-pgpass.html
+
+your-postgres-host:5432:your-database-name:your-username:your-password
+your-postgres-host:5432:*:your-username:your-password
