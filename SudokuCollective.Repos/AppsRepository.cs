@@ -900,9 +900,7 @@ namespace SudokuCollective.Repos
 				var user = await _context
 					.Users
 					.Include(u => u.Apps)
-					.FirstOrDefaultAsync(
-							u => u.Id == userId &&
-							u.Apps.Any(ua => ua.AppId == app.Id));
+					.FirstOrDefaultAsync(u => u.Id == userId);
 
 				if (user == null || app == null)
 				{
@@ -938,7 +936,7 @@ namespace SudokuCollective.Repos
                 }
 
 				var userApp = app.UserApps
-					.Where(ua => ua.UserId == userId)
+					.Where(ua => ua.UserId == userId &&ua.AppId == app.Id)
 					.FirstOrDefault();
 
 				_context.UsersApps.Remove(userApp);
