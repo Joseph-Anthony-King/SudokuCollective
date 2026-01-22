@@ -1417,6 +1417,18 @@ namespace SudokuCollective.Data.Services
                 }
                 #endregion
 
+                // Remove any app cache items which may exist
+                var removeKeys2 = new List<string> {
+                    string.Format(_cacheKeys.GetAppCacheKey, app.Id),
+                    string.Format(_cacheKeys.GetAppByLicenseCacheKey, app.License),
+                    string.Format(_cacheKeys.GetAppUsersCacheKey, app.Id),
+                    string.Format(_cacheKeys.GetNonAppUsersCacheKey, app.Id),
+                    string.Format(_cacheKeys.GetMyAppsCacheKey, userId),
+                    string.Format(_cacheKeys.GetMyRegisteredCacheKey, userId)
+                };
+
+                await _cacheService.RemoveKeysAsync(_distributedCache, removeKeys2);
+
                 result.IsSuccess = appAdminResult.IsSuccess;
                 result.Message = UsersMessages.UserHasBeenPromotedToAdminMessage;
                 result.Payload.Add((await _usersRepository.GetAsync(userId)).Object);
