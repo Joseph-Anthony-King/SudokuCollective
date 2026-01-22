@@ -300,6 +300,12 @@ namespace SudokuCollective.Api
 
             services.AddMvc(options => options.EnableEndpointRouting = false);
 
+            services.AddRouting(options =>
+            {
+                options.LowercaseUrls = true;
+                options.LowercaseQueryStrings = false;
+            });
+
             services.AddControllers()
                     .AddJsonOptions(x =>
                     {
