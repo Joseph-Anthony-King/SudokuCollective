@@ -23,7 +23,7 @@ namespace SudokuCollective.Api.Controllers.V1
     /// <param name="httpContextAccessor"></param>
     /// <param name="logger"></param>
     [Authorize(Roles = "SUPERUSER, ADMIN, USER")]
-    [Route("api/[controller]")]
+    [Route("api/v1/[controller]")]
     [ApiController]
     public class LicensesController(
         IAppsService appsService,
@@ -51,17 +51,18 @@ namespace SudokuCollective.Api.Controllers.V1
         /// The payload should be a LicensePayload as documented in the schema. The request should be structured as follows:
         /// ```
         ///     {                                 
-        ///       "license": string,      // the app license must be valid using the applicable regex pattern as documented in the request schema below
-        ///       "requestorId": integer, // the user id for the requesting logged in user
-        ///       "appId": integer,       // the app id for the app the requesting user is logged into
-        ///       "paginator": paginator, // an object to control list pagination, not applicable here
+        ///       "license": string,         // the app license must be valid using the applicable regex pattern as documented in the request schema below
+        ///       "requestorId": integer,    // the user id for the requesting logged in user
+        ///       "appId": integer,          // the app id for the app the requesting user is logged into
+        ///       "paginator": paginator,    // an object to control list pagination, not applicable here
         ///       "payload": {
-        ///         "name": string,        // name is required, represents the apps name
-        ///         "ownerId": integer     // ownerId is required, represents the signed in users id
-        ///         "localUrl": string,    // localUrl is not required, an example is https://localhost:8081; regex documented in app schema below
-        ///         "TestUrl": string,     // TestUrl is not required, an exampled is https://example-test.herokuapp.com; regex documented in app schema below
-        ///         "stagingUrl": string,  // stagingUrl is not required, an exampled is https://example-app.herokuapp.com; regex documented in app schema below
-        ///         "prodUrl": string,     // prodUrl is not required, an exampled is https://example-app.com; regex documented in app schema below
+        ///         "name": string,          // name is required, represents the apps name
+        ///         "ownerId": integer       // ownerId is required, represents the signed in users id
+        ///         "localUrl": string,      // localUrl is not required, an example is https://localhost:8081; regex documented in app schema below
+        ///         "TestUrl": string,       // TestUrl is not required, an example is https://example-test.herokuapp.com; regex documented in app schema below
+        ///         "stagingUrl": string,    // stagingUrl is not required, an example is https://example-app.herokuapp.com; regex documented in app schema below
+        ///         "prodUrl": string,       // prodUrl is not required, an example is https://example-app.com; regex documented in app schema below
+        ///         "sourceCodeUrl": string, // sourceCodeUrl is not required, an example is https://github.com/Joseph-Anthony-King
         ///       },
         ///     }     
         /// ```
