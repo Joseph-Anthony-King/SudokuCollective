@@ -728,5 +728,64 @@ namespace SudokuCollective.Test.TestCases.Controllers
             Assert.That(message, Is.EqualTo("Status Code 404: Apps were not found."));
             Assert.That(statusCode, Is.EqualTo(404));
         }
+
+        [Test, Category("Controllers")]
+        public async Task ReturnBadRequestWhenDeleteAsyncReceivesInvalidId()
+        {
+            // Arrange
+            var invalidId = 0;
+            var license = TestObjects.GetSecondLicense();
+
+            // Act
+            var actionResult = await sutSuccess.DeleteAsync(invalidId, license, request);
+            var result = (Result)((BadRequestObjectResult)actionResult.Result).Value;
+            var message = result.Message;
+            var statusCode = ((BadRequestObjectResult)actionResult.Result).StatusCode;
+
+            // Assert
+            Assert.That(actionResult, Is.InstanceOf<ActionResult<Result>>());
+            Assert.That(result, Is.InstanceOf<Result>());
+            Assert.That(message, Does.Contain("Status Code 400"));
+            Assert.That(statusCode, Is.EqualTo(400));
+        }
+
+        [Test, Category("Controllers")]
+        public async Task ReturnBadRequestWhenDeleteAsyncReceivesNullRequest()
+        {
+            // Arrange
+            var validId = 2;
+            var license = TestObjects.GetSecondLicense();
+
+            // Act
+            var actionResult = await sutSuccess.DeleteAsync(validId, license, null);
+            var result = (Result)((BadRequestObjectResult)actionResult.Result).Value;
+            var message = result.Message;
+            var statusCode = ((BadRequestObjectResult)actionResult.Result).StatusCode;
+
+            // Assert
+            Assert.That(actionResult, Is.InstanceOf<ActionResult<Result>>());
+            Assert.That(result, Is.InstanceOf<Result>());
+            Assert.That(message, Does.Contain("Status Code 400"));
+            Assert.That(statusCode, Is.EqualTo(400));
+        }
+
+        [Test, Category("Controllers")]
+        public async Task ReturnBadRequestWhenDeleteAsyncReceivesNullLicense()
+        {
+            // Arrange
+            var validId = 2;
+
+            // Act
+            var actionResult = await sutSuccess.DeleteAsync(validId, null, request);
+            var result = (Result)((BadRequestObjectResult)actionResult.Result).Value;
+            var message = result.Message;
+            var statusCode = ((BadRequestObjectResult)actionResult.Result).StatusCode;
+
+            // Assert
+            Assert.That(actionResult, Is.InstanceOf<ActionResult<Result>>());
+            Assert.That(result, Is.InstanceOf<Result>());
+            Assert.That(message, Does.Contain("Status Code 400"));
+            Assert.That(statusCode, Is.EqualTo(400));
+        }
     }
 }

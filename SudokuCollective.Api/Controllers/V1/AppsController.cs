@@ -224,8 +224,8 @@ namespace SudokuCollective.Api.Controllers.V1
         /// <response code="404">Returns a result object with the message stating the app was not found.</response>
         /// <response code="500">Returns a result object with the message stating any errors deleting the app.</response>
         /// <remarks>
-        /// The Delete endpoint requires the user to be logged in. Requires the superuser or admin role. The query parameters id and license refers to the relevant app. 
-        /// The request body parameter uses the request model.
+        /// The Delete endpoint requires the user to be logged in. Requires the superuser or admin role. The query parameters id and license refers to
+        /// the relevant app that you want deleted. The request body parameter uses the request model.
         /// 
         /// The request should be structured as follows:
         /// ```
@@ -239,7 +239,7 @@ namespace SudokuCollective.Api.Controllers.V1
         /// ```
         /// </remarks>
         [Authorize(Roles = "SUPERUSER, ADMIN")]
-        [HttpDelete, Route("{id}")]
+        [HttpDelete, Route("{id}/{license}")]
         public async Task<ActionResult<Result>> DeleteAsync(
             int id,
             string license,
@@ -249,9 +249,9 @@ namespace SudokuCollective.Api.Controllers.V1
             {
                 if (id == 0) throw new ArgumentException(ControllerMessages.IdCannotBeZeroMessage);
 
-                if (string.IsNullOrEmpty(license)) throw new ArgumentNullException(nameof(request));
-
                 ArgumentNullException.ThrowIfNull(request);
+
+                ArgumentNullException.ThrowIfNull(license);
 
                 _requestService.Update(request);
 
