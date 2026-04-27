@@ -451,8 +451,9 @@ namespace SudokuCollective.Data.Extensions
                         OwnerId = Convert.ToInt32(element.GetProperty("ownerId").ToString()),
                         LocalUrl = element.GetProperty("localUrl").ToString(),
                         StagingUrl = element.GetProperty("stagingUrl").ToString(),
-                        TestUrl = element.GetProperty("TestUrl").ToString(),
-                        ProdUrl = element.GetProperty("prodUrl").ToString()
+                        TestUrl = element.GetProperty("testUrl").ToString(),
+                        ProdUrl = element.GetProperty("prodUrl").ToString(),
+                        SourceCodeUrl = element.GetProperty("sourceCodeUrl").ToString()
                     };
 
                     return true;
