@@ -137,9 +137,9 @@ namespace SudokuCollective.Api.Controllers.V1
         ///       "payload": {
         ///         "name": string,        // name is required, represents the apps name
         ///         "localUrl": string,    // localUrl is not required, an example is https://localhost:8081; regex documented in app schema below
-        ///         "stagingUrl": string,  // stagingUrl is not required, an exampled is https://example-app.herokuapp.com; regex documented in app schema below
-        ///         "TestUrl": string,     // TestUrl is not required, an exampled is https://example-test.herokuapp.com; regex documented in app schema below
-        ///         "prodUrl": string,     // prodUrl is not required, an exampled is https://example-app.com; regex documented in app schema below
+        ///         "stagingUrl": string,  // stagingUrl is not required, an example is https://example-app.herokuapp.com; regex documented in app schema below
+        ///         "TestUrl": string,     // TestUrl is not required, an example is https://example-test.herokuapp.com; regex documented in app schema below
+        ///         "prodUrl": string,     // prodUrl is not required, an example is https://example-app.com; regex documented in app schema below
         ///         "isActive": boolean,   // isActive is required, represents the apps active status
         ///         "environment": integer // environment is required, this integer represents the apps release status: local, test, staging, or production
         ///         "permitSuperUserAccess": boolean, // permitSuperUserAccess is required, indicates if the super user has to register for access

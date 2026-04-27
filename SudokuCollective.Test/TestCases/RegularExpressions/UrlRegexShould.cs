@@ -41,6 +41,19 @@ namespace SudokuCollective.Test.TestCases.RegularExpressions
         }
 
         [Test, Category("Regex")]
+        public void PermitEmptyStrings()
+        {
+            // Arrange
+            var url = "";
+
+            // Act
+            var result = sut.IsMatch(url);
+
+            // Assert
+            Assert.That(result, Is.True);
+        }
+
+        [Test, Category("Regex")]
         public void RejectInvalidUrls()
         {
             // Arrange

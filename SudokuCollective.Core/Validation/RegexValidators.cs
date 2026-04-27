@@ -15,7 +15,7 @@ namespace SudokuCollective.Core.Validation
         /* User name must be at least 4 characters and can contain alphanumeric characters and special characters of
          * [! @ # $ % ^ & * + = ? - _ . ,] */
         internal const string UserNameRegexPattern = @"^[a-zA-Z0-9!@#$%^&*+=<>?-_.,].{3,}$";
-        // Must be a valid url with an http or https protocol
-        internal const string UrlRegexPattern = @"^(ht|f)tp(s?)\:\/\/[0-9a-zA-Z]([-.\w]*[0-9a-zA-Z])*(:(0-9)*)*(\/?)([a-zA-Z0-9\-\.\?\,\'\/\\\+&%\$#_]*)?$";
+        // Must be a valid url with an http or https protocol, or empty string
+        internal const string UrlRegexPattern = @"^$|^(ht|f)tp(s?)\:\/\/[0-9a-zA-Z]([-.\w]*[0-9a-zA-Z])*(:(0-9)*)*(\/?)([a-zA-Z0-9\-\.\?\,\'\/\\\+&%\$#_]*)?$";
     }
 }

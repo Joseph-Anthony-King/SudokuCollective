@@ -11,7 +11,7 @@ namespace SudokuCollective.Data.Models.Payloads
     public class LicensePayload : ILicensePayload
     {
         private string _localUrl = string.Empty;
-        private string _TestUrl = string.Empty;
+        private string _testUrl = string.Empty;
         private string _stagingUrl = string.Empty;
         private string _prodUrl = string.Empty;
         private string _sourceCodeUrl = string.Empty;
@@ -44,18 +44,18 @@ namespace SudokuCollective.Data.Models.Payloads
                 }
             }
         }
-        [JsonPropertyName("TestUrl")]
+        [JsonPropertyName("testUrl")]
         public string TestUrl
         {
             get
             {
-                return _TestUrl;
+                return _testUrl;
             }
             set
             {
                 if (!string.IsNullOrEmpty(value) && _urlValidator.IsValid(value))
                 {
-                    _TestUrl = value;
+                    _testUrl = value;
                 }
                 else if (string.IsNullOrEmpty(value))
                 {
