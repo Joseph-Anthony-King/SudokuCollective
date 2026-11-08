@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
@@ -15,8 +16,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Microsoft.OpenApi.Any;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Hangfire;
@@ -113,34 +113,24 @@ namespace SudokuCollective.Api
                     In = ParameterLocation.Header,
                     Description = "JWT Authorization header using the Bearer scheme. \r\n\r\n Enter 'Bearer' [space] and then your token in the text input below.\r\n\r\nExample: \"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...\""
                 });
-                swagger.AddSecurityRequirement(new OpenApiSecurityRequirement
-                    {
-                        {
-                            new OpenApiSecurityScheme
-                            {
-                                Reference = new OpenApiReference
-                                {
-                                    Type = ReferenceType.SecurityScheme,
-                                    Id = "Bearer"
-                                }
-                            },
-                        Array.Empty<string>()
-                    }
-                });
-                swagger.MapType(typeof(JsonElement), () => new OpenApiSchema
+                swagger.AddSecurityRequirement(document => new OpenApiSecurityRequirement
                 {
-                    Type = "object",
-                    Example = new OpenApiString("{}")
+                    [new OpenApiSecuritySchemeReference("Bearer", document)] = []
+                });
+                swagger.MapType<JsonElement>(() => new OpenApiSchema
+                {
+                    Type = JsonSchemaType.Object,
+                    Example = JsonNode.Parse("{}")
                 });
 
-                var swashbucklePayloadArray = new OpenApiArray
+                var swashbucklePayloadArray = new JsonArray
                 {
-                    new OpenApiObject()
+                    new JsonObject()
                 };
 
-                swagger.MapType(typeof(List<object>), () => new OpenApiSchema
+                swagger.MapType<List<object>>(() => new OpenApiSchema
                 {
-                    Type = "array",
+                    Type = JsonSchemaType.Array,
                     Example = swashbucklePayloadArray
                 });
 
