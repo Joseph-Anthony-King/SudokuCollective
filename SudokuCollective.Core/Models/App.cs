@@ -62,7 +62,7 @@ namespace SudokuCollective.Core.Models
                 _urlValidator,
                 AttributeMessages.InvalidUrl);
         }
-        [JsonPropertyName("TestUrl"), UrlValidated(ErrorMessage = AttributeMessages.InvalidUrl)]
+        [JsonPropertyName("testUrl"), UrlValidated(ErrorMessage = AttributeMessages.InvalidUrl)]
         public string TestUrl
         {
             get => _testUrl;
