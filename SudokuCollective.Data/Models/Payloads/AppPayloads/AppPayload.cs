@@ -45,7 +45,7 @@ namespace SudokuCollective.Data.Models.Payloads
                 }
             }
         }
-        [Required, JsonPropertyName("TestUrl"), GuidValidated(ErrorMessage = AttributeMessages.InvalidUrl)]
+        [Required, JsonPropertyName("testUrl"), GuidValidated(ErrorMessage = AttributeMessages.InvalidUrl)]
         public string TestUrl
         {
             get

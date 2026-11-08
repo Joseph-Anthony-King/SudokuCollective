@@ -46,9 +46,9 @@ namespace SudokuCollective.Data.Extensions
                         ((AppPayload)result).StagingUrl = element.GetProperty("stagingUrl").ToString();
                     }
 
-                    if (!string.IsNullOrEmpty(element.GetProperty("TestUrl").ToString()))
+                    if (!string.IsNullOrEmpty(element.GetProperty("testUrl").ToString()))
                     {
-                        ((AppPayload)result).TestUrl = element.GetProperty("TestUrl").ToString();
+                        ((AppPayload)result).TestUrl = element.GetProperty("testUrl").ToString();
                     }
 
                     if (!string.IsNullOrEmpty(element.GetProperty("prodUrl").ToString()))

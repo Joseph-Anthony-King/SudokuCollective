@@ -75,6 +75,49 @@ namespace SudokuCollective.Test.TestCases.Extensions
         }
 
         [Test, Category("Extensions")]
+        public void ConvertJsonElementWithNullableAppPayloadUrlsToAppPayload()
+        {
+            // Arrange
+            var json = JsonSerializer.SerializeToElement(
+                new
+                {
+                    name = "New Test App",
+                    license = "9b7f7c28-3d38-4c5d-bbdf-402c681d8d2f",
+                    ownerId = 1,
+                    localUrl = "http://localhost:5001/",
+                    testUrl = (string)null,
+                    stagingUrl = (string)null,
+                    prodUrl = (string)null,
+                    sourceCodeUrl = (string)null,
+                    isActive = true,
+                    environment = 1,
+                    permitSuperUserAccess = false,
+                    permitCollectiveLogins = false,
+                    disableCustomUrls = true,
+                    customEmailConfirmationAction = (string)null,
+                    customPasswordResetAction = (string)null,
+                    useCustomSMTPServer = false,
+                    smtpServerSettings = (object)null,
+                    timeFrame = 4,
+                    accessDuration = 1
+                });
+
+            // Act
+            var result = json.ConvertToPayloadSuccessful(typeof(AppPayload), out IPayload convertedPayload);
+            var payload = (AppPayload)convertedPayload;
+
+            // Assert
+            Assert.That(result, Is.True);
+            Assert.That(payload, Is.InstanceOf<AppPayload>());
+            Assert.That(payload.Name, Is.EqualTo("New Test App"));
+            Assert.That(payload.LocalUrl, Is.EqualTo("http://localhost:5001/"));
+            Assert.That(payload.TestUrl, Is.Empty);
+            Assert.That(payload.StagingUrl, Is.Empty);
+            Assert.That(payload.ProdUrl, Is.Empty);
+            Assert.That(payload.UseCustomSMTPServer, Is.False);
+        }
+
+        [Test, Category("Extensions")]
         public void ReturnFalseIfConvertJsonElementsToAppPayloadThrowsKeyNotFoundException()
         {
             // Arrange
