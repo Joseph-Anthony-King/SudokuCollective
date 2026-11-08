@@ -6,4 +6,4 @@ setup:
       as: CACHE
 build:
   docker:
-    web: Dockerfile
+    web: SudokuCollective.Api/Dockerfile
