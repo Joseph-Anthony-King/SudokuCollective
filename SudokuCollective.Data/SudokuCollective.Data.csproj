@@ -32,8 +32,4 @@
     <ProjectReference Include="..\SudokuCollective.Logs\SudokuCollective.Logs.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Models\Results\" />
-  </ItemGroup>
-
 </Project>

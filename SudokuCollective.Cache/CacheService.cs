@@ -1,21 +1,24 @@
-using System.Text;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
 using SudokuCollective.Core.Enums;
 using SudokuCollective.Core.Interfaces.Cache;
-using SudokuCollective.Core.Interfaces.ServiceModels;
 using SudokuCollective.Core.Interfaces.Models;
-using SudokuCollective.Core.Interfaces.Repositories;
-using SudokuCollective.Core.Models;
-using SudokuCollective.Core.Interfaces.Models.DomainObjects.Params;
-using SudokuCollective.Data.Models;
-using SudokuCollective.Data.Models.Values;
-using SudokuCollective.Core.Interfaces.Models.DomainObjects.Values;
 using SudokuCollective.Core.Interfaces.Models.DomainEntities;
+using SudokuCollective.Core.Interfaces.Models.DomainObjects.Params;
+using SudokuCollective.Core.Interfaces.Models.DomainObjects.Values;
+using SudokuCollective.Core.Interfaces.Repositories;
+using SudokuCollective.Core.Interfaces.ServiceModels;
+using SudokuCollective.Core.Models;
+using SudokuCollective.Data.Models;
+using SudokuCollective.Data.Models.Results;
+using SudokuCollective.Data.Models.Values;
+using SudokuCollective.Data.Utilities;
 using SudokuCollective.HerokuIntegration;
 using SudokuCollective.HerokuIntegration.Models.Responses;
+using System.Reflection;
+using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace SudokuCollective.Cache
 {
@@ -67,7 +70,8 @@ namespace SudokuCollective.Cache
                             string.Format(keys.GetAppByLicenseCacheKey, appLicense),
                             string.Format(keys.GetAppUsersCacheKey, 1),
                             string.Format(keys.GetNonAppUsersCacheKey, 1),
-                            keys.GetUsersCacheKey, ];
+                            keys.GetUsersCacheKey,
+                            keys.GetAdminSummaryKey];
                     }
                     else if (response.DomainObject is App app)
                     {
@@ -79,7 +83,8 @@ namespace SudokuCollective.Cache
                         // Remove any app list cache items which may exist
                         cacheKeys = [
                                 string.Format(keys.GetMyAppsCacheKey, app.OwnerId),
-                                keys.GetAppsCacheKey, ];
+                                keys.GetAppsCacheKey,
+                                keys.GetAdminSummaryKey ];
                     }
                     else if (response.DomainObject is Difficulty)
                     {
@@ -89,7 +94,7 @@ namespace SudokuCollective.Cache
                             options);
 
                         // Remove any difficutly list cache items which may exist
-                        cacheKeys = [ keys.GetDifficultiesCacheKey, ];
+                        cacheKeys = [ keys.GetDifficultiesCacheKey, keys.GetAdminSummaryKey ];
                     }
                     else
                     {
@@ -99,7 +104,7 @@ namespace SudokuCollective.Cache
                             options);
 
                         // Remove any role list cache items which may exist
-                        cacheKeys = [ keys.GetRolesCacheKey, ];
+                        cacheKeys = [ keys.GetRolesCacheKey, keys.GetAdminSummaryKey ];
                     }
 
                     if (cacheKeys != null)
@@ -155,10 +160,7 @@ namespace SudokuCollective.Cache
                         DomainObject = JsonSerializer.Deserialize<T>(serializedItem)
                     };
 
-                    if (result != null)
-                    {
-                        result.IsFromCache = true;
-                    }
+                    result?.IsFromCache = true;
                 }
                 else
                 {
@@ -227,10 +229,7 @@ namespace SudokuCollective.Cache
                         .ConvertAll(x => (IDomainEntity)x)
                     };
 
-                    if (result != null)
-                    {
-                        result.IsFromCache = true;
-                    }
+                    result?.IsFromCache = true;
                 }
                 else
                 {
@@ -297,7 +296,8 @@ namespace SudokuCollective.Cache
                                 string.Format(keys.GetUserCacheKey, user.Id, license),
                                 string.Format(keys.GetUserByUsernameCacheKey, user.UserName, license),
                                 string.Format(keys.GetUserByEmailCacheKey, user.Email, license),
-                                string.Format(keys.GetUsersCacheKey), ];
+                                string.Format(keys.GetUsersCacheKey),
+                                keys.GetAdminSummaryKey, ];
                     }
                     else if (response.DomainObject is App app)
                     {
@@ -308,14 +308,16 @@ namespace SudokuCollective.Cache
                                 string.Format(keys.GetMyAppsCacheKey, app.OwnerId),
                                 string.Format(keys.GetAppsCacheKey),
                                 string.Format(keys.GetValuesKey),
-                                string.Format(keys.GetGalleryAppsKey), ];
+                                string.Format(keys.GetGalleryAppsKey),
+                                keys.GetAdminSummaryKey, ];
                     }
                     else if (response.DomainObject is Difficulty difficulty)
                     {
                         // Remove any difficutly cache items which may exist
                         cacheKeys = [
                                 string.Format(keys.GetDifficultyCacheKey, difficulty.Id),
-                                keys.GetDifficultiesCacheKey, ];
+                                keys.GetDifficultiesCacheKey,
+                                keys.GetAdminSummaryKey, ];
                     }
                     else
                     {
@@ -324,7 +326,8 @@ namespace SudokuCollective.Cache
                         // Remove any role cache items which may exist
                         cacheKeys = [
                                 string.Format(keys.GetRoleCacheKey, role.Id),
-                                keys.GetRolesCacheKey, ];
+                                keys.GetRolesCacheKey,
+                                keys.GetAdminSummaryKey, ];
                     }
 
                     await RemoveKeysAsync(cache, cacheKeys);
@@ -403,7 +406,8 @@ namespace SudokuCollective.Cache
                             string.Format(keys.GetUserByUsernameCacheKey, user.UserName, license),
                             string.Format(keys.GetUserByEmailCacheKey, user.Email, license),
                             string.Format(keys.GetMyAppsCacheKey, user.Id),
-                            string.Format(keys.GetMyRegisteredCacheKey, user.Id), ];
+                            string.Format(keys.GetMyRegisteredCacheKey, user.Id),
+                            keys.GetAdminSummaryKey, ];
 
                         if (user.Apps.Count > 0 && apps != null)
                         {
@@ -421,6 +425,7 @@ namespace SudokuCollective.Cache
                                     cacheKeys.Add(string.Format(keys.GetAppUsersCacheKey, userApp.AppId));
                                     cacheKeys.Add(string.Format(keys.GetNonAppUsersCacheKey, userApp.AppId));
                                     cacheKeys.Add(keys.GetAppsCacheKey);
+                                    cacheKeys.Add(keys.GetAdminSummaryKey);
                                 }
                             }
                         }
@@ -436,14 +441,16 @@ namespace SudokuCollective.Cache
                             string.Format(keys.IsAppLicenseValidCacheKey, app.License),
                             string.Format(keys.GetMyAppsCacheKey, app.OwnerId),
                             string.Format(keys.HasAppCacheKey, app.Id),
-                            keys.GetAppsCacheKey, ];
+                            keys.GetAppsCacheKey,
+                            keys.GetAdminSummaryKey, ];
                     }
                     else if (entity is Difficulty difficulty)
                     {
                         // Remove any difficulty cache items which may exist
                         cacheKeys = [
                             string.Format(keys.GetDifficultyCacheKey, difficulty.Id),
-                            keys.GetDifficultiesCacheKey, ];
+                            keys.GetDifficultiesCacheKey,
+                            keys.GetAdminSummaryKey, ];
                     }
                     else
                     {
@@ -452,7 +459,8 @@ namespace SudokuCollective.Cache
                         // Remove any role cache items which may exist
                         cacheKeys = [
                             string.Format(keys.GetRoleCacheKey, role.Id),
-                            keys.GetRolesCacheKey, ];
+                            keys.GetRolesCacheKey,
+                            keys.GetAdminSummaryKey, ];
                     }
 
                     await RemoveKeysAsync(cache, cacheKeys);
@@ -580,10 +588,7 @@ namespace SudokuCollective.Cache
                         DomainObject = JsonSerializer.Deserialize<App>(serializedItem)
                     };
 
-                    if (result != null)
-                    {
-                        result.IsFromCache = true;
-                    }
+                    result?.IsFromCache = true;
                 }
                 else
                 {
@@ -653,10 +658,7 @@ namespace SudokuCollective.Cache
                         .ConvertAll(u => (IDomainEntity)u)
                     };
 
-                    if (result != null)
-                    {
-                        result.IsFromCache = true;
-                    }
+                    result?.IsFromCache = true;
                 }
                 else
                 {
@@ -727,10 +729,7 @@ namespace SudokuCollective.Cache
                             .ConvertAll(s => (IDomainEntity)s)
                     };
 
-                    if (result != null)
-                    {
-                        result.IsFromCache = true;
-                    }
+                    result?.IsFromCache = true;
                 }
                 else
                 {
@@ -800,10 +799,7 @@ namespace SudokuCollective.Cache
                         .ConvertAll(a => (IDomainEntity)a)
                     };
 
-                    if (result != null)
-                    {
-                        result.IsFromCache = true;
-                    }
+                    result?.IsFromCache = true;
                 }
                 else
                 {
@@ -873,10 +869,7 @@ namespace SudokuCollective.Cache
                         .ConvertAll(a => (IDomainEntity)a)
                     };
 
-                    if (result != null)
-                    {
-                        result.IsFromCache = true;
-                    }
+                    result?.IsFromCache = true;
                 }
                 else
                 {
@@ -942,10 +935,7 @@ namespace SudokuCollective.Cache
 
                     license = JsonSerializer.Deserialize<string>(serializedItem);
 
-                    if (result != null)
-                    {
-                        result.IsFromCache = true;
-                    }
+                    result?.IsFromCache = true;
                 }
                 else
                 {
@@ -1007,7 +997,8 @@ namespace SudokuCollective.Cache
                     // Remove any user cache items which may exist
                     cacheKeys = [
                         string.Format(keys.GetAppCacheKey, app.Id),
-                        string.Format(keys.GetAppByLicenseCacheKey, app.License), ];
+                        string.Format(keys.GetAppByLicenseCacheKey, app.License),
+                        keys.GetAdminSummaryKey, ];
 
                     await RemoveKeysAsync(cache, cacheKeys);
                 }
@@ -1063,7 +1054,8 @@ namespace SudokuCollective.Cache
                     // Remove any user cache items which may exist
                     cacheKeys = [
                         string.Format(keys.GetAppCacheKey, app.Id),
-                        string.Format(keys.GetAppByLicenseCacheKey, app.License), ];
+                        string.Format(keys.GetAppByLicenseCacheKey, app.License),
+                        keys.GetAdminSummaryKey, ];
 
                     await RemoveKeysAsync(cache, cacheKeys);
                 }
@@ -1119,7 +1111,8 @@ namespace SudokuCollective.Cache
                     // Remove any user cache items which may exist
                     cacheKeys = [
                         string.Format(keys.GetAppCacheKey, app.Id),
-                        string.Format(keys.GetAppByLicenseCacheKey, app.License), ];
+                        string.Format(keys.GetAppByLicenseCacheKey, app.License),
+                        keys.GetAdminSummaryKey, ];
 
                     await RemoveKeysAsync(cache, cacheKeys);
                 }
@@ -1235,10 +1228,7 @@ namespace SudokuCollective.Cache
                         DomainObject = JsonSerializer.Deserialize<User>(serializedItem)
                     };
 
-                    if (result != null)
-                    {
-                        result.IsFromCache = true;
-                    }
+                    result?.IsFromCache = true;
                 }
                 else
                 {
@@ -1314,10 +1304,7 @@ namespace SudokuCollective.Cache
                         DomainObject = JsonSerializer.Deserialize<User>(serializedItem)
                     };
 
-                    if (result != null)
-                    {
-                        result.IsFromCache = true;
-                    }
+                    result?.IsFromCache = true;
                 }
                 else
                 {
@@ -1382,7 +1369,8 @@ namespace SudokuCollective.Cache
                     cacheKeys = [
                         string.Format(keys.GetUserCacheKey, user.Id, license),
                         string.Format(keys.GetUserByUsernameCacheKey, user.UserName, license),
-                        string.Format(keys.GetUserByEmailCacheKey, user.Email, license), ];
+                        string.Format(keys.GetUserByEmailCacheKey, user.Email, license),
+                        keys.GetAdminSummaryKey, ];
 
                     await RemoveKeysAsync(cache, cacheKeys);
                 }
@@ -1430,7 +1418,8 @@ namespace SudokuCollective.Cache
                     cacheKeys = [
                         string.Format(keys.GetUserCacheKey, user.Id, license),
                         string.Format(keys.GetUserByUsernameCacheKey, user.UserName, license),
-                        string.Format(keys.GetUserByEmailCacheKey, user.Email, license), ];
+                        string.Format(keys.GetUserByEmailCacheKey, user.Email, license),
+                        keys.GetAdminSummaryKey, ];
 
                     await RemoveKeysAsync(cache, cacheKeys);
                 }
@@ -1664,10 +1653,7 @@ namespace SudokuCollective.Cache
                     var serializedItem = Encoding.UTF8.GetString(cachedItem);
                     values = JsonSerializer.Deserialize<Values>(serializedItem);
 
-                    if (result != null)
-                    {
-                        result.IsFromCache = true;
-                    }
+                    result?.IsFromCache = true;
                 }
                 else
                 {
@@ -1753,10 +1739,7 @@ namespace SudokuCollective.Cache
                         .ConvertAll(x => (IDomainEntity)x)
                     };
 
-                    if (result != null)
-                    {
-                        result.IsFromCache = true;
-                    }
+                    result?.IsFromCache = true;
                 }
                 else
                 {
@@ -1826,6 +1809,117 @@ namespace SudokuCollective.Cache
             }
         }
 
+        public async Task<Tuple<IRepositoryResponse, IResult>> GetSystemStatsAndValues(
+            IAppsRepository<App> appsRepository,
+            IDifficultiesRepository<Difficulty> difficultiesRepository,
+            IEmailConfirmationsRepository<EmailConfirmation> emailConfirmationsRepository,
+            IGamesRepository<Game> gamesRepository,
+            IPasswordResetsRepository<PasswordReset> passwordResetsRepository,
+            IRolesRepository<Role> rolesRepository,
+            ISolutionsRepository<SudokuSolution> solutionsRepository,
+            IUsersRepository<User> usersRepository,
+            IDistributedCache cache,
+            string cacheKey,
+            DateTime expiration,
+            IResult result = null,
+            HttpMessageHandler httpMessageHandler = null)
+        {
+            try
+            {
+                IRepositoryResponse response;
+
+                var cachedItems = await cache.GetAsync(cacheKey);
+
+                if (cachedItems != null)
+                {
+                    var serializedItems = Encoding.UTF8.GetString(cachedItems);
+
+                    response = new RepositoryResponse
+                    {
+                        IsSuccess = true,
+                        Object = JsonSerializer.Deserialize<AdminSummaryResult>(serializedItems)
+                    };
+
+                    result?.IsFromCache = true;
+                }
+                else
+                {
+                    response = new RepositoryResponse
+                    {
+                        IsSuccess = true,
+                    };
+
+                    var adminSummaryResult = new AdminSummaryResult();
+
+                    var appCountObj = (appsRepository.GetCount()).Object;
+                    adminSummaryResult.ApplicationsCount = (int)GetPropertyValue(appCountObj, "TotalCount");
+
+                    var difficultyCountObj = (difficultiesRepository.GetCount()).Object;
+                    adminSummaryResult.DifficultiesCount = (int)GetPropertyValue(difficultyCountObj, "TotalCount");
+
+                    var emailConfirmationCountObj = (emailConfirmationsRepository.GetCount()).Object;
+                    adminSummaryResult.EmailConfirmationsCount = (int)GetPropertyValue(emailConfirmationCountObj, "TotalCount");
+
+                    var gameCountObj = (gamesRepository.GetCount()).Object;
+                    adminSummaryResult.GamesCount = (int)GetPropertyValue(gameCountObj, "TotalCount");
+
+                    var passwordResetCountObj = (passwordResetsRepository.GetCount()).Object;
+                    adminSummaryResult.PasswordResetsCount = (int)GetPropertyValue(passwordResetCountObj, "TotalCount");
+
+                    var roleCountObj = (rolesRepository.GetCount()).Object;
+                    adminSummaryResult.RolesCount = (int)GetPropertyValue(roleCountObj, "TotalCount");
+
+                    var solutionCountObj = (solutionsRepository.GetCount()).Object;
+                    adminSummaryResult.SolutionsCount = (int)GetPropertyValue(solutionCountObj, "TotalCount");
+
+                    var userCountObj = (usersRepository.GetCount()).Object;
+                    adminSummaryResult.UsersCount = (int)GetPropertyValue(userCountObj, "TotalCount");
+
+                    adminSummaryResult.Difficulties = (await difficultiesRepository.GetAllAsync()).DomainObjects.ConvertAll(d => (IDifficulty)d);
+
+                    adminSummaryResult.Roles = (await rolesRepository.GetAllAsync()).DomainObjects.ConvertAll(r => (IRole)r);
+
+                    adminSummaryResult.ReleaseEnvironments = (DataUtilities.GetReleaseEnvironments()).Payload.ConvertAll(x => (IEnumListItem)x);
+
+                    adminSummaryResult.SortValues = (DataUtilities.GetSortValues()).Payload.ConvertAll(x => (IEnumListItem)x);
+
+                    adminSummaryResult.TimeFrames = (DataUtilities.GetTimeFrames()).Payload.ConvertAll(x => (IEnumListItem)x);
+
+                    response.Object = adminSummaryResult;
+
+                    var serializedItems = JsonSerializer.Serialize<AdminSummaryResult>(
+                        adminSummaryResult,
+                        _serializerOptions);
+                    var encodedItems = Encoding.UTF8.GetBytes(serializedItems);
+                    var options = new DistributedCacheEntryOptions()
+                        .SetAbsoluteExpiration(expiration);
+
+                    await cache.SetAsync(
+                        cacheKey,
+                        encodedItems,
+                        options);
+                }
+                
+                return new Tuple<IRepositoryResponse, IResult>(response, result);
+            }
+            catch (Exception ex)
+            {
+                if (ex.Message.Contains("redis server(s)"))
+                {
+                    try
+                    {
+                        var response = InterceptHerokuRedisExceptions(httpMessageHandler).Result;
+                        throw new IOException(response.Message);
+                    }
+                    catch (Exception)
+                    {
+                        throw;
+                    }
+                }
+                throw;
+            }
+        }
+
         private static async Task<HerokuRedisProxyResponse> InterceptHerokuRedisExceptions(HttpMessageHandler httpMessageHandler = null, ILogger logger = null)
         {
             try
@@ -1836,6 +1930,20 @@ namespace SudokuCollective.Cache
             {
                 throw;
             }
+        }
+
+        private static object GetPropertyValue(object obj, string propertyName)
+        {
+            if (obj == null) return null;
+
+            // Get the PropertyInfo object for the specific property name
+            PropertyInfo pi = obj.GetType().GetProperty(propertyName);
+
+            // Return null if property doesn't exist
+            if (pi == null) return null;
+
+            // Get the value
+            return pi.GetValue(obj, null);
         }
         #endregion
     }

@@ -63,6 +63,19 @@ namespace SudokuCollective.Test.TestCases.Repositories
         }
 
         [Test, Category("Repository")]
+        public async Task AddEmailConfirmation()
+        {
+            // Arrange
+
+            // Act
+            var result = await sut.AddAsync(newEmailConfirmation);
+
+            // Assert
+            Assert.That(result.IsSuccess, Is.True);
+            Assert.That(result.DomainObject, Is.InstanceOf<EmailConfirmation>());
+        }
+
+        [Test, Category("Repository")]
         public async Task GetEmailConfirmationsByToken()
         {
             // Arrange
@@ -88,6 +101,45 @@ namespace SudokuCollective.Test.TestCases.Repositories
         }
 
         [Test, Category("Repository")]
+        public async Task GetEmailConfirmationById()
+        {
+            // Arrange
+
+            // Act
+            var result = await sut.GetAsync(1);
+
+            // Assert
+            Assert.That(result.IsSuccess, Is.True);
+            Assert.That(result.DomainObject, Is.InstanceOf<EmailConfirmation>());
+        }
+
+        [Test, Category("Repository")]
+        public async Task ReturnFalseIfGetEmailConfirmationByIdFails()
+        {
+            // Arrange
+
+            // Act
+            var result = await sut.GetAsync(999);
+
+            // Assert
+            Assert.That(result.IsSuccess, Is.False);
+            Assert.That(result.DomainObject, Is.Null);
+        }
+
+        [Test, Category("Repository")]
+        public async Task ReturnFalseIfGetEmailConfirmationByIdReceivesInvalidId()
+        {
+            // Arrange
+
+            // Act
+            var result = await sut.GetAsync(0);
+
+            // Assert
+            Assert.That(result.IsSuccess, Is.False);
+            Assert.That(result.Exception, Is.Not.Null);
+        }
+
+        [Test, Category("Repository")]
         public async Task GetAllEmailConfirmations()
         {
             // Arrange and Act
@@ -96,6 +148,21 @@ namespace SudokuCollective.Test.TestCases.Repositories
             // Assert
             Assert.That(result.IsSuccess, Is.True);
             Assert.That(result.DomainObjects.ConvertAll(ec => (EmailConfirmation)ec), Is.InstanceOf<List<EmailConfirmation>>());
+        }
+
+        [Test, Category("Repository")]
+        public async Task ReturnFalseIfGetAllEmailConfirmationsFails()
+        {
+            // Arrange
+            context.EmailConfirmations.RemoveRange(context.EmailConfirmations);
+            await context.SaveChangesAsync();
+
+            // Act
+            var result = await sut.GetAllAsync();
+
+            // Assert
+            Assert.That(result.IsSuccess, Is.False);
+            Assert.That(result.DomainObjects, Is.Empty);
         }
 
         [Test, Category("Repository")]
@@ -126,6 +193,91 @@ namespace SudokuCollective.Test.TestCases.Repositories
         }
 
         [Test, Category("Repository")]
+        public async Task ReturnFalseIfUpdateEmailConfirmationHasDuplicateToken()
+        {
+            // Arrange
+            var emailConfirmation = context.EmailConfirmations.First(ec => ec.Id == 1);
+            emailConfirmation.Token = context.EmailConfirmations
+                .First(ec => ec.Id == 2)
+                .Token;
+
+            // Act
+            var result = await sut.UpdateAsync(emailConfirmation);
+
+            // Assert
+            Assert.That(result.IsSuccess, Is.False);
+            Assert.That(result.DomainObject, Is.Null);
+        }
+
+        [Test, Category("Repository")]
+        public async Task ReturnFalseIfUpdateEmailConfirmationReceivesInvalidId()
+        {
+            // Arrange
+            newEmailConfirmation.Id = 0;
+
+            // Act
+            var result = await sut.UpdateAsync(newEmailConfirmation);
+
+            // Assert
+            Assert.That(result.IsSuccess, Is.False);
+            Assert.That(result.Exception, Is.Not.Null);
+        }
+
+        [Test, Category("Repository")]
+        public async Task UpdateRangeOfEmailConfirmations()
+        {
+            // Arrange
+            var emailConfirmations = context.EmailConfirmations
+                .Take(2)
+                .ToList();
+
+            // Act
+            var result = await sut.UpdateRangeAsync(emailConfirmations);
+
+            // Assert
+            Assert.That(result.IsSuccess, Is.True);
+        }
+
+        [Test, Category("Repository")]
+        public async Task ReturnFalseIfUpdateRangeContainsUnknownEmailConfirmation()
+        {
+            // Arrange
+            newEmailConfirmation.Id = 999;
+
+            // Act
+            var result = await sut.UpdateRangeAsync([newEmailConfirmation]);
+
+            // Assert
+            Assert.That(result.IsSuccess, Is.False);
+        }
+
+        [Test, Category("Repository")]
+        public async Task ReturnFalseIfUpdateRangeReceivesInvalidEmailConfirmation()
+        {
+            // Arrange
+
+            // Act
+            var result = await sut.UpdateRangeAsync([newEmailConfirmation]);
+
+            // Assert
+            Assert.That(result.IsSuccess, Is.False);
+            Assert.That(result.Exception, Is.Not.Null);
+        }
+
+        [Test, Category("Repository")]
+        public async Task ReturnFalseIfUpdateRangeReceivesNull()
+        {
+            // Arrange
+
+            // Act
+            var result = await sut.UpdateRangeAsync(null);
+
+            // Assert
+            Assert.That(result.IsSuccess, Is.False);
+            Assert.That(result.Exception, Is.Not.Null);
+        }
+
+        [Test, Category("Repository")]
         public async Task DeleteEmailConfirmations()
         {
             // Arrange
@@ -149,6 +301,73 @@ namespace SudokuCollective.Test.TestCases.Repositories
         }
 
         [Test, Category("Repository")]
+        public async Task ReturnFalseIfDeleteEmailConfirmationReceivesInvalidId()
+        {
+            // Arrange
+
+            // Act
+            var result = await sut.DeleteAsync(newEmailConfirmation);
+
+            // Assert
+            Assert.That(result.IsSuccess, Is.False);
+            Assert.That(result.Exception, Is.Not.Null);
+        }
+
+        [Test, Category("Repository")]
+        public async Task DeleteRangeOfEmailConfirmations()
+        {
+            // Arrange
+            var emailConfirmations = context.EmailConfirmations
+                .Take(2)
+                .ToList();
+
+            // Act
+            var result = await sut.DeleteRangeAsync(emailConfirmations);
+
+            // Assert
+            Assert.That(result.IsSuccess, Is.True);
+        }
+
+        [Test, Category("Repository")]
+        public async Task ReturnFalseIfDeleteRangeContainsUnknownEmailConfirmation()
+        {
+            // Arrange
+            newEmailConfirmation.Id = 999;
+
+            // Act
+            var result = await sut.DeleteRangeAsync([newEmailConfirmation]);
+
+            // Assert
+            Assert.That(result.IsSuccess, Is.False);
+        }
+
+        [Test, Category("Repository")]
+        public async Task ReturnFalseIfDeleteRangeReceivesInvalidEmailConfirmation()
+        {
+            // Arrange
+
+            // Act
+            var result = await sut.DeleteRangeAsync([newEmailConfirmation]);
+
+            // Assert
+            Assert.That(result.IsSuccess, Is.False);
+            Assert.That(result.Exception, Is.Not.Null);
+        }
+
+        [Test, Category("Repository")]
+        public async Task ReturnFalseIfDeleteRangeReceivesNull()
+        {
+            // Arrange
+
+            // Act
+            var result = await sut.DeleteRangeAsync(null);
+
+            // Assert
+            Assert.That(result.IsSuccess, Is.False);
+            Assert.That(result.Exception, Is.Not.Null);
+        }
+
+        [Test, Category("Repository")]
         public async Task ConfirmItHasAnEmailConfirmation()
         {
             // Arrange and Act
@@ -156,6 +375,18 @@ namespace SudokuCollective.Test.TestCases.Repositories
 
             // Assert
             Assert.That(result, Is.True);
+        }
+
+        [Test, Category("Repository")]
+        public async Task ReturnFalseIfItDoesNotHaveAnEmailConfirmation()
+        {
+            // Arrange
+
+            // Act
+            var result = await sut.HasEntityAsync(999);
+
+            // Assert
+            Assert.That(result, Is.False);
         }
 
         [Test, Category("Repository")]
@@ -169,6 +400,47 @@ namespace SudokuCollective.Test.TestCases.Repositories
 
             // Assert
             Assert.That(result, Is.True);
+        }
+
+        [Test, Category("Repository")]
+        public async Task ReturnFalseIfItDoesNotHaveAnEmailConfirmationByUserAndAppId()
+        {
+            // Arrange
+            var emailConfirmation = context.EmailConfirmations.FirstOrDefault();
+
+            // Act
+            var result = await sut.HasOutstandingEmailConfirmationAsync(
+                emailConfirmation.UserId + 3,
+                emailConfirmation.AppId);
+
+            // Assert
+            Assert.That(result, Is.False);
+        }
+
+        [Test, Category("Repository")]
+        public async Task ReturnFalseIfRetrieveEmailConfirmationReceivesInvalidUserId()
+        {
+            // Arrange
+
+            // Act
+            var result = await sut.RetrieveEmailConfirmationAsync(0, 1);
+
+            // Assert
+            Assert.That(result.IsSuccess, Is.False);
+            Assert.That(result.Exception, Is.Not.Null);
+        }
+
+        [Test, Category("Repository")]
+        public async Task ReturnFalseIfRetrieveEmailConfirmationReceivesInvalidAppId()
+        {
+            // Arrange
+
+            // Act
+            var result = await sut.RetrieveEmailConfirmationAsync(1, 0);
+
+            // Assert
+            Assert.That(result.IsSuccess, Is.False);
+            Assert.That(result.Exception, Is.Not.Null);
         }
 
         [Test, Category("Repository")]
@@ -205,13 +477,27 @@ namespace SudokuCollective.Test.TestCases.Repositories
             var expectedCount = context.EmailConfirmations.Count();
 
             // Act
-            var result = sut.GetTotalCount();
+            var result = sut.GetCount();
             var actualCount = System.Convert.ToInt32(
                 result.Object.GetType().GetProperty("TotalCount").GetValue(result.Object));
 
             // Assert
             Assert.That(result.IsSuccess, Is.True);
             Assert.That(actualCount, Is.EqualTo(expectedCount));
+        }
+
+        [Test, Category("Repository")]
+        public void ReturnFalseIfGetEmailConfirmationCountFails()
+        {
+            // Arrange
+            context.Dispose();
+
+            // Act
+            var result = sut.GetCount();
+
+            // Assert
+            Assert.That(result.IsSuccess, Is.False);
+            Assert.That(result.Exception, Is.Not.Null);
         }
     }
 }

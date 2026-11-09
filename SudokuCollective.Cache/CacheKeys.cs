@@ -28,6 +28,7 @@ namespace SudokuCollective.Cache
         private const string _getRolesCacheKey = ":GetRoles";
         private const string _getValuesKey = ":GetValues";
         private const string _getGalleryAppsKey = ":GetGalleryApps";
+        private const string _getAdminSummaryKey = ":GetAdminSummary";
         #endregion
 
         #region Properties
@@ -54,6 +55,7 @@ namespace SudokuCollective.Cache
         public string GetRolesCacheKey { get => _getRolesCacheKey; }
         public string GetValuesKey  { get => _getValuesKey; }
         public string GetGalleryAppsKey { get => _getGalleryAppsKey; }
+        public string GetAdminSummaryKey { get => _getAdminSummaryKey; }
         #endregion
     }
 }

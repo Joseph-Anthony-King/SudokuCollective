@@ -332,6 +332,7 @@ namespace SudokuCollective.Api
             services.AddScoped<IPasswordResetsRepository<Core.Models.PasswordReset>, PasswordResetsRepository<Core.Models.PasswordReset>>();
             services.AddScoped<IAuthenticateService, AuthenticateService>();
             services.AddScoped<IUserManagementService, UserManagementService>();
+            services.AddScoped<IAdminService, AdminService>();
             services.AddScoped<IAppsService, AppsService>();
             services.AddScoped<IUsersService, UsersService>();
             services.AddScoped<IGamesService, GamesService>();

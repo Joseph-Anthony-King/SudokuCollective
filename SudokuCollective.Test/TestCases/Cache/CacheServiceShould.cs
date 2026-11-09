@@ -18,6 +18,7 @@ using Moq.Protected;
 using SudokuCollective.Cache;
 using SudokuCollective.Core.Enums;
 using SudokuCollective.Core.Interfaces.Cache;
+using SudokuCollective.Core.Interfaces.Repositories;
 using SudokuCollective.Core.Models;
 using SudokuCollective.Data.Models;
 using SudokuCollective.Data.Models.Params;
@@ -4937,6 +4938,334 @@ namespace SudokuCollective.Test.TestCases.Cache
                 Assert.That(ex, Is.InstanceOf<IOException>());
                 Assert.That(ex.Message.Equals("It was not possible to connect to the redis server, the redis server connections have been reset. Please resubmit your request."), Is.True);
             }
+        }
+        #endregion
+
+        #region Updated Values and Admin Summary
+        [Test, Category("Cache")]
+        public async Task GetValuesAndCacheTheResult()
+        {
+            var result = await sut.GetValuesAsync(
+                MockedDifficultiesRepository.SuccessfulRequest.Object,
+                MockedAppsRepository.SuccessfulRequest.Object,
+                memoryCache,
+                $"values-{Guid.NewGuid()}",
+                cachingStrategy.Medium,
+                [],
+                [],
+                []);
+
+            Assert.That(result.Item1, Is.Not.Null);
+            Assert.That(result.Item1.Difficulties, Is.Not.Empty);
+            Assert.That(result.Item1.Gallery, Is.Not.Empty);
+        }
+
+        [Test, Category("Cache")]
+        public async Task GetValuesFromCache()
+        {
+            var cacheKey = $"values-{Guid.NewGuid()}";
+            _ = await sut.GetValuesAsync(
+                MockedDifficultiesRepository.SuccessfulRequest.Object,
+                MockedAppsRepository.SuccessfulRequest.Object,
+                memoryCache,
+                cacheKey,
+                cachingStrategy.Medium,
+                [],
+                [],
+                []);
+
+            var result = await sut.GetValuesAsync(
+                MockedDifficultiesRepository.FailedRequest.Object,
+                MockedAppsRepository.FailedRequest.Object,
+                memoryCache,
+                cacheKey,
+                cachingStrategy.Medium,
+                [],
+                [],
+                [],
+                new Result());
+
+            Assert.That(result.Item1, Is.Not.Null);
+            Assert.That(((Result)result.Item2).IsFromCache, Is.True);
+        }
+
+        [Test, Category("Cache")]
+        public async Task GetSystemStatsAndValuesAndCacheTheResult()
+        {
+            var appsRepository = new Mock<IAppsRepository<App>>();
+            var difficultiesRepository = new Mock<IDifficultiesRepository<Difficulty>>();
+            var emailConfirmationsRepository = new Mock<IEmailConfirmationsRepository<EmailConfirmation>>();
+            var gamesRepository = new Mock<IGamesRepository<Game>>();
+            var passwordResetsRepository = new Mock<IPasswordResetsRepository<PasswordReset>>();
+            var rolesRepository = new Mock<IRolesRepository<Role>>();
+            var solutionsRepository = new Mock<ISolutionsRepository<SudokuSolution>>();
+            var usersRepository = new Mock<IUsersRepository<User>>();
+
+            appsRepository.Setup(x => x.GetCount()).Returns(new RepositoryResponse { IsSuccess = true, Object = new { TotalCount = 1 } });
+            difficultiesRepository.Setup(x => x.GetCount()).Returns(new RepositoryResponse { IsSuccess = true, Object = new { TotalCount = 2 } });
+            emailConfirmationsRepository.Setup(x => x.GetCount()).Returns(new RepositoryResponse { IsSuccess = true, Object = new { TotalCount = 3 } });
+            gamesRepository.Setup(x => x.GetCount()).Returns(new RepositoryResponse { IsSuccess = true, Object = new { TotalCount = 4 } });
+            passwordResetsRepository.Setup(x => x.GetCount()).Returns(new RepositoryResponse { IsSuccess = true, Object = new { TotalCount = 5 } });
+            rolesRepository.Setup(x => x.GetCount()).Returns(new RepositoryResponse { IsSuccess = true, Object = new { TotalCount = 6 } });
+            solutionsRepository.Setup(x => x.GetCount()).Returns(new RepositoryResponse { IsSuccess = true, Object = new { TotalCount = 7 } });
+            usersRepository.Setup(x => x.GetCount()).Returns(new RepositoryResponse { IsSuccess = true, Object = new { TotalCount = 8 } });
+            difficultiesRepository.Setup(x => x.GetAllAsync()).ReturnsAsync(new RepositoryResponse { IsSuccess = true });
+            rolesRepository.Setup(x => x.GetAllAsync()).ReturnsAsync(new RepositoryResponse { IsSuccess = true });
+
+            var result = await sut.GetSystemStatsAndValues(
+                appsRepository.Object,
+                difficultiesRepository.Object,
+                emailConfirmationsRepository.Object,
+                gamesRepository.Object,
+                passwordResetsRepository.Object,
+                rolesRepository.Object,
+                solutionsRepository.Object,
+                usersRepository.Object,
+                memoryCache,
+                $"summary-{Guid.NewGuid()}",
+                cachingStrategy.Medium);
+
+            Assert.That(result.Item1.IsSuccess, Is.True);
+            Assert.That(result.Item1.Object, Is.Not.Null);
+        }
+
+        [Test, Category("Cache")]
+        public async Task RemoveOnlyExistingKeys()
+        {
+            var cacheKey = $"remove-{Guid.NewGuid()}";
+            await memoryCache.SetAsync(cacheKey, [1]);
+
+            await sut.RemoveKeysAsync(memoryCache, [cacheKey, $"missing-{Guid.NewGuid()}"]);
+
+            Assert.That(await memoryCache.GetAsync(cacheKey), Is.Null);
+        }
+
+        [Test, Category("Cache")]
+        public async Task HandleRedisFailuresAcrossAllCacheOperations()
+        {
+            var app = context.Apps.First();
+            var user = context.Users.First();
+            var difficulty = context.Difficulties.First();
+            var role = context.Roles.First();
+            var emailConfirmation = context.EmailConfirmations.First();
+
+            MockedHttpMessageHandler.Protected()
+                .Setup<Task<HttpResponseMessage>>(
+                    "SendAsync",
+                    ItExpr.IsAny<HttpRequestMessage>(),
+                    ItExpr.IsAny<CancellationToken>())
+                .ThrowsAsync(new IOException("handler failure"));
+
+            async Task AssertRedisFailure(Func<Task> operation)
+            {
+                Assert.That(
+                    async () => await operation(),
+                    Throws.Exception);
+            }
+
+            await AssertRedisFailure(() => sut.AddWithCacheAsync(
+                MockedAppsRepository.SuccessfulRequest.Object,
+                MockedCache.Object,
+                cacheKeys.GetAppCacheKey,
+                cachingStrategy.Medium,
+                cacheKeys,
+                app,
+                MockedHttpMessageHandler.Object));
+            await AssertRedisFailure(() => sut.GetWithCacheAsync(
+                MockedAppsRepository.SuccessfulRequest.Object,
+                MockedCache.Object,
+                cacheKeys.GetAppCacheKey,
+                cachingStrategy.Medium,
+                app.Id,
+                null,
+                MockedHttpMessageHandler.Object));
+            await AssertRedisFailure(() => sut.GetAllWithCacheAsync(
+                MockedAppsRepository.SuccessfulRequest.Object,
+                MockedCache.Object,
+                cacheKeys.GetAppsCacheKey,
+                cachingStrategy.Medium,
+                null,
+                MockedHttpMessageHandler.Object));
+            await AssertRedisFailure(() => sut.UpdateWithCacheAsync(
+                MockedAppsRepository.SuccessfulRequest.Object,
+                MockedCache.Object,
+                cacheKeys,
+                app,
+                null,
+                MockedHttpMessageHandler.Object));
+            await AssertRedisFailure(() => sut.DeleteWithCacheAsync(
+                MockedAppsRepository.SuccessfulRequest.Object,
+                MockedCache.Object,
+                cacheKeys,
+                app,
+                null,
+                MockedHttpMessageHandler.Object));
+            await AssertRedisFailure(() => sut.HasEntityWithCacheAsync(
+                MockedAppsRepository.SuccessfulRequest.Object,
+                MockedCache.Object,
+                cacheKeys.HasAppCacheKey,
+                cachingStrategy.Medium,
+                app.Id,
+                MockedHttpMessageHandler.Object));
+            await AssertRedisFailure(() => sut.GetAppByLicenseWithCacheAsync(
+                MockedAppsRepository.SuccessfulRequest.Object,
+                MockedCache.Object,
+                cacheKeys.GetAppByLicenseCacheKey,
+                cachingStrategy.Medium,
+                app.License,
+                null,
+                MockedHttpMessageHandler.Object));
+            await AssertRedisFailure(() => sut.GetAppUsersWithCacheAsync(
+                MockedAppsRepository.SuccessfulRequest.Object,
+                MockedCache.Object,
+                cacheKeys.GetAppUsersCacheKey,
+                cachingStrategy.Medium,
+                app.Id,
+                null,
+                MockedHttpMessageHandler.Object));
+            await AssertRedisFailure(() => sut.GetNonAppUsersWithCacheAsync(
+                MockedAppsRepository.SuccessfulRequest.Object,
+                MockedCache.Object,
+                cacheKeys.GetNonAppUsersCacheKey,
+                cachingStrategy.Medium,
+                app.Id,
+                null,
+                MockedHttpMessageHandler.Object));
+            await AssertRedisFailure(() => sut.GetMyAppsWithCacheAsync(
+                MockedAppsRepository.SuccessfulRequest.Object,
+                MockedCache.Object,
+                cacheKeys.GetMyAppsCacheKey,
+                cachingStrategy.Medium,
+                app.OwnerId,
+                null,
+                MockedHttpMessageHandler.Object));
+            await AssertRedisFailure(() => sut.GetMyRegisteredAppsWithCacheAsync(
+                MockedAppsRepository.SuccessfulRequest.Object,
+                MockedCache.Object,
+                cacheKeys.GetMyRegisteredCacheKey,
+                cachingStrategy.Medium,
+                user.Id,
+                null,
+                MockedHttpMessageHandler.Object));
+            await AssertRedisFailure(() => sut.GetLicenseWithCacheAsync(
+                MockedAppsRepository.SuccessfulRequest.Object,
+                MockedCache.Object,
+                cacheKeys.GetAppLicenseCacheKey,
+                cachingStrategy.Medium,
+                cacheKeys,
+                app.Id,
+                null,
+                MockedHttpMessageHandler.Object));
+            await AssertRedisFailure(() => sut.ResetWithCacheAsync(
+                MockedAppsRepository.SuccessfulRequest.Object,
+                MockedCache.Object,
+                cacheKeys,
+                app,
+                MockedHttpMessageHandler.Object));
+            await AssertRedisFailure(() => sut.ActivatetWithCacheAsync(
+                MockedAppsRepository.SuccessfulRequest.Object,
+                MockedCache.Object,
+                cacheKeys,
+                app.Id,
+                MockedHttpMessageHandler.Object));
+            await AssertRedisFailure(() => sut.DeactivatetWithCacheAsync(
+                MockedAppsRepository.SuccessfulRequest.Object,
+                MockedCache.Object,
+                cacheKeys,
+                app.Id,
+                MockedHttpMessageHandler.Object));
+            await AssertRedisFailure(() => sut.IsAppLicenseValidWithCacheAsync(
+                MockedAppsRepository.SuccessfulRequest.Object,
+                MockedCache.Object,
+                cacheKeys.IsAppLicenseValidCacheKey,
+                cachingStrategy.Medium,
+                app.License,
+                MockedHttpMessageHandler.Object));
+            await AssertRedisFailure(() => sut.GetByUserNameWithCacheAsync(
+                MockedUsersRepository.SuccessfulRequest.Object,
+                MockedCache.Object,
+                cacheKeys.GetUserByUsernameCacheKey,
+                cachingStrategy.Medium,
+                cacheKeys,
+                user.UserName,
+                null,
+                null,
+                MockedHttpMessageHandler.Object));
+            await AssertRedisFailure(() => sut.GetByEmailWithCacheAsync(
+                MockedUsersRepository.SuccessfulRequest.Object,
+                MockedCache.Object,
+                cacheKeys.GetUserByEmailCacheKey,
+                cachingStrategy.Medium,
+                user.Email,
+                null,
+                MockedHttpMessageHandler.Object));
+            await AssertRedisFailure(() => sut.ConfirmEmailWithCacheAsync(
+                MockedUsersRepository.SuccessfulRequest.Object,
+                MockedCache.Object,
+                cacheKeys,
+                emailConfirmation,
+                TestObjects.GetLicense(),
+                MockedHttpMessageHandler.Object));
+            await AssertRedisFailure(() => sut.UpdateEmailWithCacheAsync(
+                MockedUsersRepository.SuccessfulRequest.Object,
+                MockedCache.Object,
+                cacheKeys,
+                emailConfirmation,
+                TestObjects.GetLicense(),
+                MockedHttpMessageHandler.Object));
+            await AssertRedisFailure(() => sut.IsUserRegisteredWithCacheAsync(
+                MockedUsersRepository.SuccessfulRequest.Object,
+                MockedCache.Object,
+                cacheKeys.IsUserRegisteredCacheKey,
+                cachingStrategy.Medium,
+                user.Id,
+                MockedHttpMessageHandler.Object));
+            await AssertRedisFailure(() => sut.HasDifficultyLevelWithCacheAsync(
+                MockedDifficultiesRepository.SuccessfulRequest.Object,
+                MockedCache.Object,
+                cacheKeys.GetDifficultyCacheKey,
+                cachingStrategy.Medium,
+                difficulty.DifficultyLevel,
+                MockedHttpMessageHandler.Object));
+            await AssertRedisFailure(() => sut.HasRoleLevelWithCacheAsync(
+                MockedRolesRepository.SuccessfulRequest.Object,
+                MockedCache.Object,
+                cacheKeys.GetRoleCacheKey,
+                cachingStrategy.Medium,
+                role.RoleLevel,
+                MockedHttpMessageHandler.Object));
+            await AssertRedisFailure(() => sut.GetValuesAsync(
+                MockedDifficultiesRepository.SuccessfulRequest.Object,
+                MockedAppsRepository.SuccessfulRequest.Object,
+                MockedCache.Object,
+                cacheKeys.GetValuesKey,
+                cachingStrategy.Medium,
+                [],
+                [],
+                [],
+                null,
+                MockedHttpMessageHandler.Object));
+            await AssertRedisFailure(() => sut.GetGalleryAppsWithCacheAsync(
+                MockedAppsRepository.SuccessfulRequest.Object,
+                MockedCache.Object,
+                cacheKeys.GetGalleryAppsKey,
+                cachingStrategy.Medium,
+                null,
+                MockedHttpMessageHandler.Object));
+            await AssertRedisFailure(() => sut.GetSystemStatsAndValues(
+                new Mock<IAppsRepository<App>>().Object,
+                new Mock<IDifficultiesRepository<Difficulty>>().Object,
+                new Mock<IEmailConfirmationsRepository<EmailConfirmation>>().Object,
+                new Mock<IGamesRepository<Game>>().Object,
+                new Mock<IPasswordResetsRepository<PasswordReset>>().Object,
+                new Mock<IRolesRepository<Role>>().Object,
+                new Mock<ISolutionsRepository<SudokuSolution>>().Object,
+                new Mock<IUsersRepository<User>>().Object,
+                MockedCache.Object,
+                cacheKeys.GetAdminSummaryKey,
+                cachingStrategy.Medium,
+                null,
+                MockedHttpMessageHandler.Object));
         }
         #endregion
     }

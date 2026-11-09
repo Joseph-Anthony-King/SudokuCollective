@@ -151,10 +151,7 @@ namespace SudokuCollective.Test.Cache
                     IResult result,
                     HttpMessageHandler httpMessageHandler) =>
                     {
-                        if (result != null)
-                        {
-                            result.IsSuccess = false;
-                        }
+                        result?.IsSuccess = false;
                         return new Tuple<IRepositoryResponse, IResult>(
                             new RepositoryResponse
                             {
@@ -186,10 +183,7 @@ namespace SudokuCollective.Test.Cache
                     IResult result,
                     HttpMessageHandler httpMessageHandler) =>
                 {
-                    if (result != null)
-                    {
-                        result.IsSuccess = false;
-                    }
+                    result?.IsSuccess = false;
                     return new Tuple<IRepositoryResponse, IResult>(
                         new RepositoryResponse
                         {
@@ -221,10 +215,7 @@ namespace SudokuCollective.Test.Cache
                     IResult result,
                     HttpMessageHandler httpMessageHandler) =>
                 {
-                    if (result != null)
-                    {
-                        result.IsSuccess = false;
-                    }
+                    result?.IsSuccess = false;
                     return new Tuple<IRepositoryResponse, IResult>(
                         new RepositoryResponse
                         {
@@ -256,10 +247,7 @@ namespace SudokuCollective.Test.Cache
                     IResult result,
                     HttpMessageHandler httpMessageHandler) =>
                     {
-                        if (result != null)
-                        {
-                            result.IsSuccess = false;
-                        }
+                        result?.IsSuccess = false;
                         return new Tuple<IRepositoryResponse, IResult>(
                             new RepositoryResponse
                             {
@@ -814,10 +802,7 @@ namespace SudokuCollective.Test.Cache
                     IResult result,
                     HttpMessageHandler httpMessageHandler) =>
                     {
-                        if (result != null)
-                        {
-                            result.IsSuccess = true;
-                        }
+                        result?.IsSuccess = true;
                         return new Tuple<IRepositoryResponse, IResult>(
                             new RepositoryResponse
                             {
@@ -1550,10 +1535,7 @@ namespace SudokuCollective.Test.Cache
                     IResult result,
                     HttpMessageHandler httpMessageHandler) =>
                 {
-                    if (result != null)
-                    {
-                        result.IsSuccess = false;
-                    }
+                    result?.IsSuccess = false;
                     return new Tuple<IRepositoryResponse, IResult>(
                             new RepositoryResponse
                             {
@@ -2623,10 +2605,7 @@ namespace SudokuCollective.Test.Cache
                     IResult result,
                     HttpMessageHandler httpMessageHandler) =>
                 {
-                    if (result != null)
-                    {
-                        result.IsSuccess = false;
-                    }
+                    result?.IsSuccess = false;
                     return new Tuple<IRepositoryResponse, IResult>(
                         new RepositoryResponse
                         {
@@ -2658,10 +2637,7 @@ namespace SudokuCollective.Test.Cache
                     IResult result,
                     HttpMessageHandler httpMessageHandler) =>
                 {
-                    if (result != null)
-                    {
-                        result.IsSuccess = false;
-                    }
+                    result?.IsSuccess = false;
                     return new Tuple<IRepositoryResponse, IResult>(
                         new RepositoryResponse
                         {
@@ -2693,10 +2669,7 @@ namespace SudokuCollective.Test.Cache
                     IResult result,
                     HttpMessageHandler httpMessageHandler) =>
                 {
-                    if (result != null)
-                    {
-                        result.IsSuccess = false;
-                    }
+                    result?.IsSuccess = false;
                     return new Tuple<IRepositoryResponse, IResult>(
                         new RepositoryResponse
                         {
@@ -2728,10 +2701,7 @@ namespace SudokuCollective.Test.Cache
                     IResult result,
                     HttpMessageHandler httpMessageHandler) =>
                 {
-                    if (result != null)
-                    {
-                        result.IsSuccess = false;
-                    }
+                    result?.IsSuccess = false;
                     return new Tuple<IRepositoryResponse, IResult>(
                         new RepositoryResponse
                         {
@@ -3286,10 +3256,7 @@ namespace SudokuCollective.Test.Cache
                     IResult result,
                     HttpMessageHandler httpMessageHandler) =>
                 {
-                    if (result != null)
-                    {
-                        result.IsSuccess = true;
-                    }
+                    result?.IsSuccess = true;
                     return new Tuple<IRepositoryResponse, IResult>(
                         new RepositoryResponse
                         {
