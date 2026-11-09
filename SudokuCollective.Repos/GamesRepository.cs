@@ -355,6 +355,7 @@ namespace SudokuCollective.Repos
                     return result;
                 }
 
+                _context.Entry(entity).State = EntityState.Modified;
                 entity.DateUpdated = DateTime.UtcNow;
 
                 await _context.SaveChangesAsync();
@@ -390,6 +391,7 @@ namespace SudokuCollective.Repos
 
                     if (await _context.Games.AnyAsync(g => g.Id == entity.Id))
                     {
+                        _context.Entry(entity).State = EntityState.Modified;
                         entity.DateUpdated = dateUpdated;
                     }
                     else

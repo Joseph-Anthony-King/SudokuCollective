@@ -140,6 +140,7 @@ namespace SudokuCollective.Repos
 
                 if (await _context.PasswordResets.AnyAsync(a => a.Id == entity.Id))
 				{
+					_context.Entry(entity).State = EntityState.Modified;
 					await _context.SaveChangesAsync();
 
 					result.IsSuccess = true;
