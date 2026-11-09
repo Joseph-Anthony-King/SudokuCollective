@@ -1821,8 +1821,10 @@ namespace SudokuCollective.Data.Services
                         return false;
                     }
 
+                    var appResponse = await _appsRepository.GetByLicenseAsync(license);
+
                     var requestorOwnerOfThisApp = await _appsRepository.IsUserOwnerOThisfAppAsync(
-                        requestorId,
+                        ((App)appResponse.Object).Id,
                         license,
                         userId);
 
