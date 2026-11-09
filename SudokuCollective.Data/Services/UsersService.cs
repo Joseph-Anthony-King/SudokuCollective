@@ -3034,7 +3034,7 @@ namespace SudokuCollective.Data.Services
 
                 if (!hasPasswordReset)
                 {
-                    userResult.User = (UserDTO)(await _usersRepository.GetAsync(id)).Object;
+                    userResult.User = (UserDTO)((User)(await _usersRepository.GetAsync(id)).Object).Cast<UserDTO>();
                     result.IsSuccess = false;
                     result.Message = UsersMessages.PasswordResetRequestNotFoundMessage;
                     result.Payload.Add(userResult);

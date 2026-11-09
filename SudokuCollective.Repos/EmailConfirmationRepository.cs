@@ -143,6 +143,7 @@ namespace SudokuCollective.Repos
 				if (await _context.EmailConfirmations
 						.AnyAsync(ec => ec.Id == entity.Id) && tokenNotUniqueList.Count == 0)
 				{
+					_context.Entry(entity).State = EntityState.Modified;
 					await _context.SaveChangesAsync();
 
 					result.IsSuccess = true;
