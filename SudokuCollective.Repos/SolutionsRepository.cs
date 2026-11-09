@@ -184,6 +184,7 @@ namespace SudokuCollective.Repos
 
                 if (await _context.SudokuSolutions.AnyAsync(r => r.Id == entity.Id))
 				{
+					_context.Entry(entity).State = EntityState.Modified;
 					await _context.SaveChangesAsync();
 
 					result.IsSuccess = true;
@@ -197,6 +198,8 @@ namespace SudokuCollective.Repos
 
 					return result;
 				}
+
+					_context.Entry(entity).State = EntityState.Modified;
 			}
 			catch (Exception e)
 			{

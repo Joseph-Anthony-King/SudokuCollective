@@ -317,12 +317,22 @@ namespace SudokuCollective.Repos
 
                 ArgumentOutOfRangeException.ThrowIfNegativeOrZero(entity.Id, nameof(entity.Id));
 
-                entity.DateUpdated = DateTime.UtcNow;
+				var trackedEntity = await _context.Users.FindAsync(entity.Id);
+
+				if (trackedEntity == null)
+				{
+					result.IsSuccess = false;
+
+					return result;
+				}
+
+				_context.Entry(trackedEntity).CurrentValues.SetValues(entity);
+				trackedEntity.DateUpdated = DateTime.UtcNow;
 
 				await _context.SaveChangesAsync();
 
 				result.IsSuccess = true;
-				result.Object = entity;
+				result.Object = trackedEntity;
 
 				return result;
 			}
@@ -352,6 +362,7 @@ namespace SudokuCollective.Repos
 
 					if (await _context.Users.AnyAsync(u => u.Id == entity.Id))
 					{
+						_context.Entry(entity).State = EntityState.Modified;
 						entity.DateUpdated = dateUpdated;
 					}
 					else
