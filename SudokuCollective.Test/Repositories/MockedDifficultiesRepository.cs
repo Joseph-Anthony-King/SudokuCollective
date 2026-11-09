@@ -32,7 +32,7 @@ namespace SudokuCollective.Test.Repositories
                     .Returns(Task.FromResult(new RepositoryResponse() 
                     {
                         IsSuccess = true,
-                        Object = new Difficulty() { DifficultyLevel = DifficultyLevel.NULL }
+                        DomainObject = new Difficulty() { DifficultyLevel = DifficultyLevel.NULL }
                     } as IRepositoryResponse));
 
             SuccessfulRequest.Setup(repo =>
@@ -40,7 +40,7 @@ namespace SudokuCollective.Test.Repositories
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         IsSuccess = true,
-                        Object = context.Difficulties.FirstOrDefault(d => d.Id == 4)
+                        DomainObject = context.Difficulties.FirstOrDefault(d => d.Id == 4)
                     } as IRepositoryResponse));
 
             SuccessfulRequest.Setup(repo =>
@@ -48,7 +48,7 @@ namespace SudokuCollective.Test.Repositories
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         IsSuccess = true,
-                        Object = context.Difficulties.FirstOrDefault(d => d.Id == 3)
+                        DomainObject = context.Difficulties.FirstOrDefault(d => d.Id == 3)
                     } as IRepositoryResponse));
 
             SuccessfulRequest.Setup(repo =>
@@ -56,7 +56,7 @@ namespace SudokuCollective.Test.Repositories
                     .Returns(Task.FromResult(new RepositoryResponse() 
                     {
                         IsSuccess = true,
-                        Objects = context.Difficulties
+                        DomainObjects = context.Difficulties
                             .Where(d => 
                                 d.DifficultyLevel != DifficultyLevel.NULL && d.DifficultyLevel != DifficultyLevel.TEST)
                             .ToList()
@@ -68,7 +68,7 @@ namespace SudokuCollective.Test.Repositories
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         IsSuccess = true,
-                        Object = context.Difficulties.FirstOrDefault(d => d.Id == 4)
+                        DomainObject = context.Difficulties.FirstOrDefault(d => d.Id == 4)
                     } as IRepositoryResponse));
 
             SuccessfulRequest.Setup(repo =>
@@ -166,7 +166,7 @@ namespace SudokuCollective.Test.Repositories
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         IsSuccess = true,
-                        Object = new Difficulty() { DifficultyLevel = DifficultyLevel.NULL }
+                        DomainObject = new Difficulty() { DifficultyLevel = DifficultyLevel.NULL }
                     } as IRepositoryResponse));
 
             CreateDifficultyRequest.Setup(repo =>
@@ -174,7 +174,7 @@ namespace SudokuCollective.Test.Repositories
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         IsSuccess = true,
-                        Object = context.Difficulties.FirstOrDefault(d => d.Id == 4)
+                        DomainObject = context.Difficulties.FirstOrDefault(d => d.Id == 4)
                     } as IRepositoryResponse));
 
             CreateDifficultyRequest.Setup(repo =>
@@ -182,7 +182,7 @@ namespace SudokuCollective.Test.Repositories
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         IsSuccess = true,
-                        Objects = context.Difficulties
+                        DomainObjects = context.Difficulties
                             .Where(d =>
                                 d.DifficultyLevel != DifficultyLevel.NULL && d.DifficultyLevel != DifficultyLevel.TEST)
                             .ToList()
@@ -194,7 +194,7 @@ namespace SudokuCollective.Test.Repositories
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         IsSuccess = true,
-                        Object = context.Difficulties.FirstOrDefault(d => d.Id == 4)
+                        DomainObject = context.Difficulties.FirstOrDefault(d => d.Id == 4)
                     } as IRepositoryResponse));
 
             CreateDifficultyRequest.Setup(repo =>

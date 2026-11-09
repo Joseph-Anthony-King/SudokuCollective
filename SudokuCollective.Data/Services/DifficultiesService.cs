@@ -107,7 +107,7 @@ namespace SudokuCollective.Data.Services
 
                 result.IsSuccess = response.IsSuccess;
                 result.Message = DifficultiesMessages.DifficultyCreatedMessage;
-                result.Payload.Add(response.Object);
+                result.Payload.Add(response.DomainObject);
 
                 return result;
             }
@@ -162,7 +162,7 @@ namespace SudokuCollective.Data.Services
 
                 result.IsSuccess = response.IsSuccess;
                 result.Message = DifficultiesMessages.DifficultyFoundMessage;
-                result.Payload.Add(response.Object);
+                result.Payload.Add(response.DomainObject);
 
                 return result;
             }
@@ -208,7 +208,7 @@ namespace SudokuCollective.Data.Services
                 result.IsSuccess = response.IsSuccess;
                 result.Message = DifficultiesMessages.DifficultiesFoundMessage;
 
-                result.Payload.AddRange(response.Objects);
+                result.Payload.AddRange(response.DomainObjects);
 
 
                 return result;
@@ -260,7 +260,7 @@ namespace SudokuCollective.Data.Services
                 }
                 #endregion
 
-                var difficulty = (Difficulty)getResponse.Object;
+                var difficulty = (Difficulty)getResponse.DomainObject;
 
                 difficulty.Name = payload.Name;
                 difficulty.DisplayName = payload.DisplayName;
@@ -285,7 +285,7 @@ namespace SudokuCollective.Data.Services
 
                 result.IsSuccess = updateResponse.IsSuccess;
                 result.Message = DifficultiesMessages.DifficultyUpdatedMessage;
-                result.Payload.Add(updateResponse.Object);
+                result.Payload.Add(updateResponse.DomainObject);
 
                 return result;
             }
@@ -327,7 +327,7 @@ namespace SudokuCollective.Data.Services
                     _difficultiesRepository,
                     _distributedCache,
                     _cacheKeys,
-                    (Difficulty)getResponse.Object);
+                    (Difficulty)getResponse.DomainObject);
 
                 #region updateResponse fails
                 if (!updateResponse.IsSuccess)

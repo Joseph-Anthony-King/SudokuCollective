@@ -14,5 +14,6 @@ namespace SudokuCollective.Core.Interfaces.Repositories
         Task<bool> HasEntityAsync(int id);
         Task<bool> HasOutstandingPasswordResetAsync(int userId, int appid);
         Task<IRepositoryResponse> RetrievePasswordResetAsync(int userId, int appid);
+        IRepositoryResponse GetCount();
     }
 }

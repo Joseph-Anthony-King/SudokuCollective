@@ -14,5 +14,6 @@ namespace SudokuCollective.Core.Interfaces.Repositories
         Task<bool> HasEntityAsync(int id);
         Task<bool> HasOutstandingEmailConfirmationAsync(int userId, int appid);
         Task<IRepositoryResponse> RetrieveEmailConfirmationAsync(int userId, int appid);
+        IRepositoryResponse GetTotalCount();
     }
 }

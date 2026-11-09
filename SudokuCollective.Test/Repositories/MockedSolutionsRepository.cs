@@ -31,7 +31,7 @@ namespace SudokuCollective.Test.Repositories
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         IsSuccess = true,
-                        Object = new SudokuSolution()
+                        DomainObject = new SudokuSolution()
                     } as IRepositoryResponse));
 
             SuccessfulRequest.Setup(repo =>
@@ -39,7 +39,7 @@ namespace SudokuCollective.Test.Repositories
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         IsSuccess = true,
-                        Object = context.SudokuSolutions.FirstOrDefault(s => s.Id == 1)
+                        DomainObject = context.SudokuSolutions.FirstOrDefault(s => s.Id == 1)
                     } as IRepositoryResponse));
 
             SuccessfulRequest.Setup(repo =>
@@ -47,7 +47,7 @@ namespace SudokuCollective.Test.Repositories
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         IsSuccess = true,
-                        Objects = context.SudokuSolutions.ToList().ConvertAll(s => (IDomainEntity)s)
+                        DomainObjects = context.SudokuSolutions.ToList().ConvertAll(s => (IDomainEntity)s)
                     } as IRepositoryResponse));
 
             SuccessfulRequest.Setup(repo =>
@@ -62,7 +62,7 @@ namespace SudokuCollective.Test.Repositories
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         IsSuccess = true,
-                        Objects = context.SudokuSolutions
+                        DomainObjects = context.SudokuSolutions
                             .Where(s => s.DateSolved > DateTime.MinValue)
                             .ToList()
                             .ConvertAll(s => (IDomainEntity)s)

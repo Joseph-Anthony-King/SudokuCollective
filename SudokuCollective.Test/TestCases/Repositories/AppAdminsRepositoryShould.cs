@@ -48,7 +48,7 @@ namespace SudokuCollective.Test.TestCases.Repositories
 
             // Assert
             Assert.That(result.IsSuccess, Is.True);
-            Assert.That((AppAdmin)result.Object, Is.InstanceOf<AppAdmin>());
+            Assert.That((AppAdmin)result.DomainObject, Is.InstanceOf<AppAdmin>());
         }
 
         [Test, Category("Repository")]
@@ -74,7 +74,7 @@ namespace SudokuCollective.Test.TestCases.Repositories
 
             // Assert
             Assert.That(result.IsSuccess, Is.True);
-            Assert.That((AppAdmin)result.Object, Is.InstanceOf<AppAdmin>());
+            Assert.That((AppAdmin)result.DomainObject, Is.InstanceOf<AppAdmin>());
         }
 
         [Test, Category("Repository")]
@@ -85,7 +85,7 @@ namespace SudokuCollective.Test.TestCases.Repositories
 
             // Assert
             Assert.That(result.IsSuccess, Is.False);
-            Assert.That(result.Object, Is.Null);
+            Assert.That(result.DomainObject, Is.Null);
         }
 
         [Test, Category("Repository")]
@@ -96,7 +96,7 @@ namespace SudokuCollective.Test.TestCases.Repositories
 
             // Assert
             Assert.That(result.IsSuccess, Is.True);
-            Assert.That(result.Objects.ConvertAll(aa => (AppAdmin)aa), Is.InstanceOf<List<AppAdmin>>());
+            Assert.That(result.DomainObjects.ConvertAll(aa => (AppAdmin)aa), Is.InstanceOf<List<AppAdmin>>());
         }
 
         [Test, Category("Repository")]
@@ -112,8 +112,8 @@ namespace SudokuCollective.Test.TestCases.Repositories
 
             // Assert
             Assert.That(result.IsSuccess, Is.True);
-            Assert.That(result.Object, Is.InstanceOf<AppAdmin>());
-            Assert.That(((AppAdmin)result.Object).IsActive, Is.False);
+            Assert.That(result.DomainObject, Is.InstanceOf<AppAdmin>());
+            Assert.That(((AppAdmin)result.DomainObject).IsActive, Is.False);
         }
 
         [Test, Category("Repository")]
@@ -124,7 +124,7 @@ namespace SudokuCollective.Test.TestCases.Repositories
 
             // Assert
             Assert.That(result.IsSuccess, Is.False);
-            Assert.That(result.Object, Is.Null);
+            Assert.That(result.DomainObject, Is.Null);
         }
 
         [Test, Category("Repository")]
@@ -249,7 +249,7 @@ namespace SudokuCollective.Test.TestCases.Repositories
 
             // Assert
             Assert.That(result.IsSuccess, Is.True);
-            Assert.That((AppAdmin)result.Object, Is.InstanceOf<AppAdmin>());
+            Assert.That((AppAdmin)result.DomainObject, Is.InstanceOf<AppAdmin>());
         }
 
         [Test, Category("Repository")]
@@ -273,7 +273,23 @@ namespace SudokuCollective.Test.TestCases.Repositories
 
             // Assert
             Assert.That(result.IsSuccess, Is.False);
-            Assert.That(result.Object, Is.Null);
+            Assert.That(result.DomainObject, Is.Null);
+        }
+
+        [Test, Category("Repository")]
+        public void GetAppAdminCount()
+        {
+            // Arrange
+            var expectedCount = context.AppAdmins.Count();
+
+            // Act
+            var result = sut.GetCount();
+            var actualCount = System.Convert.ToInt32(
+                result.Object.GetType().GetProperty("TotalCount").GetValue(result.Object));
+
+            // Assert
+            Assert.That(result.IsSuccess, Is.True);
+            Assert.That(actualCount, Is.EqualTo(expectedCount));
         }
     }
 }

@@ -56,7 +56,7 @@ namespace SudokuCollective.Test.TestCases.Repositories
 
             // Assert
             Assert.That(result.IsSuccess, Is.True);
-            Assert.That((User)result.Object, Is.InstanceOf<User>());
+            Assert.That((User)result.DomainObject, Is.InstanceOf<User>());
         }
 
         [Test, Category("Repository")]
@@ -94,7 +94,7 @@ namespace SudokuCollective.Test.TestCases.Repositories
 
             // Assert
             Assert.That(result.IsSuccess, Is.True);
-            Assert.That(((User)result.Object).IsEmailConfirmed, Is.False);
+            Assert.That(((User)result.DomainObject).IsEmailConfirmed, Is.False);
         }
 
         [Test, Category("Repository")]
@@ -114,7 +114,7 @@ namespace SudokuCollective.Test.TestCases.Repositories
 
             // Assert
             Assert.That(result.IsSuccess, Is.True);
-            Assert.That((User)result.Object, Is.InstanceOf<User>());
+            Assert.That((User)result.DomainObject, Is.InstanceOf<User>());
         }
 
         [Test, Category("Repository")]
@@ -125,7 +125,7 @@ namespace SudokuCollective.Test.TestCases.Repositories
 
             // Assert
             Assert.That(result.IsSuccess, Is.False);
-            Assert.That(result.Object, Is.Null);
+            Assert.That(result.DomainObject, Is.Null);
         }
 
         [Test, Category("Repository")]
@@ -136,7 +136,7 @@ namespace SudokuCollective.Test.TestCases.Repositories
 
             // Assert
             Assert.That(result.IsSuccess, Is.True);
-            Assert.That((User)result.Object, Is.InstanceOf<User>());
+            Assert.That((User)result.DomainObject, Is.InstanceOf<User>());
         }
 
         [Test, Category("Repository")]
@@ -157,7 +157,7 @@ namespace SudokuCollective.Test.TestCases.Repositories
 
             // Assert
             Assert.That(result.IsSuccess, Is.True);
-            Assert.That((User)result.Object, Is.InstanceOf<User>());
+            Assert.That((User)result.DomainObject, Is.InstanceOf<User>());
         }
 
         [Test, Category("Repository")]
@@ -178,7 +178,7 @@ namespace SudokuCollective.Test.TestCases.Repositories
 
             // Assert
             Assert.That(result.IsSuccess, Is.True);
-            Assert.That(result.Objects.ConvertAll(a => (User)a), Is.InstanceOf<List<User>>());
+            Assert.That(result.DomainObjects.ConvertAll(a => (User)a), Is.InstanceOf<List<User>>());
         }
 
         [Test, Category("Repository")]
@@ -196,8 +196,8 @@ namespace SudokuCollective.Test.TestCases.Repositories
 
             // Assert
             Assert.That(result.IsSuccess, Is.True);
-            Assert.That(result.Object, Is.InstanceOf<User>());
-            Assert.That(((User)result.Object).UserName, Is.EqualTo(user.UserName));
+            Assert.That(result.DomainObject, Is.InstanceOf<User>());
+            Assert.That(((User)result.DomainObject).UserName, Is.EqualTo(user.UserName));
         }
 
         [Test, Category("Repository")]
@@ -211,7 +211,7 @@ namespace SudokuCollective.Test.TestCases.Repositories
 
             // Assert
             Assert.That(result.IsSuccess, Is.False);
-            Assert.That(result.Object, Is.Null);
+            Assert.That(result.DomainObject, Is.Null);
         }
 
         [Test, Category("Repository")]
@@ -739,7 +739,7 @@ namespace SudokuCollective.Test.TestCases.Repositories
             // Assert
             Assert.That(result, Is.TypeOf<RepositoryResponse>());
             Assert.That(result.IsSuccess, Is.True);
-            Assert.That(result.Objects.Count, Is.EqualTo(2));
+            Assert.That(result.DomainObjects.Count, Is.EqualTo(2));
         }
 
         [Test, Category("Repository")]
@@ -772,6 +772,22 @@ namespace SudokuCollective.Test.TestCases.Repositories
             // Assert
             Assert.That(result, Is.TypeOf<RepositoryResponse>());
             Assert.That(result.IsSuccess, Is.False);
+        }
+
+        [Test, Category("Repository")]
+        public void GetUserCount()
+        {
+            // Arrange
+            var expectedCount = context.Users.Count();
+
+            // Act
+            var result = sut.GetCount();
+            var actualCount = System.Convert.ToInt32(
+                result.Object.GetType().GetProperty("TotalCount").GetValue(result.Object));
+
+            // Assert
+            Assert.That(result.IsSuccess, Is.True);
+            Assert.That(actualCount, Is.EqualTo(expectedCount));
         }
     }
 }

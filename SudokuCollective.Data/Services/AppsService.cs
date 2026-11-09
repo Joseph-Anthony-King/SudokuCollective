@@ -87,7 +87,7 @@ namespace SudokuCollective.Data.Services
                 }
                 #endregion
 
-                var user = (User)userResponse.Object;
+                var user = (User)userResponse.DomainObject;
 
                 var generatingGuid = true;
                 var license = new Guid();
@@ -102,7 +102,7 @@ namespace SudokuCollective.Data.Services
 
                 var checkAppsResponse = (RepositoryResponse)cacheServiceResponse.Item1;
 
-                foreach (var a in checkAppsResponse.Objects.ConvertAll(a => (App)a))
+                foreach (var a in checkAppsResponse.DomainObjects.ConvertAll(a => (App)a))
                 {
                     a.License = (await _cacheService.GetLicenseWithCacheAsync(
                         _appsRepository,
@@ -118,7 +118,7 @@ namespace SudokuCollective.Data.Services
                     license = Guid.NewGuid();
 
                     if (!checkAppsResponse
-                        .Objects
+                        .DomainObjects
                         .ConvertAll(a => (App)a)
                         .Any(a => a.License.Equals(license.ToString())))
                     {
@@ -171,7 +171,7 @@ namespace SudokuCollective.Data.Services
 
                 result.IsSuccess = appResponse.IsSuccess;
                 result.Message = AppsMessages.AppCreatedMessage;
-                result.Payload.Add((App)appResponse.Object);
+                result.Payload.Add((App)appResponse.DomainObject);
 
                 return result;
             }
@@ -225,7 +225,7 @@ namespace SudokuCollective.Data.Services
 
                 result = (Result)appCacheServiceResponse.Item2;
 
-                var app = (App)appResponse.Object;
+                var app = (App)appResponse.DomainObject;
 
                 var userCacheServiceResponse = await _cacheService.GetWithCacheAsync(
                     _usersRepository,
@@ -248,7 +248,7 @@ namespace SudokuCollective.Data.Services
                 }
                 #endregion
 
-                var user = (User)userResponse.Object;
+                var user = (User)userResponse.DomainObject;
 
                 if (!user.IsSuperUser && app.OwnerId != user.Id)
                 {
@@ -333,7 +333,7 @@ namespace SudokuCollective.Data.Services
 
                 result = (Result)cacheServiceResponse.Item2;
 
-                var app = (IApp)appResponse.Object;
+                var app = (IApp)appResponse.DomainObject;
 
                 var userCacheServiceResponse = await _cacheService.GetWithCacheAsync(
                     _usersRepository,
@@ -356,7 +356,7 @@ namespace SudokuCollective.Data.Services
                 }
                 #endregion
 
-                var user = (User)userResponse.Object;
+                var user = (User)userResponse.DomainObject;
 
                 if (!user.IsSuperUser && app.OwnerId != user.Id)
                 {
@@ -457,9 +457,9 @@ namespace SudokuCollective.Data.Services
                 }
                 #endregion
 
-                var user = (User)userResponse.Object;
+                var user = (User)userResponse.DomainObject;
 
-                if (DataUtilities.IsPageValid(request.Paginator, appResponse.Objects))
+                if (DataUtilities.IsPageValid(request.Paginator, appResponse.DomainObjects))
                 {
                     result = PaginatorUtilities.PaginateApps(
                         request.Paginator,
@@ -563,7 +563,7 @@ namespace SudokuCollective.Data.Services
 
                 result = (Result)cacheServiceResponse.Item2;
 
-                if (DataUtilities.IsPageValid(paginator, appResponse.Objects))
+                if (DataUtilities.IsPageValid(paginator, appResponse.DomainObjects))
                 {
                     result = PaginatorUtilities.PaginateApps(paginator, appResponse, result);
 
@@ -653,7 +653,7 @@ namespace SudokuCollective.Data.Services
 
                 result = (Result)cacheServiceResponse.Item2;
 
-                if (DataUtilities.IsPageValid(paginator, appResponse.Objects))
+                if (DataUtilities.IsPageValid(paginator, appResponse.DomainObjects))
                 {
                     result = PaginatorUtilities.PaginateApps(paginator, appResponse, result);
 
@@ -736,7 +736,7 @@ namespace SudokuCollective.Data.Services
                 }
                 #endregion
 
-                var app = (App)getResponse.Object;
+                var app = (App)getResponse.DomainObject;
 
                 app.Name = payload.Name;
                 app.LocalUrl = payload.LocalUrl;
@@ -852,7 +852,7 @@ namespace SudokuCollective.Data.Services
                         _appsRepository,
                         _distributedCache,
                         _cacheKeys,
-                        (App)getResponse.Object);
+                        (App)getResponse.DomainObject);
 
                     #region resetResponse fails
                     if (!resetResponse.IsSuccess)
@@ -868,7 +868,7 @@ namespace SudokuCollective.Data.Services
 
                     result.IsSuccess = resetResponse.IsSuccess;
                     result.Message = AppsMessages.AppResetMessage;
-                    result.Payload.Add(resetResponse.Object);
+                    result.Payload.Add(resetResponse.DomainObject);
 
                     return result;
                 }
@@ -886,7 +886,7 @@ namespace SudokuCollective.Data.Services
                         _appsRepository,
                         _distributedCache,
                         _cacheKeys,
-                        (App)getResponse.Object);
+                        (App)getResponse.DomainObject);
 
                     #region deleteResponse fails
                     if (!deleteResponse.IsSuccess)
@@ -941,7 +941,7 @@ namespace SudokuCollective.Data.Services
                     _cachingStrategy.Medium,
                     id);
 
-                var app = (App)((RepositoryResponse)cacheServiceResponse.Item1).Object;
+                var app = (App)((RepositoryResponse)cacheServiceResponse.Item1).DomainObject;
 
                 if (app == null)
                 {
@@ -998,14 +998,14 @@ namespace SudokuCollective.Data.Services
                     return result;
                 }
 
-                var requestor = (User)(await _usersRepository.GetAsync(requestorId)).Object;
+                var requestor = (User)(await _usersRepository.GetAsync(requestorId)).DomainObject;
 
                 var users = new List<UserDTO>();
 
                 if (requestor != null && !requestor.IsSuperUser)
                 {
                     // Filter out user emails from the frontend...
-                    foreach (var user in appResponse.Objects)
+                    foreach (var user in appResponse.DomainObjects)
                     {
                         var emailConfirmed = ((IUser)user).IsEmailConfirmed;
                         ((IUser)user).NullifyEmail();
@@ -1015,7 +1015,7 @@ namespace SudokuCollective.Data.Services
                     }
                 } else {
 
-                    foreach (var user in appResponse.Objects)
+                    foreach (var user in appResponse.DomainObjects)
                     {
                         var u = (UserDTO)((User)user).Cast<UserDTO>();
                         users.Add(u);
@@ -1071,7 +1071,7 @@ namespace SudokuCollective.Data.Services
                 }
                 #endregion
 
-                var app = (App)appResponse.Object;
+                var app = (App)appResponse.DomainObject;
 
                 app.License = (await _cacheService.GetLicenseWithCacheAsync(
                     _appsRepository,
@@ -1131,7 +1131,7 @@ namespace SudokuCollective.Data.Services
 
                 result.IsSuccess = addUserToAppResponse.IsSuccess;
                 result.Message = AppsMessages.UserAddedToAppMessage;
-                result.Payload.Add((User)userResponse.Object);
+                result.Payload.Add((User)userResponse.DomainObject);
 
                 return result;
             }
@@ -1193,7 +1193,7 @@ namespace SudokuCollective.Data.Services
                     return result;
                 }
 
-                var app = (App)appResponse.Object;
+                var app = (App)appResponse.DomainObject;
 
                 app.License = (await _cacheService.GetLicenseWithCacheAsync(
                     _appsRepository,
@@ -1241,7 +1241,7 @@ namespace SudokuCollective.Data.Services
 
                 result.IsSuccess = removeResponse.IsSuccess;
                 result.Message = AppsMessages.UserRemovedFromAppMessage;
-                result.Payload.Add(removeResponse.Object);
+                result.Payload.Add(removeResponse.DomainObject);
 
                 return result;
             }
@@ -1290,7 +1290,7 @@ namespace SudokuCollective.Data.Services
                 }
                 #endregion
 
-                var app = (App)appResponse.Object;
+                var app = (App)appResponse.DomainObject;
 
                 app.License = (await _cacheService.GetLicenseWithCacheAsync(
                     _appsRepository,
@@ -1321,7 +1321,7 @@ namespace SudokuCollective.Data.Services
                 }
                 #endregion
 
-                var user = (User)userReponse.Object;
+                var user = (User)userReponse.DomainObject;
 
                 if (user.IsSuperUser)
                 {
@@ -1343,7 +1343,7 @@ namespace SudokuCollective.Data.Services
                     if (await _appAdminsRepository.HasAdminRecordAsync(app.Id, user.Id))
                     {
                         var adminRecord = (AppAdmin)(await _appAdminsRepository
-                            .GetAdminRecordAsync(app.Id, user.Id)).Object;
+                            .GetAdminRecordAsync(app.Id, user.Id)).DomainObject;
 
                         if (adminRecord.IsActive)
                         {
@@ -1388,7 +1388,7 @@ namespace SudokuCollective.Data.Services
                 if (!user.IsAdmin)
                 {
                     var adminRole = (await _rolesRepository.GetAllAsync())
-                        .Objects
+                        .DomainObjects
                         .ConvertAll(r => (Role)r)
                         .FirstOrDefault(r => r.RoleLevel == RoleLevel.ADMIN);
 
@@ -1398,7 +1398,7 @@ namespace SudokuCollective.Data.Services
                         RoleId = adminRole.Id,
                         Role = adminRole}) ;
 
-                    user = (User)(await _usersRepository.UpdateAsync(user)).Object;
+                    user = (User)(await _usersRepository.UpdateAsync(user)).DomainObject;
                 }
 
                 var appAdmin = new AppAdmin(app.Id, user.Id);
@@ -1431,7 +1431,7 @@ namespace SudokuCollective.Data.Services
 
                 result.IsSuccess = appAdminResult.IsSuccess;
                 result.Message = UsersMessages.UserHasBeenPromotedToAdminMessage;
-                result.Payload.Add((await _usersRepository.GetAsync(userId)).Object);
+                result.Payload.Add((await _usersRepository.GetAsync(userId)).DomainObject);
 
                 return result;
             }
@@ -1480,7 +1480,7 @@ namespace SudokuCollective.Data.Services
                 }
                 #endregion
 
-                var app = (App)appResponse.Object;
+                var app = (App)appResponse.DomainObject;
 
                 app.License = (await _cacheService.GetLicenseWithCacheAsync(
                     _appsRepository,
@@ -1511,7 +1511,7 @@ namespace SudokuCollective.Data.Services
                 }
                 #endregion
 
-                var user = (User)userResponse.Object;
+                var user = (User)userResponse.DomainObject;
 
                 if (!user.IsAdmin)
                 {
@@ -1531,7 +1531,7 @@ namespace SudokuCollective.Data.Services
 
                 var appAdmin = (AppAdmin)
                     (await _appAdminsRepository.GetAdminRecordAsync(app.Id, user.Id))
-                    .Object;
+                    .DomainObject;
 
                 appAdmin.IsActive = false;
 
@@ -1570,7 +1570,7 @@ namespace SudokuCollective.Data.Services
                 result.Message = AppsMessages.AdminPrivilegesDeactivatedMessage;
                 result.Payload.Add(
                     (await _usersRepository.GetAsync(user.Id))
-                    .Object);
+                    .DomainObject);
 
                 return result;
             }
@@ -1614,7 +1614,7 @@ namespace SudokuCollective.Data.Services
 
                 result.IsSuccess = appResponse.IsSuccess;
                 result.Message = AppsMessages.AppActivatedMessage;
-                result.Payload.Add(appResponse.Object);
+                result.Payload.Add(appResponse.DomainObject);
 
                 return result;
             }
@@ -1658,7 +1658,7 @@ namespace SudokuCollective.Data.Services
 
                 result.IsSuccess = appResponse.IsSuccess;
                 result.Message = AppsMessages.AppDeactivatedMessage;
-                result.Payload.Add(appResponse.Object);
+                result.Payload.Add(appResponse.DomainObject);
 
                 return result;
             }
@@ -1725,8 +1725,8 @@ namespace SudokuCollective.Data.Services
                     id,
                     result);
 
-                var app = (App)((RepositoryResponse)appResponse.Item1).Object;
-                var user = (User)((RepositoryResponse)userResponse.Item1).Object;
+                var app = (App)((RepositoryResponse)appResponse.Item1).DomainObject;
+                var user = (User)((RepositoryResponse)userResponse.Item1).DomainObject;
 
                 if (!user.IsSuperUser && app.OwnerId != user.Id)
                 {
@@ -1824,7 +1824,7 @@ namespace SudokuCollective.Data.Services
                     var appResponse = await _appsRepository.GetByLicenseAsync(license);
 
                     var requestorOwnerOfThisApp = await _appsRepository.IsUserOwnerOThisfAppAsync(
-                        ((App)appResponse.Object).Id,
+                        ((App)appResponse.DomainObject).Id,
                         license,
                         userId);
 
@@ -1832,7 +1832,7 @@ namespace SudokuCollective.Data.Services
                     {
                         return true;
                     }
-                    else if (((User)userResponse.Object).IsSuperUser && validLicense)
+                    else if (((User)userResponse.DomainObject).IsSuperUser && validLicense)
                     {
                         return true;
                     }
@@ -1940,7 +1940,7 @@ namespace SudokuCollective.Data.Services
 
                 var appResponse = (RepositoryResponse)cacheServiceResponse.Item1;
 
-                if (!appResponse.IsSuccess || !license.Equals(((App)appResponse.Object).License))
+                if (!appResponse.IsSuccess || !license.Equals(((App)appResponse.DomainObject).License))
                 {
                     SudokuCollectiveLogger.LogWarning<AppsService>(
                         _logger,
@@ -1973,7 +1973,7 @@ namespace SudokuCollective.Data.Services
 
                 bool userPermittedAccess;
 
-                if (!((App)appResponse.Object).PermitCollectiveLogins)
+                if (!((App)appResponse.DomainObject).PermitCollectiveLogins)
                 {
                     userPermittedAccess = await _appsRepository
                         .IsUserRegisteredToAppAsync(appId, license, userId);
@@ -1985,7 +1985,7 @@ namespace SudokuCollective.Data.Services
 
                 if (userPermittedAccess && validLicense)
                 {
-                    if (((App)appResponse.Object).IsActive)
+                    if (((App)appResponse.DomainObject).IsActive)
                     {
                         return true;
                     }
@@ -1994,13 +1994,13 @@ namespace SudokuCollective.Data.Services
                         SudokuCollectiveLogger.LogWarning<AppsService>(
                             _logger,
                             LogsUtilities.GetServiceLogEventId(),
-                            string.Format(LoggerMessages.AppIsNotActive, ((App)appResponse.Object).Name),
+                            string.Format(LoggerMessages.AppIsNotActive, ((App)appResponse.DomainObject).Name),
                             (SudokuCollective.Logs.Models.Request)_requestService.Get());
 
                         return false;
                     }
                 }
-                else if (((User)userResponse.Object).IsSuperUser && validLicense)
+                else if (((User)userResponse.DomainObject).IsSuperUser && validLicense)
                 {
                     return true;
                 }
@@ -2057,7 +2057,7 @@ namespace SudokuCollective.Data.Services
 
                 result = (Result)cacheServiceResponse.Item2;
 
-                if (DataUtilities.IsPageValid(paginator, response.Objects))
+                if (DataUtilities.IsPageValid(paginator, response.DomainObjects))
                 {
                     result = PaginatorUtilities.PaginateGallery(
                         paginator,

@@ -8,7 +8,9 @@ namespace SudokuCollective.Core.Interfaces.ServiceModels
     {
         bool IsSuccess { get; set; }
         Exception Exception { get; set; }
-        IDomainEntity Object { get; set; }
-        List<IDomainEntity> Objects { get; set; }
+        IDomainEntity DomainObject { get; set; }
+        List<IDomainEntity> DomainObjects { get; set; }
+        object Object { get; set; }
+        List<object> Objects { get; set; }
     }
 }

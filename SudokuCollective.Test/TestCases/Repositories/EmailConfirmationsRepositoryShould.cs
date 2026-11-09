@@ -46,7 +46,7 @@ namespace SudokuCollective.Test.TestCases.Repositories
 
             // Assert
             Assert.That(result.IsSuccess, Is.True);
-            Assert.That((EmailConfirmation)result.Object, Is.InstanceOf<EmailConfirmation>());
+            Assert.That((EmailConfirmation)result.DomainObject, Is.InstanceOf<EmailConfirmation>());
         }
 
         [Test, Category("Repository")]
@@ -73,7 +73,7 @@ namespace SudokuCollective.Test.TestCases.Repositories
 
             // Assert
             Assert.That(result.IsSuccess, Is.True);
-            Assert.That((EmailConfirmation)result.Object, Is.InstanceOf<EmailConfirmation>());
+            Assert.That((EmailConfirmation)result.DomainObject, Is.InstanceOf<EmailConfirmation>());
         }
 
         [Test, Category("Repository")]
@@ -84,7 +84,7 @@ namespace SudokuCollective.Test.TestCases.Repositories
 
             // Assert
             Assert.That(result.IsSuccess, Is.False);
-            Assert.That(result.Object, Is.Null);
+            Assert.That(result.DomainObject, Is.Null);
         }
 
         [Test, Category("Repository")]
@@ -95,7 +95,7 @@ namespace SudokuCollective.Test.TestCases.Repositories
 
             // Assert
             Assert.That(result.IsSuccess, Is.True);
-            Assert.That(result.Objects.ConvertAll(ec => (EmailConfirmation)ec), Is.InstanceOf<List<EmailConfirmation>>());
+            Assert.That(result.DomainObjects.ConvertAll(ec => (EmailConfirmation)ec), Is.InstanceOf<List<EmailConfirmation>>());
         }
 
         [Test, Category("Repository")]
@@ -110,8 +110,8 @@ namespace SudokuCollective.Test.TestCases.Repositories
 
             // Assert
             Assert.That(result.IsSuccess, Is.True);
-            Assert.That(result.Object, Is.InstanceOf<EmailConfirmation>());
-            Assert.That(((EmailConfirmation)result.Object).OldEmailAddress, Is.EqualTo(emailConfirmation.OldEmailAddress));
+            Assert.That(result.DomainObject, Is.InstanceOf<EmailConfirmation>());
+            Assert.That(((EmailConfirmation)result.DomainObject).OldEmailAddress, Is.EqualTo(emailConfirmation.OldEmailAddress));
         }
 
         [Test, Category("Repository")]
@@ -122,7 +122,7 @@ namespace SudokuCollective.Test.TestCases.Repositories
 
             // Assert
             Assert.That(result.IsSuccess, Is.False);
-            Assert.That(result.Object, Is.Null);
+            Assert.That(result.DomainObject, Is.Null);
         }
 
         [Test, Category("Repository")]
@@ -182,7 +182,7 @@ namespace SudokuCollective.Test.TestCases.Repositories
 
             // Assert
             Assert.That(result.IsSuccess, Is.True);
-            Assert.That((EmailConfirmation)result.Object, Is.InstanceOf<EmailConfirmation>());
+            Assert.That((EmailConfirmation)result.DomainObject, Is.InstanceOf<EmailConfirmation>());
         }
 
         [Test, Category("Repository")]
@@ -196,6 +196,22 @@ namespace SudokuCollective.Test.TestCases.Repositories
 
             // Assert
             Assert.That(result.IsSuccess, Is.False);
+        }
+
+        [Test, Category("Repository")]
+        public void GetEmailConfirmationCount()
+        {
+            // Arrange
+            var expectedCount = context.EmailConfirmations.Count();
+
+            // Act
+            var result = sut.GetTotalCount();
+            var actualCount = System.Convert.ToInt32(
+                result.Object.GetType().GetProperty("TotalCount").GetValue(result.Object));
+
+            // Assert
+            Assert.That(result.IsSuccess, Is.True);
+            Assert.That(actualCount, Is.EqualTo(expectedCount));
         }
     }
 }

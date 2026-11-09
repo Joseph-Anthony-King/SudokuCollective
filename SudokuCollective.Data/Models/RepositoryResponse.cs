@@ -9,13 +9,17 @@ namespace SudokuCollective.Data.Models
     {
         public bool IsSuccess { get; set; }
         public Exception Exception { get; set; }
-        public IDomainEntity Object { get; set; }
-        public List<IDomainEntity> Objects { get; set; }
+        public IDomainEntity DomainObject { get; set; }
+        public List<IDomainEntity> DomainObjects { get; set; }
+        public object Object { get; set; }
+        public List<object> Objects { get; set; }
 
         public RepositoryResponse()
         {
             IsSuccess = false;
             Exception = null;
+            DomainObject = null;
+            DomainObjects = [];
             Object = null;
             Objects = [];
         }

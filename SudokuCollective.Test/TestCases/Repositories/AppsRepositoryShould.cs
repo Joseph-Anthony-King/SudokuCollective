@@ -55,7 +55,7 @@ namespace SudokuCollective.Test.TestCases.Repositories
 
             // Assert
             Assert.That(result.IsSuccess, Is.True);
-            Assert.That((App)result.Object, Is.InstanceOf<App>());
+            Assert.That((App)result.DomainObject, Is.InstanceOf<App>());
         }
 
         [Test, Category("Repository")]
@@ -82,7 +82,7 @@ namespace SudokuCollective.Test.TestCases.Repositories
 
             // Assert
             Assert.That(result.IsSuccess, Is.True);
-            Assert.That((App)result.Object, Is.InstanceOf<App>());
+            Assert.That((App)result.DomainObject, Is.InstanceOf<App>());
         }
 
         [Test, Category("Repository")]
@@ -102,7 +102,7 @@ namespace SudokuCollective.Test.TestCases.Repositories
 
             // Assert
             Assert.That(result.IsSuccess, Is.False);
-            Assert.That(result.Object, Is.Null);
+            Assert.That(result.DomainObject, Is.Null);
         }
 
         [Test, Category("Repository")]
@@ -116,7 +116,7 @@ namespace SudokuCollective.Test.TestCases.Repositories
 
             // Assert
             Assert.That(result.IsSuccess, Is.True);
-            Assert.That((App)result.Object, Is.InstanceOf<App>());
+            Assert.That((App)result.DomainObject, Is.InstanceOf<App>());
         }
 
         [Test, Category("Repository")]
@@ -130,7 +130,7 @@ namespace SudokuCollective.Test.TestCases.Repositories
 
             // Assert
             Assert.That(result.IsSuccess, Is.False);
-            Assert.That(result.Object, Is.Null);
+            Assert.That(result.DomainObject, Is.Null);
         }
 
         [Test, Category("Repository")]
@@ -143,7 +143,7 @@ namespace SudokuCollective.Test.TestCases.Repositories
 
             // Assert
             Assert.That(result.IsSuccess, Is.True);
-            Assert.That(result.Objects.ConvertAll(a => (App)a), Is.InstanceOf<List<App>>());
+            Assert.That(result.DomainObjects.ConvertAll(a => (App)a), Is.InstanceOf<List<App>>());
         }
 
         [Test, Category("Repository")]
@@ -157,7 +157,7 @@ namespace SudokuCollective.Test.TestCases.Repositories
 
             // Assert
             Assert.That(result.IsSuccess, Is.True);
-            Assert.That(result.Objects.ConvertAll(a => (User)a), Is.InstanceOf<List<User>>());
+            Assert.That(result.DomainObjects.ConvertAll(a => (User)a), Is.InstanceOf<List<User>>());
         }
 
         [Test, Category("Repository")]
@@ -186,7 +186,7 @@ namespace SudokuCollective.Test.TestCases.Repositories
 
             // Assert
             Assert.That(result.IsSuccess, Is.True);
-            Assert.That(result.Objects.ConvertAll(a => (User)a), Is.InstanceOf<List<User>>());
+            Assert.That(result.DomainObjects.ConvertAll(a => (User)a), Is.InstanceOf<List<User>>());
         }
 
         [Test, Category("Repository")]
@@ -215,8 +215,8 @@ namespace SudokuCollective.Test.TestCases.Repositories
 
             // Assert
             Assert.That(result.IsSuccess, Is.True);
-            Assert.That(result.Object, Is.InstanceOf<App>());
-            Assert.That(((App)result.Object).Name, Is.EqualTo(app.Name));
+            Assert.That(result.DomainObject, Is.InstanceOf<App>());
+            Assert.That(((App)result.DomainObject).Name, Is.EqualTo(app.Name));
         }
 
         [Test, Category("Repository")]
@@ -229,7 +229,7 @@ namespace SudokuCollective.Test.TestCases.Repositories
 
             // Assert
             Assert.That(result.IsSuccess, Is.False);
-            Assert.That(result.Object, Is.Null);
+            Assert.That(result.DomainObject, Is.Null);
         }
 
         [Test, Category("Repository")]
@@ -584,7 +584,7 @@ namespace SudokuCollective.Test.TestCases.Repositories
 
             // Assert
             Assert.That(result.IsSuccess, Is.True);
-            Assert.That(result.Objects.ConvertAll(a => (App)a), Is.InstanceOf<List<App>>());
+            Assert.That(result.DomainObjects.ConvertAll(a => (App)a), Is.InstanceOf<List<App>>());
         }
 
         [Test, Category("Repository")]
@@ -613,8 +613,8 @@ namespace SudokuCollective.Test.TestCases.Repositories
 
             // Assert
             Assert.That(result.IsSuccess, Is.True);
-            Assert.That(result.Objects.ConvertAll(a => (App)a), Is.InstanceOf<List<App>>());
-            Assert.That(result.Objects.Count, Is.EqualTo(2));
+            Assert.That(result.DomainObjects.ConvertAll(a => (App)a), Is.InstanceOf<List<App>>());
+            Assert.That(result.DomainObjects.Count, Is.EqualTo(2));
         }
 
         [Test, Category("Repository")]
@@ -635,12 +635,28 @@ namespace SudokuCollective.Test.TestCases.Repositories
             // Arrange and Act
             var result = await sut.GetGalleryAppsAsync();
             var isSuccess = result.IsSuccess;
-            var apps = result.Objects.ConvertAll(a => (App)a);
+            var apps = result.DomainObjects.ConvertAll(a => (App)a);
 
             // Assert
             Assert.That(result, Is.InstanceOf<IRepositoryResponse>());
             Assert.That(isSuccess, Is.True);
             Assert.That(apps, Is.InstanceOf<List<App>>());
+        }
+
+        [Test, Category("Repository")]
+        public void GetAppCount()
+        {
+            // Arrange
+            var expectedCount = context.Apps.Count();
+
+            // Act
+            var result = sut.GetCount();
+            var actualCount = System.Convert.ToInt32(
+                result.Object.GetType().GetProperty("TotalCount").GetValue(result.Object));
+
+            // Assert
+            Assert.That(result.IsSuccess, Is.True);
+            Assert.That(actualCount, Is.EqualTo(expectedCount));
         }
     }
 }

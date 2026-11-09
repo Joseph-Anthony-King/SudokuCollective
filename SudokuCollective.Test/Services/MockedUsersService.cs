@@ -77,7 +77,7 @@ namespace SudokuCollective.Test.Services
                                 .Object
                                 .AddAsync(It.IsAny<User>())
                                 .Result
-                                .Object
+                                .DomainObject
                             ]
                 } as IResult));
 
@@ -100,7 +100,7 @@ namespace SudokuCollective.Test.Services
                             .Object
                             .GetAllAsync()
                             .Result
-                            .Objects
+                            .DomainObjects
                             .ConvertAll(u => (object)u)
                     } as IResult));
 
@@ -126,7 +126,7 @@ namespace SudokuCollective.Test.Services
                                 .Object
                                 .AddAsync(It.IsAny<User>())
                                 .Result
-                                .Object
+                                .DomainObject
                             ]
                     } as IResult));
 
@@ -166,7 +166,7 @@ namespace SudokuCollective.Test.Services
                                 .Object
                                 .AddAsync(It.IsAny<User>())
                                 .Result
-                                .Object
+                                .DomainObject
                             ]
                     } as IResult));
 
@@ -690,7 +690,7 @@ namespace SudokuCollective.Test.Services
                                 .Object
                                 .AddAsync(It.IsAny<User>())
                                 .Result
-                                .Object
+                                .DomainObject
                             ]
                 } as IResult));
 
@@ -713,7 +713,7 @@ namespace SudokuCollective.Test.Services
                             .Object
                             .GetAllAsync()
                             .Result
-                            .Objects
+                            .DomainObjects
                             .ConvertAll(u => (object)u)
                     } as IResult));
 
@@ -739,7 +739,7 @@ namespace SudokuCollective.Test.Services
                                 .Object
                                 .AddAsync(It.IsAny<User>())
                                 .Result
-                                .Object
+                                .DomainObject
                             ]
                     } as IResult));
 
@@ -779,7 +779,7 @@ namespace SudokuCollective.Test.Services
                                 .Object
                                 .AddAsync(It.IsAny<User>())
                                 .Result
-                                .Object
+                                .DomainObject
                             ]
                     } as IResult));
 

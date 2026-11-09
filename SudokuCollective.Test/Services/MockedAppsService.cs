@@ -56,7 +56,7 @@ namespace SudokuCollective.Test.Services
                                 .Object
                                 .GetAsync(It.IsAny<int>())
                                 .Result
-                                .Object
+                                .DomainObject
                         ]
                 } as Core.Interfaces.Models.DomainObjects.Params.IResult));
 
@@ -80,7 +80,7 @@ namespace SudokuCollective.Test.Services
                                 .Object
                                 .GetAsync(It.IsAny<int>())
                                 .Result
-                                .Object
+                                .DomainObject
                         ]
                 } as Core.Interfaces.Models.DomainObjects.Params.IResult));
 
@@ -100,7 +100,7 @@ namespace SudokuCollective.Test.Services
                         .Object
                         .GetAllAsync()
                         .Result
-                        .Objects
+                        .DomainObjects
                         .ConvertAll(a => (object)a)
                 } as Core.Interfaces.Models.DomainObjects.Params.IResult));
 
@@ -122,7 +122,7 @@ namespace SudokuCollective.Test.Services
                         .Object
                         .GetAllAsync()
                         .Result
-                        .Objects
+                        .DomainObjects
                         .ConvertAll(a => (object)a)
                 } as Core.Interfaces.Models.DomainObjects.Params.IResult));
 
@@ -144,7 +144,7 @@ namespace SudokuCollective.Test.Services
                         .Object
                         .GetAllAsync()
                         .Result
-                        .Objects
+                        .DomainObjects
                         .ConvertAll(a => (object)a)
                 } as Core.Interfaces.Models.DomainObjects.Params.IResult));
 
@@ -166,7 +166,7 @@ namespace SudokuCollective.Test.Services
                                 .Object
                                 .GetAsync(It.IsAny<int>())
                                 .Result
-                                .Object
+                                .DomainObject
                         ]
                 } as Core.Interfaces.Models.DomainObjects.Params.IResult));
 
@@ -206,7 +206,7 @@ namespace SudokuCollective.Test.Services
                                 .Object
                                 .GetAsync(It.IsAny<int>())
                                 .Result
-                                .Object
+                                .DomainObject
                         ]
                 } as Core.Interfaces.Models.DomainObjects.Params.IResult));
 
@@ -230,7 +230,7 @@ namespace SudokuCollective.Test.Services
                         .Object
                         .GetAppUsersAsync(It.IsAny<int>())
                         .Result
-                        .Objects
+                        .DomainObjects
                         .ConvertAll(u => (object)u)
                 } as Core.Interfaces.Models.DomainObjects.Params.IResult));
 
@@ -267,7 +267,7 @@ namespace SudokuCollective.Test.Services
                                 .Object
                                 .GetAsync(It.IsAny<int>())
                                 .Result
-                                .Object
+                                .DomainObject
                         ]
                 } as Core.Interfaces.Models.DomainObjects.Params.IResult));
 
@@ -289,7 +289,7 @@ namespace SudokuCollective.Test.Services
                                 .Object
                                 .GetAsync(It.IsAny<int>())
                                 .Result
-                                .Object
+                                .DomainObject
                         ]
                 } as Core.Interfaces.Models.DomainObjects.Params.IResult));
 
@@ -311,7 +311,7 @@ namespace SudokuCollective.Test.Services
                                 .Object
                                 .GetAsync(It.IsAny<int>())
                                 .Result
-                                .Object
+                                .DomainObject
                         ]
                 } as Core.Interfaces.Models.DomainObjects.Params.IResult));
 
@@ -333,7 +333,7 @@ namespace SudokuCollective.Test.Services
                                 .Object
                                 .GetAsync(It.IsAny<int>())
                                 .Result
-                                .Object
+                                .DomainObject
                         ]
                 } as Core.Interfaces.Models.DomainObjects.Params.IResult));
 
@@ -368,7 +368,7 @@ namespace SudokuCollective.Test.Services
                             .Object
                             .AddAsync(It.IsAny<User>())
                             .Result
-                            .Object
+                            .DomainObject
                         ]
                 } as Core.Interfaces.Models.DomainObjects.Params.IResult));
 
@@ -390,7 +390,7 @@ namespace SudokuCollective.Test.Services
                                 .Object
                                 .AddAsync(It.IsAny<User>())
                                 .Result
-                                .Object
+                                .DomainObject
                         ]
                 } as Core.Interfaces.Models.DomainObjects.Params.IResult));
 
@@ -670,7 +670,7 @@ namespace SudokuCollective.Test.Services
                                     .Object
                                     .GetAsync(It.IsAny<int>())
                                     .Result
-                                    .Object
+                                    .DomainObject
                             ]
                     } as Core.Interfaces.Models.DomainObjects.Params.IResult));
 
@@ -694,7 +694,7 @@ namespace SudokuCollective.Test.Services
                                     .Object
                                     .GetAsync(It.IsAny<int>())
                                     .Result
-                                    .Object
+                                    .DomainObject
                             ]
                 } as Core.Interfaces.Models.DomainObjects.Params.IResult));
 
@@ -714,7 +714,7 @@ namespace SudokuCollective.Test.Services
                         .Object
                         .GetAllAsync()
                         .Result
-                        .Objects
+                        .DomainObjects
                         .ConvertAll(a => (object)a)
                 } as Core.Interfaces.Models.DomainObjects.Params.IResult));
 
@@ -736,7 +736,7 @@ namespace SudokuCollective.Test.Services
                         .Object
                         .GetAllAsync()
                         .Result
-                        .Objects
+                        .DomainObjects
                         .ConvertAll(a => (object)a)
                 } as Core.Interfaces.Models.DomainObjects.Params.IResult));
 
@@ -758,7 +758,7 @@ namespace SudokuCollective.Test.Services
                         .Object
                         .GetAllAsync()
                         .Result
-                        .Objects
+                        .DomainObjects
                         .ConvertAll(a => (object)a)
                 } as Core.Interfaces.Models.DomainObjects.Params.IResult));
 
@@ -780,7 +780,7 @@ namespace SudokuCollective.Test.Services
                                 .Object
                                 .AddAsync(It.IsAny<App>())
                                 .Result
-                                .Object
+                                .DomainObject
                         ]
                 } as Core.Interfaces.Models.DomainObjects.Params.IResult));
 
@@ -820,7 +820,7 @@ namespace SudokuCollective.Test.Services
                                 .Object
                                 .UpdateAsync(It.IsAny<App>())
                                 .Result
-                                .Object
+                                .DomainObject
                         ]
                 } as Core.Interfaces.Models.DomainObjects.Params.IResult));
 
@@ -844,7 +844,7 @@ namespace SudokuCollective.Test.Services
                             .Object
                             .GetAppUsersAsync(It.IsAny<int>())
                             .Result
-                            .Objects
+                            .DomainObjects
                             .ConvertAll(u => (object)u)
                 } as Core.Interfaces.Models.DomainObjects.Params.IResult));
 
@@ -881,7 +881,7 @@ namespace SudokuCollective.Test.Services
                                     .Object
                                     .GetAsync(It.IsAny<int>())
                                     .Result
-                                    .Object
+                                    .DomainObject
                             ]
                 } as Core.Interfaces.Models.DomainObjects.Params.IResult));
 
@@ -903,7 +903,7 @@ namespace SudokuCollective.Test.Services
                                     .Object
                                     .GetAsync(It.IsAny<int>())
                                     .Result
-                                    .Object
+                                    .DomainObject
                             ]
                 } as Core.Interfaces.Models.DomainObjects.Params.IResult));
 
@@ -925,7 +925,7 @@ namespace SudokuCollective.Test.Services
                                     .Object
                                     .GetAsync(It.IsAny<int>())
                                     .Result
-                                    .Object
+                                    .DomainObject
                             ]
                 } as Core.Interfaces.Models.DomainObjects.Params.IResult));
 
@@ -986,7 +986,7 @@ namespace SudokuCollective.Test.Services
                                     .Object
                                     .UpdateAsync(It.IsAny<User>())
                                     .Result
-                                    .Object
+                                    .DomainObject
                             ]
                     } as Core.Interfaces.Models.DomainObjects.Params.IResult));
 
@@ -1021,7 +1021,7 @@ namespace SudokuCollective.Test.Services
                                     .Object
                                     .GetAsync(It.IsAny<int>())
                                     .Result
-                                    .Object
+                                    .DomainObject
                             ]
                     } as Core.Interfaces.Models.DomainObjects.Params.IResult));
 
@@ -1045,7 +1045,7 @@ namespace SudokuCollective.Test.Services
                                     .Object
                                     .GetAsync(It.IsAny<int>())
                                     .Result
-                                    .Object
+                                    .DomainObject
                             ]
                     } as Core.Interfaces.Models.DomainObjects.Params.IResult));
 
@@ -1065,7 +1065,7 @@ namespace SudokuCollective.Test.Services
                             .Object
                             .GetAllAsync()
                             .Result
-                            .Objects
+                            .DomainObjects
                             .ConvertAll(a => (object)a)
                     } as Core.Interfaces.Models.DomainObjects.Params.IResult));
 
@@ -1087,7 +1087,7 @@ namespace SudokuCollective.Test.Services
                             .Object
                             .GetAllAsync()
                             .Result
-                            .Objects
+                            .DomainObjects
                             .ConvertAll(a => (object)a)
                     } as Core.Interfaces.Models.DomainObjects.Params.IResult));
 
@@ -1109,7 +1109,7 @@ namespace SudokuCollective.Test.Services
                             .Object
                             .GetAllAsync()
                             .Result
-                            .Objects
+                            .DomainObjects
                             .ConvertAll(a => (object)a)
                     } as Core.Interfaces.Models.DomainObjects.Params.IResult));
 
@@ -1131,7 +1131,7 @@ namespace SudokuCollective.Test.Services
                                     .Object
                                     .GetAsync(It.IsAny<int>())
                                     .Result
-                                    .Object
+                                    .DomainObject
                             ]
                     } as Core.Interfaces.Models.DomainObjects.Params.IResult));
 
@@ -1171,7 +1171,7 @@ namespace SudokuCollective.Test.Services
                                     .Object
                                     .GetAsync(It.IsAny<int>())
                                     .Result
-                                    .Object
+                                    .DomainObject
                             ]
                     } as Core.Interfaces.Models.DomainObjects.Params.IResult));
 
@@ -1195,7 +1195,7 @@ namespace SudokuCollective.Test.Services
                             .Object
                             .GetAppUsersAsync(It.IsAny<int>())
                             .Result
-                            .Objects
+                            .DomainObjects
                             .ConvertAll(u => (object)u)
                     } as Core.Interfaces.Models.DomainObjects.Params.IResult));
 
@@ -1232,7 +1232,7 @@ namespace SudokuCollective.Test.Services
                                     .Object
                                     .GetAsync(It.IsAny<int>())
                                     .Result
-                                    .Object
+                                    .DomainObject
                             ]
                 } as Core.Interfaces.Models.DomainObjects.Params.IResult));
 
@@ -1254,7 +1254,7 @@ namespace SudokuCollective.Test.Services
                                     .Object
                                     .GetAsync(It.IsAny<int>())
                                     .Result
-                                    .Object
+                                    .DomainObject
                             ]
                 } as Core.Interfaces.Models.DomainObjects.Params.IResult));
 
@@ -1276,7 +1276,7 @@ namespace SudokuCollective.Test.Services
                                     .Object
                                     .GetAsync(It.IsAny<int>())
                                     .Result
-                                    .Object
+                                    .DomainObject
                             ]
                 } as Core.Interfaces.Models.DomainObjects.Params.IResult));
 

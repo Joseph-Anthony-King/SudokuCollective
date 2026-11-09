@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -46,7 +47,7 @@ namespace SudokuCollective.Test.TestCases.Repositories
 
             // Assert
             Assert.That(result.IsSuccess, Is.True);
-            Assert.That((SudokuSolution)result.Object, Is.InstanceOf<SudokuSolution>());
+            Assert.That((SudokuSolution)result.DomainObject, Is.InstanceOf<SudokuSolution>());
         }
 
         [Test, Category("Repository")]
@@ -72,7 +73,7 @@ namespace SudokuCollective.Test.TestCases.Repositories
 
             // Assert
             Assert.That(result.IsSuccess, Is.True);
-            Assert.That((SudokuSolution)result.Object, Is.InstanceOf<SudokuSolution>());
+            Assert.That((SudokuSolution)result.DomainObject, Is.InstanceOf<SudokuSolution>());
         }
 
         [Test, Category("Repository")]
@@ -85,7 +86,7 @@ namespace SudokuCollective.Test.TestCases.Repositories
 
             // Assert
             Assert.That(result.IsSuccess, Is.False);
-            Assert.That(result.Object, Is.Null);
+            Assert.That(result.DomainObject, Is.Null);
         }
 
         [Test, Category("Repository")]
@@ -98,7 +99,7 @@ namespace SudokuCollective.Test.TestCases.Repositories
 
             // Assert
             Assert.That(result.IsSuccess, Is.True);
-            Assert.That(result.Objects.ConvertAll(s => (SudokuSolution)s), Is.InstanceOf<List<SudokuSolution>>());
+            Assert.That(result.DomainObjects.ConvertAll(s => (SudokuSolution)s), Is.InstanceOf<List<SudokuSolution>>());
         }
 
         [Test, Category("Repository")]
@@ -127,7 +128,23 @@ namespace SudokuCollective.Test.TestCases.Repositories
 
             // Assert
             Assert.That(result.IsSuccess, Is.True);
-            Assert.That(result.Objects.ConvertAll(s => (SudokuSolution)s), Is.InstanceOf<List<SudokuSolution>>());
+            Assert.That(result.DomainObjects.ConvertAll(s => (SudokuSolution)s), Is.InstanceOf<List<SudokuSolution>>());
+        }
+
+        [Test, Category("Repository")]
+        public void GetSolutionCount()
+        {
+            // Arrange
+            var expectedCount = context.SudokuSolutions.Count();
+
+            // Act
+            var result = sut.GetCount();
+            var actualCount = System.Convert.ToInt32(
+                result.Object.GetType().GetProperty("TotalCount").GetValue(result.Object));
+
+            // Assert
+            Assert.That(result.IsSuccess, Is.True);
+            Assert.That(actualCount, Is.EqualTo(expectedCount));
         }
     }
 }
