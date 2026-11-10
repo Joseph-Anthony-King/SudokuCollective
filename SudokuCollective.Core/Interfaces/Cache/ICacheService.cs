@@ -208,5 +208,19 @@ namespace SudokuCollective.Core.Interfaces.Cache
             DateTime expiration,
             IResult result = null,
             HttpMessageHandler httpMessageHandler = null);
+        Task<Tuple<IRepositoryResponse, IResult>> GetSystemStatsAndValues(
+            IAppsRepository<App> appsRepository,
+            IDifficultiesRepository<Difficulty> difficultiesRepository,
+            IEmailConfirmationsRepository<EmailConfirmation> emailConfirmationsRepository,
+            IGamesRepository<Game> gamesRepository,
+            IPasswordResetsRepository<PasswordReset> passwordResetsRepository,
+            IRolesRepository<Role> rolesRepository,
+            ISolutionsRepository<SudokuSolution> solutionsRepository,
+            IUsersRepository<User> usersRepository,
+            IDistributedCache cache,
+            string cacheKey,
+            DateTime expiration,
+            IResult result = null,
+            HttpMessageHandler httpMessageHandler = null);
     }
 }

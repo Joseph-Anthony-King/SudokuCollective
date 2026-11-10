@@ -102,7 +102,7 @@ namespace SudokuCollective.Data.Services
 
                 result.IsSuccess = response.IsSuccess;
                 result.Message = RolesMessages.RoleCreatedMessage;
-                result.Payload.Add((IRole)response.Object);
+                result.Payload.Add((IRole)response.DomainObject);
 
                 return result;
             }
@@ -150,7 +150,7 @@ namespace SudokuCollective.Data.Services
 
                 result = (Result)cacheServiceResponse.Item2;
 
-                var role = (Role)response.Object;
+                var role = (Role)response.DomainObject;
 
                 result.IsSuccess = response.IsSuccess;
                 result.Message = RolesMessages.RoleFoundMessage;
@@ -197,7 +197,7 @@ namespace SudokuCollective.Data.Services
 
                 result = (Result)cacheServiceResponse.Item2;
 
-                var roles = response.Objects.ConvertAll(r => (IRole)r);
+                var roles = response.DomainObjects.ConvertAll(r => (IRole)r);
 
                 result.IsSuccess = response.IsSuccess;
                 result.Message = RolesMessages.RolesFoundMessage;
@@ -262,7 +262,7 @@ namespace SudokuCollective.Data.Services
 
                 result = (Result)cacheServiceResponse.Item2;
 
-                var role = (Role)roleResponse.Object;
+                var role = (Role)roleResponse.DomainObject;
 
                 role.Name = payload.Name;
 
@@ -327,7 +327,7 @@ namespace SudokuCollective.Data.Services
                     _rolesRepository,
                     _distributedCache,
                     _cacheKeys,
-                    (Role)roleResponse.Object);
+                    (Role)roleResponse.DomainObject);
 
                 #region deleteResponse
                 if (!deleteResponse.IsSuccess)

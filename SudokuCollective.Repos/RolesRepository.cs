@@ -45,7 +45,7 @@ namespace SudokuCollective.Repos
                 await _context.SaveChangesAsync();
 
                 result.IsSuccess = true;
-                result.Object = entity;
+                result.DomainObject = entity;
 
                 return result;
             }
@@ -82,7 +82,7 @@ namespace SudokuCollective.Repos
                 else
                 {
                     result.IsSuccess = true;
-                    result.Object = query;
+                    result.DomainObject = query;
                 }
 
                 return result;
@@ -118,7 +118,7 @@ namespace SudokuCollective.Repos
                 else
                 {
                     result.IsSuccess = true;
-                    result.Objects = [.. query.ConvertAll(r => (IDomainEntity)r)];
+                    result.DomainObjects = [.. query.ConvertAll(r => (IDomainEntity)r)];
                 }
 
                 return result;
@@ -149,7 +149,7 @@ namespace SudokuCollective.Repos
                     await _context.SaveChangesAsync();
 
                     result.IsSuccess = true;
-                    result.Object = entity;
+                    result.DomainObject = entity;
 
                     return result;
                 }
@@ -227,7 +227,7 @@ namespace SudokuCollective.Repos
                     await _context.SaveChangesAsync();
 
                     result.IsSuccess = true;
-                    result.Object = entity;
+                    result.DomainObject = entity;
 
                     return result;
                 }
@@ -315,6 +315,27 @@ namespace SudokuCollective.Repos
             }
 
             return result;
+        }
+
+        public IRepositoryResponse GetCount()
+        {
+            var result = new RepositoryResponse();
+
+            try
+            {
+                var count = _context.Roles.Count();
+                result.IsSuccess = true;
+                result.Object = new { TotalCount = count };
+                return result;
+            }
+            catch (Exception e)
+            {
+                return ReposUtilities.ProcessException<RolesRepository<TEntity>>(
+                    _requestService,
+                    _logger,
+                    result,
+                    e);
+            }
         }
         #endregion
     }

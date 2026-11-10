@@ -54,7 +54,7 @@ namespace SudokuCollective.Test.TestCases.Repositories
 
             // Assert
             Assert.That(result.IsSuccess, Is.True);
-            Assert.That((Role)result.Object, Is.InstanceOf<Role>());
+            Assert.That((Role)result.DomainObject, Is.InstanceOf<Role>());
         }
 
         [Test, Category("Repository")]
@@ -79,7 +79,7 @@ namespace SudokuCollective.Test.TestCases.Repositories
 
             // Assert
             Assert.That(result.IsSuccess, Is.True);
-            Assert.That((Role)result.Object, Is.InstanceOf<Role>());
+            Assert.That((Role)result.DomainObject, Is.InstanceOf<Role>());
         }
 
         [Test, Category("Repository")]
@@ -92,7 +92,7 @@ namespace SudokuCollective.Test.TestCases.Repositories
 
             // Assert
             Assert.That(result.IsSuccess, Is.False);
-            Assert.That(result.Object, Is.Null);
+            Assert.That(result.DomainObject, Is.Null);
         }
 
         [Test, Category("Repository")]
@@ -105,7 +105,7 @@ namespace SudokuCollective.Test.TestCases.Repositories
 
             // Assert
             Assert.That(result.IsSuccess, Is.True);
-            Assert.That(result.Objects.ConvertAll(r => (Role)r), Is.InstanceOf<List<Role>>());
+            Assert.That(result.DomainObjects.ConvertAll(r => (Role)r), Is.InstanceOf<List<Role>>());
         }
 
         [Test, Category("Repository")]
@@ -120,8 +120,8 @@ namespace SudokuCollective.Test.TestCases.Repositories
 
             // Assert
             Assert.That(result.IsSuccess, Is.True);
-            Assert.That(result.Object, Is.InstanceOf<Role>());
-            Assert.That(((Role)result.Object).Name, Is.EqualTo(role.Name));
+            Assert.That(result.DomainObject, Is.InstanceOf<Role>());
+            Assert.That(((Role)result.DomainObject).Name, Is.EqualTo(role.Name));
         }
 
         [Test, Category("Repository")]
@@ -134,7 +134,7 @@ namespace SudokuCollective.Test.TestCases.Repositories
 
             // Assert
             Assert.That(result.IsSuccess, Is.False);
-            Assert.That(result.Object, Is.Null);
+            Assert.That(result.DomainObject, Is.Null);
         }
 
         [Test, Category("Repository")]
@@ -243,6 +243,22 @@ namespace SudokuCollective.Test.TestCases.Repositories
 
             // Assert
             Assert.That(result, Is.False);
+        }
+
+        [Test, Category("Repository")]
+        public void GetRoleCount()
+        {
+            // Arrange
+            var expectedCount = context.Roles.Count();
+
+            // Act
+            var result = sut.GetCount();
+            var actualCount = System.Convert.ToInt32(
+                result.Object.GetType().GetProperty("TotalCount").GetValue(result.Object));
+
+            // Assert
+            Assert.That(result.IsSuccess, Is.True);
+            Assert.That(actualCount, Is.EqualTo(expectedCount));
         }
     }
 }

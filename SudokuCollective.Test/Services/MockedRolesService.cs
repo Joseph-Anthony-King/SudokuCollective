@@ -43,7 +43,7 @@ namespace SudokuCollective.Test.Services
                                 .Object
                                 .GetAsync(It.IsAny<int>())
                                 .Result
-                                .Object
+                                .DomainObject
                         ]
                     } as IResult));
 
@@ -63,7 +63,7 @@ namespace SudokuCollective.Test.Services
                             .Object
                             .GetAllAsync()
                             .Result
-                            .Objects
+                            .DomainObjects
                             .ConvertAll(r => (object)r)
                     } as IResult));
 
@@ -85,7 +85,7 @@ namespace SudokuCollective.Test.Services
                                 .Object
                                 .GetAsync(It.IsAny<int>())
                                 .Result
-                                .Object
+                                .DomainObject
                         ]
                     } as IResult));
 

@@ -1,21 +1,24 @@
-using System.Text;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
 using SudokuCollective.Core.Enums;
 using SudokuCollective.Core.Interfaces.Cache;
-using SudokuCollective.Core.Interfaces.ServiceModels;
 using SudokuCollective.Core.Interfaces.Models;
-using SudokuCollective.Core.Interfaces.Repositories;
-using SudokuCollective.Core.Models;
-using SudokuCollective.Core.Interfaces.Models.DomainObjects.Params;
-using SudokuCollective.Data.Models;
-using SudokuCollective.Data.Models.Values;
-using SudokuCollective.Core.Interfaces.Models.DomainObjects.Values;
 using SudokuCollective.Core.Interfaces.Models.DomainEntities;
+using SudokuCollective.Core.Interfaces.Models.DomainObjects.Params;
+using SudokuCollective.Core.Interfaces.Models.DomainObjects.Values;
+using SudokuCollective.Core.Interfaces.Repositories;
+using SudokuCollective.Core.Interfaces.ServiceModels;
+using SudokuCollective.Core.Models;
+using SudokuCollective.Data.Models;
+using SudokuCollective.Data.Models.Results;
+using SudokuCollective.Data.Models.Values;
+using SudokuCollective.Data.Utilities;
 using SudokuCollective.HerokuIntegration;
 using SudokuCollective.HerokuIntegration.Models.Responses;
+using System.Reflection;
+using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace SudokuCollective.Cache
 {
@@ -39,10 +42,10 @@ namespace SudokuCollective.Cache
             {
                 var response = await repo.AddAsync(entity);
 
-                if (response.IsSuccess && response.Object.Id > 0)
+                if (response.IsSuccess && response.DomainObject.Id > 0)
                 {
                     var serializedItem = JsonSerializer.Serialize(
-                        (T)response.Object,
+                        (T)response.DomainObject,
                         _serializerOptions);
                     var encodedItem = Encoding.UTF8.GetBytes(serializedItem);
                     var options = new DistributedCacheEntryOptions()
@@ -50,13 +53,13 @@ namespace SudokuCollective.Cache
 
                     List<string> cacheKeys;
 
-                    if (response.Object is User user)
+                    if (response.DomainObject is User user)
                     {
                         var appLicense = await ((IUsersRepository<User>)repo)
                             .GetAppLicenseAsync(user.Apps.ToList()[0].AppId);
 
                         await cache.SetAsync(
-                            string.Format(cacheKey, response.Object.Id, appLicense),
+                            string.Format(cacheKey, response.DomainObject.Id, appLicense),
                             encodedItem,
                             options);
 
@@ -67,39 +70,41 @@ namespace SudokuCollective.Cache
                             string.Format(keys.GetAppByLicenseCacheKey, appLicense),
                             string.Format(keys.GetAppUsersCacheKey, 1),
                             string.Format(keys.GetNonAppUsersCacheKey, 1),
-                            keys.GetUsersCacheKey, ];
+                            keys.GetUsersCacheKey,
+                            keys.GetAdminSummaryKey];
                     }
-                    else if (response.Object is App app)
+                    else if (response.DomainObject is App app)
                     {
                         await cache.SetAsync(
-                            string.Format(cacheKey, response.Object.Id),
+                            string.Format(cacheKey, response.DomainObject.Id),
                             encodedItem,
                             options);
 
                         // Remove any app list cache items which may exist
                         cacheKeys = [
                                 string.Format(keys.GetMyAppsCacheKey, app.OwnerId),
-                                keys.GetAppsCacheKey, ];
+                                keys.GetAppsCacheKey,
+                                keys.GetAdminSummaryKey ];
                     }
-                    else if (response.Object is Difficulty)
+                    else if (response.DomainObject is Difficulty)
                     {
                         await cache.SetAsync(
-                            string.Format(cacheKey, response.Object.Id),
+                            string.Format(cacheKey, response.DomainObject.Id),
                             encodedItem,
                             options);
 
                         // Remove any difficutly list cache items which may exist
-                        cacheKeys = [ keys.GetDifficultiesCacheKey, ];
+                        cacheKeys = [ keys.GetDifficultiesCacheKey, keys.GetAdminSummaryKey ];
                     }
                     else
                     {
                         await cache.SetAsync(
-                            string.Format(cacheKey, response.Object.Id),
+                            string.Format(cacheKey, response.DomainObject.Id),
                             encodedItem,
                             options);
 
                         // Remove any role list cache items which may exist
-                        cacheKeys = [ keys.GetRolesCacheKey, ];
+                        cacheKeys = [ keys.GetRolesCacheKey, keys.GetAdminSummaryKey ];
                     }
 
                     if (cacheKeys != null)
@@ -152,22 +157,19 @@ namespace SudokuCollective.Cache
                     response = new RepositoryResponse
                     {
                         IsSuccess = true,
-                        Object = JsonSerializer.Deserialize<T>(serializedItem)
+                        DomainObject = JsonSerializer.Deserialize<T>(serializedItem)
                     };
 
-                    if (result != null)
-                    {
-                        result.IsFromCache = true;
-                    }
+                    result?.IsFromCache = true;
                 }
                 else
                 {
                     response = await repo.GetAsync(id);
 
-                    if (response.IsSuccess && response.Object != null)
+                    if (response.IsSuccess && response.DomainObject != null)
                     {
                         var serializedItem = JsonSerializer.Serialize<T>(
-                            (T)response.Object,
+                            (T)response.DomainObject,
                             _serializerOptions);
                         var encodedItem = Encoding.UTF8.GetBytes(serializedItem);
                         var options = new DistributedCacheEntryOptions()
@@ -223,23 +225,20 @@ namespace SudokuCollective.Cache
                     response = new RepositoryResponse
                     {
                         IsSuccess = true,
-                        Objects = JsonSerializer.Deserialize<List<T>>(serializedItems)
+                        DomainObjects = JsonSerializer.Deserialize<List<T>>(serializedItems)
                         .ConvertAll(x => (IDomainEntity)x)
                     };
 
-                    if (result != null)
-                    {
-                        result.IsFromCache = true;
-                    }
+                    result?.IsFromCache = true;
                 }
                 else
                 {
                     response = await repo.GetAllAsync();
 
-                    if (response.IsSuccess && response.Objects.Count > 0)
+                    if (response.IsSuccess && response.DomainObjects.Count > 0)
                     {
                         var serializedItems = JsonSerializer.Serialize<List<T>>(
-                            response.Objects.ConvertAll(x => (T)x),
+                            response.DomainObjects.ConvertAll(x => (T)x),
                             _serializerOptions);
                         var encodedItems = Encoding.UTF8.GetBytes(serializedItems);
                         var options = new DistributedCacheEntryOptions()
@@ -286,20 +285,21 @@ namespace SudokuCollective.Cache
             {
                 var response = await repo.UpdateAsync(entity);
 
-                if (response.IsSuccess && response.Object.Id > 0)
+                if (response.IsSuccess && response.DomainObject.Id > 0)
                 {
                     List<string> cacheKeys;
 
-                    if (response.Object is User user)
+                    if (response.DomainObject is User user)
                     {
                         // Remove any user cache items which may exist
                         cacheKeys = [
                                 string.Format(keys.GetUserCacheKey, user.Id, license),
                                 string.Format(keys.GetUserByUsernameCacheKey, user.UserName, license),
                                 string.Format(keys.GetUserByEmailCacheKey, user.Email, license),
-                                string.Format(keys.GetUsersCacheKey), ];
+                                string.Format(keys.GetUsersCacheKey),
+                                keys.GetAdminSummaryKey, ];
                     }
-                    else if (response.Object is App app)
+                    else if (response.DomainObject is App app)
                     {
                         // Remove any app cache items which may exist
                         cacheKeys = [
@@ -308,23 +308,26 @@ namespace SudokuCollective.Cache
                                 string.Format(keys.GetMyAppsCacheKey, app.OwnerId),
                                 string.Format(keys.GetAppsCacheKey),
                                 string.Format(keys.GetValuesKey),
-                                string.Format(keys.GetGalleryAppsKey), ];
+                                string.Format(keys.GetGalleryAppsKey),
+                                keys.GetAdminSummaryKey, ];
                     }
-                    else if (response.Object is Difficulty difficulty)
+                    else if (response.DomainObject is Difficulty difficulty)
                     {
                         // Remove any difficutly cache items which may exist
                         cacheKeys = [
                                 string.Format(keys.GetDifficultyCacheKey, difficulty.Id),
-                                keys.GetDifficultiesCacheKey, ];
+                                keys.GetDifficultiesCacheKey,
+                                keys.GetAdminSummaryKey, ];
                     }
                     else
                     {
-                        var role = response.Object as Role;
+                        var role = response.DomainObject as Role;
 
                         // Remove any role cache items which may exist
                         cacheKeys = [
                                 string.Format(keys.GetRoleCacheKey, role.Id),
-                                keys.GetRolesCacheKey, ];
+                                keys.GetRolesCacheKey,
+                                keys.GetAdminSummaryKey, ];
                     }
 
                     await RemoveKeysAsync(cache, cacheKeys);
@@ -375,10 +378,10 @@ namespace SudokuCollective.Cache
                     var userRepo = (IUsersRepository<User>)repo;
                     var appsResponse = await userRepo.GetMyAppsAsync(entity.Id);
 
-                    if (appsResponse.IsSuccess && appsResponse.Objects.Count > 0)
+                    if (appsResponse.IsSuccess && appsResponse.DomainObjects.Count > 0)
                     {
                         apps = [.. appsResponse
-                            .Objects
+                            .DomainObjects
                             .ConvertAll(a => (App)a)];
                     }
 
@@ -403,7 +406,8 @@ namespace SudokuCollective.Cache
                             string.Format(keys.GetUserByUsernameCacheKey, user.UserName, license),
                             string.Format(keys.GetUserByEmailCacheKey, user.Email, license),
                             string.Format(keys.GetMyAppsCacheKey, user.Id),
-                            string.Format(keys.GetMyRegisteredCacheKey, user.Id), ];
+                            string.Format(keys.GetMyRegisteredCacheKey, user.Id),
+                            keys.GetAdminSummaryKey, ];
 
                         if (user.Apps.Count > 0 && apps != null)
                         {
@@ -421,6 +425,7 @@ namespace SudokuCollective.Cache
                                     cacheKeys.Add(string.Format(keys.GetAppUsersCacheKey, userApp.AppId));
                                     cacheKeys.Add(string.Format(keys.GetNonAppUsersCacheKey, userApp.AppId));
                                     cacheKeys.Add(keys.GetAppsCacheKey);
+                                    cacheKeys.Add(keys.GetAdminSummaryKey);
                                 }
                             }
                         }
@@ -436,14 +441,16 @@ namespace SudokuCollective.Cache
                             string.Format(keys.IsAppLicenseValidCacheKey, app.License),
                             string.Format(keys.GetMyAppsCacheKey, app.OwnerId),
                             string.Format(keys.HasAppCacheKey, app.Id),
-                            keys.GetAppsCacheKey, ];
+                            keys.GetAppsCacheKey,
+                            keys.GetAdminSummaryKey, ];
                     }
                     else if (entity is Difficulty difficulty)
                     {
                         // Remove any difficulty cache items which may exist
                         cacheKeys = [
                             string.Format(keys.GetDifficultyCacheKey, difficulty.Id),
-                            keys.GetDifficultiesCacheKey, ];
+                            keys.GetDifficultiesCacheKey,
+                            keys.GetAdminSummaryKey, ];
                     }
                     else
                     {
@@ -452,7 +459,8 @@ namespace SudokuCollective.Cache
                         // Remove any role cache items which may exist
                         cacheKeys = [
                             string.Format(keys.GetRoleCacheKey, role.Id),
-                            keys.GetRolesCacheKey, ];
+                            keys.GetRolesCacheKey,
+                            keys.GetAdminSummaryKey, ];
                     }
 
                     await RemoveKeysAsync(cache, cacheKeys);
@@ -577,22 +585,19 @@ namespace SudokuCollective.Cache
                     response = new RepositoryResponse
                     {
                         IsSuccess = true,
-                        Object = JsonSerializer.Deserialize<App>(serializedItem)
+                        DomainObject = JsonSerializer.Deserialize<App>(serializedItem)
                     };
 
-                    if (result != null)
-                    {
-                        result.IsFromCache = true;
-                    }
+                    result?.IsFromCache = true;
                 }
                 else
                 {
                     response = await repo.GetByLicenseAsync(license);
 
-                    if (response.IsSuccess && response.Object != null)
+                    if (response.IsSuccess && response.DomainObject != null)
                     {
                         var serializedItem = JsonSerializer.Serialize<App>(
-                            (App)response.Object,
+                            (App)response.DomainObject,
                             _serializerOptions);
                         var encodedItem = Encoding.UTF8.GetBytes(serializedItem);
                         var options = new DistributedCacheEntryOptions()
@@ -649,23 +654,20 @@ namespace SudokuCollective.Cache
                     response = new RepositoryResponse
                     {
                         IsSuccess = true,
-                        Objects = JsonSerializer.Deserialize<List<User>>(serializedItems)
+                        DomainObjects = JsonSerializer.Deserialize<List<User>>(serializedItems)
                         .ConvertAll(u => (IDomainEntity)u)
                     };
 
-                    if (result != null)
-                    {
-                        result.IsFromCache = true;
-                    }
+                    result?.IsFromCache = true;
                 }
                 else
                 {
                     response = await repo.GetAppUsersAsync(id);
 
-                    if (response.IsSuccess && response.Objects.Count > 0)
+                    if (response.IsSuccess && response.DomainObjects.Count > 0)
                     {
                         var serializedItems = JsonSerializer.Serialize<List<User>>(
-                            response.Objects.ConvertAll(u => (User)u),
+                            response.DomainObjects.ConvertAll(u => (User)u),
                             _serializerOptions);
                         var encodedItems = Encoding.UTF8.GetBytes(serializedItems);
                         var options = new DistributedCacheEntryOptions()
@@ -722,24 +724,21 @@ namespace SudokuCollective.Cache
                     response = new RepositoryResponse
                     {
                         IsSuccess = true,
-                        Objects = JsonSerializer
+                        DomainObjects = JsonSerializer
                             .Deserialize<List<User>>(serializedItems)
                             .ConvertAll(s => (IDomainEntity)s)
                     };
 
-                    if (result != null)
-                    {
-                        result.IsFromCache = true;
-                    }
+                    result?.IsFromCache = true;
                 }
                 else
                 {
                     response = await repo.GetNonAppUsersAsync(id);
 
-                    if (response.IsSuccess && response.Objects.Count > 0)
+                    if (response.IsSuccess && response.DomainObjects.Count > 0)
                     {
                         var serializedItems = JsonSerializer.Serialize<List<User>>(
-                            response.Objects.ConvertAll(u => (User)u),
+                            response.DomainObjects.ConvertAll(u => (User)u),
                             _serializerOptions);
                         var encodedItems = Encoding.UTF8.GetBytes(serializedItems);
                         var options = new DistributedCacheEntryOptions()
@@ -796,23 +795,20 @@ namespace SudokuCollective.Cache
                     response = new RepositoryResponse
                     {
                         IsSuccess = true,
-                        Objects = JsonSerializer.Deserialize<List<App>>(serializedItems)
+                        DomainObjects = JsonSerializer.Deserialize<List<App>>(serializedItems)
                         .ConvertAll(a => (IDomainEntity)a)
                     };
 
-                    if (result != null)
-                    {
-                        result.IsFromCache = true;
-                    }
+                    result?.IsFromCache = true;
                 }
                 else
                 {
                     response = await repo.GetMyAppsAsync(ownerId);
 
-                    if (response.IsSuccess && response.Objects.Count > 0)
+                    if (response.IsSuccess && response.DomainObjects.Count > 0)
                     {
                         var serializedItems = JsonSerializer.Serialize<List<App>>(
-                            response.Objects.ConvertAll(a => (App)a),
+                            response.DomainObjects.ConvertAll(a => (App)a),
                             _serializerOptions);
                         var encodedItems = Encoding.UTF8.GetBytes(serializedItems);
                         var options = new DistributedCacheEntryOptions()
@@ -869,23 +865,20 @@ namespace SudokuCollective.Cache
                     response = new RepositoryResponse
                     {
                         IsSuccess = true,
-                        Objects = JsonSerializer.Deserialize<List<App>>(serializedItems)
+                        DomainObjects = JsonSerializer.Deserialize<List<App>>(serializedItems)
                         .ConvertAll(a => (IDomainEntity)a)
                     };
 
-                    if (result != null)
-                    {
-                        result.IsFromCache = true;
-                    }
+                    result?.IsFromCache = true;
                 }
                 else
                 {
                     response = await repo.GetMyRegisteredAppsAsync(userId);
 
-                    if (response.IsSuccess && response.Objects.Count > 0)
+                    if (response.IsSuccess && response.DomainObjects.Count > 0)
                     {
                         var serializedItems = JsonSerializer.Serialize<List<App>>(
-                            response.Objects.ConvertAll(a => (App)a),
+                            response.DomainObjects.ConvertAll(a => (App)a),
                             _serializerOptions);
                         var encodedItems = Encoding.UTF8.GetBytes(serializedItems);
                         var options = new DistributedCacheEntryOptions()
@@ -942,10 +935,7 @@ namespace SudokuCollective.Cache
 
                     license = JsonSerializer.Deserialize<string>(serializedItem);
 
-                    if (result != null)
-                    {
-                        result.IsFromCache = true;
-                    }
+                    result?.IsFromCache = true;
                 }
                 else
                 {
@@ -1007,7 +997,8 @@ namespace SudokuCollective.Cache
                     // Remove any user cache items which may exist
                     cacheKeys = [
                         string.Format(keys.GetAppCacheKey, app.Id),
-                        string.Format(keys.GetAppByLicenseCacheKey, app.License), ];
+                        string.Format(keys.GetAppByLicenseCacheKey, app.License),
+                        keys.GetAdminSummaryKey, ];
 
                     await RemoveKeysAsync(cache, cacheKeys);
                 }
@@ -1045,7 +1036,7 @@ namespace SudokuCollective.Cache
             {
                 IRepositoryResponse response;
 
-                var app = (App)(await repo.GetAsync(id)).Object;
+                var app = (App)(await repo.GetAsync(id)).DomainObject;
 
                 if (app != null)
                 {
@@ -1063,7 +1054,8 @@ namespace SudokuCollective.Cache
                     // Remove any user cache items which may exist
                     cacheKeys = [
                         string.Format(keys.GetAppCacheKey, app.Id),
-                        string.Format(keys.GetAppByLicenseCacheKey, app.License), ];
+                        string.Format(keys.GetAppByLicenseCacheKey, app.License),
+                        keys.GetAdminSummaryKey, ];
 
                     await RemoveKeysAsync(cache, cacheKeys);
                 }
@@ -1101,7 +1093,7 @@ namespace SudokuCollective.Cache
             {
                 IRepositoryResponse response;
 
-                var app = (App)(await repo.GetAsync(id)).Object;
+                var app = (App)(await repo.GetAsync(id)).DomainObject;
 
                 if (app != null)
                 {
@@ -1119,7 +1111,8 @@ namespace SudokuCollective.Cache
                     // Remove any user cache items which may exist
                     cacheKeys = [
                         string.Format(keys.GetAppCacheKey, app.Id),
-                        string.Format(keys.GetAppByLicenseCacheKey, app.License), ];
+                        string.Format(keys.GetAppByLicenseCacheKey, app.License),
+                        keys.GetAdminSummaryKey, ];
 
                     await RemoveKeysAsync(cache, cacheKeys);
                 }
@@ -1232,22 +1225,19 @@ namespace SudokuCollective.Cache
                     response = new RepositoryResponse
                     {
                         IsSuccess = true,
-                        Object = JsonSerializer.Deserialize<User>(serializedItem)
+                        DomainObject = JsonSerializer.Deserialize<User>(serializedItem)
                     };
 
-                    if (result != null)
-                    {
-                        result.IsFromCache = true;
-                    }
+                    result?.IsFromCache = true;
                 }
                 else
                 {
                     response = await repo.GetByUserNameAsync(username);
 
-                    if (response.IsSuccess && response.Object != null)
+                    if (response.IsSuccess && response.DomainObject != null)
                     {
                         var serializedItem = JsonSerializer.Serialize<User>(
-                            (User)response.Object,
+                            (User)response.DomainObject,
                             _serializerOptions);
                         var encodedItem = Encoding.UTF8.GetBytes(serializedItem);
                         var options = new DistributedCacheEntryOptions()
@@ -1261,7 +1251,7 @@ namespace SudokuCollective.Cache
 
                         // Add user cache key by id
                         await cache.SetAsync(
-                            string.Format(keys.GetUserCacheKey, response.Object.Id, license),
+                            string.Format(keys.GetUserCacheKey, response.DomainObject.Id, license),
                             encodedItem,
                             options);
                     }
@@ -1311,22 +1301,19 @@ namespace SudokuCollective.Cache
                     response = new RepositoryResponse
                     {
                         IsSuccess = true,
-                        Object = JsonSerializer.Deserialize<User>(serializedItem)
+                        DomainObject = JsonSerializer.Deserialize<User>(serializedItem)
                     };
 
-                    if (result != null)
-                    {
-                        result.IsFromCache = true;
-                    }
+                    result?.IsFromCache = true;
                 }
                 else
                 {
                     response = await repo.GetByEmailAsync(email);
 
-                    if (response.IsSuccess && response.Object != null)
+                    if (response.IsSuccess && response.DomainObject != null)
                     {
                         var serializedItem = JsonSerializer.Serialize<User>(
-                            (User)response.Object,
+                            (User)response.DomainObject,
                             _serializerOptions);
                         var encodedItem = Encoding.UTF8.GetBytes(serializedItem);
                         var options = new DistributedCacheEntryOptions()
@@ -1375,14 +1362,15 @@ namespace SudokuCollective.Cache
 
                 if (response.IsSuccess)
                 {
-                    var user = (User)response.Object;
+                    var user = (User)response.DomainObject;
                     List<string> cacheKeys;
 
                     // Remove any user cache items which may exist
                     cacheKeys = [
                         string.Format(keys.GetUserCacheKey, user.Id, license),
                         string.Format(keys.GetUserByUsernameCacheKey, user.UserName, license),
-                        string.Format(keys.GetUserByEmailCacheKey, user.Email, license), ];
+                        string.Format(keys.GetUserByEmailCacheKey, user.Email, license),
+                        keys.GetAdminSummaryKey, ];
 
                     await RemoveKeysAsync(cache, cacheKeys);
                 }
@@ -1423,14 +1411,15 @@ namespace SudokuCollective.Cache
 
                 if (response.IsSuccess)
                 {
-                    var user = (User)response.Object;
+                    var user = (User)response.DomainObject;
                     List<string> cacheKeys;
 
                     // Remove any user cache items which may exist
                     cacheKeys = [
                         string.Format(keys.GetUserCacheKey, user.Id, license),
                         string.Format(keys.GetUserByUsernameCacheKey, user.UserName, license),
-                        string.Format(keys.GetUserByEmailCacheKey, user.Email, license), ];
+                        string.Format(keys.GetUserByEmailCacheKey, user.Email, license),
+                        keys.GetAdminSummaryKey, ];
 
                     await RemoveKeysAsync(cache, cacheKeys);
                 }
@@ -1664,22 +1653,19 @@ namespace SudokuCollective.Cache
                     var serializedItem = Encoding.UTF8.GetString(cachedItem);
                     values = JsonSerializer.Deserialize<Values>(serializedItem);
 
-                    if (result != null)
-                    {
-                        result.IsFromCache = true;
-                    }
+                    result?.IsFromCache = true;
                 }
                 else
                 {
                     values = new Values();
                     
-                    values.Difficulties = (await difficultiesRepository.GetAllAsync()).Objects.ConvertAll(d => (IDifficulty)d);
+                    values.Difficulties = (await difficultiesRepository.GetAllAsync()).DomainObjects.ConvertAll(d => (IDifficulty)d);
                     values.ReleaseEnvironments = releaseEnvironments;
                     values.SortValues = sortValues;
                     values.TimeFrames = timeFrames;
 
                     var galleryApps = new List<GalleryApp>();
-                    var apps = (await appsRepository.GetGalleryAppsAsync()).Objects.ConvertAll(a => (App)a);
+                    var apps = (await appsRepository.GetGalleryAppsAsync()).DomainObjects.ConvertAll(a => (App)a);
 
                     foreach (var app in apps)
                     {
@@ -1749,22 +1735,19 @@ namespace SudokuCollective.Cache
                     response = new RepositoryResponse
                     {
                         IsSuccess = true,
-                        Objects = JsonSerializer.Deserialize<List<GalleryApp>>(serializedItems)
+                        DomainObjects = JsonSerializer.Deserialize<List<GalleryApp>>(serializedItems)
                         .ConvertAll(x => (IDomainEntity)x)
                     };
 
-                    if (result != null)
-                    {
-                        result.IsFromCache = true;
-                    }
+                    result?.IsFromCache = true;
                 }
                 else
                 {
                     response = await repo.GetGalleryAppsAsync();
 
-                    if (response.IsSuccess && response.Objects.Count > 0)
+                    if (response.IsSuccess && response.DomainObjects.Count > 0)
                     {
-                        var apps = response.Objects.ConvertAll(x => (App)x);
+                        var apps = response.DomainObjects.ConvertAll(x => (App)x);
                         var galleryApps = new List<GalleryApp>();
 
                         foreach (var app in apps)
@@ -1780,7 +1763,7 @@ namespace SudokuCollective.Cache
                             app.NullifySourceCodeUrl();
                         }
 
-                        response.Objects = galleryApps.ConvertAll(a => (IDomainEntity)a);
+                        response.DomainObjects = galleryApps.ConvertAll(a => (IDomainEntity)a);
 
                         if (galleryApps.Count > 0)
                         {
@@ -1799,7 +1782,7 @@ namespace SudokuCollective.Cache
                         else
                         {
                             response.IsSuccess = false;
-                            response.Objects = [];
+                            response.DomainObjects = [];
                         }
                     }
                 }
@@ -1826,6 +1809,117 @@ namespace SudokuCollective.Cache
             }
         }
 
+        public async Task<Tuple<IRepositoryResponse, IResult>> GetSystemStatsAndValues(
+            IAppsRepository<App> appsRepository,
+            IDifficultiesRepository<Difficulty> difficultiesRepository,
+            IEmailConfirmationsRepository<EmailConfirmation> emailConfirmationsRepository,
+            IGamesRepository<Game> gamesRepository,
+            IPasswordResetsRepository<PasswordReset> passwordResetsRepository,
+            IRolesRepository<Role> rolesRepository,
+            ISolutionsRepository<SudokuSolution> solutionsRepository,
+            IUsersRepository<User> usersRepository,
+            IDistributedCache cache,
+            string cacheKey,
+            DateTime expiration,
+            IResult result = null,
+            HttpMessageHandler httpMessageHandler = null)
+        {
+            try
+            {
+                IRepositoryResponse response;
+
+                var cachedItems = await cache.GetAsync(cacheKey);
+
+                if (cachedItems != null)
+                {
+                    var serializedItems = Encoding.UTF8.GetString(cachedItems);
+
+                    response = new RepositoryResponse
+                    {
+                        IsSuccess = true,
+                        Object = JsonSerializer.Deserialize<AdminSummaryResult>(serializedItems)
+                    };
+
+                    result?.IsFromCache = true;
+                }
+                else
+                {
+                    response = new RepositoryResponse
+                    {
+                        IsSuccess = true,
+                    };
+
+                    var adminSummaryResult = new AdminSummaryResult();
+
+                    var appCountObj = (appsRepository.GetCount()).Object;
+                    adminSummaryResult.ApplicationsCount = (int)GetPropertyValue(appCountObj, "TotalCount");
+
+                    var difficultyCountObj = (difficultiesRepository.GetCount()).Object;
+                    adminSummaryResult.DifficultiesCount = (int)GetPropertyValue(difficultyCountObj, "TotalCount");
+
+                    var emailConfirmationCountObj = (emailConfirmationsRepository.GetCount()).Object;
+                    adminSummaryResult.EmailConfirmationsCount = (int)GetPropertyValue(emailConfirmationCountObj, "TotalCount");
+
+                    var gameCountObj = (gamesRepository.GetCount()).Object;
+                    adminSummaryResult.GamesCount = (int)GetPropertyValue(gameCountObj, "TotalCount");
+
+                    var passwordResetCountObj = (passwordResetsRepository.GetCount()).Object;
+                    adminSummaryResult.PasswordResetsCount = (int)GetPropertyValue(passwordResetCountObj, "TotalCount");
+
+                    var roleCountObj = (rolesRepository.GetCount()).Object;
+                    adminSummaryResult.RolesCount = (int)GetPropertyValue(roleCountObj, "TotalCount");
+
+                    var solutionCountObj = (solutionsRepository.GetCount()).Object;
+                    adminSummaryResult.SolutionsCount = (int)GetPropertyValue(solutionCountObj, "TotalCount");
+
+                    var userCountObj = (usersRepository.GetCount()).Object;
+                    adminSummaryResult.UsersCount = (int)GetPropertyValue(userCountObj, "TotalCount");
+
+                    adminSummaryResult.Difficulties = (await difficultiesRepository.GetAllAsync()).DomainObjects.ConvertAll(d => (Difficulty)d);
+
+                    adminSummaryResult.Roles = (await rolesRepository.GetAllAsync()).DomainObjects.ConvertAll(r => (Role)r);
+
+                    adminSummaryResult.ReleaseEnvironments = (DataUtilities.GetReleaseEnvironments()).Payload.ConvertAll(x => (EnumListItem)x);
+
+                    adminSummaryResult.SortValues = (DataUtilities.GetSortValues()).Payload.ConvertAll(x => (EnumListItem)x);
+
+                    adminSummaryResult.TimeFrames = (DataUtilities.GetTimeFrames()).Payload.ConvertAll(x => (EnumListItem)x);
+
+                    response.Object = adminSummaryResult;
+
+                    var serializedItems = JsonSerializer.Serialize<AdminSummaryResult>(
+                        adminSummaryResult,
+                        _serializerOptions);
+                    var encodedItems = Encoding.UTF8.GetBytes(serializedItems);
+                    var options = new DistributedCacheEntryOptions()
+                        .SetAbsoluteExpiration(expiration);
+
+                    await cache.SetAsync(
+                        cacheKey,
+                        encodedItems,
+                        options);
+                }
+                
+                return new Tuple<IRepositoryResponse, IResult>(response, result);
+            }
+            catch (Exception ex)
+            {
+                if (ex.Message.Contains("redis server(s)"))
+                {
+                    try
+                    {
+                        var response = InterceptHerokuRedisExceptions(httpMessageHandler).Result;
+                        throw new IOException(response.Message);
+                    }
+                    catch (Exception)
+                    {
+                        throw;
+                    }
+                }
+                throw;
+            }
+        }
+
         private static async Task<HerokuRedisProxyResponse> InterceptHerokuRedisExceptions(HttpMessageHandler httpMessageHandler = null, ILogger logger = null)
         {
             try
@@ -1836,6 +1930,20 @@ namespace SudokuCollective.Cache
             {
                 throw;
             }
+        }
+
+        private static object GetPropertyValue(object obj, string propertyName)
+        {
+            if (obj == null) return null;
+
+            // Get the PropertyInfo object for the specific property name
+            PropertyInfo pi = obj.GetType().GetProperty(propertyName);
+
+            // Return null if property doesn't exist
+            if (pi == null) return null;
+
+            // Get the value
+            return pi.GetValue(obj, null);
         }
         #endregion
     }

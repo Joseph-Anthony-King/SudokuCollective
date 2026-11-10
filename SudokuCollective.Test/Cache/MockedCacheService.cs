@@ -65,12 +65,12 @@ namespace SudokuCollective.Test.Cache
                 .Returns(Task.FromResult(new RepositoryResponse()
                 {
                     IsSuccess = true,
-                    Object = MockedAppsRepository
+                    DomainObject = MockedAppsRepository
                         .SuccessfulRequest
                         .Object
                         .GetAsync(It.IsAny<int>())
                         .Result
-                        .Object
+                        .DomainObject
                 } as IRepositoryResponse));
 
             SuccessfulRequest.Setup(cache =>
@@ -85,12 +85,12 @@ namespace SudokuCollective.Test.Cache
                 .Returns(Task.FromResult(new RepositoryResponse()
                 {
                     IsSuccess = true,
-                    Object = MockedDifficultiesRepository
+                    DomainObject = MockedDifficultiesRepository
                         .SuccessfulRequest
                         .Object
                         .GetAsync(It.IsAny<int>())
                         .Result
-                        .Object
+                        .DomainObject
                 } as IRepositoryResponse));
 
             SuccessfulRequest.Setup(cache =>
@@ -105,12 +105,12 @@ namespace SudokuCollective.Test.Cache
                 .Returns(Task.FromResult(new RepositoryResponse()
                 {
                     IsSuccess = true,
-                    Object = MockedRolesRepository
+                    DomainObject = MockedRolesRepository
                         .SuccessfulRequest
                         .Object
                         .GetAsync(It.IsAny<int>())
                         .Result
-                        .Object
+                        .DomainObject
                 } as IRepositoryResponse));
 
             SuccessfulRequest.Setup(cache =>
@@ -125,12 +125,12 @@ namespace SudokuCollective.Test.Cache
                 .Returns(Task.FromResult(new RepositoryResponse()
                 {
                     IsSuccess = true,
-                    Object = MockedUsersRepository
+                    DomainObject = MockedUsersRepository
                         .SuccessfulRequest
                         .Object
                         .GetAsync(It.IsAny<int>())
                         .Result
-                        .Object
+                        .DomainObject
                 } as IRepositoryResponse));
 
             SuccessfulRequest.Setup(cache =>
@@ -151,20 +151,17 @@ namespace SudokuCollective.Test.Cache
                     IResult result,
                     HttpMessageHandler httpMessageHandler) =>
                     {
-                        if (result != null)
-                        {
-                            result.IsSuccess = false;
-                        }
+                        result?.IsSuccess = false;
                         return new Tuple<IRepositoryResponse, IResult>(
                             new RepositoryResponse
                             {
                                 IsSuccess = true,
-                                Object = MockedAppsRepository
+                                DomainObject = MockedAppsRepository
                                     .SuccessfulRequest
                                     .Object
                                     .GetAsync(It.IsAny<int>())
                                     .Result
-                                    .Object
+                                    .DomainObject
                             }, result);
                     });
 
@@ -186,20 +183,17 @@ namespace SudokuCollective.Test.Cache
                     IResult result,
                     HttpMessageHandler httpMessageHandler) =>
                 {
-                    if (result != null)
-                    {
-                        result.IsSuccess = false;
-                    }
+                    result?.IsSuccess = false;
                     return new Tuple<IRepositoryResponse, IResult>(
                         new RepositoryResponse
                         {
                             IsSuccess = true,
-                            Object = MockedDifficultiesRepository
+                            DomainObject = MockedDifficultiesRepository
                                 .SuccessfulRequest
                                 .Object
                                 .GetAsync(It.IsAny<int>())
                                 .Result
-                                .Object
+                                .DomainObject
                         }, result);
                 });
 
@@ -221,20 +215,17 @@ namespace SudokuCollective.Test.Cache
                     IResult result,
                     HttpMessageHandler httpMessageHandler) =>
                 {
-                    if (result != null)
-                    {
-                        result.IsSuccess = false;
-                    }
+                    result?.IsSuccess = false;
                     return new Tuple<IRepositoryResponse, IResult>(
                         new RepositoryResponse
                         {
                             IsSuccess = true,
-                            Object = MockedRolesRepository
+                            DomainObject = MockedRolesRepository
                                 .SuccessfulRequest
                                 .Object
                                 .GetAsync(It.IsAny<int>())
                                 .Result
-                                .Object
+                                .DomainObject
                         }, result);
                 });
 
@@ -256,20 +247,17 @@ namespace SudokuCollective.Test.Cache
                     IResult result,
                     HttpMessageHandler httpMessageHandler) =>
                     {
-                        if (result != null)
-                        {
-                            result.IsSuccess = false;
-                        }
+                        result?.IsSuccess = false;
                         return new Tuple<IRepositoryResponse, IResult>(
                             new RepositoryResponse
                             {
                                 IsSuccess = true,
-                                Object = MockedUsersRepository
+                                DomainObject = MockedUsersRepository
                                     .SuccessfulRequest
                                     .Object
                                     .GetAsync(It.IsAny<int>())
                                     .Result
-                                    .Object
+                                    .DomainObject
                             }, result);
                     });
 
@@ -292,12 +280,12 @@ namespace SudokuCollective.Test.Cache
                             new RepositoryResponse
                             {
                                 IsSuccess = true,
-                                Objects = MockedAppsRepository
+                                DomainObjects = MockedAppsRepository
                                     .SuccessfulRequest
                                     .Object
                                     .GetAllAsync()
                                     .Result
-                                    .Objects
+                                    .DomainObjects
                             }, result));
 
             SuccessfulRequest.Setup(cache =>
@@ -319,12 +307,12 @@ namespace SudokuCollective.Test.Cache
                             new RepositoryResponse
                             {
                                 IsSuccess = true,
-                                Objects = MockedDifficultiesRepository
+                                DomainObjects = MockedDifficultiesRepository
                                     .SuccessfulRequest
                                     .Object
                                     .GetAllAsync()
                                     .Result
-                                    .Objects
+                                    .DomainObjects
                             }, result));
 
             SuccessfulRequest.Setup(cache =>
@@ -346,12 +334,12 @@ namespace SudokuCollective.Test.Cache
                             new RepositoryResponse
                             {
                                 IsSuccess = true,
-                                Objects = MockedRolesRepository
+                                DomainObjects = MockedRolesRepository
                                     .SuccessfulRequest
                                     .Object
                                     .GetAllAsync()
                                     .Result
-                                    .Objects
+                                    .DomainObjects
                             }, result));
 
             SuccessfulRequest.Setup(cache =>
@@ -373,12 +361,12 @@ namespace SudokuCollective.Test.Cache
                             new RepositoryResponse
                             {
                                 IsSuccess = true,
-                                Objects = MockedSolutionsRepository
+                                DomainObjects = MockedSolutionsRepository
                                     .SuccessfulRequest
                                     .Object
                                     .GetAllAsync()
                                     .Result
-                                    .Objects
+                                    .DomainObjects
                             }, result));
 
             SuccessfulRequest.Setup(cache =>
@@ -400,12 +388,12 @@ namespace SudokuCollective.Test.Cache
                             new RepositoryResponse
                             {
                                 IsSuccess = true,
-                                Objects = MockedUsersRepository
+                                DomainObjects = MockedUsersRepository
                                     .SuccessfulRequest
                                     .Object
                                     .GetAllAsync()
                                     .Result
-                                    .Objects
+                                    .DomainObjects
                             }, result));
 
             SuccessfulRequest.Setup(cache =>
@@ -419,12 +407,12 @@ namespace SudokuCollective.Test.Cache
                 .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         IsSuccess = true,
-                        Object = MockedAppsRepository
+                        DomainObject = MockedAppsRepository
                             .SuccessfulRequest
                             .Object
                             .GetAsync(It.IsAny<int>())
                             .Result
-                            .Object
+                            .DomainObject
                     } as IRepositoryResponse));
 
             SuccessfulRequest.Setup(cache =>
@@ -438,12 +426,12 @@ namespace SudokuCollective.Test.Cache
                 .Returns(Task.FromResult(new RepositoryResponse()
                 {
                     IsSuccess = true,
-                    Object = MockedDifficultiesRepository
+                    DomainObject = MockedDifficultiesRepository
                             .SuccessfulRequest
                             .Object
                             .GetAsync(It.IsAny<int>())
                             .Result
-                            .Object
+                            .DomainObject
                 } as IRepositoryResponse));
 
             SuccessfulRequest.Setup(cache =>
@@ -457,12 +445,12 @@ namespace SudokuCollective.Test.Cache
                 .Returns(Task.FromResult(new RepositoryResponse()
                 {
                     IsSuccess = true,
-                    Object = MockedRolesRepository
+                    DomainObject = MockedRolesRepository
                             .SuccessfulRequest
                             .Object
                             .GetAsync(It.IsAny<int>())
                             .Result
-                            .Object
+                            .DomainObject
                 } as IRepositoryResponse));
 
             SuccessfulRequest.Setup(cache =>
@@ -476,12 +464,12 @@ namespace SudokuCollective.Test.Cache
                 .Returns(Task.FromResult(new RepositoryResponse()
                 {
                     IsSuccess = true,
-                    Object = MockedUsersRepository
+                    DomainObject = MockedUsersRepository
                             .SuccessfulRequest
                             .Object
                             .GetAsync(It.IsAny<int>())
                             .Result
-                            .Object
+                            .DomainObject
                 } as IRepositoryResponse));
 
             SuccessfulRequest.Setup(cache =>
@@ -583,12 +571,12 @@ namespace SudokuCollective.Test.Cache
                             new RepositoryResponse
                             {
                                 IsSuccess = true,
-                                Object = MockedAppsRepository
+                                DomainObject = MockedAppsRepository
                                     .SuccessfulRequest
                                     .Object
                                     .GetByLicenseAsync(It.IsAny<string>())
                                     .Result
-                                    .Object
+                                    .DomainObject
                             }, result));
 
             SuccessfulRequest.Setup(cache =>
@@ -612,12 +600,12 @@ namespace SudokuCollective.Test.Cache
                             new RepositoryResponse
                             {
                                 IsSuccess = true,
-                                Objects = MockedAppsRepository
+                                DomainObjects = MockedAppsRepository
                                     .SuccessfulRequest
                                     .Object
                                     .GetAppUsersAsync(It.IsAny<int>())
                                     .Result
-                                    .Objects
+                                    .DomainObjects
                             }, result));
 
             SuccessfulRequest.Setup(cache =>
@@ -641,12 +629,12 @@ namespace SudokuCollective.Test.Cache
                             new RepositoryResponse
                             {
                                 IsSuccess = true,
-                                Objects = MockedAppsRepository
+                                DomainObjects = MockedAppsRepository
                                     .SuccessfulRequest
                                     .Object
                                     .GetNonAppUsersAsync(It.IsAny<int>())
                                     .Result
-                                    .Objects
+                                    .DomainObjects
                             }, result));
 
             SuccessfulRequest.Setup(cache =>
@@ -670,12 +658,12 @@ namespace SudokuCollective.Test.Cache
                             new RepositoryResponse
                             {
                                 IsSuccess = true,
-                                Objects = MockedAppsRepository
+                                DomainObjects = MockedAppsRepository
                                     .SuccessfulRequest
                                     .Object
                                     .GetMyRegisteredAppsAsync(It.IsAny<int>())
                                     .Result
-                                    .Objects
+                                    .DomainObjects
                             }, result));
 
             SuccessfulRequest.Setup(cache =>
@@ -699,12 +687,12 @@ namespace SudokuCollective.Test.Cache
                             new RepositoryResponse
                             {
                                 IsSuccess = true,
-                                Objects = MockedAppsRepository
+                                DomainObjects = MockedAppsRepository
                                     .SuccessfulRequest
                                     .Object
                                     .GetMyRegisteredAppsAsync(It.IsAny<int>())
                                     .Result
-                                    .Objects
+                                    .DomainObjects
                             }, result));
 
             SuccessfulRequest.Setup(cache =>
@@ -738,12 +726,12 @@ namespace SudokuCollective.Test.Cache
                 .Returns(Task.FromResult(new RepositoryResponse()
                 {
                     IsSuccess = true,
-                    Object = MockedAppsRepository
+                    DomainObject = MockedAppsRepository
                         .SuccessfulRequest
                         .Object
                         .GetAsync(It.IsAny<int>())
                         .Result
-                        .Object
+                        .DomainObject
                 } as IRepositoryResponse));
 
             SuccessfulRequest.Setup(cache =>
@@ -756,12 +744,12 @@ namespace SudokuCollective.Test.Cache
                 .Returns(Task.FromResult(new RepositoryResponse()
                 {
                     IsSuccess = true,
-                    Object = MockedAppsRepository
+                    DomainObject = MockedAppsRepository
                         .SuccessfulRequest
                         .Object
                         .GetAsync(It.IsAny<int>())
                         .Result
-                        .Object
+                        .DomainObject
                 } as IRepositoryResponse));
 
             SuccessfulRequest.Setup(cache =>
@@ -774,12 +762,12 @@ namespace SudokuCollective.Test.Cache
                 .Returns(Task.FromResult(new RepositoryResponse()
                 {
                     IsSuccess = true,
-                    Object = MockedAppsRepository
+                    DomainObject = MockedAppsRepository
                         .SuccessfulRequest
                         .Object
                         .GetAsync(It.IsAny<int>())
                         .Result
-                        .Object
+                        .DomainObject
                 } as IRepositoryResponse));
 
             SuccessfulRequest.Setup(cache =>
@@ -814,20 +802,17 @@ namespace SudokuCollective.Test.Cache
                     IResult result,
                     HttpMessageHandler httpMessageHandler) =>
                     {
-                        if (result != null)
-                        {
-                            result.IsSuccess = true;
-                        }
+                        result?.IsSuccess = true;
                         return new Tuple<IRepositoryResponse, IResult>(
                             new RepositoryResponse
                             {
                                 IsSuccess = true,
-                                Object = MockedUsersRepository
+                                DomainObject = MockedUsersRepository
                                     .SuccessfulRequest
                                     .Object
                                     .GetByUserNameAsync(It.IsAny<string>())
                                     .Result
-                                    .Object
+                                    .DomainObject
                             }, result);
                     });
 
@@ -852,12 +837,12 @@ namespace SudokuCollective.Test.Cache
                             new RepositoryResponse
                             {
                                 IsSuccess = true,
-                                Object = MockedUsersRepository
+                                DomainObject = MockedUsersRepository
                                     .SuccessfulRequest
                                     .Object
                                     .GetByEmailAsync(It.IsAny<string>())
                                     .Result
-                                    .Object
+                                    .DomainObject
                             }, result));
 
 
@@ -872,12 +857,12 @@ namespace SudokuCollective.Test.Cache
                 .Returns(Task.FromResult(new RepositoryResponse()
                 {
                     IsSuccess = true,
-                    Object = MockedUsersRepository
+                    DomainObject = MockedUsersRepository
                         .SuccessfulRequest
                         .Object
                         .GetAsync(It.IsAny<int>())
                         .Result
-                        .Object
+                        .DomainObject
                 } as IRepositoryResponse));
 
             SuccessfulRequest.Setup(cache =>
@@ -891,12 +876,12 @@ namespace SudokuCollective.Test.Cache
                 .Returns(Task.FromResult(new RepositoryResponse()
                 {
                     IsSuccess = true,
-                    Object = MockedUsersRepository
+                    DomainObject = MockedUsersRepository
                         .SuccessfulRequest
                         .Object
                         .GetAsync(It.IsAny<int>())
                         .Result
-                        .Object
+                        .DomainObject
                 } as IRepositoryResponse));
 
             SuccessfulRequest.Setup(cache =>
@@ -957,7 +942,7 @@ namespace SudokuCollective.Test.Cache
                     new RepositoryResponse
                     {
                         IsSuccess = true,
-                        Objects = (new List<GalleryApp>()).ConvertAll(a => (IDomainEntity)a)
+                        DomainObjects = (new List<GalleryApp>()).ConvertAll(a => (IDomainEntity)a)
                     },
                     TestObjects.GetResult()));
             #endregion
@@ -1550,10 +1535,7 @@ namespace SudokuCollective.Test.Cache
                     IResult result,
                     HttpMessageHandler httpMessageHandler) =>
                 {
-                    if (result != null)
-                    {
-                        result.IsSuccess = false;
-                    }
+                    result?.IsSuccess = false;
                     return new Tuple<IRepositoryResponse, IResult>(
                             new RepositoryResponse
                             {
@@ -1670,12 +1652,12 @@ namespace SudokuCollective.Test.Cache
                 .Returns(Task.FromResult(new RepositoryResponse()
                 {
                     IsSuccess = true,
-                    Object = MockedAppsRepository
+                    DomainObject = MockedAppsRepository
                         .SuccessfulRequest
                         .Object
                         .GetAsync(It.IsAny<int>())
                         .Result
-                        .Object
+                        .DomainObject
                 } as IRepositoryResponse));
 
             CreateDifficultyRoleSuccessfulRequest.Setup(cache =>
@@ -1690,12 +1672,12 @@ namespace SudokuCollective.Test.Cache
                 .Returns(Task.FromResult(new RepositoryResponse()
                 {
                     IsSuccess = true,
-                    Object = MockedDifficultiesRepository
+                    DomainObject = MockedDifficultiesRepository
                         .SuccessfulRequest
                         .Object
                         .GetAsync(It.IsAny<int>())
                         .Result
-                        .Object
+                        .DomainObject
                 } as IRepositoryResponse));
 
             CreateDifficultyRoleSuccessfulRequest.Setup(cache =>
@@ -1710,12 +1692,12 @@ namespace SudokuCollective.Test.Cache
                 .Returns(Task.FromResult(new RepositoryResponse()
                 {
                     IsSuccess = true,
-                    Object = MockedRolesRepository
+                    DomainObject = MockedRolesRepository
                         .SuccessfulRequest
                         .Object
                         .GetAsync(It.IsAny<int>())
                         .Result
-                        .Object
+                        .DomainObject
                 } as IRepositoryResponse));
 
             CreateDifficultyRoleSuccessfulRequest.Setup(cache =>
@@ -1730,12 +1712,12 @@ namespace SudokuCollective.Test.Cache
                 .Returns(Task.FromResult(new RepositoryResponse()
                 {
                     IsSuccess = true,
-                    Object = MockedUsersRepository
+                    DomainObject = MockedUsersRepository
                         .SuccessfulRequest
                         .Object
                         .GetAsync(It.IsAny<int>())
                         .Result
-                        .Object
+                        .DomainObject
                 } as IRepositoryResponse));
 
             CreateDifficultyRoleSuccessfulRequest.Setup(cache =>
@@ -1759,12 +1741,12 @@ namespace SudokuCollective.Test.Cache
                             new RepositoryResponse
                             {
                                 IsSuccess = true,
-                                Object = MockedAppsRepository
+                                DomainObject = MockedAppsRepository
                                     .SuccessfulRequest
                                     .Object
                                     .GetAsync(It.IsAny<int>())
                                     .Result
-                                    .Object
+                                    .DomainObject
                             }, result));
 
             CreateDifficultyRoleSuccessfulRequest.Setup(cache =>
@@ -1788,12 +1770,12 @@ namespace SudokuCollective.Test.Cache
                             new RepositoryResponse
                             {
                                 IsSuccess = true,
-                                Object = MockedDifficultiesRepository
+                                DomainObject = MockedDifficultiesRepository
                                     .SuccessfulRequest
                                     .Object
                                     .GetAsync(It.IsAny<int>())
                                     .Result
-                                    .Object
+                                    .DomainObject
                             }, result));
 
             CreateDifficultyRoleSuccessfulRequest.Setup(cache =>
@@ -1817,12 +1799,12 @@ namespace SudokuCollective.Test.Cache
                             new RepositoryResponse
                             {
                                 IsSuccess = true,
-                                Object = MockedRolesRepository
+                                DomainObject = MockedRolesRepository
                                     .SuccessfulRequest
                                     .Object
                                     .GetAsync(It.IsAny<int>())
                                     .Result
-                                    .Object
+                                    .DomainObject
                             }, result));
 
             CreateDifficultyRoleSuccessfulRequest.Setup(cache =>
@@ -1846,12 +1828,12 @@ namespace SudokuCollective.Test.Cache
                             new RepositoryResponse
                             {
                                 IsSuccess = true,
-                                Object = MockedUsersRepository
+                                DomainObject = MockedUsersRepository
                                     .SuccessfulRequest
                                     .Object
                                     .GetAsync(It.IsAny<int>())
                                     .Result
-                                    .Object
+                                    .DomainObject
                             }, result));
 
             CreateDifficultyRoleSuccessfulRequest.Setup(cache =>
@@ -1873,12 +1855,12 @@ namespace SudokuCollective.Test.Cache
                             new RepositoryResponse
                             {
                                 IsSuccess = true,
-                                Objects = MockedAppsRepository
+                                DomainObjects = MockedAppsRepository
                                     .SuccessfulRequest
                                     .Object
                                     .GetAllAsync()
                                     .Result
-                                    .Objects
+                                    .DomainObjects
                             }, result));
 
             CreateDifficultyRoleSuccessfulRequest.Setup(cache =>
@@ -1900,12 +1882,12 @@ namespace SudokuCollective.Test.Cache
                             new RepositoryResponse
                             {
                                 IsSuccess = true,
-                                Objects = MockedDifficultiesRepository
+                                DomainObjects = MockedDifficultiesRepository
                                     .SuccessfulRequest
                                     .Object
                                     .GetAllAsync()
                                     .Result
-                                    .Objects
+                                    .DomainObjects
                             }, result));
 
             CreateDifficultyRoleSuccessfulRequest.Setup(cache =>
@@ -1927,12 +1909,12 @@ namespace SudokuCollective.Test.Cache
                             new RepositoryResponse
                             {
                                 IsSuccess = true,
-                                Objects = MockedRolesRepository
+                                DomainObjects = MockedRolesRepository
                                     .SuccessfulRequest
                                     .Object
                                     .GetAllAsync()
                                     .Result
-                                    .Objects
+                                    .DomainObjects
                             }, result));
 
             CreateDifficultyRoleSuccessfulRequest.Setup(cache =>
@@ -1954,12 +1936,12 @@ namespace SudokuCollective.Test.Cache
                             new RepositoryResponse
                             {
                                 IsSuccess = true,
-                                Objects = MockedSolutionsRepository
+                                DomainObjects = MockedSolutionsRepository
                                     .SuccessfulRequest
                                     .Object
                                     .GetAllAsync()
                                     .Result
-                                    .Objects
+                                    .DomainObjects
                             }, result));
 
             CreateDifficultyRoleSuccessfulRequest.Setup(cache =>
@@ -1981,12 +1963,12 @@ namespace SudokuCollective.Test.Cache
                             new RepositoryResponse
                             {
                                 IsSuccess = true,
-                                Objects = MockedUsersRepository
+                                DomainObjects = MockedUsersRepository
                                     .SuccessfulRequest
                                     .Object
                                     .GetAllAsync()
                                     .Result
-                                    .Objects
+                                    .DomainObjects
                             }, result));
 
             CreateDifficultyRoleSuccessfulRequest.Setup(cache =>
@@ -2000,12 +1982,12 @@ namespace SudokuCollective.Test.Cache
                 .Returns(Task.FromResult(new RepositoryResponse()
                 {
                     IsSuccess = true,
-                    Object = MockedAppsRepository
+                    DomainObject = MockedAppsRepository
                             .SuccessfulRequest
                             .Object
                             .GetAsync(It.IsAny<int>())
                             .Result
-                            .Object
+                            .DomainObject
                 } as IRepositoryResponse));
 
             CreateDifficultyRoleSuccessfulRequest.Setup(cache =>
@@ -2019,12 +2001,12 @@ namespace SudokuCollective.Test.Cache
                 .Returns(Task.FromResult(new RepositoryResponse()
                 {
                     IsSuccess = true,
-                    Object = MockedDifficultiesRepository
+                    DomainObject = MockedDifficultiesRepository
                             .SuccessfulRequest
                             .Object
                             .GetAsync(It.IsAny<int>())
                             .Result
-                            .Object
+                            .DomainObject
                 } as IRepositoryResponse));
 
             CreateDifficultyRoleSuccessfulRequest.Setup(cache =>
@@ -2038,12 +2020,12 @@ namespace SudokuCollective.Test.Cache
                 .Returns(Task.FromResult(new RepositoryResponse()
                 {
                     IsSuccess = true,
-                    Object = MockedRolesRepository
+                    DomainObject = MockedRolesRepository
                             .SuccessfulRequest
                             .Object
                             .GetAsync(It.IsAny<int>())
                             .Result
-                            .Object
+                            .DomainObject
                 } as IRepositoryResponse));
 
             CreateDifficultyRoleSuccessfulRequest.Setup(cache =>
@@ -2057,12 +2039,12 @@ namespace SudokuCollective.Test.Cache
                 .Returns(Task.FromResult(new RepositoryResponse()
                 {
                     IsSuccess = true,
-                    Object = MockedUsersRepository
+                    DomainObject = MockedUsersRepository
                             .SuccessfulRequest
                             .Object
                             .GetAsync(It.IsAny<int>())
                             .Result
-                            .Object
+                            .DomainObject
                 } as IRepositoryResponse));
 
             CreateDifficultyRoleSuccessfulRequest.Setup(cache =>
@@ -2164,12 +2146,12 @@ namespace SudokuCollective.Test.Cache
                             new RepositoryResponse
                             {
                                 IsSuccess = true,
-                                Object = MockedAppsRepository
+                                DomainObject = MockedAppsRepository
                                     .SuccessfulRequest
                                     .Object
                                     .GetByLicenseAsync(It.IsAny<string>())
                                     .Result
-                                    .Object
+                                    .DomainObject
                             }, result));
 
             CreateDifficultyRoleSuccessfulRequest.Setup(cache =>
@@ -2193,12 +2175,12 @@ namespace SudokuCollective.Test.Cache
                             new RepositoryResponse
                             {
                                 IsSuccess = true,
-                                Objects = MockedAppsRepository
+                                DomainObjects = MockedAppsRepository
                                     .SuccessfulRequest
                                     .Object
                                     .GetAppUsersAsync(It.IsAny<int>())
                                     .Result
-                                    .Objects
+                                    .DomainObjects
                             }, result));
 
             CreateDifficultyRoleSuccessfulRequest.Setup(cache =>
@@ -2222,12 +2204,12 @@ namespace SudokuCollective.Test.Cache
                             new RepositoryResponse
                             {
                                 IsSuccess = true,
-                                Objects = MockedAppsRepository
+                                DomainObjects = MockedAppsRepository
                                     .SuccessfulRequest
                                     .Object
                                     .GetNonAppUsersAsync(It.IsAny<int>())
                                     .Result
-                                    .Objects
+                                    .DomainObjects
                             }, result));
 
             CreateDifficultyRoleSuccessfulRequest.Setup(cache =>
@@ -2251,12 +2233,12 @@ namespace SudokuCollective.Test.Cache
                             new RepositoryResponse
                             {
                                 IsSuccess = true,
-                                Objects = MockedAppsRepository
+                                DomainObjects = MockedAppsRepository
                                     .SuccessfulRequest
                                     .Object
                                     .GetMyRegisteredAppsAsync(It.IsAny<int>())
                                     .Result
-                                    .Objects
+                                    .DomainObjects
                             }, result));
 
             CreateDifficultyRoleSuccessfulRequest.Setup(cache =>
@@ -2280,12 +2262,12 @@ namespace SudokuCollective.Test.Cache
                             new RepositoryResponse
                             {
                                 IsSuccess = true,
-                                Objects = MockedAppsRepository
+                                DomainObjects = MockedAppsRepository
                                     .SuccessfulRequest
                                     .Object
                                     .GetMyRegisteredAppsAsync(It.IsAny<int>())
                                     .Result
-                                    .Objects
+                                    .DomainObjects
                             }, result));
 
             CreateDifficultyRoleSuccessfulRequest.Setup(cache =>
@@ -2319,12 +2301,12 @@ namespace SudokuCollective.Test.Cache
                 .Returns(Task.FromResult(new RepositoryResponse()
                 {
                     IsSuccess = true,
-                    Object = MockedAppsRepository
+                    DomainObject = MockedAppsRepository
                         .SuccessfulRequest
                         .Object
                         .GetAsync(It.IsAny<int>())
                         .Result
-                        .Object
+                        .DomainObject
                 } as IRepositoryResponse));
 
             CreateDifficultyRoleSuccessfulRequest.Setup(cache =>
@@ -2337,12 +2319,12 @@ namespace SudokuCollective.Test.Cache
                 .Returns(Task.FromResult(new RepositoryResponse()
                 {
                     IsSuccess = true,
-                    Object = MockedAppsRepository
+                    DomainObject = MockedAppsRepository
                         .SuccessfulRequest
                         .Object
                         .GetAsync(It.IsAny<int>())
                         .Result
-                        .Object
+                        .DomainObject
                 } as IRepositoryResponse));
 
             CreateDifficultyRoleSuccessfulRequest.Setup(cache =>
@@ -2355,12 +2337,12 @@ namespace SudokuCollective.Test.Cache
                 .Returns(Task.FromResult(new RepositoryResponse()
                 {
                     IsSuccess = true,
-                    Object = MockedAppsRepository
+                    DomainObject = MockedAppsRepository
                         .SuccessfulRequest
                         .Object
                         .GetAsync(It.IsAny<int>())
                         .Result
-                        .Object
+                        .DomainObject
                 } as IRepositoryResponse));
 
             CreateDifficultyRoleSuccessfulRequest.Setup(cache =>
@@ -2400,12 +2382,12 @@ namespace SudokuCollective.Test.Cache
                         new RepositoryResponse
                         {
                             IsSuccess = true,
-                            Object = MockedUsersRepository
+                            DomainObject = MockedUsersRepository
                                 .SuccessfulRequest
                                 .Object
                                 .GetByUserNameAsync(It.IsAny<string>())
                                 .Result
-                                .Object
+                                .DomainObject
                         }, result);
                 });
 
@@ -2430,12 +2412,12 @@ namespace SudokuCollective.Test.Cache
                             new RepositoryResponse
                             {
                                 IsSuccess = true,
-                                Object = MockedUsersRepository
+                                DomainObject = MockedUsersRepository
                                     .SuccessfulRequest
                                     .Object
                                     .GetByEmailAsync(It.IsAny<string>())
                                     .Result
-                                    .Object
+                                    .DomainObject
                             }, result));
 
 
@@ -2450,12 +2432,12 @@ namespace SudokuCollective.Test.Cache
                 .Returns(Task.FromResult(new RepositoryResponse()
                 {
                     IsSuccess = true,
-                    Object = MockedUsersRepository
+                    DomainObject = MockedUsersRepository
                         .SuccessfulRequest
                         .Object
                         .GetAsync(It.IsAny<int>())
                         .Result
-                        .Object
+                        .DomainObject
                 } as IRepositoryResponse));
 
             CreateDifficultyRoleSuccessfulRequest.Setup(cache =>
@@ -2469,12 +2451,12 @@ namespace SudokuCollective.Test.Cache
                 .Returns(Task.FromResult(new RepositoryResponse()
                 {
                     IsSuccess = true,
-                    Object = MockedUsersRepository
+                    DomainObject = MockedUsersRepository
                         .SuccessfulRequest
                         .Object
                         .GetAsync(It.IsAny<int>())
                         .Result
-                        .Object
+                        .DomainObject
                 } as IRepositoryResponse));
 
             CreateDifficultyRoleSuccessfulRequest.Setup(cache =>
@@ -2519,7 +2501,7 @@ namespace SudokuCollective.Test.Cache
                     new RepositoryResponse
                     {
                         IsSuccess = true,
-                        Objects = (new List<GalleryApp>()).ConvertAll(a => (IDomainEntity)a)
+                        DomainObjects = (new List<GalleryApp>()).ConvertAll(a => (IDomainEntity)a)
                     },
                     TestObjects.GetResult()));
             #endregion
@@ -2537,12 +2519,12 @@ namespace SudokuCollective.Test.Cache
                 .Returns(Task.FromResult(new RepositoryResponse()
                 {
                     IsSuccess = true,
-                    Object = MockedAppsRepository
+                    DomainObject = MockedAppsRepository
                         .SuccessfulRequest
                         .Object
                         .GetAsync(It.IsAny<int>())
                         .Result
-                        .Object
+                        .DomainObject
                 } as IRepositoryResponse));
 
             PermitSuperUserSuccessfulRequest.Setup(cache =>
@@ -2557,12 +2539,12 @@ namespace SudokuCollective.Test.Cache
                 .Returns(Task.FromResult(new RepositoryResponse()
                 {
                     IsSuccess = true,
-                    Object = MockedDifficultiesRepository
+                    DomainObject = MockedDifficultiesRepository
                         .SuccessfulRequest
                         .Object
                         .GetAsync(It.IsAny<int>())
                         .Result
-                        .Object
+                        .DomainObject
                 } as IRepositoryResponse));
 
             PermitSuperUserSuccessfulRequest.Setup(cache =>
@@ -2577,12 +2559,12 @@ namespace SudokuCollective.Test.Cache
                 .Returns(Task.FromResult(new RepositoryResponse()
                 {
                     IsSuccess = true,
-                    Object = MockedRolesRepository
+                    DomainObject = MockedRolesRepository
                         .SuccessfulRequest
                         .Object
                         .GetAsync(It.IsAny<int>())
                         .Result
-                        .Object
+                        .DomainObject
                 } as IRepositoryResponse));
 
             PermitSuperUserSuccessfulRequest.Setup(cache =>
@@ -2597,12 +2579,12 @@ namespace SudokuCollective.Test.Cache
                 .Returns(Task.FromResult(new RepositoryResponse()
                 {
                     IsSuccess = true,
-                    Object = MockedUsersRepository
+                    DomainObject = MockedUsersRepository
                         .SuccessfulRequest
                         .Object
                         .GetAsync(It.IsAny<int>())
                         .Result
-                        .Object
+                        .DomainObject
                 } as IRepositoryResponse));
 
             PermitSuperUserSuccessfulRequest.Setup(cache =>
@@ -2623,20 +2605,17 @@ namespace SudokuCollective.Test.Cache
                     IResult result,
                     HttpMessageHandler httpMessageHandler) =>
                 {
-                    if (result != null)
-                    {
-                        result.IsSuccess = false;
-                    }
+                    result?.IsSuccess = false;
                     return new Tuple<IRepositoryResponse, IResult>(
                         new RepositoryResponse
                         {
                             IsSuccess = true,
-                            Object = MockedAppsRepository
+                            DomainObject = MockedAppsRepository
                                 .PermitSuperUserRequest
                                 .Object
                                 .GetAsync(It.IsAny<int>())
                                 .Result
-                                .Object
+                                .DomainObject
                         }, result);
                 });
 
@@ -2658,20 +2637,17 @@ namespace SudokuCollective.Test.Cache
                     IResult result,
                     HttpMessageHandler httpMessageHandler) =>
                 {
-                    if (result != null)
-                    {
-                        result.IsSuccess = false;
-                    }
+                    result?.IsSuccess = false;
                     return new Tuple<IRepositoryResponse, IResult>(
                         new RepositoryResponse
                         {
                             IsSuccess = true,
-                            Object = MockedDifficultiesRepository
+                            DomainObject = MockedDifficultiesRepository
                                 .SuccessfulRequest
                                 .Object
                                 .GetAsync(It.IsAny<int>())
                                 .Result
-                                .Object
+                                .DomainObject
                         }, result);
                 });
 
@@ -2693,20 +2669,17 @@ namespace SudokuCollective.Test.Cache
                     IResult result,
                     HttpMessageHandler httpMessageHandler) =>
                 {
-                    if (result != null)
-                    {
-                        result.IsSuccess = false;
-                    }
+                    result?.IsSuccess = false;
                     return new Tuple<IRepositoryResponse, IResult>(
                         new RepositoryResponse
                         {
                             IsSuccess = true,
-                            Object = MockedRolesRepository
+                            DomainObject = MockedRolesRepository
                                 .SuccessfulRequest
                                 .Object
                                 .GetAsync(It.IsAny<int>())
                                 .Result
-                                .Object
+                                .DomainObject
                         }, result);
                 });
 
@@ -2728,20 +2701,17 @@ namespace SudokuCollective.Test.Cache
                     IResult result,
                     HttpMessageHandler httpMessageHandler) =>
                 {
-                    if (result != null)
-                    {
-                        result.IsSuccess = false;
-                    }
+                    result?.IsSuccess = false;
                     return new Tuple<IRepositoryResponse, IResult>(
                         new RepositoryResponse
                         {
                             IsSuccess = true,
-                            Object = MockedUsersRepository
+                            DomainObject = MockedUsersRepository
                                 .PermitSuperUserSuccessfulRequest
                                 .Object
                                 .GetAsync(It.IsAny<int>())
                                 .Result
-                                .Object
+                                .DomainObject
                         }, result);
                 });
 
@@ -2764,12 +2734,12 @@ namespace SudokuCollective.Test.Cache
                             new RepositoryResponse
                             {
                                 IsSuccess = true,
-                                Objects = MockedAppsRepository
+                                DomainObjects = MockedAppsRepository
                                     .SuccessfulRequest
                                     .Object
                                     .GetAllAsync()
                                     .Result
-                                    .Objects
+                                    .DomainObjects
                             }, result));
 
             PermitSuperUserSuccessfulRequest.Setup(cache =>
@@ -2791,12 +2761,12 @@ namespace SudokuCollective.Test.Cache
                             new RepositoryResponse
                             {
                                 IsSuccess = true,
-                                Objects = MockedDifficultiesRepository
+                                DomainObjects = MockedDifficultiesRepository
                                     .SuccessfulRequest
                                     .Object
                                     .GetAllAsync()
                                     .Result
-                                    .Objects
+                                    .DomainObjects
                             }, result));
 
             PermitSuperUserSuccessfulRequest.Setup(cache =>
@@ -2818,12 +2788,12 @@ namespace SudokuCollective.Test.Cache
                             new RepositoryResponse
                             {
                                 IsSuccess = true,
-                                Objects = MockedRolesRepository
+                                DomainObjects = MockedRolesRepository
                                     .SuccessfulRequest
                                     .Object
                                     .GetAllAsync()
                                     .Result
-                                    .Objects
+                                    .DomainObjects
                             }, result));
 
             PermitSuperUserSuccessfulRequest.Setup(cache =>
@@ -2845,12 +2815,12 @@ namespace SudokuCollective.Test.Cache
                             new RepositoryResponse
                             {
                                 IsSuccess = true,
-                                Objects = MockedSolutionsRepository
+                                DomainObjects = MockedSolutionsRepository
                                     .SuccessfulRequest
                                     .Object
                                     .GetAllAsync()
                                     .Result
-                                    .Objects
+                                    .DomainObjects
                             }, result));
 
             PermitSuperUserSuccessfulRequest.Setup(cache =>
@@ -2872,12 +2842,12 @@ namespace SudokuCollective.Test.Cache
                             new RepositoryResponse
                             {
                                 IsSuccess = true,
-                                Objects = MockedUsersRepository
+                                DomainObjects = MockedUsersRepository
                                     .SuccessfulRequest
                                     .Object
                                     .GetAllAsync()
                                     .Result
-                                    .Objects
+                                    .DomainObjects
                             }, result));
 
             PermitSuperUserSuccessfulRequest.Setup(cache =>
@@ -2891,12 +2861,12 @@ namespace SudokuCollective.Test.Cache
                 .Returns(Task.FromResult(new RepositoryResponse()
                 {
                     IsSuccess = true,
-                    Object = MockedAppsRepository
+                    DomainObject = MockedAppsRepository
                             .SuccessfulRequest
                             .Object
                             .GetAsync(It.IsAny<int>())
                             .Result
-                            .Object
+                            .DomainObject
                 } as IRepositoryResponse));
 
             PermitSuperUserSuccessfulRequest.Setup(cache =>
@@ -2910,12 +2880,12 @@ namespace SudokuCollective.Test.Cache
                 .Returns(Task.FromResult(new RepositoryResponse()
                 {
                     IsSuccess = true,
-                    Object = MockedDifficultiesRepository
+                    DomainObject = MockedDifficultiesRepository
                             .SuccessfulRequest
                             .Object
                             .GetAsync(It.IsAny<int>())
                             .Result
-                            .Object
+                            .DomainObject
                 } as IRepositoryResponse));
 
             PermitSuperUserSuccessfulRequest.Setup(cache =>
@@ -2929,12 +2899,12 @@ namespace SudokuCollective.Test.Cache
                 .Returns(Task.FromResult(new RepositoryResponse()
                 {
                     IsSuccess = true,
-                    Object = MockedRolesRepository
+                    DomainObject = MockedRolesRepository
                             .SuccessfulRequest
                             .Object
                             .GetAsync(It.IsAny<int>())
                             .Result
-                            .Object
+                            .DomainObject
                 } as IRepositoryResponse));
 
             PermitSuperUserSuccessfulRequest.Setup(cache =>
@@ -2948,12 +2918,12 @@ namespace SudokuCollective.Test.Cache
                 .Returns(Task.FromResult(new RepositoryResponse()
                 {
                     IsSuccess = true,
-                    Object = MockedUsersRepository
+                    DomainObject = MockedUsersRepository
                             .SuccessfulRequest
                             .Object
                             .GetAsync(It.IsAny<int>())
                             .Result
-                            .Object
+                            .DomainObject
                 } as IRepositoryResponse));
 
             PermitSuperUserSuccessfulRequest.Setup(cache =>
@@ -3055,12 +3025,12 @@ namespace SudokuCollective.Test.Cache
                             new RepositoryResponse
                             {
                                 IsSuccess = true,
-                                Object = MockedAppsRepository
+                                DomainObject = MockedAppsRepository
                                     .SuccessfulRequest
                                     .Object
                                     .GetByLicenseAsync(It.IsAny<string>())
                                     .Result
-                                    .Object
+                                    .DomainObject
                             }, result));
 
             PermitSuperUserSuccessfulRequest.Setup(cache =>
@@ -3084,12 +3054,12 @@ namespace SudokuCollective.Test.Cache
                             new RepositoryResponse
                             {
                                 IsSuccess = true,
-                                Objects = MockedAppsRepository
+                                DomainObjects = MockedAppsRepository
                                     .SuccessfulRequest
                                     .Object
                                     .GetAppUsersAsync(It.IsAny<int>())
                                     .Result
-                                    .Objects
+                                    .DomainObjects
                             }, result));
 
             PermitSuperUserSuccessfulRequest.Setup(cache =>
@@ -3113,12 +3083,12 @@ namespace SudokuCollective.Test.Cache
                             new RepositoryResponse
                             {
                                 IsSuccess = true,
-                                Objects = MockedAppsRepository
+                                DomainObjects = MockedAppsRepository
                                     .SuccessfulRequest
                                     .Object
                                     .GetNonAppUsersAsync(It.IsAny<int>())
                                     .Result
-                                    .Objects
+                                    .DomainObjects
                             }, result));
 
             PermitSuperUserSuccessfulRequest.Setup(cache =>
@@ -3142,12 +3112,12 @@ namespace SudokuCollective.Test.Cache
                             new RepositoryResponse
                             {
                                 IsSuccess = true,
-                                Objects = MockedAppsRepository
+                                DomainObjects = MockedAppsRepository
                                     .SuccessfulRequest
                                     .Object
                                     .GetMyRegisteredAppsAsync(It.IsAny<int>())
                                     .Result
-                                    .Objects
+                                    .DomainObjects
                             }, result));
 
             PermitSuperUserSuccessfulRequest.Setup(cache =>
@@ -3171,12 +3141,12 @@ namespace SudokuCollective.Test.Cache
                             new RepositoryResponse
                             {
                                 IsSuccess = true,
-                                Objects = MockedAppsRepository
+                                DomainObjects = MockedAppsRepository
                                     .SuccessfulRequest
                                     .Object
                                     .GetMyRegisteredAppsAsync(It.IsAny<int>())
                                     .Result
-                                    .Objects
+                                    .DomainObjects
                             }, result));
 
             PermitSuperUserSuccessfulRequest.Setup(cache =>
@@ -3210,12 +3180,12 @@ namespace SudokuCollective.Test.Cache
                 .Returns(Task.FromResult(new RepositoryResponse()
                 {
                     IsSuccess = true,
-                    Object = MockedAppsRepository
+                    DomainObject = MockedAppsRepository
                         .SuccessfulRequest
                         .Object
                         .GetAsync(It.IsAny<int>())
                         .Result
-                        .Object
+                        .DomainObject
                 } as IRepositoryResponse));
 
             PermitSuperUserSuccessfulRequest.Setup(cache =>
@@ -3228,12 +3198,12 @@ namespace SudokuCollective.Test.Cache
                 .Returns(Task.FromResult(new RepositoryResponse()
                 {
                     IsSuccess = true,
-                    Object = MockedAppsRepository
+                    DomainObject = MockedAppsRepository
                         .SuccessfulRequest
                         .Object
                         .GetAsync(It.IsAny<int>())
                         .Result
-                        .Object
+                        .DomainObject
                 } as IRepositoryResponse));
 
             PermitSuperUserSuccessfulRequest.Setup(cache =>
@@ -3246,12 +3216,12 @@ namespace SudokuCollective.Test.Cache
                 .Returns(Task.FromResult(new RepositoryResponse()
                 {
                     IsSuccess = true,
-                    Object = MockedAppsRepository
+                    DomainObject = MockedAppsRepository
                         .SuccessfulRequest
                         .Object
                         .GetAsync(It.IsAny<int>())
                         .Result
-                        .Object
+                        .DomainObject
                 } as IRepositoryResponse));
 
             PermitSuperUserSuccessfulRequest.Setup(cache =>
@@ -3286,20 +3256,17 @@ namespace SudokuCollective.Test.Cache
                     IResult result,
                     HttpMessageHandler httpMessageHandler) =>
                 {
-                    if (result != null)
-                    {
-                        result.IsSuccess = true;
-                    }
+                    result?.IsSuccess = true;
                     return new Tuple<IRepositoryResponse, IResult>(
                         new RepositoryResponse
                         {
                             IsSuccess = true,
-                            Object = MockedUsersRepository
+                            DomainObject = MockedUsersRepository
                                 .SuccessfulRequest
                                 .Object
                                 .GetByUserNameAsync(It.IsAny<string>())
                                 .Result
-                                .Object
+                                .DomainObject
                         }, result);
                 });
 
@@ -3324,12 +3291,12 @@ namespace SudokuCollective.Test.Cache
                             new RepositoryResponse
                             {
                                 IsSuccess = true,
-                                Object = MockedUsersRepository
+                                DomainObject = MockedUsersRepository
                                     .SuccessfulRequest
                                     .Object
                                     .GetByEmailAsync(It.IsAny<string>())
                                     .Result
-                                    .Object
+                                    .DomainObject
                             }, result));
 
 
@@ -3344,12 +3311,12 @@ namespace SudokuCollective.Test.Cache
                 .Returns(Task.FromResult(new RepositoryResponse()
                 {
                     IsSuccess = true,
-                    Object = MockedUsersRepository
+                    DomainObject = MockedUsersRepository
                         .SuccessfulRequest
                         .Object
                         .GetAsync(It.IsAny<int>())
                         .Result
-                        .Object
+                        .DomainObject
                 } as IRepositoryResponse));
 
             PermitSuperUserSuccessfulRequest.Setup(cache =>
@@ -3363,12 +3330,12 @@ namespace SudokuCollective.Test.Cache
                 .Returns(Task.FromResult(new RepositoryResponse()
                 {
                     IsSuccess = true,
-                    Object = MockedUsersRepository
+                    DomainObject = MockedUsersRepository
                         .SuccessfulRequest
                         .Object
                         .GetAsync(It.IsAny<int>())
                         .Result
-                        .Object
+                        .DomainObject
                 } as IRepositoryResponse));
 
             PermitSuperUserSuccessfulRequest.Setup(cache =>
@@ -3413,7 +3380,7 @@ namespace SudokuCollective.Test.Cache
                     new RepositoryResponse
                     {
                         IsSuccess = true,
-                        Objects = (new List<GalleryApp>()).ConvertAll(a => (IDomainEntity)a)
+                        DomainObjects = (new List<GalleryApp>()).ConvertAll(a => (IDomainEntity)a)
                     },
                     TestObjects.GetResult()));
             #endregion

@@ -64,7 +64,7 @@ namespace SudokuCollective.Test.TestCases.Services
         public void ReturnListOfReleaseEnvironments()
         {
             // Arrange and Act
-            var result = sut.GetReleaseEnvironments();
+            var result = ValuesService.GetReleaseEnvironments();
             var releaseEnvironments = result.Payload.ConvertAll(x => (IEnumListItem)x);
 
             // Assert
@@ -76,7 +76,7 @@ namespace SudokuCollective.Test.TestCases.Services
         public void ReturnListOfSortValues()
         {
             // Arrange and Act
-            var result = sut.GetSortValues();
+            var result = ValuesService.GetSortValues();
             var sortValues = result.Payload.ConvertAll(x => (IEnumListItem)x);
 
             // Assert
@@ -88,7 +88,7 @@ namespace SudokuCollective.Test.TestCases.Services
         public void ReturnListOfTimeFrames()
         {
             // Arrange and Act
-            var result = sut.GetTimeFrames();
+            var result = ValuesService.GetTimeFrames();
             var timeFrames = result.Payload.ConvertAll(x => (IEnumListItem)x);
 
             // Assert

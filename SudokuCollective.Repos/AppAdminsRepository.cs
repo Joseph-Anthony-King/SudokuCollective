@@ -44,7 +44,7 @@ namespace SudokuCollective.Repos
                 await _context.SaveChangesAsync();
 
                 result.IsSuccess = true;
-                result.Object = entity;
+                result.DomainObject = entity;
 
                 return result;
             }
@@ -72,7 +72,7 @@ namespace SudokuCollective.Repos
                     .AppAdmins
                     .FirstOrDefaultAsync(aa => aa.Id == id);
 
-                result.Object = query;
+                result.DomainObject = query;
 
                 if (query == null)
                 {
@@ -113,7 +113,7 @@ namespace SudokuCollective.Repos
                 {
                     result.IsSuccess = true;
 
-                    result.Objects = [.. query.ConvertAll(aa => (IDomainEntity)aa)];
+                    result.DomainObjects = [.. query.ConvertAll(aa => (IDomainEntity)aa)];
                 }
 
                 return result;
@@ -149,7 +149,7 @@ namespace SudokuCollective.Repos
                 await _context.SaveChangesAsync();
 
                 result.IsSuccess = true;
-                result.Object = entity;
+                result.DomainObject = entity;
 
                 return result;
             }
@@ -230,7 +230,7 @@ namespace SudokuCollective.Repos
                 await _context.SaveChangesAsync();
 
                 result.IsSuccess = true;
-                result.Object = entity;
+                result.DomainObject = entity;
 
                 return result;
             }
@@ -325,7 +325,7 @@ namespace SudokuCollective.Repos
                 }
 
                 result.IsSuccess = true;
-                result.Object = query;
+                result.DomainObject = query;
 
                 return result;
             }
@@ -335,6 +335,27 @@ namespace SudokuCollective.Repos
                     _requestService, 
                     _logger, 
                     result, 
+                    e);
+            }
+        }
+
+        public IRepositoryResponse GetCount()
+        {
+            var result = new RepositoryResponse();
+
+            try
+            {
+                var count = _context.AppAdmins.Count();
+                result.IsSuccess = true;
+                result.Object = new { TotalCount = count };
+                return result;
+            }
+            catch (Exception e)
+            {
+                return ReposUtilities.ProcessException<AppAdminsRepository<TEntity>>(
+                    _requestService,
+                    _logger,
+                    result,
                     e);
             }
         }

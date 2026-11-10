@@ -30,7 +30,7 @@ namespace SudokuCollective.Test.Repositories
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         IsSuccess = true,
-                        Object = new Role() { RoleLevel = RoleLevel.NULL }
+                        DomainObject = new Role() { RoleLevel = RoleLevel.NULL }
                     } as IRepositoryResponse));
 
             SuccessfulRequest.Setup(rolesRepo =>
@@ -38,7 +38,7 @@ namespace SudokuCollective.Test.Repositories
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         IsSuccess = true,
-                        Object = context.Roles.FirstOrDefault(r => r.Id == 3)
+                        DomainObject = context.Roles.FirstOrDefault(r => r.Id == 3)
                     } as IRepositoryResponse));
 
             SuccessfulRequest.Setup(rolesRepo =>
@@ -46,7 +46,7 @@ namespace SudokuCollective.Test.Repositories
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         IsSuccess = true,
-                        Objects = context.Roles
+                        DomainObjects = context.Roles
                             .Where(r => r.RoleLevel != RoleLevel.NULL && r.RoleLevel != RoleLevel.SUPERUSER)
                             .ToList()
                             .ConvertAll(r => (IDomainEntity)r)
@@ -57,7 +57,7 @@ namespace SudokuCollective.Test.Repositories
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         IsSuccess = true,
-                        Object = context.Roles.FirstOrDefault(r => r.Id == 3)
+                        DomainObject = context.Roles.FirstOrDefault(r => r.Id == 3)
                     } as IRepositoryResponse));
 
             SuccessfulRequest.Setup(rolesRepo =>

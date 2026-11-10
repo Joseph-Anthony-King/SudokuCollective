@@ -159,7 +159,7 @@ namespace SudokuCollective.Data.Services
                     }
                     #endregion
 
-                    var app = (App)appResponse.Object;
+                    var app = (App)appResponse.DomainObject;
 
                     if (!app.IsActive)
                     {
@@ -203,12 +203,12 @@ namespace SudokuCollective.Data.Services
                             User = user,
                             UserId = user.Id,
                             Role = rolesResponse
-                                .Objects
+                                .DomainObjects
                                 .ConvertAll(o => (Role)o)
                                 .Where(r => r.RoleLevel == RoleLevel.USER)
                                 .FirstOrDefault(),
                             RoleId = rolesResponse
-                                .Objects
+                                .DomainObjects
                                 .ConvertAll(o => (Role)o)
                                 .Where(r => r.RoleLevel == RoleLevel.USER)
                                 .FirstOrDefault().Id,
@@ -222,12 +222,12 @@ namespace SudokuCollective.Data.Services
                                 User = user,
                                 UserId = user.Id,
                                 Role = rolesResponse
-                                    .Objects
+                                    .DomainObjects
                                     .ConvertAll(o => (Role)o)
                                     .Where(r => r.RoleLevel == RoleLevel.ADMIN)
                                     .FirstOrDefault(),
                                 RoleId = rolesResponse
-                                    .Objects
+                                    .DomainObjects
                                     .ConvertAll(o => (Role)o)
                                     .Where(r => r.RoleLevel == RoleLevel.ADMIN)
                                     .FirstOrDefault().Id,
@@ -254,7 +254,7 @@ namespace SudokuCollective.Data.Services
                     }
                     #endregion
 
-                    user = (User)userResponse.Object;
+                    user = (User)userResponse.DomainObject;
 
                     if (user.Roles.Any(ur => ur.Role.RoleLevel == RoleLevel.ADMIN))
                     {
@@ -273,7 +273,7 @@ namespace SudokuCollective.Data.Services
                     emailConfirmation = await EnsureEmailConfirmationTokenIsUnique(emailConfirmation);
 
                     emailConfirmation = (EmailConfirmation)(await _emailConfirmationsRepository.CreateAsync(emailConfirmation))
-                        .Object;
+                        .DomainObject;
 
                     string EmailConfirmationAction;
 
@@ -405,7 +405,7 @@ namespace SudokuCollective.Data.Services
 
                 result = (Result)cacheServiceResponse.Item2;
 
-                var user = (User)response.Object;
+                var user = (User)response.DomainObject;
 
                 user.NullifyPassword();
 
@@ -419,10 +419,10 @@ namespace SudokuCollective.Data.Services
                     _cachingStrategy.Medium,
                     license);
 
-                var app = (App)((RepositoryResponse)cacheServiceResponse.Item1).Object;
+                var app = (App)((RepositoryResponse)cacheServiceResponse.Item1).DomainObject;
 
                 var appAdmins = (await _appAdminsRepository.GetAllAsync())
-                    .Objects
+                    .DomainObjects
                     .ConvertAll(aa => (AppAdmin)aa)
                     .ToList();
 
@@ -606,7 +606,7 @@ namespace SudokuCollective.Data.Services
                     }
                     #endregion
 
-                    var user = (User)getResponse.Object;
+                    var user = (User)getResponse.DomainObject;
 
                     cacheServiceResponse = await _cacheService.GetWithCacheAsync<App>(
                         _appsRepository,
@@ -615,7 +615,7 @@ namespace SudokuCollective.Data.Services
                         _cachingStrategy.Medium,
                         request.AppId);
 
-                    var app = (App)((RepositoryResponse)cacheServiceResponse.Item1).Object;
+                    var app = (App)((RepositoryResponse)cacheServiceResponse.Item1).DomainObject;
 
                     user.UserName = payload.UserName;
                     user.FirstName = payload.FirstName;
@@ -635,7 +635,7 @@ namespace SudokuCollective.Data.Services
                         if (await _emailConfirmationsRepository.HasOutstandingEmailConfirmationAsync(user.Id, app.Id))
                         {
                             emailConfirmation = (EmailConfirmation)(await _emailConfirmationsRepository
-                                .RetrieveEmailConfirmationAsync(user.Id, app.Id)).Object;
+                                .RetrieveEmailConfirmationAsync(user.Id, app.Id)).DomainObject;
 
                             if (!user.IsEmailConfirmed)
                             {
@@ -707,7 +707,7 @@ namespace SudokuCollective.Data.Services
                         {
                             EmailConfirmationAction = string.Format("https://{0}/confirmEmail/{1}",
                                 baseUrl,
-                                ((EmailConfirmation)emailConfirmationResponse.Object).Token);
+                                ((EmailConfirmation)emailConfirmationResponse.DomainObject).Token);
                         }
 
                         var html = File.ReadAllText(emailTemplatePath);
@@ -759,7 +759,7 @@ namespace SudokuCollective.Data.Services
                         return result;
                     }
 
-                    userResult.User = (UserDTO)((User)updateResponse.Object).Cast<UserDTO>();
+                    userResult.User = (UserDTO)((User)updateResponse.DomainObject).Cast<UserDTO>();
 
                     var getRequestorResponse = await _cacheService.GetWithCacheAsync<User>(
                         _usersRepository,
@@ -770,7 +770,7 @@ namespace SudokuCollective.Data.Services
 
                     var requestorResponse = (RepositoryResponse)getRequestorResponse.Item1;
 
-                    if (!((User)requestorResponse.Object).IsSuperUser && request.RequestorId != id)
+                    if (!((User)requestorResponse.DomainObject).IsSuperUser && request.RequestorId != id)
                     {
                         userResult.User.NullifyEmail();
                     }
@@ -840,7 +840,7 @@ namespace SudokuCollective.Data.Services
 
                 result = (Result)cacheServiceResponse.Item2;
 
-                if (DataUtilities.IsPageValid(paginator, getResponse.Objects))
+                if (DataUtilities.IsPageValid(paginator, getResponse.DomainObjects))
                 {
                     result = PaginatorUtilities.PaginateUsers(paginator, getResponse, result);
                 }
@@ -859,10 +859,10 @@ namespace SudokuCollective.Data.Services
                     _cachingStrategy.Medium,
                     license);
 
-                var app = (App)((RepositoryResponse)cacheServiceResponse.Item1).Object;
+                var app = (App)((RepositoryResponse)cacheServiceResponse.Item1).DomainObject;
 
                 var appAdmins = (await _appAdminsRepository.GetAllAsync())
-                    .Objects
+                    .DomainObjects
                     .ConvertAll(aa => (AppAdmin)aa)
                     .ToList();
 
@@ -920,7 +920,7 @@ namespace SudokuCollective.Data.Services
                     _cachingStrategy.Medium,
                     requestorId);
 
-                var requestor = (User)((RepositoryResponse)cacheServiceResponse.Item1).Object;
+                var requestor = (User)((RepositoryResponse)cacheServiceResponse.Item1).DomainObject;
 
                 if (!requestor.IsSuperUser)
                 {
@@ -1002,7 +1002,7 @@ namespace SudokuCollective.Data.Services
                 }
                 #endregion
 
-                if (((User)getResponse.Object).Id == 1 && ((User)getResponse.Object).IsSuperUser)
+                if (((User)getResponse.DomainObject).Id == 1 && ((User)getResponse.DomainObject).IsSuperUser)
                 {
                     result.IsSuccess = false;
                     result.Message = UsersMessages.SuperUserCannotBeDeletedMessage;
@@ -1014,7 +1014,7 @@ namespace SudokuCollective.Data.Services
                     _usersRepository,
                     _distributedCache,
                     _cacheKeys,
-                    (User)getResponse.Object,
+                    (User)getResponse.DomainObject,
                     license);
 
                 #region deleteResponse fails
@@ -1030,7 +1030,7 @@ namespace SudokuCollective.Data.Services
                 #endregion
 
                 var admins = (await _appAdminsRepository.GetAllAsync())
-                    .Objects
+                    .DomainObjects
                     .ConvertAll(aa => (AppAdmin)aa)
                     .Where(aa => aa.UserId == id)
                     .ToList();
@@ -1077,18 +1077,18 @@ namespace SudokuCollective.Data.Services
                 var license = (await _cacheService.GetLicenseWithCacheAsync(
                     _appsRepository,
                     _distributedCache,
-                    string.Format(_cacheKeys.GetAppLicenseCacheKey, ((PasswordReset)response.Object).AppId),
+                    string.Format(_cacheKeys.GetAppLicenseCacheKey, ((PasswordReset)response.DomainObject).AppId),
                     _cachingStrategy.Heavy,
                     _cacheKeys,
-                    ((PasswordReset)response.Object).AppId)).Item1;
+                    ((PasswordReset)response.DomainObject).AppId)).Item1;
 
                 result.Payload.Add((User)((await _cacheService.GetWithCacheAsync<User>(
                     _usersRepository,
                     _distributedCache,
-                    string.Format(_cacheKeys.GetUserCacheKey, ((PasswordReset)response.Object).UserId, license),
+                    string.Format(_cacheKeys.GetUserCacheKey, ((PasswordReset)response.DomainObject).UserId, license),
                     _cachingStrategy.Medium,
-                    ((PasswordReset)response.Object).UserId,
-                    result)).Item1).Object);
+                    ((PasswordReset)response.DomainObject).UserId,
+                    result)).Item1).DomainObject);
 
                 result.IsSuccess = response.IsSuccess;
                 result.Message = UsersMessages.UserFoundMessage;
@@ -1127,7 +1127,7 @@ namespace SudokuCollective.Data.Services
                 }
                 #endregion
 
-                result.License = await _appsRepository.GetLicenseAsync(((PasswordReset)response.Object).AppId);
+                result.License = await _appsRepository.GetLicenseAsync(((PasswordReset)response.DomainObject).AppId);
                 result.IsSuccess = response.IsSuccess;
                 result.Message = AppsMessages.AppFoundMessage;
 
@@ -1209,7 +1209,7 @@ namespace SudokuCollective.Data.Services
                     new Result());
 
                 var roles = response
-                    .Objects
+                    .DomainObjects
                     .ConvertAll(ur => (UserRole)ur)
                     .ToList();
 
@@ -1224,9 +1224,9 @@ namespace SudokuCollective.Data.Services
                             _cachingStrategy.Medium,
                             license);
 
-                        var app = (App)((RepositoryResponse)cacheServiceResponse.Item1).Object;
+                        var app = (App)((RepositoryResponse)cacheServiceResponse.Item1).DomainObject;
 
-                        var appAdmin = (AppAdmin)(await _appAdminsRepository.AddAsync(new AppAdmin(app.Id, userid))).Object;
+                        var appAdmin = (AppAdmin)(await _appAdminsRepository.AddAsync(new AppAdmin(app.Id, userid))).DomainObject;
                     }
 
                     result.Payload.ConvertAll(r => (Role)r).Add(role.Role);
@@ -1239,7 +1239,7 @@ namespace SudokuCollective.Data.Services
                     _cachingStrategy.Medium,
                     userid);
 
-                var user = (User)((RepositoryResponse)cacheServiceResponse.Item1).Object;
+                var user = (User)((RepositoryResponse)cacheServiceResponse.Item1).DomainObject;
 
                 var getRequestorResponse = await _cacheService.GetWithCacheAsync<User>(
                     _usersRepository,
@@ -1250,7 +1250,7 @@ namespace SudokuCollective.Data.Services
 
                 var requestorResponse = (RepositoryResponse)getRequestorResponse.Item1;
 
-                if (!((User)requestorResponse.Object).IsSuperUser && request.RequestorId != user.Id)
+                if (!((User)requestorResponse.DomainObject).IsSuperUser && request.RequestorId != user.Id)
                 {
                     user.NullifyEmail();
                 }
@@ -1350,7 +1350,7 @@ namespace SudokuCollective.Data.Services
                     new Result());
 
                 var roles = response
-                    .Objects
+                    .DomainObjects
                     .ConvertAll(ur => (UserRole)ur)
                     .ToList();
 
@@ -1365,11 +1365,11 @@ namespace SudokuCollective.Data.Services
                             _cachingStrategy.Medium,
                             license);
 
-                        var app = (App)((RepositoryResponse)cacheServiceResponse.Item1).Object;
+                        var app = (App)((RepositoryResponse)cacheServiceResponse.Item1).DomainObject;
 
                         var appAdmin = (AppAdmin)
                             (await _appAdminsRepository.GetAdminRecordAsync(app.Id, userid))
-                            .Object;
+                            .DomainObject;
 
                         _ = await _appAdminsRepository.DeleteAsync(appAdmin);
                     }
@@ -1382,7 +1382,7 @@ namespace SudokuCollective.Data.Services
                     _cachingStrategy.Medium,
                     userid);
 
-                var user = (User)((RepositoryResponse)cacheServiceResponse.Item1).Object;
+                var user = (User)((RepositoryResponse)cacheServiceResponse.Item1).DomainObject;
 
                 // Remove any user cache items which may exist
                 var removeKeys = new List<string> {
@@ -1441,7 +1441,7 @@ namespace SudokuCollective.Data.Services
                         _cachingStrategy.Medium,
                         id);
 
-                    var user = (User)((RepositoryResponse)cacheServiceResponse.Item1).Object;
+                    var user = (User)((RepositoryResponse)cacheServiceResponse.Item1).DomainObject;
 
                     // Remove any user cache items which may exist
                     var removeKeys = new List<string> {
@@ -1505,7 +1505,7 @@ namespace SudokuCollective.Data.Services
                         _cachingStrategy.Medium,
                         id);
 
-                    var user = (User)((RepositoryResponse)cacheServiceResponse.Item1).Object;
+                    var user = (User)((RepositoryResponse)cacheServiceResponse.Item1).DomainObject;
 
                     // Remove any user cache items which may exist
                     var removeKeys = new List<string> {
@@ -1585,7 +1585,7 @@ namespace SudokuCollective.Data.Services
                 }
                 #endregion
 
-                var user = (User)userResponse.Object;
+                var user = (User)userResponse.DomainObject;
 
                 if (user.IsEmailConfirmed || !user.ReceivedRequestToUpdateEmail)
                 {
@@ -1614,7 +1614,7 @@ namespace SudokuCollective.Data.Services
                 }
                 #endregion
 
-                var app = (App)appResponse.Object;
+                var app = (App)appResponse.DomainObject;
 
                 var hasOutstandingConfirmation = await _emailConfirmationsRepository.HasOutstandingEmailConfirmationAsync(userId, appId);
 
@@ -1640,7 +1640,7 @@ namespace SudokuCollective.Data.Services
                 }
                 #endregion
 
-                var emailConfirmation = (EmailConfirmation)emailConfirmationResponse.Object;
+                var emailConfirmation = (EmailConfirmation)emailConfirmationResponse.DomainObject;
 
                 string EmailConfirmationAction;
 
@@ -1679,7 +1679,7 @@ namespace SudokuCollective.Data.Services
                 {
                     EmailConfirmationAction = string.Format("https://{0}/confirmEmail/{1}",
                         baseUrl,
-                        ((EmailConfirmation)emailConfirmationResponse.Object).Token);
+                        ((EmailConfirmation)emailConfirmationResponse.DomainObject).Token);
                 }
 
                 var html = File.ReadAllText(emailTemplatePath);
@@ -1759,7 +1759,7 @@ namespace SudokuCollective.Data.Services
 
                 var emailConfirmResult = new ConfirmEmailResult();
 
-                var emailConfirmations = (await _emailConfirmationsRepository.GetAllAsync()).Objects.ConvertAll(x => (EmailConfirmation)x);
+                var emailConfirmations = (await _emailConfirmationsRepository.GetAllAsync()).DomainObjects.ConvertAll(x => (EmailConfirmation)x);
 
                 var emailConfirmation = emailConfirmations.FirstOrDefault(ec => ec.Token.ToLower().Equals(token.ToLower()));
 
@@ -1800,7 +1800,7 @@ namespace SudokuCollective.Data.Services
                     }
                     #endregion
 
-                    var user = (User)response.Object;
+                    var user = (User)response.DomainObject;
 
                     if (DateTime.UtcNow > emailConfirmation.ExpirationDate && emailConfirmation.IsUpdate)
                     {
@@ -1918,7 +1918,7 @@ namespace SudokuCollective.Data.Services
                     }
                     #endregion
 
-                    var user = (User)response.Object;
+                    var user = (User)response.DomainObject;
 
                     if (DateTime.UtcNow > emailConfirmation.ExpirationDate && emailConfirmation.IsUpdate)
                     {
@@ -1940,7 +1940,7 @@ namespace SudokuCollective.Data.Services
                         return result;
                     }
 
-                    var app = (App)(await _appsRepository.GetAsync(emailConfirmation.AppId)).Object;
+                    var app = (App)(await _appsRepository.GetAsync(emailConfirmation.AppId)).DomainObject;
 
                     var html = File.ReadAllText(emailTemplatePath);
 
@@ -1994,7 +1994,7 @@ namespace SudokuCollective.Data.Services
                     emailConfirmation.OldEmailAddressConfirmed = emailConfirmResult.ConfirmationEmailSuccessfullySent;
                     emailConfirmation.ConfirmationType = EmailConfirmationType.NEWPROFILECONFIRMED;
 
-                    emailConfirmation = (EmailConfirmation)(await _emailConfirmationsRepository.UpdateAsync(emailConfirmation)).Object;
+                    emailConfirmation = (EmailConfirmation)(await _emailConfirmationsRepository.UpdateAsync(emailConfirmation)).DomainObject;
 
                     result.IsSuccess = response.IsSuccess;
                     result.Message = UsersMessages.OldEmailConfirmedMessage;
@@ -2031,7 +2031,7 @@ namespace SudokuCollective.Data.Services
                     }
                     #endregion
 
-                    var user = (User)response.Object;
+                    var user = (User)response.DomainObject;
 
                     if (DateTime.UtcNow > emailConfirmation.ExpirationDate && emailConfirmation.IsUpdate)
                     {
@@ -2180,7 +2180,7 @@ namespace SudokuCollective.Data.Services
 
                 if (!hasEmailConfirmation)
                 {
-                    userResult.User = (UserDTO)(await _usersRepository.GetAsync(id)).Object;
+                    userResult.User = (UserDTO)(await _usersRepository.GetAsync(id)).DomainObject;
                     result.IsSuccess = false;
                     result.Message = UsersMessages.EmailConfirmationRequestNotFoundMessage;
                     result.Payload.Add(userResult);
@@ -2188,18 +2188,18 @@ namespace SudokuCollective.Data.Services
                     return result;
                 }
 
-                var user = (User)userResponse.Object;
+                var user = (User)userResponse.DomainObject;
 
                 var emailConfirmation = (EmailConfirmation)
                     (await _emailConfirmationsRepository.RetrieveEmailConfirmationAsync(id, appId))
-                    .Object;
+                    .DomainObject;
 
                 var response = await _emailConfirmationsRepository.DeleteAsync(emailConfirmation);
 
                 #region response fails
                 if (!response.IsSuccess)
                 {
-                    userResult.User = (UserDTO)(await _usersRepository.UpdateAsync(user)).Object;
+                    userResult.User = (UserDTO)(await _usersRepository.UpdateAsync(user)).DomainObject;
                     result.IsSuccess = response.IsSuccess;
                     result.Message = response.Exception != null ? 
                         response.Exception.Message : 
@@ -2220,7 +2220,7 @@ namespace SudokuCollective.Data.Services
                     _distributedCache,
                     _cacheKeys,
                     user,
-                    license)).Object.Cast<UserDTO>();
+                    license)).DomainObject.Cast<UserDTO>();
 
                 result.IsSuccess = response.IsSuccess;
                 result.Message = UsersMessages.EmailConfirmationRequestCancelledMessage;
@@ -2262,7 +2262,7 @@ namespace SudokuCollective.Data.Services
                     appId);
 
                 var appResponse = (RepositoryResponse)cacheServiceResponse.Item1;
-                var app = (App)appResponse.Object;
+                var app = (App)appResponse.DomainObject;
 
                 app.License = (await _cacheService.GetLicenseWithCacheAsync(
                     _appsRepository,
@@ -2302,7 +2302,7 @@ namespace SudokuCollective.Data.Services
                 var emailConfirmationResponse = await _emailConfirmationsRepository.RetrieveEmailConfirmationAsync(id, appId);
                 var passwordResetResponse = await _passwordResetsRepository.RetrievePasswordResetAsync(id, appId);
 
-                var user = (User)userResponse.Object;
+                var user = (User)userResponse.DomainObject;
 
                 if (!emailConfirmationResponse.IsSuccess || !passwordResetResponse.IsSuccess)
                 {
@@ -2314,7 +2314,7 @@ namespace SudokuCollective.Data.Services
 
                 if (emailConfirmationResponse.IsSuccess)
                 {
-                    var emailConfirmation = (EmailConfirmation)emailConfirmationResponse.Object;
+                    var emailConfirmation = (EmailConfirmation)emailConfirmationResponse.DomainObject;
 
                     var response = await _emailConfirmationsRepository.DeleteAsync(emailConfirmation);
 
@@ -2330,7 +2330,7 @@ namespace SudokuCollective.Data.Services
                             _distributedCache,
                             _cacheKeys,
                             user,
-                            app.License)).Object;
+                            app.License)).DomainObject;
 
                         result.IsSuccess = response.IsSuccess;
                         result.Message = UsersMessages.EmailConfirmationRequestCancelledMessage;
@@ -2349,7 +2349,7 @@ namespace SudokuCollective.Data.Services
 
                 if (passwordResetResponse.IsSuccess)
                 {
-                    var passwordReset = (PasswordReset)passwordResetResponse.Object;
+                    var passwordReset = (PasswordReset)passwordResetResponse.DomainObject;
 
                     var response = await _passwordResetsRepository.DeleteAsync(passwordReset);
 
@@ -2363,7 +2363,7 @@ namespace SudokuCollective.Data.Services
                             _distributedCache,
                             _cacheKeys,
                             user,
-                            app.License)).Object;
+                            app.License)).DomainObject;
 
                         result.IsSuccess = response.IsSuccess;
                         result.Message = string.IsNullOrEmpty(result.Message) ?
@@ -2426,7 +2426,7 @@ namespace SudokuCollective.Data.Services
                 }
                 #endregion
 
-                var passwordReset = (PasswordReset)passwordResetResponse.Object;
+                var passwordReset = (PasswordReset)passwordResetResponse.DomainObject;
 
                 var cacheServiceResponse = await _cacheService.GetWithCacheAsync<User>(
                     _usersRepository,
@@ -2449,7 +2449,7 @@ namespace SudokuCollective.Data.Services
                 }
                 #endregion
 
-                var user = (User)userResponse.Object;
+                var user = (User)userResponse.DomainObject;
 
                 cacheServiceResponse = await _cacheService.GetWithCacheAsync<App>(
                     _appsRepository,
@@ -2472,7 +2472,7 @@ namespace SudokuCollective.Data.Services
                 }
                 #endregion
 
-                var app = (App)appResponse.Object;
+                var app = (App)appResponse.DomainObject;
 
                 user.NullifyPassword();
 
@@ -2553,7 +2553,7 @@ namespace SudokuCollective.Data.Services
                     return result;
                 }
 
-                var app = (App)(await _appsRepository.GetAsync(appId)).Object;
+                var app = (App)(await _appsRepository.GetAsync(appId)).DomainObject;
                 app.License = await _appsRepository.GetLicenseAsync(app.Id);
 
                 cacheServiceResponse = await _cacheService.GetWithCacheAsync(
@@ -2573,7 +2573,7 @@ namespace SudokuCollective.Data.Services
                     return result;
                 }
 
-                var user = (User)userResponse.Object;
+                var user = (User)userResponse.DomainObject;
 
                 if (!user.ReceivedRequestToUpdatePassword)
                 {
@@ -2592,7 +2592,7 @@ namespace SudokuCollective.Data.Services
                 }
 
                 var passwordReset = (PasswordReset)
-                    ((await _passwordResetsRepository.RetrievePasswordResetAsync(userId, appId)).Object);
+                    ((await _passwordResetsRepository.RetrievePasswordResetAsync(userId, appId)).DomainObject);
 
                 string EmailConfirmationAction;
 
@@ -2726,7 +2726,7 @@ namespace SudokuCollective.Data.Services
                 }
                 #endregion
 
-                var app = (App)appResponse.Object;
+                var app = (App)appResponse.DomainObject;
 
                 app.License = (await _cacheService.GetLicenseWithCacheAsync(
                     _appsRepository,
@@ -2755,7 +2755,7 @@ namespace SudokuCollective.Data.Services
                     return result;
                 }
 
-                var user = (User)userResponse.Object;
+                var user = (User)userResponse.DomainObject;
                 PasswordReset passwordReset;
 
                 var userSignedUp = user.Apps.Any(ua => ua.AppId == app.Id);
@@ -2780,11 +2780,11 @@ namespace SudokuCollective.Data.Services
                 {
                     passwordReset = (PasswordReset)(await _passwordResetsRepository.RetrievePasswordResetAsync(
                         user.Id,
-                        app.Id)).Object;
+                        app.Id)).DomainObject;
 
                     passwordReset = await EnsurePasswordResetTokenIsUnique(passwordReset);
 
-                    passwordReset = (PasswordReset)(await _passwordResetsRepository.UpdateAsync(passwordReset)).Object;
+                    passwordReset = (PasswordReset)(await _passwordResetsRepository.UpdateAsync(passwordReset)).DomainObject;
 
                     if (!user.ReceivedRequestToUpdatePassword)
                     {
@@ -2795,7 +2795,7 @@ namespace SudokuCollective.Data.Services
                             _distributedCache,
                             _cacheKeys,
                             user,
-                            app.License)).Object;
+                            app.License)).DomainObject;
                     }
 
                     return await SendPasswordResetEmailAsync(
@@ -2834,7 +2834,7 @@ namespace SudokuCollective.Data.Services
                         _distributedCache,
                         _cacheKeys,
                         user,
-                        app.License)).Object;
+                        app.License)).DomainObject;
 
                     return await SendPasswordResetEmailAsync(
                         user,
@@ -2887,7 +2887,7 @@ namespace SudokuCollective.Data.Services
                 }
                 #endregion
 
-                var user = (User)userResponse.Object;
+                var user = (User)userResponse.DomainObject;
 
                 cacheServiceResponse = await _cacheService.GetAppByLicenseWithCacheAsync(
                     _appsRepository,
@@ -2897,7 +2897,7 @@ namespace SudokuCollective.Data.Services
                     request.License);
 
                 var appResponse = (RepositoryResponse)cacheServiceResponse.Item1;
-                var app = (App)appResponse.Object;
+                var app = (App)appResponse.DomainObject;
 
                 app.License = (await _cacheService.GetLicenseWithCacheAsync(
                     _appsRepository,
@@ -2932,7 +2932,7 @@ namespace SudokuCollective.Data.Services
                 }
                 #endregion
 
-                var passwordReset = (PasswordReset)passwordResetReponse.Object;
+                var passwordReset = (PasswordReset)passwordResetReponse.DomainObject;
 
                 if (DateTime.UtcNow > passwordReset.ExpirationDate)
                 {
@@ -2975,7 +2975,7 @@ namespace SudokuCollective.Data.Services
 
                 _ = await _passwordResetsRepository.DeleteAsync(passwordReset);
 
-                user = (User)updateResponse.Object;
+                user = (User)updateResponse.DomainObject;
 
                 user.NullifyPassword();
 
@@ -3034,7 +3034,7 @@ namespace SudokuCollective.Data.Services
 
                 if (!hasPasswordReset)
                 {
-                    userResult.User = (UserDTO)((User)(await _usersRepository.GetAsync(id)).Object).Cast<UserDTO>();
+                    userResult.User = (UserDTO)((User)(await _usersRepository.GetAsync(id)).DomainObject).Cast<UserDTO>();
                     result.IsSuccess = false;
                     result.Message = UsersMessages.PasswordResetRequestNotFoundMessage;
                     result.Payload.Add(userResult);
@@ -3042,18 +3042,18 @@ namespace SudokuCollective.Data.Services
                     return result;
                 }
 
-                var user = (User)userResponse.Object;
+                var user = (User)userResponse.DomainObject;
 
                 var passwordReset = (PasswordReset)
                     (await _passwordResetsRepository.RetrievePasswordResetAsync(id, appId))
-                    .Object;
+                    .DomainObject;
 
                 var deleteResponse = await _passwordResetsRepository.DeleteAsync(passwordReset);
 
                 #region deleteResponse fails
                 if (deleteResponse.IsSuccess == false)
                 {
-                    userResult.User = (UserDTO)(await _usersRepository.UpdateAsync(user)).Object;
+                    userResult.User = (UserDTO)(await _usersRepository.UpdateAsync(user)).DomainObject;
                     result.IsSuccess = deleteResponse.IsSuccess;
                     result.Message = deleteResponse.Exception != null ? 
                         deleteResponse.Exception.Message : 
@@ -3072,7 +3072,7 @@ namespace SudokuCollective.Data.Services
                     _distributedCache,
                     _cacheKeys,
                     user,
-                    license)).Object.Cast<UserDTO>();
+                    license)).DomainObject.Cast<UserDTO>();
 
                 result.IsSuccess = deleteResponse.IsSuccess;
                 result.Message = UsersMessages.PasswordResetRequestCancelledMessage;
@@ -3103,7 +3103,7 @@ namespace SudokuCollective.Data.Services
                     bool tokenNotUnique;
 
                     var emailConfirmations = emailConfirmationResponse
-                        .Objects
+                        .DomainObjects
                         .ConvertAll(ec => (EmailConfirmation)ec);
 
                     do
@@ -3152,7 +3152,7 @@ namespace SudokuCollective.Data.Services
                     bool tokenUnique = false;
 
                     var passwordResets = passwordResetResponse
-                        .Objects
+                        .DomainObjects
                         .ConvertAll(pw => (PasswordReset)pw);
 
                     do

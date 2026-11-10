@@ -31,7 +31,7 @@ namespace SudokuCollective.Test.Repositories
                     .Returns(Task.FromResult(new RepositoryResponse() 
                     {
                         IsSuccess = true,
-                        Object = new AppAdmin() { 
+                        DomainObject = new AppAdmin() { 
                             Id = 2,
                             AppId = 1,
                             UserId = 2,
@@ -43,7 +43,7 @@ namespace SudokuCollective.Test.Repositories
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         IsSuccess = true,
-                        Object = context.AppAdmins.FirstOrDefault(aa => aa.Id == 1)
+                        DomainObject = context.AppAdmins.FirstOrDefault(aa => aa.Id == 1)
                     } as IRepositoryResponse));
 
             SuccessfulRequest.Setup(repo =>
@@ -51,7 +51,7 @@ namespace SudokuCollective.Test.Repositories
                     .Returns(Task.FromResult(new RepositoryResponse() 
                     {
                         IsSuccess = true,
-                        Objects = context.AppAdmins
+                        DomainObjects = context.AppAdmins
                             .ToList()
                             .ConvertAll(aa => (IDomainEntity)aa)
                     } as IRepositoryResponse));
@@ -61,7 +61,7 @@ namespace SudokuCollective.Test.Repositories
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         IsSuccess = true,
-                        Object = context.Difficulties.FirstOrDefault(d => d.Id == 1)
+                        DomainObject = context.Difficulties.FirstOrDefault(d => d.Id == 1)
                     } as IRepositoryResponse));
 
             SuccessfulRequest.Setup(repo =>
@@ -98,7 +98,7 @@ namespace SudokuCollective.Test.Repositories
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         IsSuccess = true,
-                        Object = context.AppAdmins.FirstOrDefault(aa => aa.Id == 1)
+                        DomainObject = context.AppAdmins.FirstOrDefault(aa => aa.Id == 1)
                     } as IRepositoryResponse));
             #endregion
 
@@ -174,7 +174,7 @@ namespace SudokuCollective.Test.Repositories
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         IsSuccess = true,
-                        Object = new AppAdmin()
+                        DomainObject = new AppAdmin()
                         {
                             Id = 2,
                             AppId = 1,
@@ -188,7 +188,7 @@ namespace SudokuCollective.Test.Repositories
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         IsSuccess = true,
-                        Object = context.AppAdmins.FirstOrDefault(aa => aa.Id == 1)
+                        DomainObject = context.AppAdmins.FirstOrDefault(aa => aa.Id == 1)
                     } as IRepositoryResponse));
 
             PromoteUserRequest.Setup(repo =>
@@ -196,7 +196,7 @@ namespace SudokuCollective.Test.Repositories
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         IsSuccess = true,
-                        Objects = context.AppAdmins
+                        DomainObjects = context.AppAdmins
                             .ToList()
                             .ConvertAll(aa => (IDomainEntity)aa)
                     } as IRepositoryResponse));
@@ -206,7 +206,7 @@ namespace SudokuCollective.Test.Repositories
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         IsSuccess = true,
-                        Object = context.Difficulties.FirstOrDefault(d => d.Id == 1)
+                        DomainObject = context.Difficulties.FirstOrDefault(d => d.Id == 1)
                     } as IRepositoryResponse));
 
             PromoteUserRequest.Setup(repo =>
@@ -243,7 +243,7 @@ namespace SudokuCollective.Test.Repositories
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         IsSuccess = true,
-                        Object = context.AppAdmins.FirstOrDefault(aa => aa.Id == 1)
+                        DomainObject = context.AppAdmins.FirstOrDefault(aa => aa.Id == 1)
                     } as IRepositoryResponse));
             #endregion
         }

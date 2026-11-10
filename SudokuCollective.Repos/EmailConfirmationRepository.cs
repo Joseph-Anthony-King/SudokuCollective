@@ -1,8 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using SudokuCollective.Core.Interfaces.ServiceModels;
+using Newtonsoft.Json.Linq;
 using SudokuCollective.Core.Interfaces.Models;
 using SudokuCollective.Core.Interfaces.Repositories;
+using SudokuCollective.Core.Interfaces.ServiceModels;
 using SudokuCollective.Core.Interfaces.Services;
 using SudokuCollective.Core.Models;
 using SudokuCollective.Data.Models;
@@ -45,7 +46,7 @@ namespace SudokuCollective.Repos
 				await _context.SaveChangesAsync();
 
 				result.IsSuccess = true;
-				result.Object = entity;
+				result.DomainObject = entity;
 
 				return result;
 			}
@@ -57,9 +58,48 @@ namespace SudokuCollective.Repos
 						result,
 						e);
 			}
-		}
+        }
 
-		public async Task<IRepositoryResponse> GetAsync(string token)
+        public async Task<IRepositoryResponse> AddAsync(TEntity entity)
+        {
+            return await CreateAsync(entity);
+        }
+
+        public async Task<IRepositoryResponse> GetAsync(int id)
+        {
+            var result = new RepositoryResponse();
+
+            try
+            {
+                ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id, nameof(id));
+
+                var query = await _context
+                    .EmailConfirmations
+                    .FirstOrDefaultAsync(ec => ec.Id == id);
+
+                if (query == null)
+                {
+                    result.IsSuccess = false;
+                }
+                else
+                {
+                    result.IsSuccess = true;
+                    result.DomainObject = query;
+                }
+
+                return result;
+            }
+            catch (Exception e)
+            {
+                return ReposUtilities.ProcessException<EmailConfirmationsRepository<TEntity>>(
+                        _requestService,
+                        _logger,
+                        result,
+                        e);
+            }
+        }
+
+        public async Task<IRepositoryResponse> GetAsync(string token)
 		{
 			var result = new RepositoryResponse();
 
@@ -78,7 +118,7 @@ namespace SudokuCollective.Repos
 				else
 				{
 					result.IsSuccess = true;
-					result.Object = query;
+					result.DomainObject = query;
 				}
 
 				return result;
@@ -111,7 +151,7 @@ namespace SudokuCollective.Repos
 				else
 				{
 					result.IsSuccess = true;
-					result.Objects = [.. query.ConvertAll(ec => (IDomainEntity)ec)];
+					result.DomainObjects = [.. query.ConvertAll(ec => (IDomainEntity)ec)];
 				}
 
 				return result;
@@ -147,7 +187,7 @@ namespace SudokuCollective.Repos
 					await _context.SaveChangesAsync();
 
 					result.IsSuccess = true;
-					result.Object = entity;
+					result.DomainObject = entity;
 
 					return result;
 				}
@@ -166,9 +206,49 @@ namespace SudokuCollective.Repos
 						result,
 						e);
 			}
-		}
+        }
 
-		public async Task<IRepositoryResponse> DeleteAsync(TEntity entity)
+        public async Task<IRepositoryResponse> UpdateRangeAsync(List<TEntity> entities)
+        {
+            var result = new RepositoryResponse();
+
+            try
+            {
+                ArgumentNullException.ThrowIfNull(entities);
+
+                foreach (var entity in entities)
+                {
+                    ArgumentOutOfRangeException.ThrowIfNegativeOrZero(entity.Id, nameof(entity.Id));
+
+                    if (await _context.EmailConfirmations.AnyAsync(a => a.Id == entity.Id))
+                    {
+                        _context.Entry(entity).State = EntityState.Modified;
+                    }
+                    else
+                    {
+                        result.IsSuccess = false;
+
+                        return result;
+                    }
+                }
+
+                await _context.SaveChangesAsync();
+
+                result.IsSuccess = true;
+
+                return result;
+            }
+            catch (Exception e)
+            {
+                return ReposUtilities.ProcessException<EmailConfirmationsRepository<TEntity>>(
+                        _requestService,
+                        _logger,
+                        result,
+                        e);
+            }
+        }
+
+        public async Task<IRepositoryResponse> DeleteAsync(TEntity entity)
 		{
             var result = new RepositoryResponse();
 
@@ -187,7 +267,7 @@ namespace SudokuCollective.Repos
 					await _context.SaveChangesAsync();
 
 					result.IsSuccess = true;
-					result.Object = entity;
+					result.DomainObject = entity;
 
 					return result;
 				}
@@ -206,9 +286,49 @@ namespace SudokuCollective.Repos
 						result,
 						e);
 			}
-		}
+        }
 
-		public async Task<bool> HasEntityAsync(int id) =>
+        public async Task<IRepositoryResponse> DeleteRangeAsync(List<TEntity> entities)
+        {
+            var result = new RepositoryResponse();
+
+            try
+            {
+                ArgumentNullException.ThrowIfNull(entities);
+
+                foreach (var entity in entities)
+                {
+                    ArgumentOutOfRangeException.ThrowIfNegativeOrZero(entity.Id, nameof(entity.Id));
+
+                    if (await _context.EmailConfirmations.AnyAsync(a => a.Id == entity.Id))
+                    {
+                        _context.Entry(entity).State = EntityState.Deleted;
+                    }
+                    else
+                    {
+                        result.IsSuccess = false;
+
+                        return result;
+                    }
+                }
+
+                await _context.SaveChangesAsync();
+
+                result.IsSuccess = true;
+
+                return result;
+            }
+            catch (Exception e)
+            {
+                return ReposUtilities.ProcessException<EmailConfirmationsRepository<TEntity>>(
+                        _requestService,
+                        _logger,
+                        result,
+                        e);
+            }
+        }
+
+        public async Task<bool> HasEntityAsync(int id) =>
 			await _context.EmailConfirmations.AnyAsync(ec => ec.Id == id);
 
 		public async Task<bool> HasOutstandingEmailConfirmationAsync(int userId, int appid) =>
@@ -241,7 +361,7 @@ namespace SudokuCollective.Repos
 				else
 				{
 					result.IsSuccess = true;
-					result.Object = query;
+					result.DomainObject = query;
 				}
 
 				return result;
@@ -254,7 +374,28 @@ namespace SudokuCollective.Repos
 						result,
 						e);
 			}
-		}
-		#endregion
-	}
+        }
+
+        public IRepositoryResponse GetCount()
+        {
+            var result = new RepositoryResponse();
+
+            try
+            {
+                var count = _context.EmailConfirmations.Count();
+                result.IsSuccess = true;
+                result.Object = new { TotalCount = count };
+                return result;
+            }
+            catch (Exception e)
+            {
+                return ReposUtilities.ProcessException<EmailConfirmationsRepository<TEntity>>(
+                        _requestService,
+                        _logger,
+                        result,
+                        e);
+            }
+        }
+        #endregion
+    }
 }

@@ -30,7 +30,7 @@ namespace SudokuCollective.Test.Repositories
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         IsSuccess = true,
-                        Object = new PasswordReset()
+                        DomainObject = new PasswordReset()
                     } as IRepositoryResponse));
 
             SuccessfulRequest.Setup(repo =>
@@ -38,7 +38,7 @@ namespace SudokuCollective.Test.Repositories
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         IsSuccess = true,
-                        Object = context.PasswordResets.FirstOrDefault(pr => pr.Id == 1)
+                        DomainObject = context.PasswordResets.FirstOrDefault(pr => pr.Id == 1)
                     } as IRepositoryResponse));
 
             SuccessfulRequest.Setup(repo =>
@@ -46,7 +46,7 @@ namespace SudokuCollective.Test.Repositories
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         IsSuccess = true,
-                        Objects = context.PasswordResets
+                        DomainObjects = context.PasswordResets
                             .ToList()
                             .ConvertAll(d => (IDomainEntity)d)
                     } as IRepositoryResponse));
@@ -56,7 +56,7 @@ namespace SudokuCollective.Test.Repositories
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         IsSuccess = true,
-                        Object = context.PasswordResets.FirstOrDefault()
+                        DomainObject = context.PasswordResets.FirstOrDefault()
                     } as IRepositoryResponse));
 
             SuccessfulRequest.Setup(repo =>
@@ -79,7 +79,7 @@ namespace SudokuCollective.Test.Repositories
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         IsSuccess = true,
-                        Object = context.PasswordResets.FirstOrDefault(pr => pr.Id == 1)
+                        DomainObject = context.PasswordResets.FirstOrDefault(pr => pr.Id == 1)
                     } as IRepositoryResponse));
             #endregion
 
@@ -141,7 +141,7 @@ namespace SudokuCollective.Test.Repositories
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         IsSuccess = true,
-                        Object = new PasswordReset()
+                        DomainObject = new PasswordReset()
                     } as IRepositoryResponse));
 
             SuccessfullyCreatedRequest.Setup(repo =>
@@ -149,7 +149,7 @@ namespace SudokuCollective.Test.Repositories
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         IsSuccess = true,
-                        Object = context.PasswordResets.FirstOrDefault(pr => pr.Id == 1)
+                        DomainObject = context.PasswordResets.FirstOrDefault(pr => pr.Id == 1)
                     } as IRepositoryResponse));
 
             SuccessfullyCreatedRequest.Setup(repo =>
@@ -157,7 +157,7 @@ namespace SudokuCollective.Test.Repositories
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         IsSuccess = true,
-                        Objects = context.PasswordResets
+                        DomainObjects = context.PasswordResets
                             .ToList()
                             .ConvertAll(d => (IDomainEntity)d)
                     } as IRepositoryResponse));
@@ -167,7 +167,7 @@ namespace SudokuCollective.Test.Repositories
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         IsSuccess = true,
-                        Object = context.PasswordResets.FirstOrDefault()
+                        DomainObject = context.PasswordResets.FirstOrDefault()
                     } as IRepositoryResponse));
 
             SuccessfullyCreatedRequest.Setup(repo =>

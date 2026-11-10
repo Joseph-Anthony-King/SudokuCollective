@@ -266,5 +266,16 @@ namespace SudokuCollective.Test.TestCases.Cache
             // Assert
             Assert.That(sut.GetGalleryAppsKey, Is.EqualTo(":GetGalleryApps"));
         }
+
+        [Test, Category("Cache")]
+        public void HaveGetAdminSummaryKey()
+        {
+            // Arrange
+
+            // Act
+
+            // Assert
+            Assert.That(sut.GetAdminSummaryKey, Is.EqualTo(":GetAdminSummary"));
+        }
     }
 }

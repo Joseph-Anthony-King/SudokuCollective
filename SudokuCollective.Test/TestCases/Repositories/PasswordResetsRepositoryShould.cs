@@ -47,7 +47,7 @@ namespace SudokuCollective.Test.TestCases.Repositories
 
             // Assert
             Assert.That(result.IsSuccess, Is.True);
-            Assert.That((PasswordReset)result.Object, Is.InstanceOf<PasswordReset>());
+            Assert.That((PasswordReset)result.DomainObject, Is.InstanceOf<PasswordReset>());
         }
 
         [Test, Category("Repository")]
@@ -78,7 +78,7 @@ namespace SudokuCollective.Test.TestCases.Repositories
 
             // Assert
             Assert.That(result.IsSuccess, Is.True);
-            Assert.That((PasswordReset)result.Object, Is.InstanceOf<PasswordReset>());
+            Assert.That((PasswordReset)result.DomainObject, Is.InstanceOf<PasswordReset>());
         }
 
         [Test, Category("Repository")]
@@ -92,7 +92,7 @@ namespace SudokuCollective.Test.TestCases.Repositories
 
             // Assert
             Assert.That(result.IsSuccess, Is.False);
-            Assert.That(result.Object, Is.Null);
+            Assert.That(result.DomainObject, Is.Null);
         }
 
         [Test, Category("Repository")]
@@ -105,7 +105,7 @@ namespace SudokuCollective.Test.TestCases.Repositories
 
             // Assert
             Assert.That(result.IsSuccess, Is.True);
-            Assert.That(result.Objects.ConvertAll(pr => (PasswordReset)pr), Is.InstanceOf<List<PasswordReset>>());
+            Assert.That(result.DomainObjects.ConvertAll(pr => (PasswordReset)pr), Is.InstanceOf<List<PasswordReset>>());
         }
 
         [Test, Category("Repository")]
@@ -169,7 +169,7 @@ namespace SudokuCollective.Test.TestCases.Repositories
 
             // Assert
             Assert.That(result.IsSuccess, Is.True);
-            Assert.That((PasswordReset)result.Object, Is.InstanceOf<PasswordReset>());
+            Assert.That((PasswordReset)result.DomainObject, Is.InstanceOf<PasswordReset>());
         }
 
         [Test, Category("Repository")]
@@ -183,6 +183,22 @@ namespace SudokuCollective.Test.TestCases.Repositories
 
             // Assert
             Assert.That(result.IsSuccess, Is.False);
+        }
+
+        [Test, Category("Repository")]
+        public void GetPasswordResetCount()
+        {
+            // Arrange
+            var expectedCount = context.PasswordResets.Count();
+
+            // Act
+            var result = sut.GetCount();
+            var actualCount = System.Convert.ToInt32(
+                result.Object.GetType().GetProperty("TotalCount").GetValue(result.Object));
+
+            // Assert
+            Assert.That(result.IsSuccess, Is.True);
+            Assert.That(actualCount, Is.EqualTo(expectedCount));
         }
     }
 }

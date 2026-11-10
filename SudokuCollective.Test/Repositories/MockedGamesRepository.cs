@@ -36,7 +36,7 @@ namespace SudokuCollective.Test.Repositories
                     .Returns(Task.FromResult(new RepositoryResponse() 
                     {
                         IsSuccess = true,
-                        Object = new Game(
+                        DomainObject = new Game(
                             context.Users.FirstOrDefault(u => u.Id == 1),
                             new SudokuMatrix(),
                             context.Difficulties.FirstOrDefault(d => d.DifficultyLevel == DifficultyLevel.TEST),
@@ -48,7 +48,7 @@ namespace SudokuCollective.Test.Repositories
                     .Returns(Task.FromResult(new RepositoryResponse() 
                     {
                         IsSuccess = true,
-                        Object = context.Games.FirstOrDefault(g => g.Id == 1)
+                        DomainObject = context.Games.FirstOrDefault(g => g.Id == 1)
                     } as IRepositoryResponse));
 
             SuccessfulRequest.Setup(repo =>
@@ -56,7 +56,7 @@ namespace SudokuCollective.Test.Repositories
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         IsSuccess = true,
-                        Objects = context.Games.ToList().ConvertAll(g => (IDomainEntity)g)
+                        DomainObjects = context.Games.ToList().ConvertAll(g => (IDomainEntity)g)
                     } as IRepositoryResponse));
 
             SuccessfulRequest.Setup(repo =>
@@ -64,7 +64,7 @@ namespace SudokuCollective.Test.Repositories
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         IsSuccess = true,
-                        Object = context.Games.FirstOrDefault(g => g.Id == 1)
+                        DomainObject = context.Games.FirstOrDefault(g => g.Id == 1)
                     } as IRepositoryResponse));
 
             SuccessfulRequest.Setup(repo =>
@@ -72,7 +72,7 @@ namespace SudokuCollective.Test.Repositories
                     .Returns(Task.FromResult(new RepositoryResponse()
                     { 
                         IsSuccess = true,
-                        Objects = context.Games.ToList().ConvertAll(g => (IDomainEntity)g)
+                        DomainObjects = context.Games.ToList().ConvertAll(g => (IDomainEntity)g)
                     } as IRepositoryResponse));
 
             SuccessfulRequest.Setup(repo =>
@@ -98,7 +98,7 @@ namespace SudokuCollective.Test.Repositories
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         IsSuccess = true,
-                        Object = context.Games.FirstOrDefault(g => g.Id == 1)
+                        DomainObject = context.Games.FirstOrDefault(g => g.Id == 1)
                     } as IRepositoryResponse));
 
             SuccessfulRequest.Setup(repo =>
@@ -106,7 +106,7 @@ namespace SudokuCollective.Test.Repositories
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         IsSuccess = true,
-                        Objects = context.Games.ToList().ConvertAll(g => (IDomainEntity)g)
+                        DomainObjects = context.Games.ToList().ConvertAll(g => (IDomainEntity)g)
                     } as IRepositoryResponse));
 
             SuccessfulRequest.Setup(repo =>
@@ -114,7 +114,7 @@ namespace SudokuCollective.Test.Repositories
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         IsSuccess = true,
-                        Object = context.Games.FirstOrDefault(g => g.Id == 1)
+                        DomainObject = context.Games.FirstOrDefault(g => g.Id == 1)
                     } as IRepositoryResponse));
 
             SuccessfulRequest.Setup(repo =>
@@ -122,7 +122,7 @@ namespace SudokuCollective.Test.Repositories
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         IsSuccess = true,
-                        Objects = context.Games.ToList().ConvertAll(g => (IDomainEntity)g)
+                        DomainObjects = context.Games.ToList().ConvertAll(g => (IDomainEntity)g)
                     } as IRepositoryResponse));
 
             SuccessfulRequest.Setup(repo =>
@@ -229,7 +229,7 @@ namespace SudokuCollective.Test.Repositories
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         IsSuccess = true,
-                        Object = new Game(
+                        DomainObject = new Game(
                             context.Users.FirstOrDefault(u => u.Id == 1),
                             new SudokuMatrix(),
                             context.Difficulties.FirstOrDefault(d => d.DifficultyLevel == DifficultyLevel.TEST),
@@ -241,7 +241,7 @@ namespace SudokuCollective.Test.Repositories
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         IsSuccess = true,
-                        Object = context.Games.FirstOrDefault(g => g.Id == 2)
+                        DomainObject = context.Games.FirstOrDefault(g => g.Id == 2)
                     } as IRepositoryResponse));
 
             SolvedRequest.Setup(repo =>
@@ -249,7 +249,7 @@ namespace SudokuCollective.Test.Repositories
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         IsSuccess = true,
-                        Objects = context.Games.ToList().ConvertAll(g => (IDomainEntity)g)
+                        DomainObjects = context.Games.ToList().ConvertAll(g => (IDomainEntity)g)
                     } as IRepositoryResponse));
 
             SolvedRequest.Setup(repo =>
@@ -257,7 +257,7 @@ namespace SudokuCollective.Test.Repositories
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         IsSuccess = true,
-                        Object = context.Games.FirstOrDefault(g => g.Id == 1)
+                        DomainObject = context.Games.FirstOrDefault(g => g.Id == 1)
                     } as IRepositoryResponse));
 
             SolvedRequest.Setup(repo =>
@@ -265,7 +265,7 @@ namespace SudokuCollective.Test.Repositories
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         IsSuccess = true,
-                        Objects = context.Games.ToList().ConvertAll(g => (IDomainEntity)g)
+                        DomainObjects = context.Games.ToList().ConvertAll(g => (IDomainEntity)g)
                     } as IRepositoryResponse));
 
             SolvedRequest.Setup(repo =>
@@ -291,7 +291,7 @@ namespace SudokuCollective.Test.Repositories
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         IsSuccess = true,
-                        Object = context.Games.FirstOrDefault(g => g.Id == 1)
+                        DomainObject = context.Games.FirstOrDefault(g => g.Id == 1)
                     } as IRepositoryResponse));
 
             SolvedRequest.Setup(repo =>
@@ -299,7 +299,7 @@ namespace SudokuCollective.Test.Repositories
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         IsSuccess = true,
-                        Objects = context.Games.ToList().ConvertAll(g => (IDomainEntity)g)
+                        DomainObjects = context.Games.ToList().ConvertAll(g => (IDomainEntity)g)
                     } as IRepositoryResponse));
 
             SolvedRequest.Setup(repo =>
@@ -307,7 +307,7 @@ namespace SudokuCollective.Test.Repositories
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         IsSuccess = true,
-                        Object = context.Games.FirstOrDefault(g => g.Id == 1)
+                        DomainObject = context.Games.FirstOrDefault(g => g.Id == 1)
                     } as IRepositoryResponse));
 
             SolvedRequest.Setup(repo =>
@@ -315,7 +315,7 @@ namespace SudokuCollective.Test.Repositories
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         IsSuccess = true,
-                        Objects = context.Games.ToList().ConvertAll(g => (IDomainEntity)g)
+                        DomainObjects = context.Games.ToList().ConvertAll(g => (IDomainEntity)g)
                     } as IRepositoryResponse));
 
             SolvedRequest.Setup(repo =>
@@ -332,7 +332,7 @@ namespace SudokuCollective.Test.Repositories
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         IsSuccess = true,
-                        Object = new Game(
+                        DomainObject = new Game(
                             context.Users.FirstOrDefault(u => u.Id == 1),
                             new SudokuMatrix(),
                             context.Difficulties.FirstOrDefault(d => d.DifficultyLevel == DifficultyLevel.TEST),
@@ -344,7 +344,7 @@ namespace SudokuCollective.Test.Repositories
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         IsSuccess = true,
-                        Object = context.Games.FirstOrDefault(g => g.Id == 1)
+                        DomainObject = context.Games.FirstOrDefault(g => g.Id == 1)
                     } as IRepositoryResponse));
 
             UpdateFailedRequest.Setup(repo =>
@@ -352,7 +352,7 @@ namespace SudokuCollective.Test.Repositories
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         IsSuccess = true,
-                        Objects = context.Games.ToList().ConvertAll(g => (IDomainEntity)g)
+                        DomainObjects = context.Games.ToList().ConvertAll(g => (IDomainEntity)g)
                     } as IRepositoryResponse));
 
             UpdateFailedRequest.Setup(repo =>
@@ -367,7 +367,7 @@ namespace SudokuCollective.Test.Repositories
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         IsSuccess = true,
-                        Objects = context.Games.ToList().ConvertAll(g => (IDomainEntity)g)
+                        DomainObjects = context.Games.ToList().ConvertAll(g => (IDomainEntity)g)
                     } as IRepositoryResponse));
 
             UpdateFailedRequest.Setup(repo =>
@@ -393,7 +393,7 @@ namespace SudokuCollective.Test.Repositories
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         IsSuccess = true,
-                        Object = context.Games.FirstOrDefault(g => g.Id == 1)
+                        DomainObject = context.Games.FirstOrDefault(g => g.Id == 1)
                     } as IRepositoryResponse));
 
             UpdateFailedRequest.Setup(repo =>
@@ -401,7 +401,7 @@ namespace SudokuCollective.Test.Repositories
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         IsSuccess = true,
-                        Objects = context.Games.ToList().ConvertAll(g => (IDomainEntity)g)
+                        DomainObjects = context.Games.ToList().ConvertAll(g => (IDomainEntity)g)
                     } as IRepositoryResponse));
 
             UpdateFailedRequest.Setup(repo =>
@@ -409,7 +409,7 @@ namespace SudokuCollective.Test.Repositories
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         IsSuccess = true,
-                        Object = context.Games.FirstOrDefault(g => g.Id == 1)
+                        DomainObject = context.Games.FirstOrDefault(g => g.Id == 1)
                     } as IRepositoryResponse));
 
             UpdateFailedRequest.Setup(repo =>
@@ -417,7 +417,7 @@ namespace SudokuCollective.Test.Repositories
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         IsSuccess = true,
-                        Objects = context.Games.ToList().ConvertAll(g => (IDomainEntity)g)
+                        DomainObjects = context.Games.ToList().ConvertAll(g => (IDomainEntity)g)
                     } as IRepositoryResponse));
 
             UpdateFailedRequest.Setup(repo =>

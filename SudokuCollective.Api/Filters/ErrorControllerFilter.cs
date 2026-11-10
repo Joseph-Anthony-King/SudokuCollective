@@ -1,4 +1,6 @@
-﻿using Microsoft.OpenApi;
+﻿using System;
+using System.Linq;
+using Microsoft.OpenApi;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace SudokuCollective.Api.Filters
@@ -14,7 +16,13 @@ namespace SudokuCollective.Api.Filters
         public void Apply(OpenApiDocument swaggerDoc, DocumentFilterContext context)
         {
             var route = "/error";
-            swaggerDoc.Paths.Remove(route);
+
+            foreach (var path in swaggerDoc.Paths.Keys
+                .Where(path => path.Equals(route, StringComparison.OrdinalIgnoreCase))
+                .ToList())
+            {
+                swaggerDoc.Paths.Remove(path);
+            }
         }
     }
 }

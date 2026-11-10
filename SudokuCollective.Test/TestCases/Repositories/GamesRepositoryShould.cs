@@ -63,7 +63,7 @@ namespace SudokuCollective.Test.TestCases.Repositories
 
             // Assert
             Assert.That(result.IsSuccess, Is.True);
-            Assert.That((Game)result.Object, Is.InstanceOf<Game>());
+            Assert.That((Game)result.DomainObject, Is.InstanceOf<Game>());
         }
 
         [Test, Category("Repository")]
@@ -89,7 +89,7 @@ namespace SudokuCollective.Test.TestCases.Repositories
 
             // Assert
             Assert.That(result.IsSuccess, Is.True);
-            Assert.That((Game)result.Object, Is.InstanceOf<Game>());
+            Assert.That((Game)result.DomainObject, Is.InstanceOf<Game>());
         }
 
         [Test, Category("Repository")]
@@ -114,7 +114,7 @@ namespace SudokuCollective.Test.TestCases.Repositories
 
             // Arrange
             Assert.That(result.IsSuccess, Is.True);
-            Assert.That(result.Objects.ConvertAll(g => (Game)g), Is.InstanceOf<List<Game>>());
+            Assert.That(result.DomainObjects.ConvertAll(g => (Game)g), Is.InstanceOf<List<Game>>());
         }
 
         [Test, Category("Repository")]
@@ -133,8 +133,8 @@ namespace SudokuCollective.Test.TestCases.Repositories
 
             // Arrange
             Assert.That(result.IsSuccess, Is.True);
-            Assert.That((Game)result.Object, Is.InstanceOf<Game>());
-            Assert.That(((Game)result.Object).DateUpdated, Is.GreaterThan(DateTime.MinValue));
+            Assert.That((Game)result.DomainObject, Is.InstanceOf<Game>());
+            Assert.That(((Game)result.DomainObject).DateUpdated, Is.GreaterThan(DateTime.MinValue));
 
         }
 
@@ -240,7 +240,7 @@ namespace SudokuCollective.Test.TestCases.Repositories
 
             // Assert
             Assert.That(result.IsSuccess, Is.True);
-            Assert.That((Game)result.Object, Is.InstanceOf<Game>());
+            Assert.That((Game)result.DomainObject, Is.InstanceOf<Game>());
         }
 
         [Test, Category("Repository")]
@@ -265,7 +265,7 @@ namespace SudokuCollective.Test.TestCases.Repositories
 
             // Arrange
             Assert.That(result.IsSuccess, Is.True);
-            Assert.That(result.Objects.ConvertAll(g => (Game)g), Is.InstanceOf<List<Game>>());
+            Assert.That(result.DomainObjects.ConvertAll(g => (Game)g), Is.InstanceOf<List<Game>>());
         }
 
         [Test, Category("Repository")]
@@ -314,7 +314,7 @@ namespace SudokuCollective.Test.TestCases.Repositories
 
             // Assert
             Assert.That(result.IsSuccess, Is.True);
-            Assert.That((Game)result.Object, Is.InstanceOf<Game>());
+            Assert.That((Game)result.DomainObject, Is.InstanceOf<Game>());
         }
 
         [Test, Category("Repository")]
@@ -351,6 +351,22 @@ namespace SudokuCollective.Test.TestCases.Repositories
 
             // Assert
             Assert.That(result.IsSuccess, Is.False);
+        }
+
+        [Test, Category("Repository")]
+        public void GetGameCount()
+        {
+            // Arrange
+            var expectedCount = context.Games.Count();
+
+            // Act
+            var result = sut.GetCount();
+            var actualCount = System.Convert.ToInt32(
+                result.Object.GetType().GetProperty("TotalCount").GetValue(result.Object));
+
+            // Assert
+            Assert.That(result.IsSuccess, Is.True);
+            Assert.That(actualCount, Is.EqualTo(expectedCount));
         }
     }
 }

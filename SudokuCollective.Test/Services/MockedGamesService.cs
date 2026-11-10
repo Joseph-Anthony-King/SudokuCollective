@@ -46,7 +46,7 @@ namespace SudokuCollective.Test.Services
                                 .Object
                                 .AddAsync(It.IsAny<Game>())
                                 .Result
-                                .Object
+                                .DomainObject
                         ]
                     } as IResult));
 
@@ -68,7 +68,7 @@ namespace SudokuCollective.Test.Services
                                     .Object
                                     .AddAsync(It.IsAny<Game>())
                                     .Result
-                                    .Object
+                                    .DomainObject
                             ]
                     } as IResult));
 
@@ -103,7 +103,7 @@ namespace SudokuCollective.Test.Services
                                     .Object
                                     .AddAsync(It.IsAny<Game>())
                                     .Result
-                                    .Object
+                                    .DomainObject
                             ]
                     } as IResult));
 
@@ -123,7 +123,7 @@ namespace SudokuCollective.Test.Services
                             .Object
                             .GetAllAsync()
                             .Result
-                            .Objects
+                            .DomainObjects
                             .ConvertAll(g => (object)g)
                     } as IResult));
 
@@ -145,7 +145,7 @@ namespace SudokuCollective.Test.Services
                                     .Object
                                     .AddAsync(It.IsAny<Game>())
                                     .Result
-                                    .Object
+                                    .DomainObject
                             ]
                     } as IResult));
 
@@ -165,7 +165,7 @@ namespace SudokuCollective.Test.Services
                             .Object
                             .GetMyGamesAsync(It.IsAny<int>(), It.IsAny<int>())
                             .Result
-                            .Objects
+                            .DomainObjects
                             .ConvertAll(g => (object)g)
                     } as IResult));
 
@@ -187,7 +187,7 @@ namespace SudokuCollective.Test.Services
                                     .Object
                                     .AddAsync(It.IsAny<Game>())
                                     .Result
-                                    .Object
+                                    .DomainObject
                             ]
                     } as IResult));
 
@@ -222,7 +222,7 @@ namespace SudokuCollective.Test.Services
                                     .Object
                                     .AddAsync(It.IsAny<Game>())
                                     .Result
-                                    .Object
+                                    .DomainObject
                             ]
                     } as IResult));
 

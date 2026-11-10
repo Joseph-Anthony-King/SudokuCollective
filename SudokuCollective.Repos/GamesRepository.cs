@@ -37,7 +37,7 @@ namespace SudokuCollective.Repos
                 await _context.SaveChangesAsync();
 
                 result.IsSuccess = true;
-                result.Object = entity;
+                result.DomainObject = entity;
 
                 return result;
             }
@@ -75,7 +75,7 @@ namespace SudokuCollective.Repos
                 if (query != null)
                 {
                     result.IsSuccess = true;
-                    result.Object = query;
+                    result.DomainObject = query;
                 }
                 else
                 {
@@ -114,7 +114,7 @@ namespace SudokuCollective.Repos
                 if (query.Count > 0)
                 {
                     result.IsSuccess = true;
-                    result.Objects = [.. query.ConvertAll(g => (IDomainEntity)g)];
+                    result.DomainObjects = [.. query.ConvertAll(g => (IDomainEntity)g)];
                 }
                 else
                 {
@@ -161,7 +161,7 @@ namespace SudokuCollective.Repos
                 if (query != null)
                 {
                     result.IsSuccess = true;
-                    result.Object = query;
+                    result.DomainObject = query;
                 }
                 else
                 {
@@ -205,7 +205,7 @@ namespace SudokuCollective.Repos
                 if (query.Count > 0)
                 {
                     result.IsSuccess = true;
-                    result.Objects = query.ConvertAll(g => (IDomainEntity)g);
+                    result.DomainObjects = query.ConvertAll(g => (IDomainEntity)g);
                 }
                 else
                 {
@@ -260,7 +260,7 @@ namespace SudokuCollective.Repos
                 if (query != null)
                 {
                     result.IsSuccess = true;
-                    result.Object = query;
+                    result.DomainObject = query;
                 }
                 else
                 {
@@ -310,7 +310,7 @@ namespace SudokuCollective.Repos
                     if (query.Count > 0)
                     {
                         result.IsSuccess = true;
-                        result.Objects = query.ConvertAll(g => (IDomainEntity)g);
+                        result.DomainObjects = query.ConvertAll(g => (IDomainEntity)g);
                     }
                     else
                     {
@@ -361,7 +361,7 @@ namespace SudokuCollective.Repos
                 await _context.SaveChangesAsync();
 
                 result.IsSuccess = true;
-                result.Object = entity;
+                result.DomainObject = entity;
 
                 return result;
             }
@@ -557,6 +557,27 @@ namespace SudokuCollective.Repos
         }
 
         public async Task<bool> HasEntityAsync(int id) => await _context.Games.AnyAsync(g => g.Id == id);
+
+        public IRepositoryResponse GetCount()
+        {
+            var result = new RepositoryResponse();
+
+            try
+            {
+                var count = _context.Games.Count();
+                result.IsSuccess = true;
+                result.Object = new { TotalCount = count };
+                return result;
+            }
+            catch (Exception e)
+            {
+                return ReposUtilities.ProcessException<GamesRepository<TEntity>>(
+                    _requestService,
+                    _logger,
+                    result,
+                    e);
+            }
+        }
         #endregion
     }
 }

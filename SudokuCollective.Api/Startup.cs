@@ -117,6 +117,15 @@ namespace SudokuCollective.Api
                 {
                     [new OpenApiSecuritySchemeReference("Bearer", document)] = []
                 });
+                swagger.DocInclusionPredicate((documentName, apiDescription) =>
+                {
+                    apiDescription.ActionDescriptor.RouteValues.TryGetValue(
+                        "controller",
+                        out var controllerName);
+
+                    return !string.Equals(controllerName, "Admin", StringComparison.OrdinalIgnoreCase) &&
+                        !string.Equals(controllerName, "Error", StringComparison.OrdinalIgnoreCase);
+                });
                 swagger.MapType<JsonElement>(() => new OpenApiSchema
                 {
                     Type = JsonSchemaType.Object,
@@ -134,8 +143,9 @@ namespace SudokuCollective.Api
                     Example = swashbucklePayloadArray
                 });
 
-                swagger.DocumentFilter<ErrorControllerFilter>();
                 swagger.DocumentFilter<PathLowercaseDocumentFilter>();
+                swagger.DocumentFilter<AdminControllerFilter>();
+                swagger.DocumentFilter<ErrorControllerFilter>();
 
                 // Add domain model documentation to Swashbuckler
                 swagger.DocumentFilter<CustomModelDocumentFilter<App>>();
@@ -332,6 +342,7 @@ namespace SudokuCollective.Api
             services.AddScoped<IPasswordResetsRepository<Core.Models.PasswordReset>, PasswordResetsRepository<Core.Models.PasswordReset>>();
             services.AddScoped<IAuthenticateService, AuthenticateService>();
             services.AddScoped<IUserManagementService, UserManagementService>();
+            services.AddScoped<IAdminService, AdminService>();
             services.AddScoped<IAppsService, AppsService>();
             services.AddScoped<IUsersService, UsersService>();
             services.AddScoped<IGamesService, GamesService>();

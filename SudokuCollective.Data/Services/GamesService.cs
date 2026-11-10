@@ -97,8 +97,8 @@ namespace SudokuCollective.Data.Services
                 }
                 #endregion
 
-                var user = (User)userResponse.Object;
-                var difficulty = (Difficulty)difficultyResponse.Object;
+                var user = (User)userResponse.DomainObject;
+                var difficulty = (Difficulty)difficultyResponse.DomainObject;
 
                 var game = new Game(
                     user,
@@ -122,7 +122,7 @@ namespace SudokuCollective.Data.Services
                 }
                 #endregion
 
-                game = (Game)gameResponse.Object;
+                game = (Game)gameResponse.DomainObject;
 
                 game.User = null;
                 _ = game.SudokuMatrix.SudokuCells.OrderBy(cell => cell.Index);
@@ -187,7 +187,7 @@ namespace SudokuCollective.Data.Services
                 }
                 #endregion
 
-                var game = (Game)getResponse.Object;
+                var game = (Game)getResponse.DomainObject;
 
                 result.IsSuccess = true;
                 result.Message = GamesMessages.GameFoundMessage;
@@ -239,7 +239,7 @@ namespace SudokuCollective.Data.Services
 
                 if (request.Paginator != null)
                 {
-                    if (DataUtilities.IsPageValid(request.Paginator, response.Objects))
+                    if (DataUtilities.IsPageValid(request.Paginator, response.DomainObjects))
                     {
                         result = PaginatorUtilities.PaginateGames(
                             request.Paginator, 
@@ -262,7 +262,7 @@ namespace SudokuCollective.Data.Services
                 }
                 else
                 {
-                    result.Payload.AddRange(response.Objects);
+                    result.Payload.AddRange(response.DomainObjects);
                 }
 
                 result.IsSuccess = response.IsSuccess;
@@ -319,7 +319,7 @@ namespace SudokuCollective.Data.Services
                 }
                 #endregion
 
-                var game = (Game)getResponse.Object;
+                var game = (Game)getResponse.DomainObject;
 
                 result.IsSuccess = true;
                 result.Message = GamesMessages.GameFoundMessage;
@@ -384,7 +384,7 @@ namespace SudokuCollective.Data.Services
 
                 if (request.Paginator != null)
                 {
-                    if (DataUtilities.IsPageValid(request.Paginator, response.Objects))
+                    if (DataUtilities.IsPageValid(request.Paginator, response.DomainObjects))
                     {
                         result = PaginatorUtilities.PaginateGames(
                             request.Paginator, 
@@ -407,7 +407,7 @@ namespace SudokuCollective.Data.Services
                 }
                 else
                 {
-                    result.Payload.AddRange(response.Objects);
+                    result.Payload.AddRange(response.DomainObjects);
                 }
 
                 result.IsSuccess = response.IsSuccess;
@@ -472,7 +472,7 @@ namespace SudokuCollective.Data.Services
                 }
                 #endregion
 
-                var game = (Game)getResponse.Object;
+                var game = (Game)getResponse.DomainObject;
 
                 foreach (var cell in payload.SudokuCells)
                 {
@@ -501,7 +501,7 @@ namespace SudokuCollective.Data.Services
 
                 result.IsSuccess = updateResponse.IsSuccess;
                 result.Message = GamesMessages.GameUpdatedMessage;
-                result.Payload.Add((Game)updateResponse.Object);
+                result.Payload.Add((Game)updateResponse.DomainObject);
 
                 return result;
             }
@@ -565,7 +565,7 @@ namespace SudokuCollective.Data.Services
                 }
                 #endregion
 
-                var game = (Game)getResponse.Object;
+                var game = (Game)getResponse.DomainObject;
 
                 foreach (var cell in payload.SudokuCells)
                 {
@@ -594,7 +594,7 @@ namespace SudokuCollective.Data.Services
 
                 result.IsSuccess = updateResponse.IsSuccess;
                 result.Message = GamesMessages.GameUpdatedMessage;
-                result.Payload.Add((Game)updateResponse.Object);
+                result.Payload.Add((Game)updateResponse.DomainObject);
 
                 return result;
             }
@@ -632,7 +632,7 @@ namespace SudokuCollective.Data.Services
                 }
                 #endregion
 
-                var deleteResponse = await _gamesRepository.DeleteAsync((Game)getResponse.Object);
+                var deleteResponse = await _gamesRepository.DeleteAsync((Game)getResponse.DomainObject);
 
                 #region deleteResponse fails
                 if (!deleteResponse.IsSuccess)
@@ -765,7 +765,7 @@ namespace SudokuCollective.Data.Services
 
                 foreach (var cell in payload.SudokuCells)
                 {
-                    foreach (var savedCell in ((Game)getResponse.Object).SudokuMatrix.SudokuCells)
+                    foreach (var savedCell in ((Game)getResponse.DomainObject).SudokuMatrix.SudokuCells)
                     {
                         if (savedCell.Id == cell.Id && savedCell.Hidden)
                         {
@@ -774,7 +774,7 @@ namespace SudokuCollective.Data.Services
                     }
                 }
 
-                if (((Game)getResponse.Object).IsSolved())
+                if (((Game)getResponse.DomainObject).IsSolved())
                 {
                     result.Message = GamesMessages.GameSolvedMessage;
                 }
@@ -783,7 +783,7 @@ namespace SudokuCollective.Data.Services
                     result.Message = GamesMessages.GameNotSolvedMessage;
                 }
 
-                var updateResponse = await _gamesRepository.UpdateAsync((Game)getResponse.Object);
+                var updateResponse = await _gamesRepository.UpdateAsync((Game)getResponse.DomainObject);
 
                 #region updateResponse fails
                 if (!updateResponse.IsSuccess)
@@ -798,7 +798,7 @@ namespace SudokuCollective.Data.Services
                 #endregion
 
                 result.IsSuccess = updateResponse.IsSuccess;
-                result.Payload.Add((Game)updateResponse.Object);
+                result.Payload.Add((Game)updateResponse.DomainObject);
 
                 return result;
             }
@@ -837,7 +837,7 @@ namespace SudokuCollective.Data.Services
 
                 var repositoryResponse = await _difficultiesRepository.GetByDifficultyLevelAsync(difficultyLevel);
 
-                var game = new Game((Difficulty)repositoryResponse.Object);
+                var game = new Game((Difficulty)repositoryResponse.DomainObject);
 
                 await game.SudokuMatrix.GenerateSolutionAsync();
 

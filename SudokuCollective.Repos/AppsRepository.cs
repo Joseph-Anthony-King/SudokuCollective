@@ -90,7 +90,7 @@ namespace SudokuCollective.Repos
 
                 await _context.SaveChangesAsync();
 
-                result.Object = entity;
+                result.DomainObject = entity;
 				result.IsSuccess = true;
 
 				return result;
@@ -160,7 +160,7 @@ namespace SudokuCollective.Repos
 					}
 
 					result.IsSuccess = true;
-					result.Object = query;
+					result.DomainObject = query;
 				}
 				else
 				{
@@ -225,7 +225,7 @@ namespace SudokuCollective.Repos
 					}
 
 					result.IsSuccess = true;
-					result.Object = query;
+					result.DomainObject = query;
 				}
 				else
 				{
@@ -286,7 +286,7 @@ namespace SudokuCollective.Repos
 					}
 
 					result.IsSuccess = true;
-					result.Objects = [.. query.ConvertAll(a => (IDomainEntity)a)];
+					result.DomainObjects = [.. query.ConvertAll(a => (IDomainEntity)a)];
 				}
 				else
 				{
@@ -352,7 +352,7 @@ namespace SudokuCollective.Repos
 					}
 
 					result.IsSuccess = true;
-					result.Objects = [.. query.ConvertAll(a => (IDomainEntity)a)];
+					result.DomainObjects = [.. query.ConvertAll(a => (IDomainEntity)a)];
 				}
 				else
 				{
@@ -418,7 +418,7 @@ namespace SudokuCollective.Repos
 					}
 
 					result.IsSuccess = true;
-					result.Objects = [.. query.ConvertAll(a => (IDomainEntity)a)];
+					result.DomainObjects = [.. query.ConvertAll(a => (IDomainEntity)a)];
 				}
 				else
 				{
@@ -512,7 +512,7 @@ namespace SudokuCollective.Repos
 					}
 
 					result.IsSuccess = true;
-					result.Objects = [.. query.ConvertAll(u => (IDomainEntity)u)];
+					result.DomainObjects = [.. query.ConvertAll(u => (IDomainEntity)u)];
 				}
 				else
 				{
@@ -581,7 +581,7 @@ namespace SudokuCollective.Repos
                     }
 
 					result.IsSuccess = true;
-					result.Objects = [.. query.ConvertAll(u => (IDomainEntity)u)];
+					result.DomainObjects = [.. query.ConvertAll(u => (IDomainEntity)u)];
 				}
 				else
 				{
@@ -618,7 +618,7 @@ namespace SudokuCollective.Repos
                     await _context.SaveChangesAsync();
 
                     result.IsSuccess = true;
-					result.Object = entity;
+					result.DomainObject = entity;
 
 					return result;
 				}
@@ -806,7 +806,7 @@ namespace SudokuCollective.Repos
                 await _context.SaveChangesAsync();
 
 				result.IsSuccess = true;
-				result.Object = await _context
+				result.DomainObject = await _context
 						.Apps
 						.FirstOrDefaultAsync(a => a.Id == entity.Id);
 
@@ -946,7 +946,7 @@ namespace SudokuCollective.Repos
                 await _context.SaveChangesAsync();
 
                 result.IsSuccess = true;
-				result.Object = user;
+				result.DomainObject = user;
 
 				return result;
 			}
@@ -981,7 +981,7 @@ namespace SudokuCollective.Repos
                         await _context.SaveChangesAsync();
                     }
 
-					result.Object = app;
+					result.DomainObject = app;
 					result.IsSuccess = true;
 				}
 				else
@@ -1022,7 +1022,7 @@ namespace SudokuCollective.Repos
                         await _context.SaveChangesAsync();
                     }
 
-					result.Object = app;
+					result.DomainObject = app;
 					result.IsSuccess = true;
 				}
 				else
@@ -1135,7 +1135,7 @@ namespace SudokuCollective.Repos
 				if (query.Count != 0)
 				{
 					result.IsSuccess = true;
-					result.Objects = [.. query.ConvertAll(a => (IDomainEntity)a)];
+					result.DomainObjects = [.. query.ConvertAll(a => (IDomainEntity)a)];
 				}
 				else
 				{
@@ -1153,6 +1153,27 @@ namespace SudokuCollective.Repos
 						e);
 			}
 		}
-		#endregion
-	}
+
+        public IRepositoryResponse GetCount()
+        {
+			var result = new RepositoryResponse();
+
+			try
+			{
+				var count = _context.Apps.Count();
+                result.IsSuccess = true;
+                result.Object = new { TotalCount = count };
+                return result;
+            }
+			catch (Exception e)
+            {
+                return ReposUtilities.ProcessException<AppsRepository<TEntity>>(
+                        _requestService,
+                        _logger,
+                        result,
+                        e);
+            }
+        }
+        #endregion
+    }
 }
