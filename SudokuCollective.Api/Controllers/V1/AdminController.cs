@@ -51,10 +51,8 @@ namespace SudokuCollective.Api.Controllers.V1
         [HttpPost]
         public async  Task<ActionResult<Result>> PostAsync([FromBody] Request request)
         {
-
             try
             {
-
                 ArgumentNullException.ThrowIfNull(request);
 
                 _requestService.Update(request);
