@@ -55,8 +55,8 @@ namespace SudokuCollective.Data.Services
                 }
                 #endregion
 
-                if ((IUser)userResponse.Object != null
-                    && BCrypt.Net.BCrypt.Verify(password, ((IUser)userResponse.Object).Password))
+                if ((IUser)userResponse.DomainObject != null
+                    && BCrypt.Net.BCrypt.Verify(password, ((IUser)userResponse.DomainObject).Password))
                 {
                     return true;
                 }
@@ -99,7 +99,7 @@ namespace SudokuCollective.Data.Services
 
                 if (userResponse.IsSuccess)
                 {
-                    if (!BCrypt.Net.BCrypt.Verify(password, ((IUser)userResponse.Object).Password))
+                    if (!BCrypt.Net.BCrypt.Verify(password, ((IUser)userResponse.DomainObject).Password))
                     {
                         return UserAuthenticationErrorType.PASSWORDINVALID;
                     }
@@ -108,7 +108,7 @@ namespace SudokuCollective.Data.Services
                         return UserAuthenticationErrorType.NULL;
                     }
                 }
-                else if (!userResponse.IsSuccess && userResponse.Object == null)
+                else if (!userResponse.IsSuccess && userResponse.DomainObject == null)
                 {
                     return UserAuthenticationErrorType.USERNAMEINVALID;
                 }
@@ -167,7 +167,7 @@ namespace SudokuCollective.Data.Services
                 result.IsSuccess = true;
                 result.Message = UsersMessages.UserNameConfirmedMessage;
 
-                authenticatedUserNameResult.UserName = ((User)userResponse.Object).UserName;
+                authenticatedUserNameResult.UserName = ((User)userResponse.DomainObject).UserName;
 
                 result.Payload.Add(authenticatedUserNameResult);
 

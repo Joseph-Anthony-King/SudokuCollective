@@ -68,7 +68,7 @@ namespace SudokuCollective.Data.Services
                     return result;
                 }
 
-                var solution = (SudokuSolution)solutionResponse.Object;
+                var solution = (SudokuSolution)solutionResponse.DomainObject;
 
                 result.IsSuccess = solutionResponse.IsSuccess;
                 result.Message = SolutionsMessages.SolutionFoundMessage;
@@ -119,7 +119,7 @@ namespace SudokuCollective.Data.Services
 
                 if (request.Paginator != null)
                 {
-                    if (DataUtilities.IsPageValid(request.Paginator, response.Objects))
+                    if (DataUtilities.IsPageValid(request.Paginator, response.DomainObjects))
                     {
                         result = PaginatorUtilities.PaginateSolutions(request.Paginator, response, result);
 
@@ -140,7 +140,7 @@ namespace SudokuCollective.Data.Services
                 else
                 {
                     result.Payload.AddRange(response
-                        .Objects
+                        .DomainObjects
                         .OrderBy(s => ((ISudokuSolution)s).Id)
                         .ToList()
                         .ConvertAll(s => (object)s));
@@ -209,7 +209,7 @@ namespace SudokuCollective.Data.Services
                     var response = await _solutionsRepository.GetAllAsync();
 
                     var solvedSolutions = response
-                        .Objects
+                        .DomainObjects
                         .ConvertAll(s => (SudokuSolution)s)
                         .ToList();
 

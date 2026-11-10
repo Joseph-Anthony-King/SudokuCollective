@@ -15,5 +15,6 @@ namespace SudokuCollective.Core.Interfaces.Repositories
         Task<IRepositoryResponse> DeleteAsync(TEntity entity);
         Task<IRepositoryResponse> DeleteRangeAsync(List<TEntity> entities);
         Task<bool> HasEntityAsync(int id);
+        IRepositoryResponse GetCount();
     }
 }

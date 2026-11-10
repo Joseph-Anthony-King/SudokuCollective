@@ -23,7 +23,7 @@ namespace SudokuCollective.Data.Utilities
             if (paginator.SortBy == SortValue.NULL)
             {
                 result.Payload.AddRange(response
-                    .Objects
+                    .DomainObjects
                     .OrderBy(a => ((IApp)a).Id)
                     .ToList()
                     .ConvertAll(a => (object)a));
@@ -31,7 +31,7 @@ namespace SudokuCollective.Data.Utilities
             else if (paginator.SortBy == SortValue.ID)
             {
                 result.Payload.AddRange(response
-                    .Objects
+                    .DomainObjects
                     .ToList()
                     .ConvertAll(a => (object)a));
 
@@ -55,7 +55,7 @@ namespace SudokuCollective.Data.Utilities
             else if (paginator.SortBy == SortValue.USERCOUNT)
             {
                 result.Payload.AddRange(response
-                    .Objects
+                    .DomainObjects
                     .ToList()
                     .ConvertAll(a => (object)a));
 
@@ -79,7 +79,7 @@ namespace SudokuCollective.Data.Utilities
             else if (paginator.SortBy == SortValue.NAME)
             {
                 result.Payload.AddRange(response
-                    .Objects
+                    .DomainObjects
                     .ToList()
                     .ConvertAll(a => (object)a));
 
@@ -103,7 +103,7 @@ namespace SudokuCollective.Data.Utilities
             else if (paginator.SortBy == SortValue.DATECREATED)
             {
                 result.Payload.AddRange(response
-                    .Objects
+                    .DomainObjects
                     .ToList()
                     .ConvertAll(a => (object)a));
 
@@ -127,7 +127,7 @@ namespace SudokuCollective.Data.Utilities
             else if (paginator.SortBy == SortValue.DATEUPDATED)
             {
                 result.Payload.AddRange(response
-                    .Objects
+                    .DomainObjects
                     .ToList()
                     .ConvertAll(a => (object)a));
 
@@ -165,7 +165,7 @@ namespace SudokuCollective.Data.Utilities
             if (paginator.SortBy == SortValue.NULL)
             {
                 result.Payload.AddRange(response
-                    .Objects
+                    .DomainObjects
                     .OrderBy(g => ((IGame)g).Id)
                     .ToList()
                     .ConvertAll(g => (object)g));
@@ -173,7 +173,7 @@ namespace SudokuCollective.Data.Utilities
             else if (paginator.SortBy == SortValue.ID)
             {
                 result.Payload.AddRange(response
-                    .Objects
+                    .DomainObjects
                     .OrderBy(g => ((IGame)g).Id)
                     .ToList()
                     .ConvertAll(g => (object)g));
@@ -198,7 +198,7 @@ namespace SudokuCollective.Data.Utilities
             else if (paginator.SortBy == SortValue.SCORE)
             {
                 result.Payload.AddRange(response
-                    .Objects
+                    .DomainObjects
                     .OrderBy(g => ((IGame)g).Id)
                     .ToList()
                     .ConvertAll(g => (object)g));
@@ -231,7 +231,7 @@ namespace SudokuCollective.Data.Utilities
             else if (paginator.SortBy == SortValue.DATECREATED)
             {
                 result.Payload.AddRange(response
-                    .Objects
+                    .DomainObjects
                     .OrderBy(g => ((IGame)g).Id)
                     .ToList()
                     .ConvertAll(g => (object)g));
@@ -256,7 +256,7 @@ namespace SudokuCollective.Data.Utilities
             else if (paginator.SortBy == SortValue.DATEUPDATED)
             {
                 result.Payload.AddRange(response
-                    .Objects
+                    .DomainObjects
                     .OrderBy(g => ((IGame)g).Id)
                     .ToList()
                     .ConvertAll(g => (object)g));
@@ -295,7 +295,7 @@ namespace SudokuCollective.Data.Utilities
             if (paginator.SortBy == SortValue.NULL)
             {
                 result.Payload.AddRange(response
-                    .Objects
+                    .DomainObjects
                     .OrderBy(s => ((ISudokuSolution)s).Id)
                     .ToList()
                     .ConvertAll(s => (object)s));
@@ -303,7 +303,7 @@ namespace SudokuCollective.Data.Utilities
             else if (paginator.SortBy == SortValue.ID)
             {
                 result.Payload.AddRange(response
-                    .Objects
+                    .DomainObjects
                     .ToList()
                     .ConvertAll(s => (object)s));
 
@@ -327,7 +327,7 @@ namespace SudokuCollective.Data.Utilities
             else if (paginator.SortBy == SortValue.DATECREATED)
             {
                 result.Payload.AddRange(response
-                    .Objects
+                    .DomainObjects
                     .ToList()
                     .ConvertAll(s => (object)s));
 
@@ -351,7 +351,7 @@ namespace SudokuCollective.Data.Utilities
             else if (paginator.SortBy == SortValue.DATEUPDATED)
             {
                 result.Payload.AddRange(response
-                    .Objects
+                    .DomainObjects
                     .ToList()
                     .ConvertAll(s => (object)s));
 
@@ -389,7 +389,7 @@ namespace SudokuCollective.Data.Utilities
             if (paginator.SortBy == SortValue.NULL)
             {
                 result.Payload.AddRange(response
-                    .Objects
+                    .DomainObjects
                     .OrderBy(u => ((IUser)u).Id)
                     .ToList()
                     .ConvertAll(u => (object)u));
@@ -397,7 +397,7 @@ namespace SudokuCollective.Data.Utilities
             else if (paginator.SortBy == SortValue.ID)
             {
                 result.Payload.AddRange(response
-                    .Objects
+                    .DomainObjects
                     .ToList()
                     .ConvertAll(u => (object)u));
 
@@ -421,7 +421,7 @@ namespace SudokuCollective.Data.Utilities
             else if (paginator.SortBy == SortValue.USERNAME)
             {
                 result.Payload.AddRange(response
-                    .Objects
+                    .DomainObjects
                     .ToList()
                     .ConvertAll(u => (object)u));
 
@@ -445,7 +445,7 @@ namespace SudokuCollective.Data.Utilities
             else if (paginator.SortBy == SortValue.FIRSTNAME)
             {
                 result.Payload.AddRange(response
-                    .Objects
+                    .DomainObjects
                     .ToList()
                     .ConvertAll(u => (object)u));
 
@@ -469,7 +469,7 @@ namespace SudokuCollective.Data.Utilities
             else if (paginator.SortBy == SortValue.LASTNAME)
             {
                 result.Payload.AddRange(response
-                    .Objects
+                    .DomainObjects
                     .ToList()
                     .ConvertAll(u => (object)u));
 
@@ -493,7 +493,7 @@ namespace SudokuCollective.Data.Utilities
             else if (paginator.SortBy == SortValue.FULLNAME)
             {
                 result.Payload.AddRange(response
-                    .Objects
+                    .DomainObjects
                     .ToList()
                     .ConvertAll(u => (object)u));
 
@@ -517,7 +517,7 @@ namespace SudokuCollective.Data.Utilities
             else if (paginator.SortBy == SortValue.NICKNAME)
             {
                 result.Payload.AddRange(response
-                    .Objects
+                    .DomainObjects
                     .ToList()
                     .ConvertAll(u => (object)u));
 
@@ -541,7 +541,7 @@ namespace SudokuCollective.Data.Utilities
             else if (paginator.SortBy == SortValue.GAMECOUNT)
             {
                 result.Payload.AddRange(response
-                    .Objects
+                    .DomainObjects
                     .ToList()
                     .ConvertAll(u => (object)u));
 
@@ -565,7 +565,7 @@ namespace SudokuCollective.Data.Utilities
             else if (paginator.SortBy == SortValue.DATECREATED)
             {
                 result.Payload.AddRange(response
-                    .Objects
+                    .DomainObjects
                     .ToList()
                     .ConvertAll(u => (object)u));
 
@@ -589,7 +589,7 @@ namespace SudokuCollective.Data.Utilities
             else if (paginator.SortBy == SortValue.DATEUPDATED)
             {
                 result.Payload.AddRange(response
-                    .Objects
+                    .DomainObjects
                     .ToList()
                     .ConvertAll(u => (object)u));
 
@@ -627,7 +627,7 @@ namespace SudokuCollective.Data.Utilities
             if (paginator.SortBy == SortValue.NULL)
             {
                 result.Payload.AddRange(response
-                    .Objects
+                    .DomainObjects
                     .OrderBy(a => ((IGalleryApp)a).Id)
                     .ToList()
                     .ConvertAll(a => (object)a));
@@ -635,7 +635,7 @@ namespace SudokuCollective.Data.Utilities
             else if (paginator.SortBy == SortValue.ID)
             {
                 result.Payload.AddRange(response
-                    .Objects
+                    .DomainObjects
                     .OrderBy(a => ((IGalleryApp)a).Id)
                     .ToList()
                     .ConvertAll(a => (object)a));
@@ -660,7 +660,7 @@ namespace SudokuCollective.Data.Utilities
             else if (paginator.SortBy == SortValue.NAME)
             {
                 result.Payload.AddRange(response
-                    .Objects
+                    .DomainObjects
                     .OrderBy(a => ((IGalleryApp)a).Id)
                     .ToList()
                     .ConvertAll(a => (object)a));
@@ -685,7 +685,7 @@ namespace SudokuCollective.Data.Utilities
             else if (paginator.SortBy == SortValue.URL)
             {
                 result.Payload.AddRange(response
-                    .Objects
+                    .DomainObjects
                     .OrderBy(a => ((IGalleryApp)a).Id)
                     .ToList()
                     .ConvertAll(a => (object)a));
@@ -710,7 +710,7 @@ namespace SudokuCollective.Data.Utilities
             else if (paginator.SortBy == SortValue.USERNAME)
             {
                 result.Payload.AddRange(response
-                    .Objects
+                    .DomainObjects
                     .OrderBy(a => ((IGalleryApp)a).Id)
                     .ToList()
                     .ConvertAll(a => (object)a));
@@ -735,7 +735,7 @@ namespace SudokuCollective.Data.Utilities
             else if (paginator.SortBy == SortValue.USERCOUNT)
             {
                 result.Payload.AddRange(response
-                    .Objects
+                    .DomainObjects
                     .OrderBy(a => ((IGalleryApp)a).Id)
                     .ToList()
                     .ConvertAll(a => (object)a));
@@ -760,7 +760,7 @@ namespace SudokuCollective.Data.Utilities
             else if (paginator.SortBy == SortValue.DATECREATED)
             {
                 result.Payload.AddRange(response
-                    .Objects
+                    .DomainObjects
                     .OrderBy(a => ((IGalleryApp)a).Id)
                     .ToList()
                     .ConvertAll(a => (object)a));
@@ -785,7 +785,7 @@ namespace SudokuCollective.Data.Utilities
             else if (paginator.SortBy == SortValue.DATEUPDATED)
             {
                 result.Payload.AddRange(response
-                    .Objects
+                    .DomainObjects
                     .OrderBy(a => ((IGalleryApp)a).Id)
                     .ToList()
                     .ConvertAll(a => (object)a));

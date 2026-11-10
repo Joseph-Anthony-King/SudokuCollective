@@ -49,7 +49,7 @@ namespace SudokuCollective.Repos
 				await _context.SaveChangesAsync();
 
 				result.IsSuccess = true;
-				result.Object = entity;
+				result.DomainObject = entity;
 
 				return result;
 			}
@@ -93,7 +93,7 @@ namespace SudokuCollective.Repos
 				}
 
 				result.IsSuccess = true;
-				result.Object = query;
+				result.DomainObject = query;
 
 				return result;
 			}
@@ -134,7 +134,7 @@ namespace SudokuCollective.Repos
 				else
 				{
 					result.IsSuccess = true;
-					result.Object = query;
+					result.DomainObject = query;
 				}
 
 				return result;
@@ -185,7 +185,7 @@ namespace SudokuCollective.Repos
 				else
 				{
 					result.IsSuccess = true;
-					result.Object = query;
+					result.DomainObject = query;
 				}
 
 				return result;
@@ -227,7 +227,7 @@ namespace SudokuCollective.Repos
 				else
 				{
 					result.IsSuccess = true;
-					result.Objects = [.. query.ConvertAll(u => (IDomainEntity)u)];
+					result.DomainObjects = [.. query.ConvertAll(u => (IDomainEntity)u)];
 				}
 
 				return result;
@@ -288,7 +288,7 @@ namespace SudokuCollective.Repos
 					}
 
 					result.IsSuccess = true;
-					result.Objects = [.. query.ConvertAll(a => (IDomainEntity)a)];
+					result.DomainObjects = [.. query.ConvertAll(a => (IDomainEntity)a)];
 				}
 				else
 				{
@@ -332,7 +332,7 @@ namespace SudokuCollective.Repos
 				await _context.SaveChangesAsync();
 
 				result.IsSuccess = true;
-				result.Object = trackedEntity;
+				result.DomainObject = trackedEntity;
 
 				return result;
 			}
@@ -376,7 +376,7 @@ namespace SudokuCollective.Repos
 				await _context.SaveChangesAsync();
 
 				result.IsSuccess = true;
-				result.Objects = entities.ConvertAll(a => (IDomainEntity)a);
+				result.DomainObjects = entities.ConvertAll(a => (IDomainEntity)a);
 
 				return result;
 			}
@@ -613,7 +613,7 @@ namespace SudokuCollective.Repos
                     await _context.SaveChangesAsync();
 
 					result.IsSuccess = true;
-					result.Object = userRole;
+					result.DomainObject = userRole;
 
 					return result;
 				}
@@ -672,7 +672,7 @@ namespace SudokuCollective.Repos
 
 							_context.UsersRoles.Add(userRole);
 
-							result.Objects.Add(userRole);
+							result.DomainObjects.Add(userRole);
 
 							newUserRoleIds.Add((int)userRole.Id);
 						}
@@ -895,7 +895,7 @@ namespace SudokuCollective.Repos
                         await _context.SaveChangesAsync();
 
 						result.IsSuccess = true;
-						result.Object = user;
+						result.DomainObject = user;
 
 						return result;
 					}
@@ -968,7 +968,7 @@ namespace SudokuCollective.Repos
                         await _context.SaveChangesAsync();
 
 						result.IsSuccess = true;
-						result.Object = user;
+						result.DomainObject = user;
 
 						return result;
 					}
@@ -1114,7 +1114,28 @@ namespace SudokuCollective.Repos
 			{
 				return false;
 			}
-		}
-		#endregion
-	}
+        }
+
+        public IRepositoryResponse GetCount()
+        {
+            var result = new RepositoryResponse();
+
+            try
+            {
+                var count = _context.Users.Count();
+                result.IsSuccess = true;
+                result.Object = new { TotalCount = count };
+                return result;
+            }
+            catch (Exception e)
+            {
+                return ReposUtilities.ProcessException<UsersRepository<TEntity>>(
+                        _requestService,
+                        _logger,
+                        result,
+                        e);
+            }
+        }
+        #endregion
+    }
 }

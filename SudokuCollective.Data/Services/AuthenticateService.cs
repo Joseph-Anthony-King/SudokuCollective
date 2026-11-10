@@ -81,7 +81,7 @@ namespace SudokuCollective.Data.Services
                     request.License,
                     result);
 
-                var user = (User)((RepositoryResponse)userResponse.Item1).Object;
+                var user = (User)((RepositoryResponse)userResponse.Item1).DomainObject;
 
                 result = (Result)userResponse.Item2;
 
@@ -96,7 +96,7 @@ namespace SudokuCollective.Data.Services
 
                 if (((RepositoryResponse)appResponse.Item1).IsSuccess)
                 {
-                    app = (App)((RepositoryResponse)appResponse.Item1).Object;
+                    app = (App)((RepositoryResponse)appResponse.Item1).DomainObject;
                 }
                 else
                 {
@@ -122,7 +122,7 @@ namespace SudokuCollective.Data.Services
                     return result;
                 }
 
-                var appAdmins = (await _appAdminsRepository.GetAllAsync()).Objects.ConvertAll(aa => (AppAdmin)aa);
+                var appAdmins = (await _appAdminsRepository.GetAllAsync()).DomainObjects.ConvertAll(aa => (AppAdmin)aa);
 
                 if (!user.IsSuperUser)
                 {
@@ -180,7 +180,7 @@ namespace SudokuCollective.Data.Services
 
                 foreach (var role in user.Roles)
                 {
-                    var r = (Role)(await _rolesRepository.GetAsync(role.Role.Id)).Object;
+                    var r = (Role)(await _rolesRepository.GetAsync(role.Role.Id)).DomainObject;
 
                     claim.Add(new Claim(ClaimTypes.Role, r.RoleLevel.ToString()));
                 }

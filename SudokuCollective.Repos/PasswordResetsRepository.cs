@@ -45,7 +45,7 @@ namespace SudokuCollective.Repos
 				await _context.SaveChangesAsync();
 
 				result.IsSuccess = true;
-				result.Object = entity;
+				result.DomainObject = entity;
 
 				return result;
 			}
@@ -80,7 +80,7 @@ namespace SudokuCollective.Repos
 				else
 				{
 					result.IsSuccess = true;
-					result.Object = passwordReset;
+					result.DomainObject = passwordReset;
 				}
 
 				return result;
@@ -113,7 +113,7 @@ namespace SudokuCollective.Repos
 				else
 				{
 					result.IsSuccess = true;
-					result.Objects = [.. query.ConvertAll(pu => (IDomainEntity)pu)];
+					result.DomainObjects = [.. query.ConvertAll(pu => (IDomainEntity)pu)];
 				}
 
 				return result;
@@ -144,7 +144,7 @@ namespace SudokuCollective.Repos
 					await _context.SaveChangesAsync();
 
 					result.IsSuccess = true;
-					result.Object = entity;
+					result.DomainObject = entity;
 
 					return result;
 				}
@@ -184,7 +184,7 @@ namespace SudokuCollective.Repos
 					await _context.SaveChangesAsync();
 
 					result.IsSuccess = true;
-					result.Object = entity;
+					result.DomainObject = entity;
 
 					return result;
 				}
@@ -240,7 +240,7 @@ namespace SudokuCollective.Repos
 				else
 				{
 					result.IsSuccess = true;
-					result.Object = query;
+					result.DomainObject = query;
 				}
 
 				return result;
@@ -253,7 +253,28 @@ namespace SudokuCollective.Repos
 						result,
 						e);
 			}
-		}
-		#endregion
-	}
+        }
+
+        public IRepositoryResponse GetCount()
+        {
+            var result = new RepositoryResponse();
+
+            try
+            {
+                var count = _context.PasswordResets.Count();
+                result.IsSuccess = true;
+                result.Object = new { TotalCount = count };
+                return result;
+            }
+            catch (Exception e)
+            {
+                return ReposUtilities.ProcessException<PasswordResetsRepository<TEntity>>(
+                        _requestService,
+                        _logger,
+                        result,
+                        e);
+            }
+        }
+        #endregion
+    }
 }

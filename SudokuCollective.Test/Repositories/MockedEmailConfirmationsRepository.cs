@@ -28,7 +28,7 @@ namespace SudokuCollective.Test.Repositories
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         IsSuccess = true,
-                        Object = new EmailConfirmation()
+                        DomainObject = new EmailConfirmation()
                     } as IRepositoryResponse));
 
             SuccessfulRequest.Setup(repo =>
@@ -36,7 +36,7 @@ namespace SudokuCollective.Test.Repositories
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         IsSuccess = true,
-                        Object = context.EmailConfirmations.FirstOrDefault(ec => ec.Id == 1)
+                        DomainObject = context.EmailConfirmations.FirstOrDefault(ec => ec.Id == 1)
                     } as IRepositoryResponse));
 
             SuccessfulRequest.Setup(repo =>
@@ -44,7 +44,7 @@ namespace SudokuCollective.Test.Repositories
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         IsSuccess = true,
-                        Objects = context.EmailConfirmations
+                        DomainObjects = context.EmailConfirmations
                             .ToList()
                             .ConvertAll(d => (IDomainEntity)d)
                     } as IRepositoryResponse));
@@ -54,7 +54,7 @@ namespace SudokuCollective.Test.Repositories
                     .Returns(Task.FromResult(new RepositoryResponse()
                     {
                         IsSuccess = true,
-                        Object = context.EmailConfirmations.FirstOrDefault(ec => ec.Id == 1)
+                        DomainObject = context.EmailConfirmations.FirstOrDefault(ec => ec.Id == 1)
                     } as IRepositoryResponse));
 
             SuccessfulRequest.Setup(repo =>
@@ -77,7 +77,7 @@ namespace SudokuCollective.Test.Repositories
                     .Returns(Task.FromResult(new RepositoryResponse() 
                     {
                         IsSuccess = true,
-                        Object = context.EmailConfirmations.FirstOrDefault(ec => ec.Id == 1)
+                        DomainObject = context.EmailConfirmations.FirstOrDefault(ec => ec.Id == 1)
                     } as IRepositoryResponse));
             #endregion
 

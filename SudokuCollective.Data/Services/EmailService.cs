@@ -42,7 +42,7 @@ namespace SudokuCollective.Data.Services
 
                 ArgumentOutOfRangeException.ThrowIfNegativeOrZero(appId, nameof(appId));
 
-                var app = (App)(await _appsRepository.GetAsync(appId)).Object;
+                var app = (App)(await _appsRepository.GetAsync(appId)).DomainObject;
 
                 ArgumentNullException.ThrowIfNull(app, nameof(app));
 

@@ -18,6 +18,7 @@ using Moq.Protected;
 using SudokuCollective.Cache;
 using SudokuCollective.Core.Enums;
 using SudokuCollective.Core.Interfaces.Cache;
+using SudokuCollective.Core.Interfaces.Repositories;
 using SudokuCollective.Core.Models;
 using SudokuCollective.Data.Models;
 using SudokuCollective.Data.Models.Params;
@@ -98,7 +99,7 @@ namespace SudokuCollective.Test.TestCases.Cache
 
             // Assert
             Assert.That(result.IsSuccess, Is.True);
-            Assert.That((App)result.Object, Is.InstanceOf<App>());
+            Assert.That((App)result.DomainObject, Is.InstanceOf<App>());
         }
 
         [Test, Category("Cache")]
@@ -222,7 +223,7 @@ namespace SudokuCollective.Test.TestCases.Cache
 
             // Assert
             Assert.That(result.IsSuccess, Is.True);
-            Assert.That((Difficulty)result.Object, Is.InstanceOf<Difficulty>());
+            Assert.That((Difficulty)result.DomainObject, Is.InstanceOf<Difficulty>());
         }
 
         [Test, Category("Cache")]
@@ -328,7 +329,7 @@ namespace SudokuCollective.Test.TestCases.Cache
 
             // Assert
             Assert.That(result.IsSuccess, Is.True);
-            Assert.That((Role)result.Object, Is.InstanceOf<Role>());
+            Assert.That((Role)result.DomainObject, Is.InstanceOf<Role>());
         }
 
         [Test, Category("Cache")]
@@ -434,7 +435,7 @@ namespace SudokuCollective.Test.TestCases.Cache
 
             // Assert
             Assert.That(result.IsSuccess, Is.True);
-            Assert.That((User)result.Object, Is.InstanceOf<User>());
+            Assert.That((User)result.DomainObject, Is.InstanceOf<User>());
         }
 
         [Test, Category("Cache")]
@@ -538,7 +539,7 @@ namespace SudokuCollective.Test.TestCases.Cache
 
             // Assert
             Assert.That(((RepositoryResponse)result.Item1).IsSuccess, Is.True);
-            Assert.That(((RepositoryResponse)result.Item1).Object, Is.InstanceOf<App>());
+            Assert.That(((RepositoryResponse)result.Item1).DomainObject, Is.InstanceOf<App>());
         }
 
         [Test, Category("Cache")]
@@ -563,7 +564,7 @@ namespace SudokuCollective.Test.TestCases.Cache
 
             // Assert
             Assert.That(((RepositoryResponse)result.Item1).IsSuccess, Is.True);
-            Assert.That(((RepositoryResponse)result.Item1).Object, Is.InstanceOf<App>());
+            Assert.That(((RepositoryResponse)result.Item1).DomainObject, Is.InstanceOf<App>());
             Assert.That(((Result)result.Item2).IsFromCache, Is.True);
         }
 
@@ -664,7 +665,7 @@ namespace SudokuCollective.Test.TestCases.Cache
 
             // Assert
             Assert.That(((RepositoryResponse)result.Item1).IsSuccess, Is.True);
-            Assert.That(((RepositoryResponse)result.Item1).Object, Is.InstanceOf<Difficulty>());
+            Assert.That(((RepositoryResponse)result.Item1).DomainObject, Is.InstanceOf<Difficulty>());
         }
 
         [Test, Category("Cache")]
@@ -689,7 +690,7 @@ namespace SudokuCollective.Test.TestCases.Cache
 
             // Assert
             Assert.That(((RepositoryResponse)result.Item1).IsSuccess, Is.True);
-            Assert.That(((RepositoryResponse)result.Item1).Object, Is.InstanceOf<Difficulty>());
+            Assert.That(((RepositoryResponse)result.Item1).DomainObject, Is.InstanceOf<Difficulty>());
             Assert.That(((Result)result.Item2).IsFromCache, Is.True);
         }
 
@@ -790,7 +791,7 @@ namespace SudokuCollective.Test.TestCases.Cache
 
             // Assert
             Assert.That(((RepositoryResponse)result.Item1).IsSuccess, Is.True);
-            Assert.That(((RepositoryResponse)result.Item1).Object, Is.InstanceOf<Role>());
+            Assert.That(((RepositoryResponse)result.Item1).DomainObject, Is.InstanceOf<Role>());
         }
 
         [Test, Category("Cache")]
@@ -815,7 +816,7 @@ namespace SudokuCollective.Test.TestCases.Cache
 
             // Assert
             Assert.That(((RepositoryResponse)result.Item1).IsSuccess, Is.True);
-            Assert.That(((RepositoryResponse)result.Item1).Object, Is.InstanceOf<Role>());
+            Assert.That(((RepositoryResponse)result.Item1).DomainObject, Is.InstanceOf<Role>());
             Assert.That(((Result)result.Item2).IsFromCache, Is.True);
         }
 
@@ -916,7 +917,7 @@ namespace SudokuCollective.Test.TestCases.Cache
 
             // Assert
             Assert.That(((RepositoryResponse)result.Item1).IsSuccess, Is.True);
-            Assert.That(((RepositoryResponse)result.Item1).Object, Is.InstanceOf<User>());
+            Assert.That(((RepositoryResponse)result.Item1).DomainObject, Is.InstanceOf<User>());
         }
 
         [Test, Category("Cache")]
@@ -941,7 +942,7 @@ namespace SudokuCollective.Test.TestCases.Cache
 
             // Assert
             Assert.That(((RepositoryResponse)result.Item1).IsSuccess, Is.True);
-            Assert.That(((RepositoryResponse)result.Item1).Object, Is.InstanceOf<User>());
+            Assert.That(((RepositoryResponse)result.Item1).DomainObject, Is.InstanceOf<User>());
             Assert.That(((Result)result.Item2).IsFromCache, Is.True);
         }
 
@@ -1042,7 +1043,7 @@ namespace SudokuCollective.Test.TestCases.Cache
             // Assert
             Assert.That(((RepositoryResponse)result.Item1).IsSuccess, Is.True);
             Assert.That(((RepositoryResponse)result.Item1)
-                .Objects
+                .DomainObjects
                 .ConvertAll(a => (App)a), Is.InstanceOf<List<App>>());
         }
 
@@ -1067,7 +1068,7 @@ namespace SudokuCollective.Test.TestCases.Cache
             // Assert
             Assert.That(((RepositoryResponse)result.Item1).IsSuccess, Is.True);
             Assert.That(((RepositoryResponse)result.Item1)
-                .Objects
+                .DomainObjects
                 .ConvertAll(a => (App)a), Is.InstanceOf<List<App>>());
             Assert.That(((Result)result.Item2).IsFromCache, Is.True);
         }
@@ -1167,7 +1168,7 @@ namespace SudokuCollective.Test.TestCases.Cache
             // Assert
             Assert.That(((RepositoryResponse)result.Item1).IsSuccess, Is.True);
             Assert.That(((RepositoryResponse)result.Item1)
-                .Objects
+                .DomainObjects
                 .ConvertAll(a => (Difficulty)a), Is.InstanceOf<List<Difficulty>>());
         }
 
@@ -1192,7 +1193,7 @@ namespace SudokuCollective.Test.TestCases.Cache
             // Assert
             Assert.That(((RepositoryResponse)result.Item1).IsSuccess, Is.True);
             Assert.That(((RepositoryResponse)result.Item1)
-                .Objects
+                .DomainObjects
                 .ConvertAll(a => (Difficulty)a), Is.InstanceOf<List<Difficulty>>());
             Assert.That(((Result)result.Item2).IsFromCache, Is.True);
         }
@@ -1292,7 +1293,7 @@ namespace SudokuCollective.Test.TestCases.Cache
             // Assert
             Assert.That(((RepositoryResponse)result.Item1).IsSuccess, Is.True);
             Assert.That(((RepositoryResponse)result.Item1)
-                .Objects
+                .DomainObjects
                 .ConvertAll(a => (Role)a), Is.InstanceOf<List<Role>>());
         }
 
@@ -1317,7 +1318,7 @@ namespace SudokuCollective.Test.TestCases.Cache
             // Assert
             Assert.That(((RepositoryResponse)result.Item1).IsSuccess, Is.True);
             Assert.That(((RepositoryResponse)result.Item1)
-                .Objects
+                .DomainObjects
                 .ConvertAll(a => (Role)a), Is.InstanceOf<List<Role>>());
             Assert.That(((Result)result.Item2).IsFromCache, Is.True);
         }
@@ -1417,7 +1418,7 @@ namespace SudokuCollective.Test.TestCases.Cache
             // Assert
             Assert.That(((RepositoryResponse)result.Item1).IsSuccess, Is.True);
             Assert.That(((RepositoryResponse)result.Item1)
-                .Objects
+                .DomainObjects
                 .ConvertAll(a => (User)a), Is.InstanceOf<List<User>>());
         }
 
@@ -1442,7 +1443,7 @@ namespace SudokuCollective.Test.TestCases.Cache
             // Assert
             Assert.That(((RepositoryResponse)result.Item1).IsSuccess, Is.True);
             Assert.That(((RepositoryResponse)result.Item1)
-                .Objects
+                .DomainObjects
                 .ConvertAll(a => (User)a), Is.InstanceOf<List<User>>());
             Assert.That(((Result)result.Item2).IsFromCache, Is.True);
         }
@@ -1537,7 +1538,7 @@ namespace SudokuCollective.Test.TestCases.Cache
                 .Object
                 .GetAsync(1)
                 .Result
-                .Object;
+                .DomainObject;
             app.Name = string.Format(app.Name + " {0}", "UPDATED!");
 
             // Act
@@ -1550,8 +1551,8 @@ namespace SudokuCollective.Test.TestCases.Cache
 
             // Assert
             Assert.That(result.IsSuccess, Is.True);
-            Assert.That((App)result.Object, Is.InstanceOf<App>());
-            Assert.That(((App)result.Object).Name, Is.EqualTo(app.Name));
+            Assert.That((App)result.DomainObject, Is.InstanceOf<App>());
+            Assert.That(((App)result.DomainObject).Name, Is.EqualTo(app.Name));
         }
 
         [Test, Category("Cache")]
@@ -1563,7 +1564,7 @@ namespace SudokuCollective.Test.TestCases.Cache
                 .Object
                 .GetAsync(1)
                 .Result
-                .Object;
+                .DomainObject;
             app.Name = string.Format(app.Name + " {0}", "UPDATED!");
 
             // Act
@@ -1629,7 +1630,7 @@ namespace SudokuCollective.Test.TestCases.Cache
                     .Object
                     .GetAsync(1)
                     .Result
-                    .Object;
+                    .DomainObject;
                 app.Name = string.Format(app.Name + " {0}", "UPDATED!");
 
                 // Act
@@ -1659,7 +1660,7 @@ namespace SudokuCollective.Test.TestCases.Cache
                 .Object
                 .GetAsync(1)
                 .Result
-                .Object;
+                .DomainObject;
             difficulty.DisplayName = string.Format(difficulty.DisplayName + " {0}", "UPDATED!");
 
             // Act
@@ -1672,8 +1673,8 @@ namespace SudokuCollective.Test.TestCases.Cache
 
             // Assert
             Assert.That(result.IsSuccess, Is.True);
-            Assert.That((Difficulty)result.Object, Is.InstanceOf<Difficulty>());
-            Assert.That(((Difficulty)result.Object).DisplayName, Is.EqualTo(difficulty.DisplayName));
+            Assert.That((Difficulty)result.DomainObject, Is.InstanceOf<Difficulty>());
+            Assert.That(((Difficulty)result.DomainObject).DisplayName, Is.EqualTo(difficulty.DisplayName));
         }
 
         [Test, Category("Cache")]
@@ -1685,7 +1686,7 @@ namespace SudokuCollective.Test.TestCases.Cache
                 .Object
                 .GetAsync(1)
                 .Result
-                .Object;
+                .DomainObject;
             difficulty.DisplayName = string.Format(difficulty.DisplayName + " {0}", "UPDATED!");
 
             // Act
@@ -1751,7 +1752,7 @@ namespace SudokuCollective.Test.TestCases.Cache
                     .Object
                     .GetAsync(1)
                     .Result
-                    .Object;
+                    .DomainObject;
                 difficulty.DisplayName = string.Format(difficulty.DisplayName + " {0}", "UPDATED!");
 
                 // Act
@@ -1781,7 +1782,7 @@ namespace SudokuCollective.Test.TestCases.Cache
                 .Object
                 .GetAsync(1)
                 .Result
-                .Object;
+                .DomainObject;
             role.Name = string.Format(role.Name + " {0}", "UPDATED!");
 
             // Act
@@ -1794,8 +1795,8 @@ namespace SudokuCollective.Test.TestCases.Cache
 
             // Assert
             Assert.That(result.IsSuccess, Is.True);
-            Assert.That((Role)result.Object, Is.InstanceOf<Role>());
-            Assert.That(((Role)result.Object).Name, Is.EqualTo(role.Name));
+            Assert.That((Role)result.DomainObject, Is.InstanceOf<Role>());
+            Assert.That(((Role)result.DomainObject).Name, Is.EqualTo(role.Name));
         }
 
         [Test, Category("Cache")]
@@ -1807,7 +1808,7 @@ namespace SudokuCollective.Test.TestCases.Cache
                 .Object
                 .GetAsync(1)
                 .Result
-                .Object;
+                .DomainObject;
             role.Name = string.Format(role.Name + " {0}", "UPDATED!");
 
             // Act
@@ -1873,7 +1874,7 @@ namespace SudokuCollective.Test.TestCases.Cache
                     .Object
                     .GetAsync(1)
                     .Result
-                    .Object;
+                    .DomainObject;
                 role.Name = string.Format(role.Name + " {0}", "UPDATED!");
 
                 // Act
@@ -1903,7 +1904,7 @@ namespace SudokuCollective.Test.TestCases.Cache
                 .Object
                 .GetAsync(1)
                 .Result
-                .Object;
+                .DomainObject;
             user.UserName = string.Format(user.UserName + " {0}", "UPDATED!");
 
             // Act
@@ -1916,8 +1917,8 @@ namespace SudokuCollective.Test.TestCases.Cache
 
             // Assert
             Assert.That(result.IsSuccess, Is.True);
-            Assert.That((User)result.Object, Is.InstanceOf<User>());
-            Assert.That(((User)result.Object).UserName, Is.EqualTo(user.UserName));
+            Assert.That((User)result.DomainObject, Is.InstanceOf<User>());
+            Assert.That(((User)result.DomainObject).UserName, Is.EqualTo(user.UserName));
         }
 
         [Test, Category("Cache")]
@@ -1929,7 +1930,7 @@ namespace SudokuCollective.Test.TestCases.Cache
                 .Object
                 .GetAsync(1)
                 .Result
-                .Object;
+                .DomainObject;
             user.UserName = string.Format(user.UserName + " {0}", "UPDATED!");
 
             // Act
@@ -1995,7 +1996,7 @@ namespace SudokuCollective.Test.TestCases.Cache
                     .Object
                     .GetAsync(1)
                     .Result
-                    .Object;
+                    .DomainObject;
                 user.UserName = string.Format(user.UserName + " {0}", "UPDATED!");
 
                 // Act
@@ -2025,7 +2026,7 @@ namespace SudokuCollective.Test.TestCases.Cache
                 .Object
                 .GetAsync(1)
                 .Result
-                .Object;
+                .DomainObject;
 
             // Act
             var result = await sut.DeleteWithCacheAsync<App>(
@@ -2048,7 +2049,7 @@ namespace SudokuCollective.Test.TestCases.Cache
                 .Object
                 .GetAsync(1)
                 .Result
-                .Object;
+                .DomainObject;
 
             // Act
             var result = await sut.DeleteWithCacheAsync<App>(
@@ -2113,7 +2114,7 @@ namespace SudokuCollective.Test.TestCases.Cache
                     .Object
                     .GetAsync(1)
                     .Result
-                    .Object;
+                    .DomainObject;
 
                 // Act
                 var result = await sut.DeleteWithCacheAsync<App>(
@@ -2142,7 +2143,7 @@ namespace SudokuCollective.Test.TestCases.Cache
                 .Object
                 .GetAsync(1)
                 .Result
-                .Object;
+                .DomainObject;
 
             // Act
             var result = await sut.DeleteWithCacheAsync<Difficulty>(
@@ -2165,7 +2166,7 @@ namespace SudokuCollective.Test.TestCases.Cache
                 .Object
                 .GetAsync(1)
                 .Result
-                .Object;
+                .DomainObject;
 
             // Act
             var result = await sut.DeleteWithCacheAsync<Difficulty>(
@@ -2230,7 +2231,7 @@ namespace SudokuCollective.Test.TestCases.Cache
                     .Object
                     .GetAsync(1)
                     .Result
-                    .Object;
+                    .DomainObject;
 
                 // Act
                 var result = await sut.DeleteWithCacheAsync<Difficulty>(
@@ -2259,7 +2260,7 @@ namespace SudokuCollective.Test.TestCases.Cache
                 .Object
                 .GetAsync(1)
                 .Result
-                .Object;
+                .DomainObject;
 
             // Act
             var result = await sut.DeleteWithCacheAsync<Role>(
@@ -2282,7 +2283,7 @@ namespace SudokuCollective.Test.TestCases.Cache
                 .Object
                 .GetAsync(1)
                 .Result
-                .Object;
+                .DomainObject;
 
             // Act
             var result = await sut.DeleteWithCacheAsync<Role>(
@@ -2347,7 +2348,7 @@ namespace SudokuCollective.Test.TestCases.Cache
                     .Object
                     .GetAsync(1)
                     .Result
-                    .Object;
+                    .DomainObject;
 
                 // Act
                 var result = await sut.DeleteWithCacheAsync<Role>(
@@ -2376,7 +2377,7 @@ namespace SudokuCollective.Test.TestCases.Cache
                 .Object
                 .GetAsync(1)
                 .Result
-                .Object;
+                .DomainObject;
 
             // Act
             var result = await sut.DeleteWithCacheAsync<User>(
@@ -2399,7 +2400,7 @@ namespace SudokuCollective.Test.TestCases.Cache
                 .Object
                 .GetAsync(1)
                 .Result
-                .Object;
+                .DomainObject;
 
             // Act
             var result = await sut.DeleteWithCacheAsync<User>(
@@ -2464,7 +2465,7 @@ namespace SudokuCollective.Test.TestCases.Cache
                     .Object
                     .GetAsync(1)
                     .Result
-                    .Object;
+                    .DomainObject;
 
                 // Act
                 var result = await sut.DeleteWithCacheAsync<User>(
@@ -2892,7 +2893,7 @@ namespace SudokuCollective.Test.TestCases.Cache
 
             // Assert
             Assert.That(((RepositoryResponse)result.Item1).IsSuccess, Is.True);
-            Assert.That(((RepositoryResponse)result.Item1).Object, Is.InstanceOf<App>());
+            Assert.That(((RepositoryResponse)result.Item1).DomainObject, Is.InstanceOf<App>());
         }
 
         [Test, Category("Cache")]
@@ -2917,7 +2918,7 @@ namespace SudokuCollective.Test.TestCases.Cache
 
             // Assert
             Assert.That(((RepositoryResponse)result.Item1).IsSuccess, Is.True);
-            Assert.That(((RepositoryResponse)result.Item1).Object, Is.InstanceOf<App>());
+            Assert.That(((RepositoryResponse)result.Item1).DomainObject, Is.InstanceOf<App>());
             Assert.That(((Result)result.Item2).IsFromCache, Is.True);
         }
 
@@ -3018,7 +3019,7 @@ namespace SudokuCollective.Test.TestCases.Cache
 
             // Assert
             Assert.That(((RepositoryResponse)result.Item1).IsSuccess, Is.True);
-            Assert.That(((RepositoryResponse)result.Item1).Objects.ConvertAll(u => (User)u), Is.InstanceOf<List<User>>());
+            Assert.That(((RepositoryResponse)result.Item1).DomainObjects.ConvertAll(u => (User)u), Is.InstanceOf<List<User>>());
         }
 
         [Test, Category("Cache")]
@@ -3043,7 +3044,7 @@ namespace SudokuCollective.Test.TestCases.Cache
 
             // Assert
             Assert.That(((RepositoryResponse)result.Item1).IsSuccess, Is.True);
-            Assert.That(((RepositoryResponse)result.Item1).Objects.ConvertAll(u => (User)u), Is.InstanceOf<List<User>>());
+            Assert.That(((RepositoryResponse)result.Item1).DomainObjects.ConvertAll(u => (User)u), Is.InstanceOf<List<User>>());
             Assert.That(((Result)result.Item2).IsFromCache, Is.True);
         }
 
@@ -3144,7 +3145,7 @@ namespace SudokuCollective.Test.TestCases.Cache
 
             // Assert
             Assert.That(((RepositoryResponse)result.Item1).IsSuccess, Is.True);
-            Assert.That(((RepositoryResponse)result.Item1).Objects.ConvertAll(u => (User)u), Is.InstanceOf<List<User>>());
+            Assert.That(((RepositoryResponse)result.Item1).DomainObjects.ConvertAll(u => (User)u), Is.InstanceOf<List<User>>());
         }
 
         [Test, Category("Cache")]
@@ -3169,7 +3170,7 @@ namespace SudokuCollective.Test.TestCases.Cache
 
             // Assert
             Assert.That(((RepositoryResponse)result.Item1).IsSuccess, Is.True);
-            Assert.That(((RepositoryResponse)result.Item1).Objects.ConvertAll(u => (User)u), Is.InstanceOf<List<User>>());
+            Assert.That(((RepositoryResponse)result.Item1).DomainObjects.ConvertAll(u => (User)u), Is.InstanceOf<List<User>>());
             Assert.That(((Result)result.Item2).IsFromCache, Is.True);
         }
 
@@ -3270,7 +3271,7 @@ namespace SudokuCollective.Test.TestCases.Cache
 
             // Assert
             Assert.That(((RepositoryResponse)result.Item1).IsSuccess, Is.True);
-            Assert.That(((RepositoryResponse)result.Item1).Objects.ConvertAll(u => (App)u), Is.InstanceOf<List<App>>());
+            Assert.That(((RepositoryResponse)result.Item1).DomainObjects.ConvertAll(u => (App)u), Is.InstanceOf<List<App>>());
         }
 
         [Test, Category("Cache")]
@@ -3295,7 +3296,7 @@ namespace SudokuCollective.Test.TestCases.Cache
 
             // Assert
             Assert.That(((RepositoryResponse)result.Item1).IsSuccess, Is.True);
-            Assert.That(((RepositoryResponse)result.Item1).Objects.ConvertAll(u => (App)u), Is.InstanceOf<List<App>>());
+            Assert.That(((RepositoryResponse)result.Item1).DomainObjects.ConvertAll(u => (App)u), Is.InstanceOf<List<App>>());
             Assert.That(((Result)result.Item2).IsFromCache, Is.True);
         }
 
@@ -3396,7 +3397,7 @@ namespace SudokuCollective.Test.TestCases.Cache
 
             // Assert
             Assert.That(((RepositoryResponse)result.Item1).IsSuccess, Is.True);
-            Assert.That(((RepositoryResponse)result.Item1).Objects.ConvertAll(u => (App)u), Is.InstanceOf<List<App>>());
+            Assert.That(((RepositoryResponse)result.Item1).DomainObjects.ConvertAll(u => (App)u), Is.InstanceOf<List<App>>());
         }
 
         [Test, Category("Cache")]
@@ -3421,7 +3422,7 @@ namespace SudokuCollective.Test.TestCases.Cache
 
             // Assert
             Assert.That(((RepositoryResponse)result.Item1).IsSuccess, Is.True);
-            Assert.That(((RepositoryResponse)result.Item1).Objects.ConvertAll(u => (App)u), Is.InstanceOf<List<App>>());
+            Assert.That(((RepositoryResponse)result.Item1).DomainObjects.ConvertAll(u => (App)u), Is.InstanceOf<List<App>>());
             Assert.That(((Result)result.Item2).IsFromCache, Is.True);
         }
 
@@ -3641,7 +3642,7 @@ namespace SudokuCollective.Test.TestCases.Cache
         public async Task ResetApp()
         {
             // Arrange
-            var app = MockedAppsRepository.SuccessfulRequest.Object.GetAsync(1).Result.Object;
+            var app = MockedAppsRepository.SuccessfulRequest.Object.GetAsync(1).Result.DomainObject;
 
             // Act
             var result = await sut.ResetWithCacheAsync(
@@ -3652,14 +3653,14 @@ namespace SudokuCollective.Test.TestCases.Cache
 
             // Assert
             Assert.That(result.IsSuccess, Is.True);
-            Assert.That(result.Object, Is.InstanceOf<App>());
+            Assert.That(result.DomainObject, Is.InstanceOf<App>());
         }
 
         [Test, Category("Cache")]
         public async Task ReturnFalseIfResetAppFails()
         {
             // Arrange
-            var app = MockedAppsRepository.SuccessfulRequest.Object.GetAsync(1).Result.Object;
+            var app = MockedAppsRepository.SuccessfulRequest.Object.GetAsync(1).Result.DomainObject;
 
             // Act
             var result = await sut.ResetWithCacheAsync(
@@ -3718,7 +3719,7 @@ namespace SudokuCollective.Test.TestCases.Cache
                     })
                     .Verifiable();
 
-                var app = MockedAppsRepository.SuccessfulRequest.Object.GetAsync(1).Result.Object;
+                var app = MockedAppsRepository.SuccessfulRequest.Object.GetAsync(1).Result.DomainObject;
 
                 // Act
                 var result = await sut.ResetWithCacheAsync(
@@ -3751,7 +3752,7 @@ namespace SudokuCollective.Test.TestCases.Cache
 
             // Assert
             Assert.That(result.IsSuccess, Is.True);
-            Assert.That(result.Object, Is.InstanceOf<App>());
+            Assert.That(result.DomainObject, Is.InstanceOf<App>());
         }
 
         [Test, Category("Cache")]
@@ -3847,7 +3848,7 @@ namespace SudokuCollective.Test.TestCases.Cache
 
             // Assert
             Assert.That(result.IsSuccess, Is.True);
-            Assert.That(result.Object, Is.InstanceOf<App>());
+            Assert.That(result.DomainObject, Is.InstanceOf<App>());
         }
 
         [Test, Category("Cache")]
@@ -4045,7 +4046,7 @@ namespace SudokuCollective.Test.TestCases.Cache
 
             // Assert
             Assert.That(((RepositoryResponse)result.Item1).IsSuccess, Is.True);
-            Assert.That(((RepositoryResponse)result.Item1).Object, Is.InstanceOf<User>());
+            Assert.That(((RepositoryResponse)result.Item1).DomainObject, Is.InstanceOf<User>());
         }
 
         [Test, Category("Cache")]
@@ -4076,7 +4077,7 @@ namespace SudokuCollective.Test.TestCases.Cache
 
             // Assert
             Assert.That(((RepositoryResponse)result.Item1).IsSuccess, Is.True);
-            Assert.That(((RepositoryResponse)result.Item1).Object, Is.InstanceOf<User>());
+            Assert.That(((RepositoryResponse)result.Item1).DomainObject, Is.InstanceOf<User>());
             Assert.That(((Result)result.Item2).IsFromCache, Is.True);
         }
 
@@ -4185,7 +4186,7 @@ namespace SudokuCollective.Test.TestCases.Cache
 
             // Assert
             Assert.That(((RepositoryResponse)result.Item1).IsSuccess, Is.True);
-            Assert.That(((RepositoryResponse)result.Item1).Object, Is.InstanceOf<User>());
+            Assert.That(((RepositoryResponse)result.Item1).DomainObject, Is.InstanceOf<User>());
         }
 
         [Test, Category("Cache")]
@@ -4212,7 +4213,7 @@ namespace SudokuCollective.Test.TestCases.Cache
 
             // Assert
             Assert.That(((RepositoryResponse)result.Item1).IsSuccess, Is.True);
-            Assert.That(((RepositoryResponse)result.Item1).Object, Is.InstanceOf<User>());
+            Assert.That(((RepositoryResponse)result.Item1).DomainObject, Is.InstanceOf<User>());
             Assert.That(((Result)result.Item2).IsFromCache, Is.True);
         }
 
@@ -4317,7 +4318,7 @@ namespace SudokuCollective.Test.TestCases.Cache
 
             // Assert
             Assert.That(result.IsSuccess, Is.True);
-            Assert.That((User)(result.Object), Is.InstanceOf<User>());
+            Assert.That((User)(result.DomainObject), Is.InstanceOf<User>());
         }
 
         [Test, Category("Cache")]
@@ -4420,7 +4421,7 @@ namespace SudokuCollective.Test.TestCases.Cache
 
             // Assert
             Assert.That(result.IsSuccess, Is.True);
-            Assert.That((User)(result.Object), Is.InstanceOf<User>());
+            Assert.That((User)(result.DomainObject), Is.InstanceOf<User>());
         }
 
         [Test, Category("Cache")]
@@ -4822,7 +4823,7 @@ namespace SudokuCollective.Test.TestCases.Cache
                 cachingStrategy.Medium);
             var repositoryResponse = (RepositoryResponse)cacheResult.Item1;
             var apps = ((RepositoryResponse)cacheResult.Item1)
-                .Objects
+                .DomainObjects
                 .ConvertAll(a => (GalleryApp)a);
 
             // Assert
@@ -4850,7 +4851,7 @@ namespace SudokuCollective.Test.TestCases.Cache
             var repositoryResponse = (RepositoryResponse)cacheResult.Item1;
             var result = (Result)cacheResult.Item2;
             var galleryApps = ((RepositoryResponse)cacheResult.Item1)
-                .Objects
+                .DomainObjects
                 .ConvertAll(a => (GalleryApp)a);
 
             // Assert
@@ -4937,6 +4938,334 @@ namespace SudokuCollective.Test.TestCases.Cache
                 Assert.That(ex, Is.InstanceOf<IOException>());
                 Assert.That(ex.Message.Equals("It was not possible to connect to the redis server, the redis server connections have been reset. Please resubmit your request."), Is.True);
             }
+        }
+        #endregion
+
+        #region Updated Values and Admin Summary
+        [Test, Category("Cache")]
+        public async Task GetValuesAndCacheTheResult()
+        {
+            var result = await sut.GetValuesAsync(
+                MockedDifficultiesRepository.SuccessfulRequest.Object,
+                MockedAppsRepository.SuccessfulRequest.Object,
+                memoryCache,
+                $"values-{Guid.NewGuid()}",
+                cachingStrategy.Medium,
+                [],
+                [],
+                []);
+
+            Assert.That(result.Item1, Is.Not.Null);
+            Assert.That(result.Item1.Difficulties, Is.Not.Empty);
+            Assert.That(result.Item1.Gallery, Is.Not.Empty);
+        }
+
+        [Test, Category("Cache")]
+        public async Task GetValuesFromCache()
+        {
+            var cacheKey = $"values-{Guid.NewGuid()}";
+            _ = await sut.GetValuesAsync(
+                MockedDifficultiesRepository.SuccessfulRequest.Object,
+                MockedAppsRepository.SuccessfulRequest.Object,
+                memoryCache,
+                cacheKey,
+                cachingStrategy.Medium,
+                [],
+                [],
+                []);
+
+            var result = await sut.GetValuesAsync(
+                MockedDifficultiesRepository.FailedRequest.Object,
+                MockedAppsRepository.FailedRequest.Object,
+                memoryCache,
+                cacheKey,
+                cachingStrategy.Medium,
+                [],
+                [],
+                [],
+                new Result());
+
+            Assert.That(result.Item1, Is.Not.Null);
+            Assert.That(((Result)result.Item2).IsFromCache, Is.True);
+        }
+
+        [Test, Category("Cache")]
+        public async Task GetSystemStatsAndValuesAndCacheTheResult()
+        {
+            var appsRepository = new Mock<IAppsRepository<App>>();
+            var difficultiesRepository = new Mock<IDifficultiesRepository<Difficulty>>();
+            var emailConfirmationsRepository = new Mock<IEmailConfirmationsRepository<EmailConfirmation>>();
+            var gamesRepository = new Mock<IGamesRepository<Game>>();
+            var passwordResetsRepository = new Mock<IPasswordResetsRepository<PasswordReset>>();
+            var rolesRepository = new Mock<IRolesRepository<Role>>();
+            var solutionsRepository = new Mock<ISolutionsRepository<SudokuSolution>>();
+            var usersRepository = new Mock<IUsersRepository<User>>();
+
+            appsRepository.Setup(x => x.GetCount()).Returns(new RepositoryResponse { IsSuccess = true, Object = new { TotalCount = 1 } });
+            difficultiesRepository.Setup(x => x.GetCount()).Returns(new RepositoryResponse { IsSuccess = true, Object = new { TotalCount = 2 } });
+            emailConfirmationsRepository.Setup(x => x.GetCount()).Returns(new RepositoryResponse { IsSuccess = true, Object = new { TotalCount = 3 } });
+            gamesRepository.Setup(x => x.GetCount()).Returns(new RepositoryResponse { IsSuccess = true, Object = new { TotalCount = 4 } });
+            passwordResetsRepository.Setup(x => x.GetCount()).Returns(new RepositoryResponse { IsSuccess = true, Object = new { TotalCount = 5 } });
+            rolesRepository.Setup(x => x.GetCount()).Returns(new RepositoryResponse { IsSuccess = true, Object = new { TotalCount = 6 } });
+            solutionsRepository.Setup(x => x.GetCount()).Returns(new RepositoryResponse { IsSuccess = true, Object = new { TotalCount = 7 } });
+            usersRepository.Setup(x => x.GetCount()).Returns(new RepositoryResponse { IsSuccess = true, Object = new { TotalCount = 8 } });
+            difficultiesRepository.Setup(x => x.GetAllAsync()).ReturnsAsync(new RepositoryResponse { IsSuccess = true });
+            rolesRepository.Setup(x => x.GetAllAsync()).ReturnsAsync(new RepositoryResponse { IsSuccess = true });
+
+            var result = await sut.GetSystemStatsAndValues(
+                appsRepository.Object,
+                difficultiesRepository.Object,
+                emailConfirmationsRepository.Object,
+                gamesRepository.Object,
+                passwordResetsRepository.Object,
+                rolesRepository.Object,
+                solutionsRepository.Object,
+                usersRepository.Object,
+                memoryCache,
+                $"summary-{Guid.NewGuid()}",
+                cachingStrategy.Medium);
+
+            Assert.That(result.Item1.IsSuccess, Is.True);
+            Assert.That(result.Item1.Object, Is.Not.Null);
+        }
+
+        [Test, Category("Cache")]
+        public async Task RemoveOnlyExistingKeys()
+        {
+            var cacheKey = $"remove-{Guid.NewGuid()}";
+            await memoryCache.SetAsync(cacheKey, [1]);
+
+            await sut.RemoveKeysAsync(memoryCache, [cacheKey, $"missing-{Guid.NewGuid()}"]);
+
+            Assert.That(await memoryCache.GetAsync(cacheKey), Is.Null);
+        }
+
+        [Test, Category("Cache")]
+        public async Task HandleRedisFailuresAcrossAllCacheOperations()
+        {
+            var app = context.Apps.First();
+            var user = context.Users.First();
+            var difficulty = context.Difficulties.First();
+            var role = context.Roles.First();
+            var emailConfirmation = context.EmailConfirmations.First();
+
+            MockedHttpMessageHandler.Protected()
+                .Setup<Task<HttpResponseMessage>>(
+                    "SendAsync",
+                    ItExpr.IsAny<HttpRequestMessage>(),
+                    ItExpr.IsAny<CancellationToken>())
+                .ThrowsAsync(new IOException("handler failure"));
+
+            async Task AssertRedisFailure(Func<Task> operation)
+            {
+                Assert.That(
+                    async () => await operation(),
+                    Throws.Exception);
+            }
+
+            await AssertRedisFailure(() => sut.AddWithCacheAsync(
+                MockedAppsRepository.SuccessfulRequest.Object,
+                MockedCache.Object,
+                cacheKeys.GetAppCacheKey,
+                cachingStrategy.Medium,
+                cacheKeys,
+                app,
+                MockedHttpMessageHandler.Object));
+            await AssertRedisFailure(() => sut.GetWithCacheAsync(
+                MockedAppsRepository.SuccessfulRequest.Object,
+                MockedCache.Object,
+                cacheKeys.GetAppCacheKey,
+                cachingStrategy.Medium,
+                app.Id,
+                null,
+                MockedHttpMessageHandler.Object));
+            await AssertRedisFailure(() => sut.GetAllWithCacheAsync(
+                MockedAppsRepository.SuccessfulRequest.Object,
+                MockedCache.Object,
+                cacheKeys.GetAppsCacheKey,
+                cachingStrategy.Medium,
+                null,
+                MockedHttpMessageHandler.Object));
+            await AssertRedisFailure(() => sut.UpdateWithCacheAsync(
+                MockedAppsRepository.SuccessfulRequest.Object,
+                MockedCache.Object,
+                cacheKeys,
+                app,
+                null,
+                MockedHttpMessageHandler.Object));
+            await AssertRedisFailure(() => sut.DeleteWithCacheAsync(
+                MockedAppsRepository.SuccessfulRequest.Object,
+                MockedCache.Object,
+                cacheKeys,
+                app,
+                null,
+                MockedHttpMessageHandler.Object));
+            await AssertRedisFailure(() => sut.HasEntityWithCacheAsync(
+                MockedAppsRepository.SuccessfulRequest.Object,
+                MockedCache.Object,
+                cacheKeys.HasAppCacheKey,
+                cachingStrategy.Medium,
+                app.Id,
+                MockedHttpMessageHandler.Object));
+            await AssertRedisFailure(() => sut.GetAppByLicenseWithCacheAsync(
+                MockedAppsRepository.SuccessfulRequest.Object,
+                MockedCache.Object,
+                cacheKeys.GetAppByLicenseCacheKey,
+                cachingStrategy.Medium,
+                app.License,
+                null,
+                MockedHttpMessageHandler.Object));
+            await AssertRedisFailure(() => sut.GetAppUsersWithCacheAsync(
+                MockedAppsRepository.SuccessfulRequest.Object,
+                MockedCache.Object,
+                cacheKeys.GetAppUsersCacheKey,
+                cachingStrategy.Medium,
+                app.Id,
+                null,
+                MockedHttpMessageHandler.Object));
+            await AssertRedisFailure(() => sut.GetNonAppUsersWithCacheAsync(
+                MockedAppsRepository.SuccessfulRequest.Object,
+                MockedCache.Object,
+                cacheKeys.GetNonAppUsersCacheKey,
+                cachingStrategy.Medium,
+                app.Id,
+                null,
+                MockedHttpMessageHandler.Object));
+            await AssertRedisFailure(() => sut.GetMyAppsWithCacheAsync(
+                MockedAppsRepository.SuccessfulRequest.Object,
+                MockedCache.Object,
+                cacheKeys.GetMyAppsCacheKey,
+                cachingStrategy.Medium,
+                app.OwnerId,
+                null,
+                MockedHttpMessageHandler.Object));
+            await AssertRedisFailure(() => sut.GetMyRegisteredAppsWithCacheAsync(
+                MockedAppsRepository.SuccessfulRequest.Object,
+                MockedCache.Object,
+                cacheKeys.GetMyRegisteredCacheKey,
+                cachingStrategy.Medium,
+                user.Id,
+                null,
+                MockedHttpMessageHandler.Object));
+            await AssertRedisFailure(() => sut.GetLicenseWithCacheAsync(
+                MockedAppsRepository.SuccessfulRequest.Object,
+                MockedCache.Object,
+                cacheKeys.GetAppLicenseCacheKey,
+                cachingStrategy.Medium,
+                cacheKeys,
+                app.Id,
+                null,
+                MockedHttpMessageHandler.Object));
+            await AssertRedisFailure(() => sut.ResetWithCacheAsync(
+                MockedAppsRepository.SuccessfulRequest.Object,
+                MockedCache.Object,
+                cacheKeys,
+                app,
+                MockedHttpMessageHandler.Object));
+            await AssertRedisFailure(() => sut.ActivatetWithCacheAsync(
+                MockedAppsRepository.SuccessfulRequest.Object,
+                MockedCache.Object,
+                cacheKeys,
+                app.Id,
+                MockedHttpMessageHandler.Object));
+            await AssertRedisFailure(() => sut.DeactivatetWithCacheAsync(
+                MockedAppsRepository.SuccessfulRequest.Object,
+                MockedCache.Object,
+                cacheKeys,
+                app.Id,
+                MockedHttpMessageHandler.Object));
+            await AssertRedisFailure(() => sut.IsAppLicenseValidWithCacheAsync(
+                MockedAppsRepository.SuccessfulRequest.Object,
+                MockedCache.Object,
+                cacheKeys.IsAppLicenseValidCacheKey,
+                cachingStrategy.Medium,
+                app.License,
+                MockedHttpMessageHandler.Object));
+            await AssertRedisFailure(() => sut.GetByUserNameWithCacheAsync(
+                MockedUsersRepository.SuccessfulRequest.Object,
+                MockedCache.Object,
+                cacheKeys.GetUserByUsernameCacheKey,
+                cachingStrategy.Medium,
+                cacheKeys,
+                user.UserName,
+                null,
+                null,
+                MockedHttpMessageHandler.Object));
+            await AssertRedisFailure(() => sut.GetByEmailWithCacheAsync(
+                MockedUsersRepository.SuccessfulRequest.Object,
+                MockedCache.Object,
+                cacheKeys.GetUserByEmailCacheKey,
+                cachingStrategy.Medium,
+                user.Email,
+                null,
+                MockedHttpMessageHandler.Object));
+            await AssertRedisFailure(() => sut.ConfirmEmailWithCacheAsync(
+                MockedUsersRepository.SuccessfulRequest.Object,
+                MockedCache.Object,
+                cacheKeys,
+                emailConfirmation,
+                TestObjects.GetLicense(),
+                MockedHttpMessageHandler.Object));
+            await AssertRedisFailure(() => sut.UpdateEmailWithCacheAsync(
+                MockedUsersRepository.SuccessfulRequest.Object,
+                MockedCache.Object,
+                cacheKeys,
+                emailConfirmation,
+                TestObjects.GetLicense(),
+                MockedHttpMessageHandler.Object));
+            await AssertRedisFailure(() => sut.IsUserRegisteredWithCacheAsync(
+                MockedUsersRepository.SuccessfulRequest.Object,
+                MockedCache.Object,
+                cacheKeys.IsUserRegisteredCacheKey,
+                cachingStrategy.Medium,
+                user.Id,
+                MockedHttpMessageHandler.Object));
+            await AssertRedisFailure(() => sut.HasDifficultyLevelWithCacheAsync(
+                MockedDifficultiesRepository.SuccessfulRequest.Object,
+                MockedCache.Object,
+                cacheKeys.GetDifficultyCacheKey,
+                cachingStrategy.Medium,
+                difficulty.DifficultyLevel,
+                MockedHttpMessageHandler.Object));
+            await AssertRedisFailure(() => sut.HasRoleLevelWithCacheAsync(
+                MockedRolesRepository.SuccessfulRequest.Object,
+                MockedCache.Object,
+                cacheKeys.GetRoleCacheKey,
+                cachingStrategy.Medium,
+                role.RoleLevel,
+                MockedHttpMessageHandler.Object));
+            await AssertRedisFailure(() => sut.GetValuesAsync(
+                MockedDifficultiesRepository.SuccessfulRequest.Object,
+                MockedAppsRepository.SuccessfulRequest.Object,
+                MockedCache.Object,
+                cacheKeys.GetValuesKey,
+                cachingStrategy.Medium,
+                [],
+                [],
+                [],
+                null,
+                MockedHttpMessageHandler.Object));
+            await AssertRedisFailure(() => sut.GetGalleryAppsWithCacheAsync(
+                MockedAppsRepository.SuccessfulRequest.Object,
+                MockedCache.Object,
+                cacheKeys.GetGalleryAppsKey,
+                cachingStrategy.Medium,
+                null,
+                MockedHttpMessageHandler.Object));
+            await AssertRedisFailure(() => sut.GetSystemStatsAndValues(
+                new Mock<IAppsRepository<App>>().Object,
+                new Mock<IDifficultiesRepository<Difficulty>>().Object,
+                new Mock<IEmailConfirmationsRepository<EmailConfirmation>>().Object,
+                new Mock<IGamesRepository<Game>>().Object,
+                new Mock<IPasswordResetsRepository<PasswordReset>>().Object,
+                new Mock<IRolesRepository<Role>>().Object,
+                new Mock<ISolutionsRepository<SudokuSolution>>().Object,
+                new Mock<IUsersRepository<User>>().Object,
+                MockedCache.Object,
+                cacheKeys.GetAdminSummaryKey,
+                cachingStrategy.Medium,
+                null,
+                MockedHttpMessageHandler.Object));
         }
         #endregion
     }

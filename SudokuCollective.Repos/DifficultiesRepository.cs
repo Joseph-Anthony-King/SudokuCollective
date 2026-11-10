@@ -45,7 +45,7 @@ namespace SudokuCollective.Repos
                 await _context.SaveChangesAsync();
 
                 result.IsSuccess = true;
-                result.Object = entity;
+                result.DomainObject = entity;
 
                 return result;
             }
@@ -82,7 +82,7 @@ namespace SudokuCollective.Repos
                 else
                 {
                     result.IsSuccess = true;
-                    result.Object = query;
+                    result.DomainObject = query;
                 }
 
                 return result;
@@ -118,7 +118,7 @@ namespace SudokuCollective.Repos
                 else
                 {
                     result.IsSuccess = true;
-                    result.Object = query;
+                    result.DomainObject = query;
                 }
 
                 return result;
@@ -156,7 +156,7 @@ namespace SudokuCollective.Repos
                 else
                 {
                     result.IsSuccess = true;
-                    result.Objects = [.. query.ConvertAll(d => (IDomainEntity)d)];
+                    result.DomainObjects = [.. query.ConvertAll(d => (IDomainEntity)d)];
                 }
 
                 return result;
@@ -195,7 +195,7 @@ namespace SudokuCollective.Repos
                 await _context.SaveChangesAsync();
 
                 result.IsSuccess = true;
-                result.Object = entity;
+                result.DomainObject = entity;
 
                 return result;
             }
@@ -291,7 +291,7 @@ namespace SudokuCollective.Repos
                 await _context.SaveChangesAsync();
 
                 result.IsSuccess = true;
-                result.Object = entity;
+                result.DomainObject = entity;
 
                 return result;
             }
@@ -370,6 +370,27 @@ namespace SudokuCollective.Repos
 
         public async Task<bool> HasDifficultyLevelAsync(DifficultyLevel level) => 
             await _context.Difficulties.AnyAsync(d => d.DifficultyLevel == level);
+
+        public IRepositoryResponse GetCount()
+        {
+            var result = new RepositoryResponse();
+
+            try
+            {
+                var count = _context.Difficulties.Count();
+                result.IsSuccess = true;
+                result.Object = new { TotalCount = count };
+                return result;
+            }
+            catch (Exception e)
+            {
+                return ReposUtilities.ProcessException<DifficultiesRepository<TEntity>>(
+                        _requestService,
+                        _logger,
+                        result,
+                        e);
+            }
+        }
         #endregion
     }
 }
