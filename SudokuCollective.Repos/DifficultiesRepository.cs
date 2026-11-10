@@ -65,8 +65,6 @@ namespace SudokuCollective.Repos
 
             try
             {
-                ArgumentNullException.ThrowIfNull(id, nameof(id));
-
                 ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id, nameof(id));
 
                 var query = new Difficulty();
@@ -103,8 +101,6 @@ namespace SudokuCollective.Repos
 
             try
             {
-                ArgumentNullException.ThrowIfNull(difficultyLevel, nameof(difficultyLevel));
-
                 var query = new Difficulty();
 
                 query = await _context

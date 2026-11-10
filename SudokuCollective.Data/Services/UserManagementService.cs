@@ -134,10 +134,6 @@ namespace SudokuCollective.Data.Services
         {
             try
             {
-                ArgumentNullException.ThrowIfNull(nameof(email));
-
-                ArgumentNullException.ThrowIfNull(nameof(license));
-
                 var result = new Result();
 
                 var authenticatedUserNameResult = new AuthenticatedUserNameResult();

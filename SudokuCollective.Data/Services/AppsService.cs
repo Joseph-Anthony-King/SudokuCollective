@@ -193,11 +193,7 @@ namespace SudokuCollective.Data.Services
 
             try
             {
-                ArgumentNullException.ThrowIfNull(id, nameof(id));
-
                 ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id, nameof(id));
-
-                ArgumentNullException.ThrowIfNull(userId, nameof(userId));
 
                 ArgumentOutOfRangeException.ThrowIfNegativeOrZero(userId, nameof(userId));
 
@@ -304,8 +300,6 @@ namespace SudokuCollective.Data.Services
             try
             {
                 ArgumentException.ThrowIfNullOrEmpty(license, nameof(license));
-
-                ArgumentNullException.ThrowIfNull(userId, nameof(userId));
 
                 ArgumentOutOfRangeException.ThrowIfNegativeOrZero(userId, nameof(userId));
 
@@ -533,8 +527,6 @@ namespace SudokuCollective.Data.Services
 
             try
             {
-                ArgumentNullException.ThrowIfNull(ownerId, nameof(ownerId));
-
                 ArgumentOutOfRangeException.ThrowIfNegativeOrZero(ownerId, nameof(ownerId));
 
                 ArgumentNullException.ThrowIfNull(paginator, nameof(paginator));
@@ -826,11 +818,7 @@ namespace SudokuCollective.Data.Services
 
             try
             {
-                ArgumentNullException.ThrowIfNull(id, nameof(id));
-
                 ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id, nameof(id));
-
-                ArgumentNullException.ThrowIfNull(isReset, nameof(isReset));
 
                 var getResponse = await _appsRepository.GetAsync(id);
 
@@ -924,15 +912,9 @@ namespace SudokuCollective.Data.Services
             {
                 ArgumentNullException.ThrowIfNull(paginator, nameof(paginator));
 
-                ArgumentNullException.ThrowIfNull(id, nameof(id));
-
                 ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id, nameof(id));
 
-                ArgumentNullException.ThrowIfNull(requestorId, nameof(requestorId));
-
                 ArgumentOutOfRangeException.ThrowIfNegativeOrZero(requestorId, nameof(requestorId));
-
-                ArgumentNullException.ThrowIfNull(appUsers, nameof(appUsers));
 
                 var cacheServiceResponse = await _cacheService.GetWithCacheAsync(
                     _appsRepository,
@@ -1044,11 +1026,7 @@ namespace SudokuCollective.Data.Services
 
             try
             {
-                ArgumentNullException.ThrowIfNull(appId, nameof(appId));
-
                 ArgumentOutOfRangeException.ThrowIfNegativeOrZero(userId, nameof(appId));
-
-                ArgumentNullException.ThrowIfNull(userId, nameof(userId));
 
                 ArgumentOutOfRangeException.ThrowIfNegativeOrZero(userId, nameof(userId));
 
@@ -1151,11 +1129,7 @@ namespace SudokuCollective.Data.Services
 
             try
             {
-                ArgumentNullException.ThrowIfNull(appId, nameof(appId));
-
                 ArgumentOutOfRangeException.ThrowIfNegativeOrZero(userId, nameof(appId));
-
-                ArgumentNullException.ThrowIfNull(userId, nameof(userId));
 
                 ArgumentOutOfRangeException.ThrowIfNegativeOrZero(userId, nameof(userId));
 
@@ -1261,11 +1235,7 @@ namespace SudokuCollective.Data.Services
 
             try
             {
-                ArgumentNullException.ThrowIfNull(appId, nameof(appId));
-
                 ArgumentOutOfRangeException.ThrowIfNegativeOrZero(userId, nameof(appId));
-
-                ArgumentNullException.ThrowIfNull(userId, nameof(userId));
 
                 ArgumentOutOfRangeException.ThrowIfNegativeOrZero(userId, nameof(userId));
 
@@ -1451,11 +1421,7 @@ namespace SudokuCollective.Data.Services
 
             try
             {
-                ArgumentNullException.ThrowIfNull(appId, nameof(appId));
-
                 ArgumentOutOfRangeException.ThrowIfNegativeOrZero(userId, nameof(appId));
-
-                ArgumentNullException.ThrowIfNull(userId, nameof(userId));
 
                 ArgumentOutOfRangeException.ThrowIfNegativeOrZero(userId, nameof(userId));
 
@@ -1590,8 +1556,6 @@ namespace SudokuCollective.Data.Services
 
             try
             {
-                ArgumentNullException.ThrowIfNull(nameof(id));
-
                 ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id, nameof(id));
 
                 var appResponse = await _cacheService.ActivatetWithCacheAsync(
@@ -1634,8 +1598,6 @@ namespace SudokuCollective.Data.Services
 
             try
             {
-                ArgumentNullException.ThrowIfNull(nameof(id));
-
                 ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id, nameof(id));
 
                 var appResponse = await _cacheService.DeactivatetWithCacheAsync(
@@ -1678,11 +1640,7 @@ namespace SudokuCollective.Data.Services
 
             try
             {
-                ArgumentNullException.ThrowIfNull(nameof(id));
-
                 ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id, nameof(id));
-
-                ArgumentNullException.ThrowIfNull(nameof(requestorId));
 
                 ArgumentOutOfRangeException.ThrowIfNegativeOrZero(requestorId, nameof(requestorId));
 
@@ -1772,17 +1730,11 @@ namespace SudokuCollective.Data.Services
 
                 ArgumentException.ThrowIfNullOrEmpty(license, nameof(license));
 
-                ArgumentNullException.ThrowIfNull(userId, nameof(userId));
-
                 ArgumentOutOfRangeException.ThrowIfNegativeOrZero(userId, nameof(userId));
 
                 ArgumentException.ThrowIfNullOrEmpty(requestorLicense, nameof(requestorLicense));
 
-                ArgumentNullException.ThrowIfNull(requestorAppId, nameof(requestorAppId));
-
                 ArgumentOutOfRangeException.ThrowIfNegativeOrZero(requestorAppId, nameof(requestorAppId));
-
-                ArgumentNullException.ThrowIfNull(requestorId, nameof(requestorId));
 
                 ArgumentOutOfRangeException.ThrowIfNegativeOrZero(requestorId, nameof(requestorId));
 
@@ -1877,11 +1829,7 @@ namespace SudokuCollective.Data.Services
 
                 ArgumentException.ThrowIfNullOrEmpty(license, nameof(license));
 
-                ArgumentNullException.ThrowIfNull(appId, nameof(appId));
-
                 ArgumentOutOfRangeException.ThrowIfNegativeOrZero(appId, nameof(appId));
-
-                ArgumentNullException.ThrowIfNull(userId, nameof(userId));
 
                 ArgumentOutOfRangeException.ThrowIfNegativeOrZero(userId, nameof(userId));
 

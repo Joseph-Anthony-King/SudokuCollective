@@ -57,8 +57,6 @@ namespace SudokuCollective.Repos
 
             try
             {
-                ArgumentNullException.ThrowIfNull(id, nameof(id));
-
                 ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id, nameof(id));
 
                 var query = new Game();
@@ -139,11 +137,7 @@ namespace SudokuCollective.Repos
 
             try
             {
-                ArgumentNullException.ThrowIfNull(id, nameof(id));
-
                 ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id, nameof(id));
-
-                ArgumentNullException.ThrowIfNull(appid, nameof(appid));
 
                 ArgumentOutOfRangeException.ThrowIfNegativeOrZero(appid, nameof(appid));
 
@@ -186,8 +180,6 @@ namespace SudokuCollective.Repos
 
             try
             {
-                ArgumentNullException.ThrowIfNull(appid, nameof(appid));
-
                 ArgumentOutOfRangeException.ThrowIfNegativeOrZero(appid, nameof(appid));
 
                 var query = new List<Game>();
@@ -230,15 +222,9 @@ namespace SudokuCollective.Repos
 
             try
             {
-                ArgumentNullException.ThrowIfNull(userid, nameof(userid));
-
                 ArgumentOutOfRangeException.ThrowIfNegativeOrZero(userid, nameof(userid));
 
-                ArgumentNullException.ThrowIfNull(gameid, nameof(gameid));
-
                 ArgumentOutOfRangeException.ThrowIfNegativeOrZero(gameid, nameof(gameid));
-
-                ArgumentNullException.ThrowIfNull(appid, nameof(appid));
 
                 ArgumentOutOfRangeException.ThrowIfNegativeOrZero(appid, nameof(appid));
 
@@ -285,11 +271,7 @@ namespace SudokuCollective.Repos
 
             try
             {
-                ArgumentNullException.ThrowIfNull(userid, nameof(userid));
-
                 ArgumentOutOfRangeException.ThrowIfNegativeOrZero(userid, nameof(userid));
-
-                ArgumentNullException.ThrowIfNull(appid, nameof(appid));
 
                 ArgumentOutOfRangeException.ThrowIfNegativeOrZero(appid, nameof(appid));
 
@@ -505,15 +487,9 @@ namespace SudokuCollective.Repos
 
             try
             {
-                ArgumentNullException.ThrowIfNull(userid, nameof(userid));
-
                 ArgumentOutOfRangeException.ThrowIfNegativeOrZero(userid, nameof(userid));
 
-                ArgumentNullException.ThrowIfNull(gameid, nameof(gameid));
-
                 ArgumentOutOfRangeException.ThrowIfNegativeOrZero(gameid, nameof(gameid));
-
-                ArgumentNullException.ThrowIfNull(appid, nameof(appid));
 
                 ArgumentOutOfRangeException.ThrowIfNegativeOrZero(appid, nameof(appid));
 

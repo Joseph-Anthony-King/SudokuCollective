@@ -52,8 +52,6 @@ namespace SudokuCollective.Data.Services
 
             try
             {
-                ArgumentNullException.ThrowIfNull(id, nameof(id));
-
                 ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id, nameof(id));
 
                 var solutionResponse = await _solutionsRepository.GetAsync(id);
