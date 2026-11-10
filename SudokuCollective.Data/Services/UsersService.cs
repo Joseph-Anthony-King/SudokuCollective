@@ -375,8 +375,6 @@ namespace SudokuCollective.Data.Services
 
             try
             {
-                ArgumentNullException.ThrowIfNull(id, nameof(id));
-
                 ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id, nameof(id));
 
                 ArgumentException.ThrowIfNullOrEmpty(license, nameof(license));
@@ -512,8 +510,6 @@ namespace SudokuCollective.Data.Services
 
             try
             {
-                ArgumentNullException.ThrowIfNull(id, nameof(id));
-
                 ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id, nameof(id));
 
                 ArgumentNullException.ThrowIfNull(request, nameof(request));
@@ -807,8 +803,6 @@ namespace SudokuCollective.Data.Services
 
             try
             {
-                ArgumentNullException.ThrowIfNull(requestorId, nameof(requestorId));
-
                 ArgumentOutOfRangeException.ThrowIfNegativeOrZero(requestorId, nameof(requestorId));
 
                 ArgumentException.ThrowIfNullOrEmpty(license, nameof(license));
@@ -975,8 +969,6 @@ namespace SudokuCollective.Data.Services
 
             try
             {
-                ArgumentNullException.ThrowIfNull(id, nameof(id));
-
                 ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id, nameof(id));
 
                 ArgumentException.ThrowIfNullOrEmpty(license, nameof(license));
@@ -1158,8 +1150,6 @@ namespace SudokuCollective.Data.Services
 
             try
             {
-                ArgumentNullException.ThrowIfNull(userid, nameof(userid));
-
                 ArgumentOutOfRangeException.ThrowIfNegativeOrZero(userid, nameof(userid));
 
                 ArgumentNullException.ThrowIfNull(request, nameof(request));
@@ -1297,8 +1287,6 @@ namespace SudokuCollective.Data.Services
 
             try
             {
-                ArgumentNullException.ThrowIfNull(userid, nameof(userid));
-
                 ArgumentOutOfRangeException.ThrowIfNegativeOrZero(userid, nameof(userid));
 
                 ArgumentNullException.ThrowIfNull(request, nameof(request));
@@ -1420,8 +1408,6 @@ namespace SudokuCollective.Data.Services
 
             try
             {
-                ArgumentNullException.ThrowIfNull(id, nameof(id));
-
                 ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id, nameof(id));
 
                 if (await _usersRepository.ActivateAsync(id))
@@ -1484,8 +1470,6 @@ namespace SudokuCollective.Data.Services
 
             try
             {
-                ArgumentNullException.ThrowIfNull(id, nameof(id));
-
                 ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id, nameof(id));
 
                 if (await _usersRepository.DeactivateAsync(id))
@@ -1550,11 +1534,7 @@ namespace SudokuCollective.Data.Services
 
             try
             {
-                ArgumentNullException.ThrowIfNull(userId, nameof(userId));
-
                 ArgumentOutOfRangeException.ThrowIfNegativeOrZero(userId, nameof(userId));
-
-                ArgumentNullException.ThrowIfNull(appId, nameof(appId));
 
                 ArgumentOutOfRangeException.ThrowIfNegativeOrZero(appId, nameof(appId));
 
@@ -2144,12 +2124,8 @@ namespace SudokuCollective.Data.Services
             var result = new Result();
 
             try
-            {
-                ArgumentNullException.ThrowIfNull(id, nameof(id));
-                
+            {                
                 ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id, nameof(id));
-
-                ArgumentNullException.ThrowIfNull(appId, nameof(appId));
 
                 ArgumentOutOfRangeException.ThrowIfNegativeOrZero(appId, nameof(appId));
 
@@ -2244,11 +2220,7 @@ namespace SudokuCollective.Data.Services
 
             try
             {
-                ArgumentNullException.ThrowIfNull(id, nameof(id));
-
                 ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id, nameof(id));
-
-                ArgumentNullException.ThrowIfNull(appId, nameof(appId));
 
                 ArgumentOutOfRangeException.ThrowIfNegativeOrZero(appId, nameof(appId));
 
@@ -2524,11 +2496,7 @@ namespace SudokuCollective.Data.Services
 
             try
             {
-                ArgumentNullException.ThrowIfNull(userId, nameof(userId));
-
                 ArgumentOutOfRangeException.ThrowIfNegativeOrZero(userId, nameof(userId));
-
-                ArgumentNullException.ThrowIfNull(appId, nameof(appId));
 
                 ArgumentOutOfRangeException.ThrowIfNegativeOrZero(appId, nameof(appId));
 
@@ -3001,11 +2969,7 @@ namespace SudokuCollective.Data.Services
 
             try
             {
-                ArgumentNullException.ThrowIfNull(id, nameof(id));
-
                 ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id, nameof(id));
-
-                ArgumentNullException.ThrowIfNull(appId, nameof(appId));
 
                 ArgumentOutOfRangeException.ThrowIfNegativeOrZero(appId, nameof(appId));
 
@@ -3227,8 +3191,6 @@ namespace SudokuCollective.Data.Services
                 ArgumentException.ThrowIfNullOrEmpty(baseUrl, nameof(baseUrl));
 
                 ArgumentNullException.ThrowIfNull(result, nameof(result));
-
-                ArgumentNullException.ThrowIfNull(newRequest, nameof(newRequest));
 
                 string EmailConfirmationAction;
 

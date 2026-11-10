@@ -111,8 +111,6 @@ namespace SudokuCollective.Repos
 
 			try
 			{
-				ArgumentNullException.ThrowIfNull(id, nameof(id));
-
 				ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id, nameof(id));
 
 				var query = await _context
@@ -311,8 +309,6 @@ namespace SudokuCollective.Repos
 
 			try
 			{
-				ArgumentNullException.ThrowIfNull(ownerId, nameof(ownerId));
-
 				ArgumentOutOfRangeException.ThrowIfNegativeOrZero(ownerId, nameof(ownerId));
 
 				var query = await _context
@@ -377,8 +373,6 @@ namespace SudokuCollective.Repos
 
 			try
 			{
-				ArgumentNullException.ThrowIfNull(userId, nameof(userId));
-
 				ArgumentOutOfRangeException.ThrowIfNegativeOrZero(userId, nameof(userId));
 
 				var query = await _context
@@ -392,7 +386,7 @@ namespace SudokuCollective.Repos
                     .OrderBy(a => a.Id)
                     .ToListAsync();
 
-			if (query.Count != 0)
+				if (query.Count != 0)
 				{
 					// Filter games by app
 					foreach (var app in query)
@@ -443,8 +437,6 @@ namespace SudokuCollective.Repos
 
 			try
 			{
-				ArgumentNullException.ThrowIfNull(id, nameof(id));
-
 				ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id, nameof(id));
 
                 var hasApp = await _context.Apps.AnyAsync(a => a.Id == id);
@@ -537,8 +529,6 @@ namespace SudokuCollective.Repos
 
 			try
 			{
-				ArgumentNullException.ThrowIfNull(id, nameof(id));
-
 				ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id, nameof(id));
 
 				var hasApp = await _context.Apps.AnyAsync(a => a.Id == id);
@@ -828,8 +818,6 @@ namespace SudokuCollective.Repos
 
 			try
 			{
-				ArgumentNullException.ThrowIfNull(userId, nameof(userId));
-
 				ArgumentOutOfRangeException.ThrowIfNegativeOrZero(userId, nameof(userId));
 
 				ArgumentException.ThrowIfNullOrEmpty(license, nameof(license));
@@ -885,8 +873,6 @@ namespace SudokuCollective.Repos
 
 			try
             {
-                ArgumentNullException.ThrowIfNull(userId, nameof(userId));
-
                 ArgumentOutOfRangeException.ThrowIfNegativeOrZero(userId, nameof(userId));
 
                 ArgumentException.ThrowIfNullOrEmpty(license, nameof(license));
@@ -966,8 +952,6 @@ namespace SudokuCollective.Repos
 
 			try
 			{
-				ArgumentNullException.ThrowIfNull(id, nameof(id));
-
 				ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id, nameof(id));
 
 				var app = await _context.Apps.FindAsync(id);
@@ -1007,8 +991,6 @@ namespace SudokuCollective.Repos
 
 			try
 			{
-				ArgumentNullException.ThrowIfNull(id, nameof(id));
-
 				ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id, nameof(id));
 
 				var app = await _context.Apps.FindAsync(id);
@@ -1063,13 +1045,9 @@ namespace SudokuCollective.Repos
 			string license,
 			int userId)
 		{
-			ArgumentNullException.ThrowIfNull(id, nameof(id));
-
 			ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id, nameof(id));
 
 			ArgumentException.ThrowIfNullOrEmpty(license, nameof(license));
-
-            ArgumentNullException.ThrowIfNull(userId, nameof(userId));
 
             ArgumentOutOfRangeException.ThrowIfNegativeOrZero(userId, nameof(userId));
 
@@ -1090,13 +1068,9 @@ namespace SudokuCollective.Repos
 			string license,
 			int userId)
         {
-            ArgumentNullException.ThrowIfNull(id, nameof(id));
-
             ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id, nameof(id));
 
             ArgumentException.ThrowIfNullOrEmpty(license, nameof(license));
-
-            ArgumentNullException.ThrowIfNull(userId, nameof(userId));
 
             ArgumentOutOfRangeException.ThrowIfNegativeOrZero(userId, nameof(userId));
 

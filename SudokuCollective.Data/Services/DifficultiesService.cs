@@ -43,7 +43,6 @@ namespace SudokuCollective.Data.Services
 
             try
             {
-
                 ArgumentNullException.ThrowIfNull(request, nameof(request));
 
                 CreateDifficultyPayload payload;
@@ -60,8 +59,6 @@ namespace SudokuCollective.Data.Services
                 ArgumentException.ThrowIfNullOrEmpty(payload.Name, nameof(payload.Name));
 
                 ArgumentException.ThrowIfNullOrEmpty(payload.DisplayName, nameof(payload.DisplayName));
-
-                ArgumentNullException.ThrowIfNull(payload.DifficultyLevel, nameof(payload.DifficultyLevel));
 
                 var hasDifficulty = !await _cacheService.HasDifficultyLevelWithCacheAsync(
                     _difficultiesRepository,
@@ -127,8 +124,6 @@ namespace SudokuCollective.Data.Services
 
             try
             {
-                ArgumentNullException.ThrowIfNull(id, nameof(id)); 
-
                 ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id, nameof(id));
 
                 if (id == 1 || id == 2)
@@ -229,8 +224,6 @@ namespace SudokuCollective.Data.Services
 
             try
             {
-                ArgumentNullException.ThrowIfNull(nameof(id));
-
                 ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id, nameof(id));
 
                 ArgumentNullException.ThrowIfNull(request, nameof(request));
@@ -305,8 +298,6 @@ namespace SudokuCollective.Data.Services
 
             try
             {
-                ArgumentNullException.ThrowIfNull(id, nameof(id));
-
                 ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id, nameof(id));
 
                 var getResponse = await _difficultiesRepository.GetAsync(id);

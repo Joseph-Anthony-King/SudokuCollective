@@ -64,8 +64,6 @@ namespace SudokuCollective.Repos
 
             try
             {
-                ArgumentNullException.ThrowIfNull(id, nameof(id));
-
                 ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id, nameof(id));
 
                 var query = await _context
@@ -305,11 +303,7 @@ namespace SudokuCollective.Repos
 
             try
             {
-                ArgumentNullException.ThrowIfNull(appId, nameof(appId));
-
                 ArgumentOutOfRangeException.ThrowIfNegativeOrZero(appId, nameof(appId));
-
-                ArgumentNullException.ThrowIfNull(userId, nameof(userId));
 
                 ArgumentOutOfRangeException.ThrowIfNegativeOrZero(userId, nameof(userId));
 

@@ -122,8 +122,6 @@ namespace SudokuCollective.Data.Services
 
             try
             {
-                ArgumentNullException.ThrowIfNull(nameof(id));
-
                 ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id, nameof(id));
 
                 var cacheServiceResponse = await _cacheService.GetWithCacheAsync<Role>(
@@ -221,8 +219,6 @@ namespace SudokuCollective.Data.Services
 
             try
             {
-                ArgumentNullException.ThrowIfNull(id, nameof(id));
-
                 ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id, nameof(id));
 
                 ArgumentNullException.ThrowIfNull(request, nameof(request));
@@ -305,8 +301,6 @@ namespace SudokuCollective.Data.Services
 
             try
             {
-                ArgumentNullException.ThrowIfNull(id, nameof(id));
-
                 ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id, nameof(id));
 
                 var roleResponse = await _rolesRepository.GetAsync(id);
