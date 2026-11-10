@@ -69,8 +69,6 @@ namespace SudokuCollective.Repos
 
 			try
 			{
-                ArgumentNullException.ThrowIfNull(id, nameof(id));
-
                 ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id, nameof(id));
 
 				var query = await _context
@@ -248,8 +246,6 @@ namespace SudokuCollective.Repos
 
 			try
 			{
-                ArgumentNullException.ThrowIfNull(id, nameof(id));
-
                 ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id, nameof(id));
 
 				var query = new List<App>();
@@ -503,8 +499,6 @@ namespace SudokuCollective.Repos
 		{
 			try
             {
-                ArgumentNullException.ThrowIfNull(id, nameof(id));
-
                 ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id, nameof(id));
 
                 var user = await _context.Users
@@ -533,8 +527,6 @@ namespace SudokuCollective.Repos
 		{
 			try
             {
-                ArgumentNullException.ThrowIfNull(id, nameof(id));
-
                 ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id, nameof(id));
 
                 var user = await _context.Users
@@ -577,11 +569,7 @@ namespace SudokuCollective.Repos
 
 			try
             {
-                ArgumentNullException.ThrowIfNull(userId, nameof(userId));
-
                 ArgumentOutOfRangeException.ThrowIfNegativeOrZero(userId, nameof(userId));
-
-                ArgumentNullException.ThrowIfNull(roleId, nameof(roleId));
 
                 ArgumentOutOfRangeException.ThrowIfNegativeOrZero(roleId, nameof(roleId));
 
@@ -640,8 +628,6 @@ namespace SudokuCollective.Repos
 
 			try
             {
-                ArgumentNullException.ThrowIfNull(userId, nameof(userId));
-
                 ArgumentOutOfRangeException.ThrowIfNegativeOrZero(userId, nameof(userId));
 
                 ArgumentNullException.ThrowIfNull(roleIds);
@@ -713,11 +699,7 @@ namespace SudokuCollective.Repos
 
 			try
 			{
-                ArgumentNullException.ThrowIfNull(userId, nameof(userId));
-
                 ArgumentOutOfRangeException.ThrowIfNegativeOrZero(userId, nameof(userId));
-
-                ArgumentNullException.ThrowIfNull(roleId, nameof(roleId));
 
                 ArgumentOutOfRangeException.ThrowIfNegativeOrZero(roleId, nameof(roleId));
 
@@ -758,8 +740,6 @@ namespace SudokuCollective.Repos
 
 			try
             {
-                ArgumentNullException.ThrowIfNull(userId, nameof(userId));
-
                 ArgumentOutOfRangeException.ThrowIfNegativeOrZero(userId, nameof(userId));
 
                 ArgumentNullException.ThrowIfNull(roleIds);
@@ -813,8 +793,6 @@ namespace SudokuCollective.Repos
 		{
 			try
 			{
-                ArgumentNullException.ThrowIfNull(id, nameof(id));
-
                 ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id, nameof(id));
 
 				var user = await _context
@@ -1024,8 +1002,6 @@ namespace SudokuCollective.Repos
 
 		public async Task<bool> IsUpdatedEmailUniqueAsync(int userId, string email)
 		{
-            ArgumentNullException.ThrowIfNull(userId, nameof(userId));
-
             ArgumentOutOfRangeException.ThrowIfNegative(userId, nameof(userId));
 
             ArgumentException.ThrowIfNullOrEmpty(email, nameof(email));
@@ -1084,8 +1060,6 @@ namespace SudokuCollective.Repos
 
 		public async Task<bool> IsUpdatedUserNameUniqueAsync(int userId, string username)
         {
-            ArgumentNullException.ThrowIfNull(userId, nameof(userId));
-
             ArgumentOutOfRangeException.ThrowIfNegative(userId, nameof(userId));
 
             ArgumentException.ThrowIfNullOrEmpty(username, nameof(username));

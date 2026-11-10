@@ -1,6 +1,5 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json.Linq;
 using SudokuCollective.Core.Interfaces.Models;
 using SudokuCollective.Core.Interfaces.Repositories;
 using SudokuCollective.Core.Interfaces.ServiceModels;
@@ -340,11 +339,7 @@ namespace SudokuCollective.Repos
 
 			try
 			{
-				ArgumentNullException.ThrowIfNull(userId, nameof(userId));
-
 				ArgumentOutOfRangeException.ThrowIfNegativeOrZero(userId, nameof(userId));
-
-                ArgumentNullException.ThrowIfNull(appid, nameof(appid));
 
                 ArgumentOutOfRangeException.ThrowIfNegativeOrZero(appid, nameof(appid));
 

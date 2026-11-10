@@ -219,11 +219,7 @@ namespace SudokuCollective.Repos
 
 			try
 			{
-				ArgumentNullException.ThrowIfNull(userId, nameof(userId));
-
 				ArgumentOutOfRangeException.ThrowIfNegativeOrZero(userId, nameof(userId));
-
-                ArgumentNullException.ThrowIfNull(appid, nameof(appid));
 
                 ArgumentOutOfRangeException.ThrowIfNegativeOrZero(appid, nameof(appid));
 

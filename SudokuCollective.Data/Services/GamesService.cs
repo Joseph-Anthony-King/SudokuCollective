@@ -155,11 +155,7 @@ namespace SudokuCollective.Data.Services
 
             try
             {
-                ArgumentNullException.ThrowIfNull(id, nameof(id));
-
                 ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id, nameof(id));
-
-                ArgumentNullException.ThrowIfNull(appId, nameof(appId));
 
                 ArgumentOutOfRangeException.ThrowIfNegativeOrZero(appId, nameof(appId));
 
@@ -286,8 +282,6 @@ namespace SudokuCollective.Data.Services
 
             try
             {
-                ArgumentNullException.ThrowIfNull(id, nameof(id));
-
                 ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id, nameof(id));
 
                 ArgumentNullException.ThrowIfNull(request, nameof(request));
@@ -431,8 +425,6 @@ namespace SudokuCollective.Data.Services
 
             try
             {
-                ArgumentNullException.ThrowIfNull(id, nameof(id));
-
                 ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id, nameof(id));
 
                 ArgumentNullException.ThrowIfNull(request, nameof(request));
@@ -521,8 +513,6 @@ namespace SudokuCollective.Data.Services
 
             try
             {
-                ArgumentNullException.ThrowIfNull(id, nameof(id));
-
                 ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id, nameof(id));
 
                 ArgumentNullException.ThrowIfNull(request, nameof(request));
@@ -614,8 +604,6 @@ namespace SudokuCollective.Data.Services
 
             try
             {
-                ArgumentNullException.ThrowIfNull(id, nameof(id));
-
                 ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id, nameof(id));
 
                 var getResponse = await _gamesRepository.GetAsync(id);
@@ -667,8 +655,6 @@ namespace SudokuCollective.Data.Services
 
             try
             {
-                ArgumentNullException.ThrowIfNull(id, nameof(id));
-
                 ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id, nameof(id));
 
                 ArgumentNullException.ThrowIfNull(request, nameof(request));
@@ -732,8 +718,6 @@ namespace SudokuCollective.Data.Services
 
             try
             {
-                ArgumentNullException.ThrowIfNull(id, nameof(id));
-
                 ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id, nameof(id));
 
                 ArgumentNullException.ThrowIfNull(request, nameof(request));
@@ -818,8 +802,6 @@ namespace SudokuCollective.Data.Services
 
             try
             {
-                ArgumentNullException.ThrowIfNull(nameof(difficultyLevel));
-
                 if (difficultyLevel == DifficultyLevel.NULL || difficultyLevel == DifficultyLevel.TEST)
                 {
                     throw new ArgumentException(DifficultiesMessages.DifficultyNotValidMessage);

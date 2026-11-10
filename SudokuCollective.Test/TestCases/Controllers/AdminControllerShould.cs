@@ -59,7 +59,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
                     It.IsAny<int>()))
                 .ReturnsAsync(true);
             mockedAdminService
-                .Setup(service => service.GetSystemStatsAndValues(It.IsAny<int>()))
+                .Setup(service => service.GetSystemStatsAndValues(1))
                 .ReturnsAsync(new Result
                 {
                     IsSuccess = true,
@@ -86,7 +86,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
                     It.IsAny<int>()))
                 .ReturnsAsync(true);
             mockedAdminService
-                .Setup(service => service.GetSystemStatsAndValues(It.IsAny<int>()))
+                .Setup(service => service.GetSystemStatsAndValues(1))
                 .ReturnsAsync(new Result
                 {
                     IsSuccess = false,
@@ -118,7 +118,7 @@ namespace SudokuCollective.Test.TestCases.Controllers
             Assert.That(actionResult.Result, Is.TypeOf<ObjectResult>());
             Assert.That(((ObjectResult)actionResult.Result).StatusCode, Is.EqualTo(403));
             Assert.That(result.Message, Is.EqualTo("Status Code 403: Invalid request on this authorization token."));
-            mockedAdminService.Verify(service => service.GetSystemStatsAndValues(It.IsAny<int>()), Times.Never);
+            mockedAdminService.Verify(service => service.GetSystemStatsAndValues(1), Times.Never);
         }
 
         [Test, Category("Controllers")]

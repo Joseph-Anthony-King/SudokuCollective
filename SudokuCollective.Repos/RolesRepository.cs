@@ -65,8 +65,6 @@ namespace SudokuCollective.Repos
 
             try
             {
-                ArgumentNullException.ThrowIfNull(id, nameof(id));
-
                 ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id, nameof(id));
 
                 var query = new Role();
