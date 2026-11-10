@@ -66,11 +66,11 @@ namespace SudokuCollective.Test.TestCases.Results
             Assert.That(sut.RolesCount, Is.EqualTo(6));
             Assert.That(sut.SolutionsCount, Is.EqualTo(7));
             Assert.That(sut.UsersCount, Is.EqualTo(8));
-            Assert.That(sut.Difficulties, Is.SameAs(difficulties));
-            Assert.That(sut.Roles, Is.SameAs(roles));
-            Assert.That(sut.ReleaseEnvironments, Is.SameAs(releaseEnvironments));
-            Assert.That(sut.SortValues, Is.SameAs(sortValues));
-            Assert.That(sut.TimeFrames, Is.SameAs(timeFrames));
+            Assert.That(sut.Difficulties, Is.EquivalentTo(difficulties));
+            Assert.That(sut.Roles, Is.EquivalentTo(roles));
+            Assert.That(sut.ReleaseEnvironments, Is.EquivalentTo(releaseEnvironments));
+            Assert.That(sut.SortValues, Is.EquivalentTo(sortValues));
+            Assert.That(sut.TimeFrames, Is.EquivalentTo(timeFrames));
         }
     }
 }

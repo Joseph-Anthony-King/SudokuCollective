@@ -3,8 +3,8 @@ using SudokuCollective.Core.Interfaces.Models.DomainObjects.Params;
 
 namespace SudokuCollective.Core.Interfaces.Services
 {
-    internal interface IAdminService
+    public interface IAdminService
     {
-        Task<IResult> GetSystemStatsAndValues();
+        Task<IResult> GetSystemStatsAndValues(int requestorId);
     }
 }

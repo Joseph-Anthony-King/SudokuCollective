@@ -1875,15 +1875,15 @@ namespace SudokuCollective.Cache
                     var userCountObj = (usersRepository.GetCount()).Object;
                     adminSummaryResult.UsersCount = (int)GetPropertyValue(userCountObj, "TotalCount");
 
-                    adminSummaryResult.Difficulties = (await difficultiesRepository.GetAllAsync()).DomainObjects.ConvertAll(d => (IDifficulty)d);
+                    adminSummaryResult.Difficulties = (await difficultiesRepository.GetAllAsync()).DomainObjects.ConvertAll(d => (Difficulty)d);
 
-                    adminSummaryResult.Roles = (await rolesRepository.GetAllAsync()).DomainObjects.ConvertAll(r => (IRole)r);
+                    adminSummaryResult.Roles = (await rolesRepository.GetAllAsync()).DomainObjects.ConvertAll(r => (Role)r);
 
-                    adminSummaryResult.ReleaseEnvironments = (DataUtilities.GetReleaseEnvironments()).Payload.ConvertAll(x => (IEnumListItem)x);
+                    adminSummaryResult.ReleaseEnvironments = (DataUtilities.GetReleaseEnvironments()).Payload.ConvertAll(x => (EnumListItem)x);
 
-                    adminSummaryResult.SortValues = (DataUtilities.GetSortValues()).Payload.ConvertAll(x => (IEnumListItem)x);
+                    adminSummaryResult.SortValues = (DataUtilities.GetSortValues()).Payload.ConvertAll(x => (EnumListItem)x);
 
-                    adminSummaryResult.TimeFrames = (DataUtilities.GetTimeFrames()).Payload.ConvertAll(x => (IEnumListItem)x);
+                    adminSummaryResult.TimeFrames = (DataUtilities.GetTimeFrames()).Payload.ConvertAll(x => (EnumListItem)x);
 
                     response.Object = adminSummaryResult;
 

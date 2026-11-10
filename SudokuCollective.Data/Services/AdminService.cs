@@ -7,6 +7,7 @@ using SudokuCollective.Core.Interfaces.Models.DomainObjects.Params;
 using SudokuCollective.Core.Interfaces.Repositories;
 using SudokuCollective.Core.Interfaces.Services;
 using SudokuCollective.Core.Models;
+using SudokuCollective.Data.Messages;
 using SudokuCollective.Data.Models.Params;
 using SudokuCollective.Data.Models.Results;
 using SudokuCollective.Data.Utilities;
@@ -47,12 +48,30 @@ namespace SudokuCollective.Data.Services
         #endregion
 
 
-        public async Task<IResult> GetSystemStatsAndValues()
+        public async Task<IResult> GetSystemStatsAndValues(int requestorId)
         {
             var result = new Result();
 
             try
             {
+                var cacheRequest = await _cacheService.GetWithCacheAsync(
+                    _usersRepository,
+                    _distributedCache,
+                    _cacheKeys.GetUserCacheKey,
+                    _cachingStrategy.Heavy,
+                    requestorId
+                    );
+
+                var user = (User)cacheRequest.Item1.DomainObject;
+
+                if (!user.IsSuperUser)
+                {
+                    result.IsSuccess = false;
+                    result.Message = AdminMessages.MustBeSuperUserMessage;
+
+                    return result;
+                }
+
                 var response = await _cacheService.GetSystemStatsAndValues(
                     _appsRepository,
                     _difficultiesRepository,
@@ -67,9 +86,21 @@ namespace SudokuCollective.Data.Services
                     _cachingStrategy.Medium,
                     result);
 
-                var adminSummaryResult = (AdminSummaryResult)response.Item1.Object;
+                var cacheReponse = response.Item1.IsSuccess;
 
-                result.Payload.Add(adminSummaryResult);
+                if (cacheReponse)
+                {
+                    var adminSummaryResult = (AdminSummaryResult)response.Item1.Object;
+
+                    result.Payload.Add(adminSummaryResult);
+                    result.IsSuccess = cacheReponse;
+                    result.Message = AdminMessages.AdminSummaryFoundMessage;
+                }
+                else
+                {
+                    result.IsSuccess = cacheReponse;
+                    result.Message = AdminMessages.AdminSummaryNotFoundMessage;
+                }
 
                 return result;
             }
