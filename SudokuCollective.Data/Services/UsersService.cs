@@ -1567,7 +1567,7 @@ namespace SudokuCollective.Data.Services
 
                 var user = (User)userResponse.DomainObject;
 
-                if (user.IsEmailConfirmed || !user.ReceivedRequestToUpdateEmail)
+                if ((!user.IsEmailConfirmed && user.ReceivedRequestToUpdateEmail) || (!user.IsEmailConfirmed && user.ReceivedRequestToUpdateEmail))
                 {
                     result.IsSuccess = false;
                     result.Message = UsersMessages.EmailConfirmedMessage;
@@ -2156,7 +2156,7 @@ namespace SudokuCollective.Data.Services
 
                 if (!hasEmailConfirmation)
                 {
-                    userResult.User = (UserDTO)(await _usersRepository.GetAsync(id)).DomainObject;
+                    userResult.User = ((User)(await _usersRepository.GetAsync(id)).DomainObject).Cast<UserDTO>() as UserDTO;
                     result.IsSuccess = false;
                     result.Message = UsersMessages.EmailConfirmationRequestNotFoundMessage;
                     result.Payload.Add(userResult);
