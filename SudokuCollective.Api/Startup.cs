@@ -100,7 +100,7 @@ namespace SudokuCollective.Api
                     {
                         Version = "v1",
                         Title = "SudokuCollective API",
-                        Description = string.Format("{0} \r\n\r\n For testing purposes please use the Sudoku Collective Sandbox App if you haven't created your own app: \r\n\r\n Id: 3 \r\n\r\n  License: {1} \r\n\r\n Please note there is a 30 second time limit on all requests after which time all requests will be cancelled.",
+                        Description = string.Format("{0} \r\n\r\n For testing purposes please use the Sudoku Collective Sandbox App if you haven't created your own app: \r\n\r\n Id: 2 \r\n\r\n  License: {1} \r\n\r\n Please note there is a 30 second time limit on all requests after which time all requests will be cancelled.",
                             swaggerDescription,
                             sandboxLicense)
                     });
