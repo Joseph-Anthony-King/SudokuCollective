@@ -285,7 +285,7 @@ namespace SudokuCollective.Api.Models
                             env.IsDevelopment() ?
                                 config.GetValue<string>("DefaultClientApp:SourceCodeUrl") :
                                 Environment.GetEnvironmentVariable("CLIENT_APP:SOURCE_CODE_URL"),
-                            false,
+                            !env.IsDevelopment(),
                             true,
                             true,
                             env.IsDevelopment() ?
