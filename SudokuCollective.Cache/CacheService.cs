@@ -1,5 +1,6 @@
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
+using StackExchange.Redis;
 using SudokuCollective.Core.Enums;
 using SudokuCollective.Core.Interfaces.Cache;
 using SudokuCollective.Core.Interfaces.Models;
@@ -8,7 +9,9 @@ using SudokuCollective.Core.Interfaces.Models.DomainObjects.Params;
 using SudokuCollective.Core.Interfaces.Models.DomainObjects.Values;
 using SudokuCollective.Core.Interfaces.Repositories;
 using SudokuCollective.Core.Interfaces.ServiceModels;
+using SudokuCollective.Core.Interfaces.Services;
 using SudokuCollective.Core.Models;
+using SudokuCollective.Data.Messages;
 using SudokuCollective.Data.Models;
 using SudokuCollective.Data.Models.Results;
 using SudokuCollective.Data.Models.Values;
@@ -19,11 +22,13 @@ using System.Reflection;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Role = SudokuCollective.Core.Models.Role;
 
 namespace SudokuCollective.Cache
 {
-    public class CacheService : ICacheService
+    public class CacheService(IConnectionMultiplexer redis) : ICacheService
     {
+        private readonly IConnectionMultiplexer _redis = redis;
         private readonly JsonSerializerOptions _serializerOptions = new()
         {
             ReferenceHandler = ReferenceHandler.IgnoreCycles
@@ -1901,6 +1906,59 @@ namespace SudokuCollective.Cache
                 }
                 
                 return new Tuple<IRepositoryResponse, IResult>(response, result);
+            }
+            catch (Exception ex)
+            {
+                if (ex.Message.Contains("redis server(s)"))
+                {
+                    try
+                    {
+                        var response = InterceptHerokuRedisExceptions(httpMessageHandler).Result;
+                        throw new IOException(response.Message);
+                    }
+                    catch (Exception)
+                    {
+                        throw;
+                    }
+                }
+                throw;
+            }
+        }
+
+        public async Task<bool> FlushCacheAsync(
+            IRequest request,
+            IUsersService userService,
+            string keyPattern = "SudokuCollective*",
+            HttpMessageHandler httpMessageHandler = null)
+        {
+            try
+            {
+                ArgumentNullException.ThrowIfNull(request, nameof(request));
+                ArgumentNullException.ThrowIfNull(userService, nameof(userService));
+
+                var userResponse = await userService.GetAsync(request.RequestorId, request.License, request);
+
+                var user = userResponse.Payload[0] as UserDTO;
+
+                if (user is null || !user.IsSuperUser)
+                {
+                    throw new UnauthorizedAccessException(AdminMessages.MustBeSuperUserMessage);
+                }
+
+                foreach (var endpoint in _redis.GetEndPoints())
+                {
+                    var server = _redis.GetServer(endpoint);   // <- IServer
+                    if (!server.IsConnected) continue;
+
+                    var db = _redis.GetDatabase();
+
+                    // Preferred: app-scoped delete by prefix/pattern
+                    await foreach (var key in server.KeysAsync(pattern: keyPattern))
+                    {
+                        await db.KeyDeleteAsync(key);
+                    }
+                }
+                return true;
             }
             catch (Exception ex)
             {

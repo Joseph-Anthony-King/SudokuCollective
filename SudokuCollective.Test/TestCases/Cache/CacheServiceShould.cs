@@ -19,11 +19,18 @@ using SudokuCollective.Cache;
 using SudokuCollective.Core.Enums;
 using SudokuCollective.Core.Interfaces.Cache;
 using SudokuCollective.Core.Interfaces.Repositories;
+using SudokuCollective.Core.Interfaces.Services;
 using SudokuCollective.Core.Models;
 using SudokuCollective.Data.Models;
 using SudokuCollective.Data.Models.Params;
 using SudokuCollective.Test.Repositories;
 using SudokuCollective.Test.TestData;
+using IConnectionMultiplexer = StackExchange.Redis.IConnectionMultiplexer;
+using IServer = StackExchange.Redis.IServer;
+using IDatabase = StackExchange.Redis.IDatabase;
+using RedisValue = StackExchange.Redis.RedisValue;
+using RedisKey = StackExchange.Redis.RedisKey;
+using CommandFlags = StackExchange.Redis.CommandFlags;
 
 namespace SudokuCollective.Test.TestCases.Cache
 {
@@ -38,6 +45,10 @@ namespace SudokuCollective.Test.TestCases.Cache
         private MemoryDistributedCache memoryCache;
         private Mock<IDistributedCache> MockedCache;
         private Mock<HttpMessageHandler> MockedHttpMessageHandler;
+        private Mock<IUsersService> MockedUsersService;
+        private Mock<IConnectionMultiplexer> MockedRedis;
+        private Mock<IServer> MockedServer;
+        private Mock<IDatabase> MockedRedisDatabase;
         private ICacheKeys cacheKeys;
         private ICachingStrategy cachingStrategy;
 
@@ -46,7 +57,34 @@ namespace SudokuCollective.Test.TestCases.Cache
         {
             context = await TestDatabase.GetDatabaseContext();
 
-            sut = new CacheService();
+            MockedRedis = new Mock<IConnectionMultiplexer>();
+            MockedServer = new Mock<IServer>();
+            MockedRedisDatabase = new Mock<IDatabase>();
+
+            MockedRedis
+                .Setup(redis => redis.GetEndPoints(It.IsAny<bool>()))
+                .Returns([new DnsEndPoint("localhost", 6379)]);
+            MockedRedis
+                .Setup(redis => redis.GetServer(It.IsAny<EndPoint>(), It.IsAny<object>()))
+                .Returns(MockedServer.Object);
+            MockedRedis
+                .Setup(redis => redis.GetDatabase(It.IsAny<int>(), It.IsAny<object>()))
+                .Returns(MockedRedisDatabase.Object);
+            MockedServer.SetupGet(server => server.IsConnected).Returns(true);
+            MockedServer
+                .Setup(server => server.KeysAsync(
+                    It.IsAny<int>(),
+                    It.IsAny<RedisValue>(),
+                    It.IsAny<int>(),
+                    It.IsAny<long>(),
+                    It.IsAny<int>(),
+                    It.IsAny<CommandFlags>()))
+                .Returns(GetRedisKeysAsync());
+            MockedRedisDatabase
+                .Setup(database => database.KeyDeleteAsync(It.IsAny<RedisKey>(), It.IsAny<CommandFlags>()))
+                .ReturnsAsync(true);
+
+            sut = new CacheService(MockedRedis.Object);
             MockedAppsRepository = new MockedAppsRepository(context);
             MockedDifficultiesRepository = new MockedDifficultiesRepository(context);
             MockedRolesRepository = new MockedRolesRepository(context);
@@ -63,6 +101,17 @@ namespace SudokuCollective.Test.TestCases.Cache
                 .Throws(new Exception("It was not possible to connect to the redis server(s), the password was incorrect."));
 
             MockedHttpMessageHandler = new Mock<HttpMessageHandler>();
+            MockedUsersService = new Mock<IUsersService>();
+            MockedUsersService
+                .Setup(service => service.GetAsync(
+                    It.IsAny<int>(),
+                    It.IsAny<string>(),
+                    It.IsAny<SudokuCollective.Core.Interfaces.Models.DomainObjects.Params.IRequest>()))
+                .ReturnsAsync(new Result
+                {
+                    IsSuccess = true,
+                    Payload = [CreateUser(true)]
+                });
 
             cacheKeys = new CacheKeys();
             cachingStrategy = new CachingStrategy();
@@ -5266,6 +5315,83 @@ namespace SudokuCollective.Test.TestCases.Cache
                 cachingStrategy.Medium,
                 null,
                 MockedHttpMessageHandler.Object));
+        }
+
+        [Test, Category("Cache")]
+        public async Task FlushCacheAndReturnTrue()
+        {
+            MockedServer
+                .Setup(server => server.KeysAsync(
+                    It.IsAny<int>(),
+                    It.Is<RedisValue>(value => value.ToString() == "SudokuCollective*"),
+                    It.IsAny<int>(),
+                    It.IsAny<long>(),
+                    It.IsAny<int>(),
+                    It.IsAny<CommandFlags>()))
+                .Returns(GetRedisKeysAsync("SudokuCollective:key-1", "SudokuCollective:key-2"));
+
+            var result = await sut.FlushCacheAsync(
+                TestObjects.GetRequest(),
+                MockedUsersService.Object);
+
+            Assert.That(result, Is.True);
+            MockedRedisDatabase.Verify(
+                database => database.KeyDeleteAsync(It.IsAny<RedisKey>(), It.IsAny<CommandFlags>()),
+                Times.Exactly(2));
+        }
+
+        [Test, Category("Cache")]
+        public async Task FlushCacheSkipDisconnectedServer()
+        {
+            MockedServer.SetupGet(server => server.IsConnected).Returns(false);
+
+            var result = await sut.FlushCacheAsync(
+                TestObjects.GetRequest(),
+                MockedUsersService.Object,
+                "SudokuCollective*");
+
+            Assert.That(result, Is.True);
+            MockedRedisDatabase.Verify(
+                database => database.KeyDeleteAsync(It.IsAny<RedisKey>(), It.IsAny<CommandFlags>()),
+                Times.Never);
+        }
+
+        [Test, Category("Cache")]
+        public void ThrowUnauthorizedAccessWhenRequestorIsNotSuperUser()
+        {
+            MockedUsersService
+                .Setup(service => service.GetAsync(
+                    It.IsAny<int>(),
+                    It.IsAny<string>(),
+                    It.IsAny<SudokuCollective.Core.Interfaces.Models.DomainObjects.Params.IRequest>()))
+                .ReturnsAsync(new Result
+                {
+                    IsSuccess = true,
+                    Payload = [CreateUser(false)]
+                });
+
+            Assert.That(
+                async () => await sut.FlushCacheAsync(
+                    TestObjects.GetRequest(),
+                    MockedUsersService.Object),
+                Throws.TypeOf<UnauthorizedAccessException>());
+        }
+
+        private static async IAsyncEnumerable<RedisKey> GetRedisKeysAsync(params RedisKey[] keys)
+        {
+            foreach (var key in keys)
+            {
+                yield return key;
+                await Task.Yield();
+            }
+        }
+
+        private static UserDTO CreateUser(bool isSuperUser)
+        {
+            return new UserDTO
+            {
+                IsSuperUser = isSuperUser
+            };
         }
         #endregion
     }

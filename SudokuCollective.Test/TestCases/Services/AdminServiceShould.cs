@@ -79,10 +79,10 @@ namespace SudokuCollective.Test.TestCases.Services
         {
             SetupCachedUser(false);
 
-            var result = await sut.GetSystemStatsAndValues(1);
+            var result = await sut.GetSystemStatsAndValues(2);
 
             Assert.That(result.IsSuccess, Is.False);
-            Assert.That(result.Message, Is.EqualTo("Requestor must be a super user"));
+            Assert.That(result.Message, Is.EqualTo("Requestor must be a super user to complete this request."));
             Assert.That(result.Payload, Is.Empty);
             mockedCacheService.Verify(cache => cache.GetSystemStatsAndValues(
                 It.IsAny<IAppsRepository<App>>(),

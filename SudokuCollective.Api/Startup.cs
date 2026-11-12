@@ -201,11 +201,8 @@ namespace SudokuCollective.Api
                 cacheConnectionString = options.ToString();
             }
 
-            services.AddSingleton<Lazy<IConnectionMultiplexer>>(sp =>
-                new Lazy<IConnectionMultiplexer>(() =>
-                {
-                    return ConnectionMultiplexer.Connect(options);
-                }));
+            services.AddSingleton<IConnectionMultiplexer>(_ =>
+                ConnectionMultiplexer.Connect(options));
 
             services.AddStackExchangeRedisCache(redisOptions =>
             {
@@ -215,8 +212,8 @@ namespace SudokuCollective.Api
                 redisOptions.ConnectionMultiplexerFactory = () =>
                 {
                     var serviceProvider = services.BuildServiceProvider();
-                    Lazy<IConnectionMultiplexer> connection = serviceProvider.GetService<Lazy<IConnectionMultiplexer>>();
-                    return Task.FromResult(connection.Value);
+                    IConnectionMultiplexer connection = serviceProvider.GetRequiredService<IConnectionMultiplexer>();
+                    return Task.FromResult(connection);
                 };
             });
             #endregion
