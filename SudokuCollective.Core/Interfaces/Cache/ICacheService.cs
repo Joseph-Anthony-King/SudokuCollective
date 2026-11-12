@@ -1,15 +1,16 @@
-﻿using System;
+﻿using Microsoft.Extensions.Caching.Distributed;
+using SudokuCollective.Core.Enums;
+using SudokuCollective.Core.Interfaces.Models;
+using SudokuCollective.Core.Interfaces.Models.DomainObjects.Params;
+using SudokuCollective.Core.Interfaces.Models.DomainObjects.Values;
+using SudokuCollective.Core.Interfaces.Repositories;
+using SudokuCollective.Core.Interfaces.ServiceModels;
+using SudokuCollective.Core.Interfaces.Services;
+using SudokuCollective.Core.Models;
+using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Caching.Distributed;
-using SudokuCollective.Core.Interfaces.ServiceModels;
-using SudokuCollective.Core.Interfaces.Repositories;
-using SudokuCollective.Core.Interfaces.Models;
-using SudokuCollective.Core.Interfaces.Models.DomainObjects.Params;
-using SudokuCollective.Core.Models;
-using SudokuCollective.Core.Enums;
-using SudokuCollective.Core.Interfaces.Models.DomainObjects.Values;
 
 namespace SudokuCollective.Core.Interfaces.Cache
 {
@@ -221,6 +222,11 @@ namespace SudokuCollective.Core.Interfaces.Cache
             string cacheKey,
             DateTime expiration,
             IResult result = null,
+            HttpMessageHandler httpMessageHandler = null);
+        Task<bool> FlushCacheAsync(
+            IRequest request,
+            IUsersService userService,
+            string keyPattern = "SudokuCollective*",
             HttpMessageHandler httpMessageHandler = null);
     }
 }
