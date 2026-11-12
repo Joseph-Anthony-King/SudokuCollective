@@ -218,6 +218,48 @@ namespace SudokuCollective.Api.Models
                     context.Apps.Add(
                         new App(
                             0,
+                            env.IsDevelopment() ?
+                                config.GetValue<string>("DefaultSandboxApp:Name") :
+                                Environment.GetEnvironmentVariable("SANDBOX_APP:NAME"),
+                            env.IsDevelopment() ?
+                                config.GetValue<string>("DefaultSandboxApp:License") :
+                                Environment.GetEnvironmentVariable("SANDBOX_APP:LICENSE"),
+                            1,
+                            env.IsDevelopment() ?
+                                config.GetValue<string>("DefaultUserAccounts:SuperUser:UserName") :
+                                Environment.GetEnvironmentVariable("SUPER_USER:USERNAME"),
+                            env.IsDevelopment() ?
+                                config.GetValue<string>("DefaultSandboxApp:LocalUrl") :
+                                Environment.GetEnvironmentVariable("SANDBOX_APP:LOCAL_URL"),
+                            env.IsDevelopment() ?
+                                config.GetValue<string>("DefaultSandboxApp:TestUrl") :
+                                Environment.GetEnvironmentVariable("SANDBOX_APP:TEST_URL"),
+                            env.IsDevelopment() ?
+                                config.GetValue<string>("DefaultSandboxApp:StagingUrl") :
+                                Environment.GetEnvironmentVariable("SANDBOX_APP:STAGING_URL"),
+                            env.IsDevelopment() ?
+                                config.GetValue<string>("DefaultSandboxApp:ProdUrl") :
+                                Environment.GetEnvironmentVariable("SANDBOX_APP:PROD_URL"),
+                            string.Empty,
+                            true,
+                            true,
+                            true,
+                            ReleaseEnvironment.LOCAL,
+                            true,
+                            string.Empty,
+                            string.Empty,
+                            TimeFrame.DAYS,
+                            1,
+                            false,
+                            createdDate,
+                            DateTime.MinValue,
+                            false)
+                    );
+                    context.SaveChanges();
+
+                    context.Apps.Add(
+                        new App(
+                            0,
                             env.IsDevelopment() ? 
                                 config.GetValue<string>("DefaultClientApp:Name") : 
                                 Environment.GetEnvironmentVariable("CLIENT_APP:NAME"),
@@ -264,48 +306,6 @@ namespace SudokuCollective.Api.Models
                             env.IsDevelopment() ?
                                 config.GetValue<int>("DefaultClientApp:AccessDuration") : 
                                 int.Parse(Environment.GetEnvironmentVariable("CLIENT_APP:ACCESS_DURATION")),
-                            false,
-                            createdDate,
-                            DateTime.MinValue,
-                            false)
-                    );
-                    context.SaveChanges();
-
-                    context.Apps.Add(
-                        new App(
-                            0,
-                            env.IsDevelopment() ? 
-                                config.GetValue<string>("DefaultSandboxApp:Name") : 
-                                Environment.GetEnvironmentVariable("SANDBOX_APP:NAME"),
-                            env.IsDevelopment() ? 
-                                config.GetValue<string>("DefaultSandboxApp:License") : 
-                                Environment.GetEnvironmentVariable("SANDBOX_APP:LICENSE"),
-                            1,
-                            env.IsDevelopment() ? 
-                                config.GetValue<string>("DefaultUserAccounts:SuperUser:UserName") : 
-                                Environment.GetEnvironmentVariable("SUPER_USER:USERNAME"),
-                            env.IsDevelopment() ? 
-                                config.GetValue<string>("DefaultSandboxApp:LocalUrl") : 
-                                Environment.GetEnvironmentVariable("SANDBOX_APP:LOCAL_URL"),
-                            env.IsDevelopment() ? 
-                                config.GetValue<string>("DefaultSandboxApp:TestUrl") : 
-                                Environment.GetEnvironmentVariable("SANDBOX_APP:TEST_URL"),
-                            env.IsDevelopment() ?
-                                config.GetValue<string>("DefaultSandboxApp:StagingUrl") :
-                                Environment.GetEnvironmentVariable("SANDBOX_APP:STAGING_URL"),
-                            env.IsDevelopment() ? 
-                                config.GetValue<string>("DefaultSandboxApp:ProdUrl") : 
-                                Environment.GetEnvironmentVariable("SANDBOX_APP:PROD_URL"),
-                            string.Empty,
-                            true,
-                            true,
-                            true,
-                            ReleaseEnvironment.LOCAL,
-                            true,
-                            string.Empty,
-                            string.Empty,
-                            TimeFrame.DAYS,
-                            1,
                             false,
                             createdDate,
                             DateTime.MinValue,

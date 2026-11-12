@@ -59,6 +59,14 @@
     "AccessDuration": "[Your value here]",
     "UseCustomSMTPServer": "[Your value here]"
   },
+  "DefaultSandboxApp": {
+    "Name": "[Your value here]",
+    "License": "[Your value here]",
+    "LocalUrl": "[Your value here]",
+    "StagingUrl": "[Your value here]",
+    "TestUrl": "[Your value here]",
+    "ProdUrl": "[Your value here]"
+  },
   "DefaultClientApp": {
     "Name": "[Your value here]",
     "License": "[Your value here]",
@@ -72,13 +80,5 @@
     "CustomPasswordAction": "[Your value here]",
     "TimeFrame": "[Your value here]",
     "AccessDuration": "[Your value here]"
-  },
-  "DefaultSandboxApp": {
-    "Name": "[Your value here]",
-    "License": "[Your value here]",
-    "LocalUrl": "[Your value here]",
-    "StagingUrl": "[Your value here]",
-    "TestUrl": "[Your value here]",
-    "ProdUrl": "[Your value here]"
   }
 }
