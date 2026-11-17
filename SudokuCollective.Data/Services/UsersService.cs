@@ -1567,7 +1567,7 @@ namespace SudokuCollective.Data.Services
 
                 var user = (User)userResponse.DomainObject;
 
-                if ((!user.IsEmailConfirmed && user.ReceivedRequestToUpdateEmail) || (!user.IsEmailConfirmed && user.ReceivedRequestToUpdateEmail))
+                if (!user.IsEmailConfirmed && !user.ReceivedRequestToUpdateEmail)
                 {
                     result.IsSuccess = false;
                     result.Message = UsersMessages.EmailConfirmedMessage;
