@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using MailKit;
 using MailKit.Net.Smtp;
 using MailKit.Security;
 using MimeKit;
@@ -77,12 +78,12 @@ namespace SudokuCollective.Data.Services
 
                 smtp.Authenticate(emailMetaData.UserName, emailMetaData.Password);
 
-                var smtpResponse = smtp.Send(email);
+                var smtpResponse = smtp.Send(new SendRequest(email));
 
                 SudokuCollectiveLogger.LogInformation<EmailService>(
                     _logger,
                     LogsUtilities.GetSMTPEventId(),
-                    string.Format("smptResponse: {0}", smtpResponse),
+                    string.Format("smptResponse: {0}", smtpResponse.ResponseText),
                     (Request)_requestService.Get());
 
                 smtp.Disconnect(true);
